@@ -10,22 +10,74 @@ class IndexController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        // action body
+      $albums = new Application_Model_DbTable_Albums();
+      $sql = "order by artist name";
+      // $this->view->albums = $albums->fetchAll();
+      $this->view->albums = $albums->getAlbums();
     }
 
     public function addAction()
     {
-        // action body
+      $form = new Application_Form_Album();
+      $form->submit->setLabel('Add');
+      $this->view->form = $form;
+
+      if ($this->getRequest()->isPost()) {
+	$formData = $this->getRequest()->getPost();
+	if ($form->isValid($formData)) {
+	  $artist = $form->getValue('artist');
+	  $title = $form->getValue('title');
+	  $albums = new Application_Model_DbTable_Albums();
+	  $albums->addAlbum($artist, $title);
+
+	  $this->_helper->redirector('index');
+	} else {
+	  $form->populate($formData);
+	}
+      }
     }
 
     public function editAction()
     {
-        // action body
+      $form = new Application_Form_Album();
+      $form->submit->setLabel('Edit');
+      $this->view->form = $form;
+
+      if ($this->getRequest()->isPost()) {
+	$formData = $this->getRequest()->getPost();
+	if ($form->isValid($formData)) {
+	  $id = (int)$form->getValue('id');
+	  $artist = $form->getValue('artist');
+	  $title = $form->getValue('title');
+	  $albums = new Application_Model_DbTable_Albums();
+	  $albums->updateAlbum($id, $artist, $title);
+	  
+	  $this->_helper->redirector('index');
+	}
+      } else {
+	$id = $this->getParam('id', 0);
+	if ($id > 0) {
+	  $albums = new Application_Model_DbTable_Albums();
+	  $form->populate($albums->getAlbum($id));
+	}
+      }
     }
 
     public function deleteAction()
     {
-        // action body
+      if ($this->getRequest()->isPost()) {
+	$del = $this->getRequest()->getPost('del');
+	if ($del == 'Yes') {
+	  $id = $this->getRequest()->getPost('id');
+	  $albums = new Application_Model_DbTable_Albums();
+	  $albums->deleteAlbum($id);
+	}
+	$this->_helper->redirector('index');
+      } else {
+	$id = $this->getparam('id', 0);
+	$albums = new Application_Model_DbTable_Albums();
+	$this->view->album = $albums->getAlbum($id);
+      }
     }
 
 

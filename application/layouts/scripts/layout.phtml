@@ -1,7 +1,7 @@
 <!--?php echo $this->layout()->content; ? -->
 
 <?php
-$this->headMeta()->appendEttpEquiv('Content-Type', 'text/html;charset=utf-8');
+$this->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=utf-8');
 $this->headTitle()->setSeparator(' - ');
 $this->headTitle('Albums Galore');
 
@@ -15,7 +15,7 @@ echo $this->doctype() ?>
 <body>
 <div id="content">
   <h1><?php echo $this->escape($this->title); ?></h1>
-<?php exho $this->layout()->content; ?>
+<?php echo $this->layout()->content; ?>
 </div>
 </body>
 </html>

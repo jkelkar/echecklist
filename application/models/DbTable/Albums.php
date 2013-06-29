@@ -12,6 +12,14 @@ class Application_Model_DbTable_Albums extends Zend_Db_Table_Abstract
     }
     return $row->toArray();
   }
+
+  public function getAlbums() {
+    $rows = $this->fetchAll();
+    
+    //$this->getConnection();
+    return $rows;
+  }
+
   public function addAlbum($artist, $title)
   {
     $data = array(

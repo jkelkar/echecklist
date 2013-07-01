@@ -1,51 +1,51 @@
-class AlbumsTest extends Zend_Test_PHPUnit_DatanbaseTestCase
-{
+<?php 
 
-  private $_connectionMock;
-  
+require_once "PHPUnit/Extensions/Database/TestCase.php";
+
+class AlbumsTest extends PHPUnit_Extensions_Database_TestCase
+{
+  protected $dbconn;
   /**
-   * Returns the test database connection.
-   *
    * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
    */
-  
-  protected function getConnection()
+  public function getConnection()
   {
-    if ($this->_connectionMock == null) {
-      $connection = Zend_Db::factory
-	('Pdo_Mysql', 
-	 array(
-	       'host' => 'localhost',
-	       'username' => 'root',
-	       'passwprd' => '3ntr0py',
-	       'dbname' => 'mydb_test'
-	       ));
-      $this->_connectionMock = $this->createZendDbConnection
-	(
-	 $connection, 'zfunittests'
-	 );
-      Zend_Db_TableAbstract::setDeafultAdapter($connection);
+    $database = 'mydb_test';
+    try {
+      $conn = new PDO('mysql:host=localhost;dbname=' .  $database, 'root', '3ntr0py');
+      //$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    } catch(PDOException $e) {
+      echo 'ERROR: ' . $e->getMessage();
     }
-    return $this->_connectionMock;
+    $this->dbconn = $conn;
+    return $this->createDefaultDBConnection($conn, $database);
   }
 
   /**
    * @return PHPUnit_Extensions_Database_DataSet_IDataSet
    */
-  protected function getDataSet()
+  public function getDataSet()
   {
-    return $this->createFlatXmlDataSet
-      (
-       dirname(__FILE__) . '/_files/albumsSeed.xml'
-       );
+    $co = $this->getConnection();
+    return $co->createDataSet(array('albums'));
   }
 
-  // start the tests here
-  public function testAlbumsContent()
+  public function testThis()
   {
-    $albumsTable = new Albums();
-    $rowset = $ablumsTable->fetchAll();
-    //echo 'Data: ' . $rowset . '\n';
+    /* $data = $this->getDataSet(); // Just a sample use */
+    
+    $conn = $this->dbconn;
+    $stmt = $conn->prepare("SELECT * FROM albums");
+    $stmt->execute();
+    // print 'data:'; print_r($data);
+    $outdata = array();
+    //echo 'data: ' . $stmt->fetch();     
+    $i = 1;
+    while($row = $stmt->fetch()) { 
+      // print_r($row);
+      $outdata[] = $row;                                                                               
+      $this->assertSame($row['id']+0, $i);
+      $i++;
+    }                                                                                                 
   }
-
 }

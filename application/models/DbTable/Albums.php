@@ -14,7 +14,9 @@ class Application_Model_DbTable_Albums extends Zend_Db_Table_Abstract
   }
 
   public function getAlbums() {
-    $rows = $this->fetchAll();
+    // $rows = $this->fetchAll(null, 'artist');
+    $rows = $this->fetchAll($this->select()
+			    ->order('artist'));
     
     //$this->getConnection();
     return $rows;

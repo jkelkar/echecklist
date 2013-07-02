@@ -80,7 +80,21 @@ class IndexController extends Zend_Controller_Action
       }
     }
 
+    /**
+     * This shows the rows in excel format and makes it available for download
+     */
+    public function inexcelAction() 
+    {
+      echo 'Starting the excel conversion' ;
+      require_once 'modules/AlbumsExcel.php';
 
+      $albums = new Application_Model_DbTable_Albums();
+      $sql = "order by artist name";
+      // $this->view->albums = $albums->fetchAll();                                                     
+      $rows = $albums->getAlbums();
+
+      doit($rows);
+    }
 }
 
 

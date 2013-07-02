@@ -1,51 +1,91 @@
 <?php 
 
-require_once "PHPUnit/Extensions/Database/TestCase.php";
+/**
+ * This is required to bring in the database model that is to be tested
+ */
+require_once '../application/models/DbTable/Albums.php';
 
-class AlbumsTest extends PHPUnit_Extensions_Database_TestCase
+class AlbumsTest extends Zend_Test_PHPUnit_DatabaseTestCase
 {
-  protected $dbconn;
+  private $_connectionMock;
+
   /**
+   * Returns the database connection.
+   * 
    * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
    */
-  public function getConnection()
+  protected function getConnection()
   {
     $database = 'mydb_test';
-    try {
-      $conn = new PDO('mysql:host=localhost;dbname=' .  $database, 'root', '3ntr0py');
-      //$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    } catch(PDOException $e) {
-      echo 'ERROR: ' . $e->getMessage();
+    if ($this->_connectionMock == null) {
+      $connection = Zend_Db::factory
+	('Pdo_Mysql',
+	 array(
+	       'host' => 'localhost',
+	       'username' => 'root',
+	       'password' => '3ntr0py',
+	       'dbname' => 'mydb_test'
+	       ));
+      $this->_connectionMock = $this->createZendDbConnection
+	(
+	 $connection, 'zfunittests'
+	 );
+      Zend_Db_Table_Abstract::setDefaultAdapter($connection);
     }
-    $this->dbconn = $conn;
-    return $this->createDefaultDBConnection($conn, $database);
+    return $this->_connectionMock;
   }
-
+  
   /**
    * @return PHPUnit_Extensions_Database_DataSet_IDataSet
    */
-  public function getDataSet()
+  protected function getDataSet()
   {
-    $co = $this->getConnection();
-    return $co->createDataSet(array('albums'));
+    /* this loads the initial set of rows into the table */
+    return $this->createFlatXmlDataset
+      (
+       dirname(__FILE__) . '/_files/albumsSeed.xml'
+       );
   }
 
-  public function testThis()
+  public function testAlbumInsertedIntoDb()
   {
-    /* $data = $this->getDataSet(); // Just a sample use */
-    
-    $conn = $this->dbconn;
-    $stmt = $conn->prepare("SELECT * FROM albums");
-    $stmt->execute();
-    // print 'data:'; print_r($data);
-    $outdata = array();
-    //echo 'data: ' . $stmt->fetch();     
-    $i = 1;
-    while($row = $stmt->fetch()) { 
-      // print_r($row);
-      $outdata[] = $row;                                                                               
-      $this->assertSame($row['id']+0, $i);
-      $i++;
-    }                                                                                                 
+    $albumsTable = new Application_Model_DbTable_Albums();
+
+    $data = array
+      (
+       'artist' => 'Born Jovial',
+       'title'  => 'Late to the party'
+       );
+
+    $albumsTable->insert($data);
+
+    $ds = new Zend_Test_PHPUnit_Db_DataSet_QueryDataSet
+      (
+       $this->getConnection()
+       );
+    $ds->addTable('albums', 'SELECT * from albums');
+    /*
+      $this->addertDataSetEqual
+      (
+      $this->createFlatXmlDataset
+      (dirname(__FILE__) . "/_files/albumsInsertIntoAssertion.xml"),
+      $ds
+      );
+    */
+    //echo $this;
+    $rowset = $albumsTable->fetchAll();
+    foreach($rowset as $row) {
+      echo 'ROW: ' . $row['id'] . ' ' . $row['artist'] . ' ' . $row['title'] . "\n";
+      $this->assertSame($row['id'], $row['id']);
+    }
+		      
+  }
+
+  public function testAlbumSelect()
+  {
+    $albumsTable = new Application_Model_DbTable_Albums();
+    //echo 'AClass: ' . $albumsTable;
+    $rows = $albumsTable->getAlbums();
+    //echo 'Rows: ' . $rows;
   }
 }

@@ -19,17 +19,17 @@ class AlbumsTest extends Zend_Test_PHPUnit_DatabaseTestCase
     $database = 'mydb_test';
     if ($this->_connectionMock == null) {
       $connection = Zend_Db::factory
-	('Pdo_Mysql',
-	 array(
-	       'host' => 'localhost',
-	       'username' => 'root',
-	       'password' => '3ntr0py',
-	       'dbname' => 'mydb_test'
-	       ));
+        ('Pdo_Mysql',
+         array(
+               'host' => 'localhost',
+               'username' => 'root',
+               'password' => '3ntr0py',
+               'dbname' => 'mydb_test'
+               ));
       $this->_connectionMock = $this->createZendDbConnection
-	(
-	 $connection, 'zfunittests'
-	 );
+        (
+         $connection, 'zfunittests'
+         );
       Zend_Db_Table_Abstract::setDefaultAdapter($connection);
     }
     return $this->_connectionMock;
@@ -46,19 +46,19 @@ class AlbumsTest extends Zend_Test_PHPUnit_DatabaseTestCase
        dirname(__FILE__) . '/_files/albumsSeed.xml'
        );
   }
-
+  
   public function testAlbumInsertedIntoDb()
   {
     $albumsTable = new Application_Model_DbTable_Albums();
-
+    
     $data = array
       (
        'artist' => 'Born Jovial',
        'title'  => 'Late to the party'
        );
-
+    
     $albumsTable->insert($data);
-
+    
     $ds = new Zend_Test_PHPUnit_Db_DataSet_QueryDataSet
       (
        $this->getConnection()
@@ -75,10 +75,10 @@ class AlbumsTest extends Zend_Test_PHPUnit_DatabaseTestCase
     //echo $this;
     $rowset = $albumsTable->fetchAll();
     foreach($rowset as $row) {
-      echo 'ROW: ' . $row['id'] . ' ' . $row['artist'] . ' ' . $row['title'] . "\n";
+      // echo 'ROW: ' . $row['id'] . ' ' . $row['artist'] . ' ' . $row['title'] . "\n";
       $this->assertSame($row['id'], $row['id']);
     }
-		      
+    
   }
 
   public function testAlbumSelect()

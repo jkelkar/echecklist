@@ -32,5 +32,15 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     return $view;
   }
   
+  //$config = new Zend_Config_Ini('/var/www/zftest/application/configs/application.ini',
+  //				APPLICATION_ENV);
 
+  // Instantiate the database 
+  /*$db = Zend_Db::factory('PDO_MYSQL', array(
+					    'host': $config->db->params->host,
+					    'username': $config->db->params->username,
+					    'password': $config->db->params->password,
+					    'dbname': $config->db->params->dbname
+					    ));
+  */
 }

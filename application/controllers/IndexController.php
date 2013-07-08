@@ -11,7 +11,7 @@ class IndexController extends Zend_Controller_Action
   public function indexAction()
   {
     $albums = new Application_Model_DbTable_Albums();
-    $sql = "order by artist name";
+    //$sql = "order by artist name";
     // $this->view->albums = $albums->fetchAll();
     $this->view->albums = $albums->getAlbums();
   }

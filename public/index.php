@@ -19,11 +19,12 @@ defined('APPLICATION_ENV')
  * to the include_path, particularly if it contains your ZF installed
  */
 
-set_include_path(
-                 implode(PATH_SEPARATOR, array(
-                                               dirname(dirname(__FILE__)) . '/library',
-                                               get_include_path(),
-                   )));
+set_include_path
+(
+ implode(PATH_SEPARATOR, array(
+                               dirname(dirname(__FILE__)) . '/library',
+                               get_include_path(),
+                               )));
 
 
 

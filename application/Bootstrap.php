@@ -3,13 +3,8 @@
 class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
   /**
-   * echo $config->db->adapter . " xx\n";
-   $db = Zend_Db::factory($config->db->adapter, $config->db->config->asArray());
-   Zend_Db_Table::setDefaultAdapter($db);
-   Zend::register('db', $db);
-  */
-  /**
-   * Again we register the databsae with the registry and with Zend_Db_Table. As our models
+   * Again we register the databsae with the registry and with Zend_Db_Table. 
+   * As our models
    * are derived from Zend_Db_table the registery will rarely be used.
    */
   
@@ -32,15 +27,16 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     return $view;
   }
   
-  //$config = new Zend_Config_Ini('/var/www/zftest/application/configs/application.ini',
-  //				APPLICATION_ENV);
-
-  // Instantiate the database 
-  /*$db = Zend_Db::factory('PDO_MYSQL', array(
-					    'host': $config->db->params->host,
-					    'username': $config->db->params->username,
-					    'password': $config->db->params->password,
-					    'dbname': $config->db->params->dbname
-					    ));
+  /**
+   //$config = new Zend_Config_Ini('/var/www/zftest/application/configs/application.ini',
+   //				APPLICATION_ENV);
+   
+   // Instantiate the database 
+   / *$db = Zend_Db::factory('PDO_MYSQL', array(
+   'host': $config->db->params->host,
+   'username': $config->db->params->username,
+   'password': $config->db->params->password,
+   'dbname': $config->db->params->dbname
+   ));
   */
 }

@@ -1,0 +1,62 @@
+In rendering the partials, the strategy is as follows:
+
+We have the following to work with:
+1. A partial which will be converted into a row
+2. The set of widgets
+3. Data from the row in the template row table
+
+
+One way to do it would be write functions for each widget (widget in this regard are
+the interactive part of the page)
+
+funciton thisWidget(variable_name) {
+  /*
+   * would take the widget update it with the variable name and return it.
+   */
+}  
+
+In the mean time each partial would be a function which implements a partial
+by including in the text of the partil, any widgets by calling the appropriate 
+widget function with the info needed to fill it out.
+
+function aPartial($row) {
+
+ /*
+  * call widget function(s) as needed to fill out the partial, and return it
+  */
+}
+
+A concrete example follows:
+
+function widgetStars($varname, $suffix, $value) {
+  // implements the stars widget
+  // $value is used to show the value on the screen when editing
+  $out = <<<"END"
+<select name="{$varname}_{$suffix}" id="{$varname}_{$suffix}" class="select"> 
+<option value="-">Select ...</option>
+<option value="N">Not Audited</option>
+<option value="0">0 Stars</option>
+<option value="1">1 Star</option>
+<option value="2">2 Stars</option>
+<option value="3">3 Stars</option>
+<option value="4">4 Stars</option>
+<option value="5">5 Stars</option>
+</select>
+END;
+  return $out;
+}
+
+function partialStars($row) {
+// implements the stars partial
+  $row_prefix = $row['row_prefix'];
+  $row_heading = $row['row_heading'];
+  $row_text = $row['row_text'];
+  $output = '<td colspan=2 style="vertical-align:top;padding: 2px 4px;">' .
+  %(row_text)s     
+  '</td>' .
+  '<td style="vertical-align:top;padding: 2px 4px;">' .
+  widgetStars($row['varname'], 'stars') .
+  '</td>';
+  return $output;
+
+}

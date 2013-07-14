@@ -1,5 +1,8 @@
 <?php
+require_once 'modules/KLogger.php';
+require_once 'modules/Checklist/fillout.php';
 
+$log = new KLogger("log.txt", KLogger::DEBUG);
 class SliptaController extends Zend_Controller_Action
 {
 
@@ -13,27 +16,15 @@ class SliptaController extends Zend_Controller_Action
 
   }
 
-  public function showAction()
+  public function editAction()
   {
     $slipta = new Application_Model_DbTable_Slipta();
-    $rows = $slipta->getrows(1);
-    /**
-     * foreach($rows as $row){
-     * //echo $row['id'];
-     *
-     }*/
-
-  $value = array('notme' => 'no');
-  $tout = array();
-  $tout[] = '<table border=1>';
-  $tout[] = '<td width=60mm></td><td width=60mm></td><td width=20mm></td>';
-  foreach($rows as $row){
-    $row_type = $row['row_type'];
-    $tout[] = '<tr>' . call_user_func("partial_{$row_type}", $row, $value) . '</tr>';
-  }
-  $tout[] = '</table>';
-  $this->view->outlines = implode("\n", $tout);
-    // 'this is a the outline';
+    $data = new Application_Model_DbTable_Data();
+    $rows = $slipta->getrows(1); // 1 is the tmpl_head_id
+    $value = $data->get_data(1); // 1 is the data_head_id
+    //$value = array('notme' => 'no');
+    $tout = calculate_page($rows, $value);
+    $this->view->outlines = implode("\n", $tout);
   }
 
 }

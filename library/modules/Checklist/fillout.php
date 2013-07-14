@@ -17,13 +17,19 @@ function get_arrval($arr, $k, $default) {
  */
 function SELECT($name, $optvals, $value)
 {
+  //$log = new KLogger("/var/log/log.txt", KLogger::DEBUG);
   if (count($optvals) == 0) {
     throw new Exception('Optvals has no elements', 0);
   }
   $optout = array();
   $val = get_arrval($value, $name, '');
+  //$log->LogInfo("{$name} - {$val}");
+  /*foreach ($value as $n => $v) {
+    $log->LogInfo("Values {$n} - {$v}");
+    }*/
   foreach($optvals as $n => $v) {
-    $sel = ($v == $val) ? "selected=\"selected\"" : '';
+    $sel = ($v == $val) ? "selected=selected " : '';
+    //$log->LogInfo("Interiem - {$val} : {$sel}: {$n} => {$v}");
     $optout[] = "<option {$sel} value=\"{$v}\">{$n}</option>";
   }
   $options = implode("\n", $optout);
@@ -392,11 +398,9 @@ END;
   return $out;
 }
 
-
-/**
- *function processTemplate($tmplid)
+function calculate_page($rows, $value) 
 {
-  /* *
+  /**
    * Result of the query to get all template rows sorted in order
    *
    * Soon we will add a field which will partition the whole template into
@@ -404,15 +408,17 @@ END;
    *
    * It will be possible to randomly pull up any group once the basic
    * profile informaiton for this audit has been saved.
-   * /
-
-  $rows = array();
-  // using the row_name do the following to render it
-  / **
-   * Given a row_type, load it with the correct details and render it
-   * /
-  // all partial generator functions are partial_<row_type>
-  call_user_func("partial_{$row_name}", $row, $value);
-
+   */
+  //$value = array('notme' => 'no');
+  $tout = array();
+  $tout[] = '<table border=1>';
+  $tout[] = '<td width=60mm></td><td width=60mm></td><td width=20mm></td>';
+  foreach($rows as $row){
+    $row_type = $row['row_type'];
+    $tout[] = '<tr>' 
+      . call_user_func("partial_{$row_type}", $row, $value) 
+      . '</tr>';
+  }
+  $tout[] = '</table>';
+  return $tout;
 }
-*/

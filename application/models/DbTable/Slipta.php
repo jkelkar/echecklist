@@ -1,13 +1,11 @@
 <?php
 
 /**
- * This implements the model for accessing the data for the display
+ * This implements the model for accessing template 
  * rows
  */
-require_once 'modules/Checklist/fillout.php';
 
 class Application_Model_DbTable_Slipta extends Application_Model_DbTable_Checklist
-// Zend_Db_Table_Abstract
 {
   protected $_name = 'slipta';
 
@@ -22,17 +20,8 @@ class Application_Model_DbTable_Slipta extends Application_Model_DbTable_Checkli
     $stmt =  $db->query($sql);
     $rows = $stmt->fetchAll();
     if (!$rows) {
-      throw new Exception("Could not find rows in getTmplrows!");
+      throw new Exception("No rows available for this template.");
     }
-    /**
-       $tout = array();
-       $tout[] = '<table border=1>';
-       $tout[] = '<td width=60mm></td><td width=60mm></td><td width=20mm></td>';
-       foreach($rows as $row){
-       // echo $row['id']. ' ' . $row['row_text'] . '<br />';
-       $tout[] = '<tr>' . call_user_func("partial_{$}", $row, $value) . '</tr>';
-       }
-    **/
     return $rows;
   }
 

@@ -111,8 +111,8 @@ function widget_select_wp($varname, $value)
 function widget_select_yni($varname, $value)
 {
   $optvals  = array('Select ...' => '-', 
-                    'Yes' => 'P',
-                    'No' => 'W',
+                    'Yes' => 'Y',
+                    'No' => 'N',
                     'Insufficient Data' => 'I');
   return SELECT($varname, $optvals, $value);
 }
@@ -181,13 +181,13 @@ function widget_integer($name, $value)
  * These are the representations of a row on the screen
  */
 function partial_stars($row, $value) {
-  $row_prefix = $row['row_prefix'];
-  $row_heading = $row['row_heading'];
-  $row_text = $row['row_text'];
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
   $stars= widget_select_stars('stars', $value);
 $out = <<<"END"
 <td colspan=2 style="vertical-align:top;padding: 2px 4px;">
-  {$row_text}
+  {$text}
 </td>
 <td style="vertical-align:top;padding: 2px 4px;">
   {$stars}
@@ -197,13 +197,13 @@ END;
 }
 
 function partial_sec_head($row, $value) {
-  $row_prefix = $row['row_prefix'];
-  $row_heading = $row['row_heading'];
-  $row_text = $row['row_text'];
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
   $out = <<<"END"
 <td colspan=3 style="font-size:18px;font-weight: bold;text-transform:uppercase;padding: 2px 4px;">
 <div style="">
-<div style="vertical-align:top;">{$row_prefix} {$row_heading}</div>
+<div style="vertical-align:top;">{$prefix} {$heading}</div>
 </div>
 </td>
 END;
@@ -212,13 +212,13 @@ END;
 }
 
 function partial_sec_head_small($row, $value) {
-  $row_prefix = $row['row_prefix'];
-  $row_heading = $row['row_heading'];
-  $row_text = $row['row_text'];
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
   $out = <<<"END"
 <td colspan=3 style="font-size:14px;font-weight: bold;padding: 2px 4px;">
 <div style="">
-<div style="vertical-align:top;">{$row_prefix} {$row_heading}</div>
+<div style="vertical-align:top;">{$prefix} {$heading}</div>
 </div>
 </td>
 END;
@@ -226,19 +226,52 @@ END;
   return $out;
 }
 
+function partial_info_i($row, $value) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $out = <<<"END"
+<td colspan=3 style="font-size:14px;font-style:italic;padding: 2px 4px;">
+<div style="vertical-align:top;">{$text}</div>
+</td>
+END;
+
+  return $out;
+}
+
+function partial_info_bn($row, $value) {
+  /**
+   * This implements full width information header with 
+   * text in bold and normal font.
+   * bold text is from field heading
+   * normal test is from field text
+   */
+
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $out = <<<"END"
+<td colspan=3 style="font-size:14px;padding: 2px 4px;">
+    <div style="vertical-align:top;"><b>{$heading}</b> {$text}</div>
+</td>
+END;
+
+  return $out;
+}
+
 function partial_sub_sec_head($row, $value) {
-  $row_prefix = $row['row_prefix'];
-  $row_heading = $row['row_heading'];
-  $row_text = $row['row_text'];
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
   $widget_nyp_ro = "FIXME"; // widget_nyp_ro($name, $value);
  $out =  <<<"END"
 <td style="padding: 2px 4px;">
 <div style="display:inline-block;width:350px;vertical-align:top;">
 <div style="width:348px;">
-<div style="display:inline;font-weight:bold;width:25px;vertical-align:top;">{$row_prefix}</div> 
+<div style="display:inline;font-weight:bold;width:25px;vertical-align:top;">{$prefix}</div> 
 <div style="display:inline-block;width:320px;">
-<div style="text-decoration:underline;font-weight:bold;display:inline-block;">{$row_heading}</div>
-<div style="vertical-align:top;">{$row_text}</div>
+<div style="text-decoration:underline;font-weight:bold;display:inline-block;">{$heading}</div>
+<div style="vertical-align:top;">{$text}</div>
 </div>
 </div>
 </div>
@@ -255,9 +288,9 @@ END;
 }
 
 function partial_sec_element($row, $value) {
-  $row_prefix = $row['row_prefix'];
-  $row_heading = $row['row_heading'];
-  $row_text = $row['row_text'];
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
   $name = $row['varname'];
   $mc_yn = widget_select_yn($name, $value);
   $tarea = TEXTAREA("{$name}_comment", $value);
@@ -266,8 +299,8 @@ function partial_sec_element($row, $value) {
 <div style="display:inline-block;vertical-align:top;">
 <div style="width:325px;">
 <div>
-<div style="text-decoration:underline;font-weight:bold;vertical-align:top;">{$row_heading}</div>
-<div style="vertical-align:top;">{$row_text}</div>
+<div style="text-decoration:underline;font-weight:bold;vertical-align:top;">{$heading}</div>
+<div style="vertical-align:top;">{$text}</div>
 </div>
 </div>
 </div>
@@ -284,14 +317,14 @@ END;
 }
 
 function partial_lablevel($row, $value) {
-  $row_prefix = $row['row_prefix'];
-  $row_heading = $row['row_heading'];
-  $row_text = $row['row_text'];
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
   $name = $row['varname'];
   $mc_lab_level = widget_select_lablevel($name, $value);
   $out = <<<"END"
 <td colspan=2 style="vertical-align:top;padding: 2px 4px;">
-{$row_text}
+{$text}
 </td>
 <td style="vertical-align:top;padding: 2px 4px;">
 {$mc_lab_level}
@@ -302,15 +335,15 @@ END;
 }
 
 function partial_labaffil($row, $value) {
-  $row_prefix = $row['row_prefix'];
-  $row_heading = $row['row_heading'];
-  $row_text = $row['row_text'];
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
   $name = $row['varname'];
   $mc_lab_affil = widget_select_labaffil($name, $value);
 
   $out = <<<"END"
 <td colspan=2 style="vertical-align:top;padding: 2px 4px;">
-{$row_text}
+{$text}
 </td>
 <td style="vertical-align:top;padding: 2px 4px;">
 {$mc_lab_affil}
@@ -321,15 +354,15 @@ END;
 }
 
 function partial_date($row, $value) {
-  $row_prefix = $row['row_prefix'];
-  $row_heading = $row['row_heading'];
-  $row_text = $row['row_text'];
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
   $name = $row['varname'];
   $dt = widget_dt($name, $value);
 
   $out = <<<"END"
 <td colspan=2 style="vertical-align:top;padding: 2px 4px;">
-{$row_text}
+{$text}
 </td>
 <td style="vertical-align:top;padding: 2px 4px;">
 {$dt}
@@ -340,14 +373,14 @@ END;
 }
 
 function partial_text($row, $value) {
-  $row_prefix = $row['row_prefix'];
-  $row_heading = $row['row_heading'];
-  $row_text = $row['row_text'];
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
   $name = $row['varname'];
   $tarea = TEXTAREA($name, $value);
   $out = <<<"END"
 <td colspan=2 style="vertical-align:top;padding: 2px 4px;">
-{$row_text}
+{$text}
 </td>
 <td style="vertical-align:top;padding: 2px 4px;">
 {$tarea}
@@ -357,19 +390,19 @@ END;
   return $out;
 }
 function partial_tab_head3($row, $value) {
-  $row_prefix = $row['row_prefix'];
-  $row_heading = $row['row_heading'];
-  $row_text = $row['row_text'];
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
   $name = $row['varname'];
   $out = <<<"END"
 <td style="vertical-align:top;padding: 2px 4px;">
-<i>{$row_prefix}</i>
+<i>{$prefix}</i>
 </td>
 <td style="vertical-align:top;padding: 2px 4px;">
-<i>{$row_heading}</i>
+<i>{$heading}</i>
 </td>
 <td style="vertical-align:top;padding: 2px 4px;">
-<i>{$row_text}</i>
+<i>{$text}</i>
 </td>
 END;
 
@@ -377,21 +410,59 @@ END;
 }
 
 function partial_pinfo($row, $value) {
-  $row_prefix = $row['row_prefix'];
-  $row_heading = $row['row_heading'];
-  $row_text = $row['row_text'];
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
   $name = $row['varname'];
   $smallint = widget_integer("{$name}_num", $value);
   $mc_yni = widget_select_yni("{$name}_yni", $value);
   $out = <<<"END"
 <td style="vertical-align:top;padding: 2px 4px;">
-{$row_text}
+{$text}
 </td>
 <td style="vertical-align:top;padding: 2px 4px;">
 {$smallint}
 </td>
 <td style="vertical-align:top;padding: 2px 4px;">
 {$mc_yni}
+</td>
+END;
+
+  return $out;
+}
+
+function partial_pinfo2_i($row, $value) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $name = $row['varname'];
+  $smallint = widget_integer("{$name}_num", $value);
+  $mc_yn = widget_select_yn("{$name}_yn", $value);
+  $out = <<<"END"
+<td colspan=2 style="vertical-align:top;padding: 2px 4px;">
+    &nbsp;&nbsp;&nbsp;&nbsp;<i>{$text}</i>
+</td>
+<td style="vertical-align:top;padding: 2px 4px;">
+{$mc_yn}
+</td>
+END;
+
+  return $out;
+}
+
+function partial_pinfo2($row, $value) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $name = $row['varname'];
+  $smallint = widget_integer("{$name}_num", $value);
+  $mc_yn = widget_select_yn("{$name}_yn", $value);
+  $out = <<<"END"
+<td colspan=2 style="vertical-align:top;padding: 2px 4px;">
+  {$text}
+</td>
+<td style="vertical-align:top;padding: 2px 4px;">
+{$mc_yn}
 </td>
 END;
 
@@ -414,9 +485,9 @@ function calculate_page($rows, $value)
   $tout[] = '<table border=1>';
   $tout[] = '<td width=60mm></td><td width=60mm></td><td width=20mm></td>';
   foreach($rows as $row){
-    $row_type = $row['row_type'];
+    $type = $row['row_type'];
     $tout[] = '<tr>' 
-      . call_user_func("partial_{$row_type}", $row, $value) 
+      . call_user_func("partial_{$type}", $row, $value) 
       . '</tr>';
   }
   $tout[] = '</table>';

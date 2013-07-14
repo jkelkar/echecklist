@@ -2,7 +2,7 @@
 require_once 'modules/KLogger.php';
 require_once 'modules/Checklist/fillout.php';
 
-$log = new KLogger("log.txt", KLogger::DEBUG);
+$log = new KLogger("/var/log/log.txt", KLogger::DEBUG);
 class SliptaController extends Zend_Controller_Action
 {
 

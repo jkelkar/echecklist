@@ -14,6 +14,7 @@ class IndexController extends Zend_Controller_Action
     //$sql = "order by artist name";
     // $this->view->albums = $albums->fetchAll();
     $this->view->albums = $albums->getAlbums();
+    $this->_helper->layout->setLayout('mainpage');
   }
 
   public function addAction()
@@ -40,6 +41,7 @@ class IndexController extends Zend_Controller_Action
   public function editAction()
   {
     $form = new Application_Form_Album();
+    $albums = new Application_Model_DbTable_Albums();
     $form->submit->setLabel('Edit');
     $this->view->form = $form;
 
@@ -49,7 +51,7 @@ class IndexController extends Zend_Controller_Action
         $id = (int)$form->getValue('id');
         $artist = $form->getValue('artist');
         $title = $form->getValue('title');
-        $albums = new Application_Model_DbTable_Albums();
+        //$albums = new Application_Model_DbTable_Albums();
         $albums->updateAlbum($id, $artist, $title);
 	  
         $this->_helper->redirector('index');
@@ -57,8 +59,9 @@ class IndexController extends Zend_Controller_Action
     } else {
       $id = $this->getParam('id', 0);
       if ($id > 0) {
-        $albums = new Application_Model_DbTable_Albums();
+        // $albums = new Application_Model_DbTable_Albums();
         $form->populate($albums->getAlbum($id));
+        $this->_helper->layout->setLayout('mainpage');
       }
     }
   }

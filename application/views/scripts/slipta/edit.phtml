@@ -1,10 +1,17 @@
 <?php
-$this->title = "My Template";
+$this->title = "";
 $this->headTitle($this->title);
 
 ?>
 
-<div style="margin-left:10mm;">
-<h1> Template on Display </h1>
+<div style="margin-left:1mm;">
+<h1> Edit away! </h1>
+  <form method="post" action="" enctype="application/x-www-form-urlencoded" name="slipta" id="slipta">
   <?php echo $this->outlines; ?>
+  <input type="submit" value="Cancel" id="cancelbutton" name="cancel">
+  <input type="submit" value="Save" id="savebutton" name="save">
+  <input type="submit" value="Continue" id="continuebutton" name="continue">
+  
+  </form>
 </div>
+<div style="height: 20px;"> &nbsp;</div>

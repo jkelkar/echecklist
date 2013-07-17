@@ -14,7 +14,8 @@ $new_album_url = $this->url(array('controller'=>'index',
 foreach($this->albums as $album) {?>
 <tr>
   <td width=200><?php echo $this->escape($album['title']); ?></td>
-  <td width=225><span style="color:#33cc33;"><?php echo $this->escape($album['artist']); ?></span></td>
+  <td width=225><span style="color:#33cc33;">
+  <?php echo $this->escape($album['artist']); ?></span></td>
   <td><a href="<?php echo $this->url(array('controller' => 'index', 'action' => 'edit', 'id' => $album['id']));?>">Edit</a>
   <a href="<?php echo $this->url(array('controller' => 'index', 'action' => 'delete', 'id' => $album['id']));?>">Delete</a></td>
 </tr>

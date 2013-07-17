@@ -60,6 +60,10 @@ function INPUT($name, $value, $type='string', $length=0)
   case 'date':
   case 'datetime':
     $dtype = $type;
+    if ($length != 0) {
+      $l = strval($length);
+      $size= "size=\"{$l}\" ";
+}
     break;
     
   case 'string':
@@ -171,9 +175,9 @@ function widget_text255($name, $value)
   return INPUT($name, $value, 'string', 255);
 }
 
-function widget_integer($name, $value)
+function widget_integer($name, $value, $length=0)
 {
-  return INPUT($name, $value, 'integer');
+  return INPUT($name, $value, 'integer', $length);
 }
 
 
@@ -469,6 +473,82 @@ END;
   return $out;
 }
 
+function partial_criteria_1_heading($row, $value) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $name = $row['varname'];
+  $out = <<<"END"
+<td colspan=3>
+    <table style="width:100%;">    
+  <tr>
+    <td width="7%" rowspan="2" class="centertopbold">{$prefix}</td>
+    <td rowspan="2" class="title">
+      {$heading}
+    </td>
+    <td width="21%" colspan=3 class="centertopbold">FREQUENCY</td> 
+  </tr>
+  <tr>
+    <td width="7%" class="centertopbold">Daily</td>
+	  <td width="7%" class="centertopbold">Weekly</td>
+	  <td class="centerbold">With Every Run</td>
+  </tr>
+  </table>
+</td>
+END;
+
+  return $out;
+}
+
+function partial_criteria_1_values($row, $value) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $name = $row['varname'];
+  $i11 = widget_integer("{$name}_qnt_d", $value, 4);
+  $i12 = widget_integer("{$name}_qnt_w", $value, 4);
+  $i13 = widget_integer("{$name}_qnt_er", $value, 4);
+  $i21 = widget_integer("{$name}_sqt_d", $value, 4);
+  $i22 = widget_integer("{$name}_sqt_w", $value, 4);
+  $i23 = widget_integer("{$name}_sqt_er", $value, 4);
+  $i31 = widget_integer("{$name}_qlt_d", $value, 4);
+  $i32 = widget_integer("{$name}_qlt_w", $value, 4);
+  $i33 = widget_integer("{$name}_qlt_er", $value, 4);
+  $out = <<<"END"
+<td colspan=3>
+  <table style="width:100%;">    
+  <tr> 
+    <td width="7%" rowspan="4" class="centertopbold">{$prefix}</td> 
+    <td colspan="4" class="title">{$heading}</td>
+    </tr>
+    <tr>
+      <td  class="tests">Quantitative tests</td>
+      <td width="7%">{$i11}</td>
+	    <td width="7%">{$i12}</td>
+	    <td width="7%">{$i13}</td>
+	  </tr>
+    <tr>
+      <td class="tests">Semi-quantitative tests</td>
+      <td>{$i21}</td>
+	    <td>{$i22}</td>
+	    <td>{$i23}</td>
+	  </tr>
+    <tr>
+      <td class="tests">Qualitative tests</td>
+      <td>{$i31}</td>
+	    <td>{$i32}</td>
+	    <td>{$i33}</td>
+	  </tr>
+  </table>
+</td>
+END;
+
+  return $out;
+}
+
+/**
+ * We render the rows here
+ */
 function calculate_page($rows, $value) 
 {
   /**
@@ -483,7 +563,7 @@ function calculate_page($rows, $value)
   //$value = array('notme' => 'no');
   $tout = array();
   $tout[] = '<table border=1>';
-  $tout[] = '<td width=60mm></td><td width=60mm></td><td width=20mm></td>';
+  $tout[] = '<td style="width:359px;"></td><td style="width:164px;"></td><td  style="width:309px;"></td>';
   foreach($rows as $row){
     $type = $row['row_type'];
     $tout[] = '<tr>' 

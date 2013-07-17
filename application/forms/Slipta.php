@@ -5,7 +5,7 @@ class Application_Form_Album extends Zend_Form
 
     public function init()
     {
-      $this->setName('album');
+      $this->setName('slipta');
 
       $id = new Zend_Form_Element_Hidden('id');
       $id->addFilter('int');

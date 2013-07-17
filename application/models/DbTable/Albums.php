@@ -20,6 +20,13 @@ class Application_Model_DbTable_Albums extends Application_Model_DbTable_Checkli
     return $rows;
   }
     
+  public function getAlbum($id) {
+    $db = $this->getDb();
+    $id = (int)$id;
+    $stmt = $db->query("select * from albums where id = ". $id);
+    $row = $stmt->fetch();
+    return $row;
+  }
 
   public function addAlbum($artist, $title)
   {

@@ -20,6 +20,7 @@ class SliptaController extends Zend_Controller_Action
     $slipta = new Application_Model_DbTable_Slipta();
     $data = new Application_Model_DbTable_Data();
     $page = new Application_Model_DbTable_Page();
+    $lang = new Application_Model_DbTable_Language();
 
     if ($this->getRequest()->isPost()) {
       $formData =  $this->getRequest()->getPost();
@@ -32,13 +33,16 @@ class SliptaController extends Zend_Controller_Action
       $log->LogInfo("\n");
       
       $nextpage = get_arrval($urldata, 'showpage', '');
+      $langtag = get_arrval($urldata, 'language', 'EN');
       $log->LogInfo("Got showpage value: {$nextpage}");
+      $log->LogInfo("Got language value: {$langtag}");
       if ($nextpage == '') {
         $nextpage = 1;
       } else {
         $nextpage = (int)$nextpage;
       }
-      $rows = $slipta->getrows(1, $nextpage); // 1 is the tmpl_head_id
+      // $langtag = $lang->get_tag($language);
+      $rows = $slipta->getrows(1, $nextpage, $langtag); // 1 is the tmpl_head_id
       $value = $data->get_data(1); // 1 is the data_head_id
       $page_tag = $page->get_page_tag(1, $nextpage); // FIXME
       //$value = array('notme' => 'no');

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 18, 2013 at 05:55 PM
+-- Generation Time: Jul 18, 2013 at 07:08 PM
 -- Server version: 5.5.31
 -- PHP Version: 5.3.10-1ubuntu3.6
 
@@ -170,7 +170,7 @@ CREATE TABLE IF NOT EXISTS `lang_text` (
   `row_hint` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `lang_row` (`tag`,`row_name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='language specific texts' AUTO_INCREMENT=316 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='language specific texts' AUTO_INCREMENT=361 ;
 
 --
 -- Dumping data for table `lang_text`
@@ -205,8 +205,6 @@ INSERT INTO `lang_text` (`id`, `tag`, `row_name`, `prefix`, `heading`, `text`, `
 (152, 'EN', 'p1_t_suff_space', '0', 'Does the laboratory have sufficient space, equipment, supplies, personnel, infrastructure, etc. to execute the correct and timely performance of each test and maintain the quality management system?', 'If no, please elaborate in the summary and recommendations section at the end of the checklist.', '', ''),
 (153, 'EN', 'p1_sufficient_space', '', '', 'Sufficient space', '', ''),
 (154, 'EN', 'p1_sufficient_equipment', '', '', 'Equipment', '', ''),
-(155, 'EN', 'p3_t_s1', 'Criteria 1', 'Are internal quality control procedures routinely conducted for all test methods?', '', '', ''),
-(156, 'EN', 'p3_s1_01', '1.1', 'Monitoring of control values', '', '', ''),
 (157, 'EN', '', '1.2', 'Monotoring with internal standards', '', '', ''),
 (158, 'EN', '', '1.3', 'Monotoring quality of each new batch of kits', '', '', ''),
 (159, 'EN', '', '1.4', 'Documentation of internal controls and kits validation', '', '', ''),
@@ -238,44 +236,81 @@ INSERT INTO `lang_text` (`id`, `tag`, `row_name`, `prefix`, `heading`, `text`, `
 (215, 'FR', 'p1_t_suff_space', '0', 'Does the laboratory have sufficient space, equipment, supplies, personnel, infrastructure, etc. to execute the correct and timely performance of each test and maintain the quality management system?', 'If no, please elaborate in the summary and recommendations section at the end of the checklist.', '', ''),
 (216, 'FR', 'p1_sufficient_space', '', '', 'Sufficient space', '', ''),
 (217, 'FR', 'p1_sufficient_equipment', '', '', 'Equipment', '', ''),
-(218, 'FR', 'p3_t_s1', 'Criteria 1', 'Are internal quality control procedures routinely conducted for all test methods?', '', '', ''),
-(219, 'FR', 'p3_s1_01', '1.1', 'Monitoring of control values', '', '', ''),
 (220, 'FR', '', '1.2', 'Monotoring with internal standards', '', '', ''),
 (221, 'FR', '', '1.3', 'Monotoring quality of each new batch of kits', '', '', ''),
 (222, 'FR', '', '1.4', 'Documentation of internal controls and kits validation', '', '', ''),
-(253, 'VN', '', '1.2', 'Monotoring with internal standards', '', '', ''),
-(254, 'VN', '', '1.3', 'Monotoring quality of each new batch of kits', '', '', ''),
-(255, 'VN', '', '1.4', ' TÀI LIỆU VÀ HỒ SƠ ', '', '', ''),
-(256, 'VN', ' p2_s01_01_01', '', '', 'Structure defined per ISO15189, section 4.2.4', '', ''),
-(257, 'VN', ' p2_s01_01_02', '0', '', 'Quality policy statement that includes scope of service, standard of service, objectives of the quality management system, and management commitment to compliance', '', ''),
-(258, 'VN', ' p2_s01_01_03', '0', '', 'Unicode là gì? Tóm tắt <- That is in Vietnamese\r\n', '', ''),
-(259, 'VN', ' p2_s01_01_04', '0', '', 'Reference to supporting procedures, including technical procedures', '', ''),
-(260, 'VN', ' p2_s01_01_05', '0', '', 'Description of the roles and responsibilities of the laboratory manager, quality manager, and other personnel responsible for ensuring compliance ', '', ''),
-(261, 'VN', 'p1_cleaner', '', '', 'Tạp vụ', '', ''),
-(262, 'VN', 'p1_cleaner_dedicated', '', '', 'Firefox Tiếng Việt | Trình duyệt web Việt hóa nhanh hơn, an toàn ...', '', ''),
-(263, 'VN', 'p1_cleaner_trained', '', '', 'Has the cleaner(s) been trained in safe waste handling?', '', ''),
-(264, 'VN', 'p1_dg_hps', '', '', 'Degree Holding Professional Staff', '', ''),
-(265, 'VN', 'p1_doa', '', '', 'Date of Audit', '', ''),
-(266, 'VN', 'p1_dola', '', '', 'Date of Last Audit', '', ''),
-(267, 'VN', 'p1_driver', '', '', 'Driver', '', ''),
-(268, 'VN', 'p1_driver_dedicated', '', '', 'Is the driver(s) dedicated to the laboratory only?', '', ''),
-(269, 'VN', 'p1_driver_trained', '', '', 'Has the driver(s) been trained in biosafety?', '', ''),
-(270, 'VN', 'p1_labaddr', '', '', 'Laboratory Address', '', ''),
-(271, 'VN', 'p1_labaffil', '', '', 'Type of Laboratory/Laboratory Affiliation', '', ''),
-(272, 'VN', 'p1_lablevel', '', '', 'Laboratory Level', '', ''),
-(273, 'VN', 'p1_pas', '', '', 'Prior Audit Status', '', ''),
-(274, 'VN', 'p1_sufficient_equipment', '', '', 'Equipment', '', ''),
-(275, 'VN', 'p1_sufficient_space', '', '', 'Sufficient space', '', ''),
-(276, 'VN', 'p1_t_01', 'PART I:', 'laboratory profile', '', '', ''),
-(277, 'VN', 'p1_t_emp', 'Profession', 'Number of Full Time Employees', 'Adequate for facility operations?', '', ''),
-(278, 'VN', 'p1_t_it_spec', '', '', 'If the laboratory has IT specialists, accountants or non-laboratory-trained management staff, this should be indicated in the description of the organizational structure on the following page.', '', ''),
-(279, 'VN', 'p1_t_lss', '', 'Laboraroty Staffing Summary', '', '', ''),
-(280, 'VN', 'p1_t_suff_space', '0', 'Does the laboratory have sufficient space, equipment, supplies, personnel, infrastructure, etc. to execute the correct and timely performance of each test and maintain the quality management system?', 'If no, please elaborate in the summary and recommendations section at the end of the checklist.', '', ''),
-(281, 'VN', 'p2_s01_01', '1.1', 'Laboratory Quality Manual', 'Is there a current laboratory manual, composed of the quality management system''s policies and procedures, and has the manual content been communicated to and understood and implemented by all staff?', '', ''),
-(282, 'VN', 'p2_s01_01_06', '0', '', 'Documentation of at least annual management review and approval', '', ''),
-(283, 'VN', 'p2_t_s01', 'PHẦN 1.', ' TÀI LIỆU VÀ HỒ SƠ', 'Unicode là gì? Tóm tắt, Unicode là một tiêu chuẩn quốc tế để bao gồm tất cả các chữ viết của những ngôn ngữ thế giới. Những chi tiết của kiểu chữ thì không có  trong Unicode, chỉ có thứ tự của mỗi mẫu tự (mã). Nếu bạn muốn tìm hiểu thêm về Unicode, ghé lại trang Unicode tại ', '', ''),
-(284, 'VN', 'p3_s1_01', '1.1', 'Monitoring of control values', '', '', ''),
-(285, 'VN', 'p3_t_s1', 'Criteria 1', 'Are internal quality control procedures routinely conducted for all test methods?', '', '', '');
+(253, 'VI', '', '1.2', 'Monotoring with internal standards', '', '', ''),
+(254, 'VI', '', '1.3', 'Monotoring quality of each new batch of kits', '', '', ''),
+(255, 'VI', '', '1.4', ' TÀI LIỆU VÀ HỒ SƠ ', '', '', ''),
+(256, 'VI', ' p2_s01_01_01', '', '', 'Structure defined per ISO15189, section 4.2.4', '', ''),
+(257, 'VI', ' p2_s01_01_02', '0', '', 'Quality policy statement that includes scope of service, standard of service, objectives of the quality management system, and management commitment to compliance', '', ''),
+(258, 'VI', ' p2_s01_01_03', '0', '', 'Unicode là gì? Tóm tắt <- That is in Vietnamese\r\n', '', ''),
+(259, 'VI', ' p2_s01_01_04', '0', '', 'Reference to supporting procedures, including technical procedures', '', ''),
+(260, 'VI', ' p2_s01_01_05', '0', '', 'Description of the roles and responsibilities of the laboratory manager, quality manager, and other personnel responsible for ensuring compliance ', '', ''),
+(261, 'VI', 'p1_cleaner', '', '', 'Tạp vụ', '', ''),
+(262, 'VI', 'p1_cleaner_dedicated', '', '', 'Firefox Tiếng Việt | Trình duyệt web Việt hóa nhanh hơn, an toàn ...', '', ''),
+(263, 'VI', 'p1_cleaner_trained', '', '', 'Has the cleaner(s) been trained in safe waste handling?', '', ''),
+(264, 'VI', 'p1_dg_hps', '', '', 'Degree Holding Professional Staff', '', ''),
+(265, 'VI', 'p1_doa', '', '', 'Date of Audit', '', ''),
+(266, 'VI', 'p1_dola', '', '', 'Date of Last Audit', '', ''),
+(267, 'VI', 'p1_driver', '', '', 'Driver', '', ''),
+(268, 'VI', 'p1_driver_dedicated', '', '', 'Is the driver(s) dedicated to the laboratory only?', '', ''),
+(269, 'VI', 'p1_driver_trained', '', '', 'Has the driver(s) been trained in biosafety?', '', ''),
+(270, 'VI', 'p1_labaddr', '', '', 'Laboratory Address', '', ''),
+(271, 'VI', 'p1_labaffil', '', '', 'Type of Laboratory/Laboratory Affiliation', '', ''),
+(272, 'VI', 'p1_lablevel', '', '', 'Laboratory Level', '', ''),
+(273, 'VI', 'p1_pas', '', '', 'Prior Audit Status', '', ''),
+(274, 'VI', 'p1_sufficient_equipment', '', '', 'Equipment', '', ''),
+(275, 'VI', 'p1_sufficient_space', '', '', 'Sufficient space', '', ''),
+(276, 'VI', 'p1_t_01', 'PART I:', 'laboratory profile', '', '', ''),
+(277, 'VI', 'p1_t_emp', 'Profession', 'Number of Full Time Employees', 'Adequate for facility operations?', '', ''),
+(278, 'VI', 'p1_t_it_spec', '', '', 'If the laboratory has IT specialists, accountants or non-laboratory-trained management staff, this should be indicated in the description of the organizational structure on the following page.', '', ''),
+(279, 'VI', 'p1_t_lss', '', 'Laboraroty Staffing Summary', '', '', ''),
+(280, 'VI', 'p1_t_suff_space', '0', 'Does the laboratory have sufficient space, equipment, supplies, personnel, infrastructure, etc. to execute the correct and timely performance of each test and maintain the quality management system?', 'If no, please elaborate in the summary and recommendations section at the end of the checklist.', '', ''),
+(281, 'VI', 'p2_s01_01', '1.1', 'Laboratory Quality Manual', 'Is there a current laboratory manual, composed of the quality management system''s policies and procedures, and has the manual content been communicated to and understood and implemented by all staff?', '', ''),
+(282, 'VI', 'p2_s01_01_06', '0', '', 'Documentation of at least annual management review and approval', '', ''),
+(283, 'VI', 'p2_t_s01', 'PHẦN 1.', ' TÀI LIỆU VÀ HỒ SƠ', 'Unicode là gì? Tóm tắt, Unicode là một tiêu chuẩn quốc tế để bao gồm tất cả các chữ viết của những ngôn ngữ thế giới. Những chi tiết của kiểu chữ thì không có  trong Unicode, chỉ có thứ tự của mỗi mẫu tự (mã). Nếu bạn muốn tìm hiểu thêm về Unicode, ghé lại trang Unicode tại ', '', ''),
+(316, 'EN', 'p3_t_s1', 'Criteria 1', 'Are internal quality control procedures routinely conducted for all test methods?', '', '', ''),
+(317, 'EN', 'p3_s1_01', '1.1', 'Monitoring of control values', '', '', ''),
+(318, 'EN', 'p3_s1_02', '1.2', 'Monotoring with internal standards', '', '', ''),
+(319, 'EN', 'p3_s1_03', '1.3', 'Monotoring quality of each new batch of kits', '', '', ''),
+(320, 'EN', 'p3_s1_04', '1.4', 'Documentation of internal controls and kits validation', '', '', ''),
+(321, 'EN', 'p3_t_s2', 'Criteria 2', 'Has the laboratory achieved acceptable PT results of at least 80% on the two most recent PT challenges?', '', '', ''),
+(322, 'EN', 'p3_t_s2_00_01', '', 'HIV Serology', '', '', ''),
+(323, 'EN', 'p3_s2_01', '2.1', 'Most recent HIV panel', '', '', ''),
+(324, 'EN', 'p3_s2_02', '2.2', 'Second most recent HIV panel', '', '', ''),
+(325, 'EN', 'p3_t_s2_02_01', '', 'HIV DNA PCR', '', '', ''),
+(326, 'EN', 'p3_s2_03', '2.3', 'Most recent HIV DNA PCR panel', '', '', ''),
+(327, 'EN', 'p3_s2_04', '2.4', 'Second most recent HIV panel', '', '', ''),
+(328, 'EN', 'p3_t_s2_04_01', '0', 'HIV Viral Load', '', '', ''),
+(329, 'EN', 'p3_s2_05', '2.5', 'Most recent HIV DNA PCR panel', '', '', ''),
+(330, 'EN', 'p3_s2_06', '2.6', 'Second most recent HIV panel', '', '', ''),
+(331, 'FR', 'p3_s1_02', '1.2', 'Monotoring with internal standards', '', '', ''),
+(332, 'FR', 'p3_s1_03', '1.3', 'Monotoring quality of each new batch of kits', '', '', ''),
+(333, 'FR', 'p3_s1_04', '1.4', 'Documentation of internal controls and kits validation', '', '', ''),
+(334, 'FR', 'p3_t_s2', 'Criteria 2', 'Has the laboratory achieved acceptable PT results of at least 80% on the two most recent PT challenges?', '', '', ''),
+(335, 'FR', 'p3_t_s2_00_01', '', 'HIV Serology', '', '', ''),
+(336, 'FR', 'p3_s2_01', '2.1', 'Most recent HIV panel', '', '', ''),
+(337, 'FR', 'p3_s2_02', '2.2', 'Second most recent HIV panel', '', '', ''),
+(338, 'FR', 'p3_t_s2_02_01', '', 'HIV DNA PCR', '', '', ''),
+(339, 'FR', 'p3_s2_03', '2.3', 'Most recent HIV DNA PCR panel', '', '', ''),
+(340, 'FR', 'p3_s2_04', '2.4', 'Second most recent HIV panel', '', '', ''),
+(341, 'FR', 'p3_t_s2_04_01', '0', 'HIV Viral Load', '', '', ''),
+(342, 'FR', 'p3_s2_05', '2.5', 'Most recent HIV DNA PCR panel', '', '', ''),
+(343, 'FR', 'p3_s2_06', '2.6', 'Second most recent HIV panel', '', '', ''),
+(346, 'VI', 'p3_s1_02', '1.2', 'Monotoring with internal standards', '', '', ''),
+(347, 'VI', 'p3_s1_03', '1.3', 'Monotoring quality of each new batch of kits', '', '', ''),
+(348, 'VI', 'p3_s1_04', '1.4', 'Documentation of internal controls and kits validation', '', '', ''),
+(349, 'VI', 'p3_t_s2', 'Criteria 2', 'Has the laboratory achieved acceptable PT results of at least 80% on the two most recent PT challenges?', '', '', ''),
+(350, 'VI', 'p3_t_s2_00_01', '', 'HIV Serology', '', '', ''),
+(351, 'VI', 'p3_s2_01', '2.1', 'Most recent HIV panel', '', '', ''),
+(352, 'VI', 'p3_s2_02', '2.2', 'Second most recent HIV panel', '', '', ''),
+(353, 'VI', 'p3_t_s2_02_01', '', 'HIV DNA PCR', '', '', ''),
+(354, 'VI', 'p3_s2_03', '2.3', 'Most recent HIV DNA PCR panel', '', '', ''),
+(355, 'VI', 'p3_s2_04', '2.4', 'Second most recent HIV panel', '', '', ''),
+(356, 'VI', 'p3_t_s2_04_01', '0', 'HIV Viral Load', '', '', ''),
+(357, 'VI', 'p3_s2_05', '2.5', 'Most recent HIV DNA PCR panel', '', '', ''),
+(358, 'VI', 'p3_s2_06', '2.6', 'Second most recent HIV panel', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -295,7 +330,8 @@ CREATE TABLE IF NOT EXISTS `page` (
 
 INSERT INTO `page` (`tmpl_head_id`, `page_num`, `tag`) VALUES
 (1, 1, 'Section 1.3-1.7'),
-(1, 2, 'Section1.8-End');
+(1, 2, 'Section1.8-P3 Criteria 1'),
+(1, 3, 'P3 Criteria 2');
 
 -- --------------------------------------------------------
 
@@ -345,7 +381,7 @@ CREATE TABLE IF NOT EXISTS `tmpl_row` (
   `score` tinyint(4) NOT NULL,
   `page_num` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Stores template info of a display row.' AUTO_INCREMENT=34 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Stores template info of a display row.' AUTO_INCREMENT=44 ;
 
 --
 -- Dumping data for table `tmpl_row`
@@ -380,11 +416,21 @@ INSERT INTO `tmpl_row` (`id`, `tmpl_head_id`, `row_name`, `varname`, `row_type`,
 (26, 1, 'p1_t_suff_space', '', 'info_bn', 1, 1, 1, 0, 0, 32, 0, '0', 'Does the laboratory have sufficient space, equipment, supplies, personnel, infrastructure, etc. to execute the correct and timely performance of each test and maintain the quality management system?', 'If no, please elaborate in the summary and recommendations section at the end of the checklist.', 0, 2),
 (27, 1, 'p1_sufficient_space', 'sufficient_space', 'pinfo2', 1, 1, 1, 0, 0, 33, 0, '', '', 'Sufficient space', 0, 2),
 (28, 1, 'p1_sufficient_equipment', 'sufficient_equipment', 'pinfo2', 1, 1, 1, 0, 0, 34, 0, '', '', 'Equipment', 0, 2),
-(29, 1, 'p3_t_s1', '', 'criteria_1_heading', 3, 1, 1, 0, 0, 0, 0, 'Criteria 1', 'Are internal quality control procedures routinely conducted for all test methods?', '', 0, 2),
-(30, 1, 'p3_s1_01', 'monconval', 'criteria_1_values', 3, 1, 1, 1, 0, 0, 0, '1.1', 'Monitoring of control values', '', 0, 2),
-(31, 1, '', 'monintstd', 'criteria_1_values', 3, 1, 1, 2, 0, 0, 0, '1.2', 'Monotoring with internal standards', '', 0, 2),
-(32, 1, '', 'monqualkit', 'criteria_1_values', 3, 1, 1, 3, 0, 0, 0, '1.3', 'Monotoring quality of each new batch of kits', '', 0, 2),
-(33, 1, '', 'docconkit', 'criteria_1_values', 3, 1, 1, 4, 0, 0, 0, '1.4', 'Documentation of internal controls and kits validation', '', 0, 2);
+(29, 1, 'p3_t_s1', '', 'criteria_1_heading', 3, 1, 0, 0, 0, 0, 0, 'Criteria 1', 'Are internal quality control procedures routinely conducted for all test methods?', '', 0, 2),
+(30, 1, 'p3_s1_01', 'monconval', 'criteria_1_values', 3, 1, 1, 0, 0, 0, 0, '1.1', 'Monitoring of control values', '', 0, 2),
+(31, 1, 'p3_s1_02', 'monintstd', 'criteria_1_values', 3, 1, 2, 0, 0, 0, 0, '1.2', 'Monotoring with internal standards', '', 0, 2),
+(32, 1, 'p3_s1_03', 'monqualkit', 'criteria_1_values', 3, 1, 3, 0, 0, 0, 0, '1.3', 'Monotoring quality of each new batch of kits', '', 0, 2),
+(33, 1, 'p3_s1_04', 'docconkit', 'criteria_1_values', 3, 1, 4, 0, 0, 0, 0, '1.4', 'Documentation of internal controls and kits validation', '', 0, 2),
+(34, 1, 'p3_t_s2', '', 'criteria_2_heading', 3, 2, 0, 0, 0, 0, 0, 'Criteria 2', 'Has the laboratory achieved acceptable PT results of at least 80% on the two most recent PT challenges?', '', 0, 3),
+(35, 1, 'p3_t_s2_00_01', '', 'panel_heading', 3, 2, 0, 1, 0, 0, 0, '', 'HIV Serology', '', 0, 3),
+(36, 1, 'p3_s2_01', 'panel_res', 'panel_result', 3, 2, 1, 0, 0, 0, 0, '2.1', 'Most recent HIV panel', '', 0, 3),
+(37, 1, 'p3_s2_02', 'panel_res', 'panel_result', 3, 2, 2, 0, 0, 0, 0, '2.2', 'Second most recent HIV panel', '', 0, 3),
+(38, 1, 'p3_t_s2_02_01', '', 'panel_heading', 3, 2, 2, 1, 0, 0, 0, '', 'HIV DNA PCR', '', 0, 3),
+(39, 1, 'p3_s2_03', 'panel_res', 'panel_result', 3, 2, 3, 0, 0, 0, 0, '2.3', 'Most recent HIV DNA PCR panel', '', 0, 3),
+(40, 1, 'p3_s2_04', 'panel_res', 'panel_result', 3, 2, 4, 0, 0, 0, 0, '2.4', 'Second most recent HIV panel', '', 0, 3),
+(41, 1, 'p3_t_s2_04_01', '', 'panel_heading', 3, 2, 4, 1, 0, 0, 0, '0', 'HIV Viral Load', '', 0, 3),
+(42, 1, 'p3_s2_05', 'panel_res', 'panel_result', 3, 2, 5, 0, 0, 0, 0, '2.5', 'Most recent HIV DNA PCR panel', '', 0, 3),
+(43, 1, 'p3_s2_06', 'panel_res', 'panel_result', 3, 2, 6, 0, 0, 0, 0, '2.6', 'Second most recent HIV panel', '', 0, 3);
 
 -- --------------------------------------------------------
 

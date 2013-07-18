@@ -1,26 +1,19 @@
 <!DOCTYPE HTML>
 <html>
-<head>
-<meta charset="utf-8" />
-<!--[if IE]>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <![endif]-->
-
-<title>ALl my pages</title>
-<link rel="stylesheet" href="<?php echo $this->baseUrl().'/css/styles.css'; ?>" />
-</head>
-
+  <head>
+    <meta charset="utf-8" />
+    <!--[if IE]>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <![endif]-->
+    
+    <title>ALl my pages</title>
+    <link rel="stylesheet" href="<?php echo $this->baseUrl().'/css/styles.css'; ?>" />
+  </head>
+  
   <body>
-  <div id="outer" style="margin-left:10px;">
-    <div id="wrapper" style="width:1100px;border: 1px solid black;">
-      <div id="leftpane" style="width:200px;min-height:600px;border:1px solid black;float:left;">
-      Left pane</div>
-      <div id="leftpane" style=";border:1px solid black;float:left;">
-        <h1><?php echo $this->escape($this->title); ?></h1>
-        <?php echo $this->layout()->content; ?>
-        <div style="clear:both;"></div>
-      </div>
-    </div>
-  </div>
+    
+    <h1><?php echo $this->escape($this->title); ?></h1>
+    <?php echo $this->layout()->content; ?>
+    
   </body>
 </html> 

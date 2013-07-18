@@ -160,9 +160,9 @@ function widget_select_labaffil($varname, $value)
   return SELECT($varname, $optvals, $value);
 }
 
-function widget_dt($name, $value) 
+function widget_dt($name, $value, $length=10) 
 {
-  return INPUT($name, $value, 'date');
+  return INPUT($name, $value, 'date', $length);
 }
 
 function widget_text100($name, $value)
@@ -480,7 +480,7 @@ function partial_criteria_1_heading($row, $value) {
   $name = $row['varname'];
   $out = <<<"END"
 <td colspan=3>
-    <table style="width:100%;">    
+  <table style="width:100%;">    
   <tr>
     <td width="7%" rowspan="2" class="centertopbold">{$prefix}</td>
     <td rowspan="2" class="title">
@@ -539,6 +539,85 @@ function partial_criteria_1_values($row, $value) {
 	    <td>{$i32}</td>
 	    <td>{$i33}</td>
 	  </tr>
+  </table>
+</td>
+END;
+
+  return $out;
+}
+function partial_criteria_2_heading($row, $value) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $name = $row['varname'];
+  $out = <<<"END"
+<td colspan=3>
+  <table style="width:100%;">    
+  <tr>
+    <td width="7%" rowspan="2" class="centertopbold">{$prefix}</td>
+    <td rowspan="2" class="title">
+      {$heading}
+    </td>
+    <td width="12%" class="centertop">Date of panel receipt</td>
+    <td width="12%" class="centertop">Were results reported within 15 days?</td>
+    <td width="10%" class="centertopbold">Results & % Correct</td>
+  </tr>
+  </table>
+</td>
+END;
+
+  return $out;
+}
+function partial_panel_heading($row, $value) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $name = $row['varname'];
+  $out = <<<"END"
+<td colspan=3>
+  <table style="width:100%;">    
+  <tr>
+    <td width="7%"></td>
+    <td class="title">
+      {$heading}
+    </td>
+    <td width="10%" class="percent">%</td>
+  </tr>
+  </table>
+</td>
+END;
+
+  return $out;
+}
+
+function partial_panel_result($row, $value) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $name = $row['varname'];
+  $smallint = widget_integer("{$name}_num", $value, 4);
+  $mc_yn = widget_select_yn("{$name}_yn", $value);
+  $dt = widget_dt("{$name}_dt", $value, 10);
+  $out = <<<"END"
+<td colspan=3>
+  <table style="width:100%;">    
+  <tr>
+    <td width="7%" class="centerbold">
+      {$prefix}
+    </td>
+    <td class="panel">
+      {$heading}
+    </td>
+    <td width="12%">
+      {$dt}
+    </td>
+    <td width="12%">
+      {$mc_yn}
+    </td>
+    <td width="10%">
+      {$smallint}
+    </td>
+  </tr>
   </table>
 </td>
 END;

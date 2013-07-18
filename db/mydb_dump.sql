@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 18, 2013 at 07:08 PM
+-- Generation Time: Jul 18, 2013 at 11:11 PM
 -- Server version: 5.5.31
 -- PHP Version: 5.3.10-1ubuntu3.6
 
@@ -170,7 +170,7 @@ CREATE TABLE IF NOT EXISTS `lang_text` (
   `row_hint` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `lang_row` (`tag`,`row_name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='language specific texts' AUTO_INCREMENT=361 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='language specific texts' AUTO_INCREMENT=367 ;
 
 --
 -- Dumping data for table `lang_text`
@@ -310,7 +310,37 @@ INSERT INTO `lang_text` (`id`, `tag`, `row_name`, `prefix`, `heading`, `text`, `
 (355, 'VI', 'p3_s2_04', '2.4', 'Second most recent HIV panel', '', '', ''),
 (356, 'VI', 'p3_t_s2_04_01', '0', 'HIV Viral Load', '', '', ''),
 (357, 'VI', 'p3_s2_05', '2.5', 'Most recent HIV DNA PCR panel', '', '', ''),
-(358, 'VI', 'p3_s2_06', '2.6', 'Second most recent HIV panel', '', '', '');
+(358, 'VI', 'p3_s2_06', '2.6', 'Second most recent HIV panel', '', '', ''),
+(361, 'VI', 'p3_t_s1', 'Criteria 1', 'Are internal quality control procedures routinely conducted for all test methods?', '', '', ''),
+(362, 'VI', 'p3_s1_01', '1.1', 'Monitoring of control values', '', '', ''),
+(364, 'FR', 'p3_t_s1', 'Criteria 1', 'Are internal quality control procedures routinely conducted for all test methods?', '', '', ''),
+(365, 'FR', 'p3_s1_01', '1.1', 'Monitoring of control values', '', '', '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lang_word`
+--
+
+CREATE TABLE IF NOT EXISTS `lang_word` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tag` varchar(2) COLLATE utf8_unicode_ci NOT NULL,
+  `word` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `trans_word` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Has translations of commonly used words' AUTO_INCREMENT=7 ;
+
+--
+-- Dumping data for table `lang_word`
+--
+
+INSERT INTO `lang_word` (`id`, `tag`, `word`, `trans_word`) VALUES
+(1, 'EN', 'Yes', 'Yes'),
+(2, 'FR', 'Yes', 'Oui'),
+(3, 'VI', 'Yes', 'Có'),
+(4, 'EN', 'No', 'No'),
+(5, 'FR', 'No', 'Non'),
+(6, 'VI', 'No', 'Không');
 
 -- --------------------------------------------------------
 
@@ -332,6 +362,36 @@ INSERT INTO `page` (`tmpl_head_id`, `page_num`, `tag`) VALUES
 (1, 1, 'Section 1.3-1.7'),
 (1, 2, 'Section1.8-P3 Criteria 1'),
 (1, 3, 'P3 Criteria 2');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Sheet1`
+--
+
+CREATE TABLE IF NOT EXISTS `Sheet1` (
+  `tag` varchar(2) DEFAULT NULL,
+  `word` varchar(3) DEFAULT NULL,
+  `trans_word` varchar(6) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `Sheet1`
+--
+
+INSERT INTO `Sheet1` (`tag`, `word`, `trans_word`) VALUES
+('EN', 'Yes', 'Yes'),
+('FR', 'Yes', 'Oui'),
+('VI', 'Yes', 'Có'),
+('EN', 'No', 'No'),
+('FR', 'No', 'Non'),
+('VI', 'No', 'Không'),
+('EN', 'Yes', 'Yes'),
+('FR', 'Yes', 'Oui'),
+('VI', 'Yes', 'Có'),
+('EN', 'No', 'No'),
+('FR', 'No', 'Non'),
+('VI', 'No', 'Không');
 
 -- --------------------------------------------------------
 

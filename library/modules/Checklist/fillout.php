@@ -1,3 +1,5 @@
+<?php //-*- coding: utf-8 -*-
+?>
 <?php 
 
 /**
@@ -275,7 +277,7 @@ function partial_sub_sec_head($row, $value) {
 <div style="display:inline;font-weight:bold;width:25px;vertical-align:top;">{$prefix}</div> 
 <div style="display:inline-block;width:320px;">
 <div style="text-decoration:underline;font-weight:bold;display:inline-block;">{$heading}</div>
-<div style="vertical-align:top;">{$text}</div>
+<div style="vertical-align:top;">{$text}
 </div>
 </div>
 </div>

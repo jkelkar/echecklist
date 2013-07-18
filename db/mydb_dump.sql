@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 17, 2013 at 11:18 PM
+-- Generation Time: Jul 18, 2013 at 05:55 PM
 -- Server version: 5.5.31
 -- PHP Version: 5.3.10-1ubuntu3.6
 
@@ -143,6 +143,143 @@ INSERT INTO `lab` (`id`, `labnum`, `description`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `language`
+--
+
+CREATE TABLE IF NOT EXISTS `language` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(24) NOT NULL,
+  `tag` varchar(2) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lang_text`
+--
+
+CREATE TABLE IF NOT EXISTS `lang_text` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tag` varchar(2) NOT NULL,
+  `row_name` varchar(32) NOT NULL,
+  `prefix` varchar(255) NOT NULL,
+  `heading` varchar(255) NOT NULL,
+  `text` text NOT NULL,
+  `ss_hint` text NOT NULL,
+  `row_hint` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `lang_row` (`tag`,`row_name`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='language specific texts' AUTO_INCREMENT=316 ;
+
+--
+-- Dumping data for table `lang_text`
+--
+
+INSERT INTO `lang_text` (`id`, `tag`, `row_name`, `prefix`, `heading`, `text`, `ss_hint`, `row_hint`) VALUES
+(127, 'EN', 'p2_t_s01', '1.0', 'Documents & Records', '', '', ''),
+(128, 'EN', 'p2_s01_01', '1.1', 'Laboratory Quality Manual', 'Is there a current laboratory manual, composed of the quality management system''s policies and procedures, and has the manual content been communicated to and understood and implemented by all staff?', '', ''),
+(129, 'EN', ' p2_s01_01_01', '', '', 'Structure defined per ISO15189, section 4.2.4', '', ''),
+(130, 'EN', 'p1_pas', '', '', 'Prior Audit Status', '', ''),
+(131, 'EN', 'p1_t_01', 'PART I:', 'laboratory profile', '', '', ''),
+(132, 'EN', 'p1_doa', '', '', 'Date of Audit', '', ''),
+(133, 'EN', 'p1_dola', '', '', 'Date of Last Audit', '', ''),
+(134, 'EN', 'p1_labaddr', '', '', 'Laboratory Address', '', ''),
+(135, 'EN', 'p1_lablevel', '', '', 'Laboratory Level', '', ''),
+(136, 'EN', 'p1_labaffil', '', '', 'Type of Laboratory/Laboratory Affiliation', '', ''),
+(137, 'EN', 'p1_t_lss', '', 'Laboraroty Staffing Summary', '', '', ''),
+(138, 'EN', 'p1_t_emp', 'Profession', 'Number of Full Time Employees', 'Adequate for facility operations?', '', ''),
+(139, 'EN', 'p1_dg_hps', '', '', 'Degree Holding Professional Staff', '', ''),
+(140, 'EN', ' p2_s01_01_02', '0', '', 'Quality policy statement that includes scope of service, standard of service, objectives of the quality management system, and management commitment to compliance', '', ''),
+(141, 'EN', ' p2_s01_01_03', '0', '', 'Description of the quality management system and the structure of its documentation ', '', ''),
+(142, 'EN', ' p2_s01_01_04', '0', '', 'Reference to supporting procedures, including technical procedures', '', ''),
+(143, 'EN', ' p2_s01_01_05', '0', '', 'Description of the roles and responsibilities of the laboratory manager, quality manager, and other personnel responsible for ensuring compliance ', '', ''),
+(144, 'EN', 'p2_s01_01_06', '0', '', 'Documentation of at least annual management review and approval', '', ''),
+(145, 'EN', 'p1_cleaner', '', '', 'Cleaner', '', ''),
+(146, 'EN', 'p1_cleaner_dedicated', '', '', 'Is the driver(s) dedicated to the laboratory only?', '', ''),
+(147, 'EN', 'p1_cleaner_trained', '', '', 'Has the cleaner(s) been trained in safe waste handling?', '', ''),
+(148, 'EN', 'p1_driver', '', '', 'Driver', '', ''),
+(149, 'EN', 'p1_driver_dedicated', '', '', 'Is the driver(s) dedicated to the laboratory only?', '', ''),
+(150, 'EN', 'p1_driver_trained', '', '', 'Has the driver(s) been trained in biosafety?', '', ''),
+(151, 'EN', 'p1_t_it_spec', '', '', 'If the laboratory has IT specialists, accountants or non-laboratory-trained management staff, this should be indicated in the description of the organizational structure on the following page.', '', ''),
+(152, 'EN', 'p1_t_suff_space', '0', 'Does the laboratory have sufficient space, equipment, supplies, personnel, infrastructure, etc. to execute the correct and timely performance of each test and maintain the quality management system?', 'If no, please elaborate in the summary and recommendations section at the end of the checklist.', '', ''),
+(153, 'EN', 'p1_sufficient_space', '', '', 'Sufficient space', '', ''),
+(154, 'EN', 'p1_sufficient_equipment', '', '', 'Equipment', '', ''),
+(155, 'EN', 'p3_t_s1', 'Criteria 1', 'Are internal quality control procedures routinely conducted for all test methods?', '', '', ''),
+(156, 'EN', 'p3_s1_01', '1.1', 'Monitoring of control values', '', '', ''),
+(157, 'EN', '', '1.2', 'Monotoring with internal standards', '', '', ''),
+(158, 'EN', '', '1.3', 'Monotoring quality of each new batch of kits', '', '', ''),
+(159, 'EN', '', '1.4', 'Documentation of internal controls and kits validation', '', '', ''),
+(190, 'FR', 'p2_t_s01', '1.0', 'Documents & Records', '', '', ''),
+(191, 'FR', 'p2_s01_01', '1.1', 'Laboratory Quality Manual', 'Is there a current laboratory manual, composed of the quality management system''s policies and procedures, and has the manual content been communicated to and understood and implemented by all staff?', '', ''),
+(192, 'FR', ' p2_s01_01_01', '', '', 'Structure defined per ISO15189, section 4.2.4', '', ''),
+(193, 'FR', 'p1_pas', '', '', 'Prior Audit Status', '', ''),
+(194, 'FR', 'p1_t_01', 'PART I:', 'laboratory profile', '', '', ''),
+(195, 'FR', 'p1_doa', '', '', 'Date of Audit', '', ''),
+(196, 'FR', 'p1_dola', '', '', 'Date of Last Audit', '', ''),
+(197, 'FR', 'p1_labaddr', '', '', 'Location de laboratorie', '', ''),
+(198, 'FR', 'p1_lablevel', '', '', 'Laboratory Level', '', ''),
+(199, 'FR', 'p1_labaffil', '', '', 'Type of Laboratory/Laboratory Affiliation', '', ''),
+(200, 'FR', 'p1_t_lss', '', 'Laboraroty Staffing Summary', '', '', ''),
+(201, 'FR', 'p1_t_emp', 'Profession', 'Number of Full Time Employees', 'Adequate for facility operations?', '', ''),
+(202, 'FR', 'p1_dg_hps', '', '', 'Degree Holding Professional Staff', '', ''),
+(203, 'FR', ' p2_s01_01_02', '0', '', 'Quality policy statement that includes scope of service, standard of service, objectives of the quality management system, and management commitment to compliance', '', ''),
+(204, 'FR', ' p2_s01_01_03', '0', '', 'Description of the quality management system and the structure of its documentation ', '', ''),
+(205, 'FR', ' p2_s01_01_04', '0', '', 'Reference to supporting procedures, including technical procedures', '', ''),
+(206, 'FR', ' p2_s01_01_05', '0', '', 'Description of the roles and responsibilities of the laboratory manager, quality manager, and other personnel responsible for ensuring compliance ', '', ''),
+(207, 'FR', 'p2_s01_01_06', '0', '', 'Documentation of at least annual management review and approval', '', ''),
+(208, 'FR', 'p1_cleaner', '', '', 'Sweeper', '', ''),
+(209, 'FR', 'p1_cleaner_dedicated', '', '', 'Is the driver(s) dedicated to the laboratory only?', '', ''),
+(210, 'FR', 'p1_cleaner_trained', '', '', 'Has the cleaner(s) been trained in safe waste handling?', '', ''),
+(211, 'FR', 'p1_driver', '', '', 'Driver', '', ''),
+(212, 'FR', 'p1_driver_dedicated', '', '', 'Is the driver(s) dedicated to the laboratory only?', '', ''),
+(213, 'FR', 'p1_driver_trained', '', '', 'Has the driver(s) been trained in biosafety?', '', ''),
+(214, 'FR', 'p1_t_it_spec', '', '', 'If the laboratory has IT specialists, accountants or non-laboratory-trained management staff, this should be indicated in the description of the organizational structure on the following page.', '', ''),
+(215, 'FR', 'p1_t_suff_space', '0', 'Does the laboratory have sufficient space, equipment, supplies, personnel, infrastructure, etc. to execute the correct and timely performance of each test and maintain the quality management system?', 'If no, please elaborate in the summary and recommendations section at the end of the checklist.', '', ''),
+(216, 'FR', 'p1_sufficient_space', '', '', 'Sufficient space', '', ''),
+(217, 'FR', 'p1_sufficient_equipment', '', '', 'Equipment', '', ''),
+(218, 'FR', 'p3_t_s1', 'Criteria 1', 'Are internal quality control procedures routinely conducted for all test methods?', '', '', ''),
+(219, 'FR', 'p3_s1_01', '1.1', 'Monitoring of control values', '', '', ''),
+(220, 'FR', '', '1.2', 'Monotoring with internal standards', '', '', ''),
+(221, 'FR', '', '1.3', 'Monotoring quality of each new batch of kits', '', '', ''),
+(222, 'FR', '', '1.4', 'Documentation of internal controls and kits validation', '', '', ''),
+(253, 'VN', '', '1.2', 'Monotoring with internal standards', '', '', ''),
+(254, 'VN', '', '1.3', 'Monotoring quality of each new batch of kits', '', '', ''),
+(255, 'VN', '', '1.4', ' TÀI LIỆU VÀ HỒ SƠ ', '', '', ''),
+(256, 'VN', ' p2_s01_01_01', '', '', 'Structure defined per ISO15189, section 4.2.4', '', ''),
+(257, 'VN', ' p2_s01_01_02', '0', '', 'Quality policy statement that includes scope of service, standard of service, objectives of the quality management system, and management commitment to compliance', '', ''),
+(258, 'VN', ' p2_s01_01_03', '0', '', 'Unicode là gì? Tóm tắt <- That is in Vietnamese\r\n', '', ''),
+(259, 'VN', ' p2_s01_01_04', '0', '', 'Reference to supporting procedures, including technical procedures', '', ''),
+(260, 'VN', ' p2_s01_01_05', '0', '', 'Description of the roles and responsibilities of the laboratory manager, quality manager, and other personnel responsible for ensuring compliance ', '', ''),
+(261, 'VN', 'p1_cleaner', '', '', 'Tạp vụ', '', ''),
+(262, 'VN', 'p1_cleaner_dedicated', '', '', 'Firefox Tiếng Việt | Trình duyệt web Việt hóa nhanh hơn, an toàn ...', '', ''),
+(263, 'VN', 'p1_cleaner_trained', '', '', 'Has the cleaner(s) been trained in safe waste handling?', '', ''),
+(264, 'VN', 'p1_dg_hps', '', '', 'Degree Holding Professional Staff', '', ''),
+(265, 'VN', 'p1_doa', '', '', 'Date of Audit', '', ''),
+(266, 'VN', 'p1_dola', '', '', 'Date of Last Audit', '', ''),
+(267, 'VN', 'p1_driver', '', '', 'Driver', '', ''),
+(268, 'VN', 'p1_driver_dedicated', '', '', 'Is the driver(s) dedicated to the laboratory only?', '', ''),
+(269, 'VN', 'p1_driver_trained', '', '', 'Has the driver(s) been trained in biosafety?', '', ''),
+(270, 'VN', 'p1_labaddr', '', '', 'Laboratory Address', '', ''),
+(271, 'VN', 'p1_labaffil', '', '', 'Type of Laboratory/Laboratory Affiliation', '', ''),
+(272, 'VN', 'p1_lablevel', '', '', 'Laboratory Level', '', ''),
+(273, 'VN', 'p1_pas', '', '', 'Prior Audit Status', '', ''),
+(274, 'VN', 'p1_sufficient_equipment', '', '', 'Equipment', '', ''),
+(275, 'VN', 'p1_sufficient_space', '', '', 'Sufficient space', '', ''),
+(276, 'VN', 'p1_t_01', 'PART I:', 'laboratory profile', '', '', ''),
+(277, 'VN', 'p1_t_emp', 'Profession', 'Number of Full Time Employees', 'Adequate for facility operations?', '', ''),
+(278, 'VN', 'p1_t_it_spec', '', '', 'If the laboratory has IT specialists, accountants or non-laboratory-trained management staff, this should be indicated in the description of the organizational structure on the following page.', '', ''),
+(279, 'VN', 'p1_t_lss', '', 'Laboraroty Staffing Summary', '', '', ''),
+(280, 'VN', 'p1_t_suff_space', '0', 'Does the laboratory have sufficient space, equipment, supplies, personnel, infrastructure, etc. to execute the correct and timely performance of each test and maintain the quality management system?', 'If no, please elaborate in the summary and recommendations section at the end of the checklist.', '', ''),
+(281, 'VN', 'p2_s01_01', '1.1', 'Laboratory Quality Manual', 'Is there a current laboratory manual, composed of the quality management system''s policies and procedures, and has the manual content been communicated to and understood and implemented by all staff?', '', ''),
+(282, 'VN', 'p2_s01_01_06', '0', '', 'Documentation of at least annual management review and approval', '', ''),
+(283, 'VN', 'p2_t_s01', 'PHẦN 1.', ' TÀI LIỆU VÀ HỒ SƠ', 'Unicode là gì? Tóm tắt, Unicode là một tiêu chuẩn quốc tế để bao gồm tất cả các chữ viết của những ngôn ngữ thế giới. Những chi tiết của kiểu chữ thì không có  trong Unicode, chỉ có thứ tự của mỗi mẫu tự (mã). Nếu bạn muốn tìm hiểu thêm về Unicode, ghé lại trang Unicode tại ', '', ''),
+(284, 'VN', 'p3_s1_01', '1.1', 'Monitoring of control values', '', '', ''),
+(285, 'VN', 'p3_t_s1', 'Criteria 1', 'Are internal quality control procedures routinely conducted for all test methods?', '', '', '');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `page`
 --
 
@@ -192,6 +329,7 @@ INSERT INTO `tmpl_head` (`id`, `tag`, `created_at`, `updated_at`, `update_by`, `
 CREATE TABLE IF NOT EXISTS `tmpl_row` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tmpl_head_id` int(11) NOT NULL,
+  `row_name` varchar(32) NOT NULL,
   `varname` varchar(25) NOT NULL,
   `row_type` varchar(20) NOT NULL,
   `part` tinyint(4) NOT NULL,
@@ -213,40 +351,40 @@ CREATE TABLE IF NOT EXISTS `tmpl_row` (
 -- Dumping data for table `tmpl_row`
 --
 
-INSERT INTO `tmpl_row` (`id`, `tmpl_head_id`, `varname`, `row_type`, `part`, `level1`, `level2`, `level3`, `level4`, `level5`, `element`, `prefix`, `heading`, `text`, `score`, `page_num`) VALUES
-(1, 1, 'abc', 'sec_head', 2, 1, 0, 0, 0, 0, 0, '1.0', 'Documents & Records', '', 0, 1),
-(2, 1, 'bcd', 'sub_sec_head', 2, 1, 0, 0, 0, 0, 0, '1.1', 'Laboratory Quality Manual', 'Is there a current laboratory manual, composed of the quality management system''s policies and procedures, and has the manual content been communicated to and understood and implemented by all staff?', 4, 1),
-(3, 1, 'bcd', 'sec_element', 2, 1, 1, 0, 0, 0, 0, '', '', 'Structure defined per ISO15189, section 4.2.4', 0, 1),
-(4, 1, 'pas', 'stars', 1, 1, 0, 0, 0, 3, 0, '', '', 'Prior Audit Status', 0, 1),
-(5, 1, '', 'sec_head', 1, 0, 0, 0, 0, 0, 0, 'PART I:', 'laboratory profile', '', 0, 1),
-(6, 1, 'audit_date', 'date', 1, 1, 0, 0, 0, 1, 0, '', '', 'Date of Audit', 0, 1),
-(7, 1, 'dola', 'date', 1, 1, 0, 0, 0, 2, 0, '', '', 'Date of Last Audit', 0, 1),
-(8, 1, 'labaddr', 'text', 1, 1, 0, 0, 0, 7, 0, '', '', 'Laboratory Address', 0, 1),
-(9, 1, 'lablevel', 'lablevel', 1, 1, 1, 0, 0, 14, 0, '', '', 'Laboratory Level', 0, 1),
-(10, 1, 'labaffil', 'labaffil', 1, 1, 1, 0, 0, 15, 0, '', '', 'Type of Laboratory/Laboratory Affiliation', 0, 1),
-(11, 1, '', 'sec_head_small', 1, 1, 1, 0, 0, 16, 0, '', 'Laboraroty Staffing Summary', '', 0, 1),
-(12, 1, '', 'tab_head3', 1, 1, 1, 0, 0, 17, 0, 'Profession', 'Number of Full Time Employees', 'Adequate for facility operations?', 0, 1),
-(13, 1, 'dghps', 'pinfo', 1, 1, 1, 0, 0, 18, 0, '', '', 'Degree Holding Professional Staff', 0, 1),
-(14, 1, 'bcd', 'sec_element', 2, 1, 1, 0, 0, 0, 2, '0', '', 'Quality policy statement that includes scope of service, standard of service, objectives of the quality management system, and management commitment to compliance', 0, 1),
-(15, 1, 'bcd', 'sec_element', 2, 1, 1, 0, 0, 0, 3, '0', '', 'Description of the quality management system and the structure of its documentation ', 0, 1),
-(16, 1, 'bcd', 'sec_element', 2, 1, 1, 0, 0, 0, 4, '0', '', 'Reference to supporting procedures, including technical procedures', 0, 1),
-(17, 1, 'bcd', 'sec_element', 2, 1, 1, 0, 0, 0, 5, '0', '', 'Description of the roles and responsibilities of the laboratory manager, quality manager, and other personnel responsible for ensuring compliance ', 0, 1),
-(18, 1, 'bcd', 'sec_element', 2, 1, 1, 0, 0, 0, 6, '0', '', 'Documentation of at least annual management review and approval', 0, 1),
-(19, 1, 'cleaner', 'pinfo', 1, 1, 1, 0, 0, 24, 0, '', '', 'Cleaner', 0, 2),
-(20, 1, 'cleaner_dedicated', 'pinfo2_i', 1, 1, 1, 0, 0, 25, 0, '', '', 'Is the driver(s) dedicated to the laboratory only?', 0, 2),
-(21, 1, 'cleaner_trained', 'pinfo2_i', 1, 1, 1, 0, 0, 26, 0, '', '', 'Has the cleaner(s) been trained in safe waste handling?', 0, 2),
-(22, 1, 'driver', 'pinfo', 1, 1, 1, 0, 0, 27, 0, '', '', 'Driver', 0, 2),
-(23, 1, 'driver_dedicated', 'pinfo2_i', 1, 1, 1, 0, 0, 28, 0, '', '', 'Is the driver(s) dedicated to the laboratory only?', 0, 2),
-(24, 1, 'driver_trained', 'pinfo2_i', 1, 1, 1, 0, 0, 29, 0, '', '', 'Has the driver(s) been trained in biosafety?', 0, 2),
-(25, 1, '', 'info_i', 1, 1, 1, 0, 0, 31, 0, '', '', 'If the laboratory has IT specialists, accountants or non-laboratory-trained management staff, this should be indicated in the description of the organizational structure on the following page.', 0, 2),
-(26, 1, '', 'info_bn', 1, 1, 1, 0, 0, 32, 0, '0', 'Does the laboratory have sufficient space, equipment, supplies, personnel, infrastructure, etc. to execute the correct and timely performance of each test and maintain the quality management system?', 'If no, please elaborate in the summary and recommendations section at the end of the checklist.', 0, 2),
-(27, 1, 'sufficient_space', 'pinfo2', 1, 1, 1, 0, 0, 33, 0, '', '', 'Sufficient space', 0, 2),
-(28, 1, 'sufficient_equipment', 'pinfo2', 1, 1, 1, 0, 0, 34, 0, '', '', 'Equipment', 0, 2),
-(29, 1, '', 'criteria_1_heading', 3, 1, 1, 0, 0, 0, 0, 'Criteria 1', 'Are internal quality control procedures routinely conducted for all test methods?', '', 0, 2),
-(30, 1, 'monconval', 'criteria_1_values', 3, 1, 1, 1, 0, 0, 0, '1.1', 'Monitoring of control values', '', 0, 2),
-(31, 1, 'monintstd', 'criteria_1_values', 3, 1, 1, 2, 0, 0, 0, '1.2', 'Monotoring with internal standards', '', 0, 2),
-(32, 1, 'monqualkit', 'criteria_1_values', 3, 1, 1, 3, 0, 0, 0, '1.3', 'Monotoring quality of each new batch of kits', '', 0, 2),
-(33, 1, 'docconkit', 'criteria_1_values', 3, 1, 1, 4, 0, 0, 0, '1.4', 'Documentation of internal controls and kits validation', '', 0, 2);
+INSERT INTO `tmpl_row` (`id`, `tmpl_head_id`, `row_name`, `varname`, `row_type`, `part`, `level1`, `level2`, `level3`, `level4`, `level5`, `element`, `prefix`, `heading`, `text`, `score`, `page_num`) VALUES
+(1, 1, 'p2_t_s01', 'abc', 'sec_head', 2, 1, 0, 0, 0, 0, 0, '1.0', 'Documents & Records', '', 0, 1),
+(2, 1, 'p2_s01_01', 'bcd', 'sub_sec_head', 2, 1, 0, 0, 0, 0, 0, '1.1', 'Laboratory Quality Manual', 'Is there a current laboratory manual, composed of the quality management system''s policies and procedures, and has the manual content been communicated to and understood and implemented by all staff?', 4, 1),
+(3, 1, ' p2_s01_01_01', 'bcd', 'sec_element', 2, 1, 1, 0, 0, 0, 0, '', '', 'Structure defined per ISO15189, section 4.2.4', 0, 1),
+(4, 1, 'p1_pas', 'pas', 'stars', 1, 1, 0, 0, 0, 3, 0, '', '', 'Prior Audit Status', 0, 1),
+(5, 1, 'p1_t_01', '', 'sec_head', 1, 0, 0, 0, 0, 0, 0, 'PART I:', 'laboratory profile', '', 0, 1),
+(6, 1, 'p1_doa', 'audit_date', 'date', 1, 1, 0, 0, 0, 1, 0, '', '', 'Date of Audit', 0, 1),
+(7, 1, 'p1_dola', 'dola', 'date', 1, 1, 0, 0, 0, 2, 0, '', '', 'Date of Last Audit', 0, 1),
+(8, 1, 'p1_labaddr', 'labaddr', 'text', 1, 1, 0, 0, 0, 7, 0, '', '', 'Laboratory Address', 0, 1),
+(9, 1, 'p1_lablevel', 'lablevel', 'lablevel', 1, 1, 1, 0, 0, 14, 0, '', '', 'Laboratory Level', 0, 1),
+(10, 1, 'p1_labaffil', 'labaffil', 'labaffil', 1, 1, 1, 0, 0, 15, 0, '', '', 'Type of Laboratory/Laboratory Affiliation', 0, 1),
+(11, 1, 'p1_t_lss', '', 'sec_head_small', 1, 1, 1, 0, 0, 16, 0, '', 'Laboraroty Staffing Summary', '', 0, 1),
+(12, 1, 'p1_t_emp', '', 'tab_head3', 1, 1, 1, 0, 0, 17, 0, 'Profession', 'Number of Full Time Employees', 'Adequate for facility operations?', 0, 1),
+(13, 1, 'p1_dg_hps', 'dg_hps', 'pinfo', 1, 1, 1, 0, 0, 18, 0, '', '', 'Degree Holding Professional Staff', 0, 1),
+(14, 1, ' p2_s01_01_02', 'bcd', 'sec_element', 2, 1, 1, 0, 0, 0, 2, '0', '', 'Quality policy statement that includes scope of service, standard of service, objectives of the quality management system, and management commitment to compliance', 0, 1),
+(15, 1, ' p2_s01_01_03', 'bcd', 'sec_element', 2, 1, 1, 0, 0, 0, 3, '0', '', 'Description of the quality management system and the structure of its documentation ', 0, 1),
+(16, 1, ' p2_s01_01_04', 'bcd', 'sec_element', 2, 1, 1, 0, 0, 0, 4, '0', '', 'Reference to supporting procedures, including technical procedures', 0, 1),
+(17, 1, ' p2_s01_01_05', 'bcd', 'sec_element', 2, 1, 1, 0, 0, 0, 5, '0', '', 'Description of the roles and responsibilities of the laboratory manager, quality manager, and other personnel responsible for ensuring compliance ', 0, 1),
+(18, 1, 'p2_s01_01_06', 'bcd', 'sec_element', 2, 1, 1, 0, 0, 0, 6, '0', '', 'Documentation of at least annual management review and approval', 0, 1),
+(19, 1, 'p1_cleaner', 'cleaner', 'pinfo', 1, 1, 1, 0, 0, 24, 0, '', '', 'Cleaner', 0, 2),
+(20, 1, 'p1_cleaner_dedicated', 'cleaner_dedicated', 'pinfo2_i', 1, 1, 1, 0, 0, 25, 0, '', '', 'Is the driver(s) dedicated to the laboratory only?', 0, 2),
+(21, 1, 'p1_cleaner_trained', 'cleaner_trained', 'pinfo2_i', 1, 1, 1, 0, 0, 26, 0, '', '', 'Has the cleaner(s) been trained in safe waste handling?', 0, 2),
+(22, 1, 'p1_driver', 'driver', 'pinfo', 1, 1, 1, 0, 0, 27, 0, '', '', 'Driver', 0, 2),
+(23, 1, 'p1_driver_dedicated', 'driver_dedicated', 'pinfo2_i', 1, 1, 1, 0, 0, 28, 0, '', '', 'Is the driver(s) dedicated to the laboratory only?', 0, 2),
+(24, 1, 'p1_driver_trained', 'driver_trained', 'pinfo2_i', 1, 1, 1, 0, 0, 29, 0, '', '', 'Has the driver(s) been trained in biosafety?', 0, 2),
+(25, 1, 'p1_t_it_spec', '', 'info_i', 1, 1, 1, 0, 0, 31, 0, '', '', 'If the laboratory has IT specialists, accountants or non-laboratory-trained management staff, this should be indicated in the description of the organizational structure on the following page.', 0, 2),
+(26, 1, 'p1_t_suff_space', '', 'info_bn', 1, 1, 1, 0, 0, 32, 0, '0', 'Does the laboratory have sufficient space, equipment, supplies, personnel, infrastructure, etc. to execute the correct and timely performance of each test and maintain the quality management system?', 'If no, please elaborate in the summary and recommendations section at the end of the checklist.', 0, 2),
+(27, 1, 'p1_sufficient_space', 'sufficient_space', 'pinfo2', 1, 1, 1, 0, 0, 33, 0, '', '', 'Sufficient space', 0, 2),
+(28, 1, 'p1_sufficient_equipment', 'sufficient_equipment', 'pinfo2', 1, 1, 1, 0, 0, 34, 0, '', '', 'Equipment', 0, 2),
+(29, 1, 'p3_t_s1', '', 'criteria_1_heading', 3, 1, 1, 0, 0, 0, 0, 'Criteria 1', 'Are internal quality control procedures routinely conducted for all test methods?', '', 0, 2),
+(30, 1, 'p3_s1_01', 'monconval', 'criteria_1_values', 3, 1, 1, 1, 0, 0, 0, '1.1', 'Monitoring of control values', '', 0, 2),
+(31, 1, '', 'monintstd', 'criteria_1_values', 3, 1, 1, 2, 0, 0, 0, '1.2', 'Monotoring with internal standards', '', 0, 2),
+(32, 1, '', 'monqualkit', 'criteria_1_values', 3, 1, 1, 3, 0, 0, 0, '1.3', 'Monotoring quality of each new batch of kits', '', 0, 2),
+(33, 1, '', 'docconkit', 'criteria_1_values', 3, 1, 1, 4, 0, 0, 0, '1.4', 'Documentation of internal controls and kits validation', '', 0, 2);
 
 -- --------------------------------------------------------
 

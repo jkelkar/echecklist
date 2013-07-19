@@ -4,8 +4,8 @@
  * This implements the model for template data
  * 
  */
-//require_once 'modules/KLogger.php';
-// $log = new KLogger("/var/log/log.txt", KLogger::DEBUG);
+require_once 'modules/Checklist/logger.php';
+
 class Application_Model_DbTable_Data extends Application_Model_DbTable_Checklist
 {
   protected $_name = 'data';
@@ -13,7 +13,6 @@ class Application_Model_DbTable_Data extends Application_Model_DbTable_Checklist
   public function get_data($id)
   {
     //global $log;
-    $log = new KLogger("/var/log/log.txt", KLogger::DEBUG);
     $debug = 1;
     $db = $this->getDb();
     $id = (int)$id;
@@ -22,7 +21,7 @@ class Application_Model_DbTable_Data extends Application_Model_DbTable_Checklist
     $stmt =  $db->query($sql);
     $rows = $stmt->fetchAll();
     if (!$rows) {
-      throw new Exception("These is no data for this audit.");
+      throw new Exception("These is no data");
     }
     $value = array();
     foreach($rows as $row) {
@@ -43,7 +42,7 @@ class Application_Model_DbTable_Data extends Application_Model_DbTable_Checklist
         $val = $row['string_val'];        
       }
       $value[$field_name] = $val;
-      $log->LogInfo("{$field_name} ==> {$val}");
+      logit("{$field_name} ==> {$val}");
     }
     return $value;
   }

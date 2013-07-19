@@ -1,6 +1,6 @@
 <?php
-require_once 'modules/KLogger.php';
 require_once 'modules/Checklist/fillout.php';
+require_once 'modules/Checklist/logger.php';
 
 class SliptaController extends Zend_Controller_Action
 {
@@ -12,11 +12,10 @@ class SliptaController extends Zend_Controller_Action
   public function indexAction()
   {
 
-  }
+  }logger
 
   public function editAction()
   {
-    $log = new KLogger("/var/log/log.txt", KLogger::DEBUG);
     $slipta = new Application_Model_DbTable_Slipta();
     $data = new Application_Model_DbTable_Data();
     $page = new Application_Model_DbTable_Page();
@@ -29,15 +28,15 @@ class SliptaController extends Zend_Controller_Action
       $urldata = $this->getRequest()->getParams();
       
       foreach($urldata as $n => $v) {
-        $log->LogInfo("{$n} ==> {$v}");
+        logger("{$n} ==> {$v}");
       }
-      $log->LogInfo("\n");
+      ("\n");
       $lang_default = 'EN';
       $nextpage = get_arrval($urldata, 'showpage', '');
       $langtag = get_arrval($urldata, 'language', $lang_default);
       $tword = $lang_word->get_words($langtag);
-      $log->LogInfo("Got showpage value: {$nextpage}");
-      $log->LogInfo("Got language value: {$langtag}");
+      logger("Got showpage value: {$nextpage}");
+      logger("Got language value: {$langtag}");
       if ($nextpage == '') {
         $nextpage = 1;
       } else {

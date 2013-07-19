@@ -27,6 +27,19 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     return $view;
   }
   
+  public function _initConditions()
+  {
+    $config = $this->getOptions();
+    
+    if (isset($config['resources']))
+      {
+        
+        $registry = Zend_Registry::getInstance();
+        
+        $registry->db = $config['resources']['db'];
+        
+      }
+  }
   /**
    //$config = new Zend_Config_Ini('/var/www/zftest/application/configs/application.ini',
    //				APPLICATION_ENV);

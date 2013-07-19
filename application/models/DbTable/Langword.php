@@ -4,16 +4,14 @@
  * This implements the model for template data
  * 
  */
-//require_once 'modules/KLogger.php';
-// $log = new KLogger("/var/log/log.txt", KLogger::DEBUG);
+require_once 'modules/Checklist/logger.php';
+
 class Application_Model_DbTable_Langword extends Application_Model_DbTable_Checklist
 {
   protected $_name = 'data';
 
   public function get_words($tag)
   {
-    //global $log;
-    $log = new KLogger("/var/log/log.txt", KLogger::DEBUG);
     $debug = 1;
     $db = $this->getDb();
     // Read the following sql with $id == tmpl_head_id

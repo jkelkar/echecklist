@@ -7,6 +7,16 @@
  */
 
 /**
+ * This handles logging
+ */
+/*require_once 'modules/KLogger.php';
+$log = new KLogger("/var/log/log.txt", KLogger::DEBUG);
+
+function logit($msg) {
+  $log->LogInfo($msg);
+}
+*/
+/**
  * returns a value if a key exists in the dictionary else
  * returns the $default value passed in
  */
@@ -496,12 +506,12 @@ function partial_criteria_1_heading($row, $value, $t) {
     <td rowspan="2" class="title">
       {$heading}
     </td>
-    <td width="21%" colspan=3 class="centertopbold">FREQUENCY</td> 
+    <td width="21%" colspan=3 class="centertopbold">{$t['FREQUENCY']}</td> 
   </tr>
   <tr>
-    <td width="7%" class="centertopbold">Daily</td>
-	  <td width="7%" class="centertopbold">Weekly</td>
-	  <td class="centerbold">With Every Run</td>
+    <td width="7%" class="centertopbold">{$t['Daily']}</td>
+	  <td width="7%" class="centertopbold">{$t['Weekly']}</td>
+	  <td class="centerbold">{$t['With Every Run']}</td>
   </tr>
   </table>
 </td>
@@ -532,19 +542,19 @@ function partial_criteria_1_values($row, $value, $t) {
     <td colspan="4" class="title">{$heading}</td>
     </tr>
     <tr>
-      <td  class="tests">Quantitative tests</td>
+      <td  class="tests">{$t['Quantitative tests']}</td>
       <td width="7%">{$i11}</td>
 	    <td width="7%">{$i12}</td>
 	    <td width="7%">{$i13}</td>
 	  </tr>
     <tr>
-      <td class="tests">Semi-quantitative tests</td>
+      <td class="tests">{$t['Semi-quantitative tests']}</td>
       <td>{$i21}</td>
 	    <td>{$i22}</td>
 	    <td>{$i23}</td>
 	  </tr>
     <tr>
-      <td class="tests">Qualitative tests</td>
+      <td class="tests">{$t['Qualitative tests']}</td>
       <td>{$i31}</td>
 	    <td>{$i32}</td>
 	    <td>{$i33}</td>
@@ -568,9 +578,9 @@ function partial_criteria_2_heading($row, $value, $t) {
     <td rowspan="2" class="title">
       {$heading}
     </td>
-    <td width="12%" class="centertop">Date of panel receipt</td>
-    <td width="12%" class="centertop">Were results reported within 15 days?</td>
-    <td width="10%" class="centertopbold">Results & % Correct</td>
+        <td width="12%" class="centertop">{$t['Date of panel receipt']}</td>
+    <td width="12%" class="centertop">{$t['Were results reported within 15 days?']}</td>
+    <td width="10%" class="centertopbold">{$t['Results & % Correct']}</td>
   </tr>
   </table>
 </td>
@@ -654,7 +664,11 @@ function calculate_page($rows, $value, $tword)
   $words = array('Yes', 'No', 'Partial', 'Select', 'Insufficient Data', 'Personal', 'Work',
                  'Insufficient data', 'Not Audited', 'Star', 'Stars', 'National', 'Reference',
                  'Regional', 'District', 'Zonal', 'Field', 'Public', 'Hospital', 'Private',
-                 'Research', 'Non-hospital outpatient clinic', 'Other - please specify');
+                 'Research', 'Non-hospital outpatient clinic', 'Other - please specify',
+                 'FREQUENCY', 'Daily', 'Weekly', 'With Every Run',
+                 'Quantitative tests', 'Semi-quantitative tests', 'Qualitative tests',
+                 'Date of panel receipt', 'Were results reported within 15 days?', 
+'Results & % Correct');
   $tlist = get_common_words_translated($tword, $words);
   $tout = array();
   $tout[] = '<table border=1>';

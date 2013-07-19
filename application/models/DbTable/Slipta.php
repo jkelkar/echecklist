@@ -4,6 +4,7 @@
  * This implements the model for accessing template 
  * rows
  */
+require_once 'modules/Checklist/logger.php';
 
 class Application_Model_DbTable_Slipta extends Application_Model_DbTable_Checklist
 {
@@ -11,8 +12,6 @@ class Application_Model_DbTable_Slipta extends Application_Model_DbTable_Checkli
 
   public function getrows($id, $page_num, $lang)
   {
-    //$debug = 1;
-    $log = new KLogger("/var/log/log.txt", KLogger::DEBUG);
     $db = $this->getDb();
     $id = (int)$id;
     // Read the following sql with $id == tmpl_head_id
@@ -26,20 +25,19 @@ class Application_Model_DbTable_Slipta extends Application_Model_DbTable_Checkli
     and r.page_num = {$page_num} and r.row_name = l.row_name
  order by r.part, r.level1, r.level2, r.level3, r.level4, r.level5
 SQL;
-    $log->LogInfo("SQL: {$sql}");
+    logit("SQL: {$sql}");
     $stmt =  $db->query($sql);
     $rows = $stmt->fetchAll();
     if (!$rows) {
       throw new Exception("No rows available for this template.");
     }
     foreach($rows as $row) {
-      $log->LogInfo("{$row['text']}");
+      logit("{$row['text']}");
     }
     return $rows;
   }
 
-  /*
-  public function addAlbum($artist, $title)
+  public function addAudit($artist, $title)
   {
     $data = array(
 		  'artist' => $artist,
@@ -47,7 +45,7 @@ SQL;
 		  );
     $this->insert($data);
   }
-  public function updateAlbum($id, $artist, $title)
+  public function updateAudit($id, $artist, $title)
   {
     $data = array(
 		  'artist' => $artist,
@@ -55,9 +53,9 @@ SQL;
 		  );
     $this->update($data, 'id = '. (int)$id);
   }
-  public function deleteAlbum($id)
+  public function deleteAudit($id)
   {
     $this->delete('id =' . (int)$id);
   }
-  */
+
 }

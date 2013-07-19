@@ -7,11 +7,29 @@
  */
 
 /**
+ * This handles logging
+ */
+/*require_once 'modules/KLogger.php';
+$log = new KLogger("/var/log/log.txt", KLogger::DEBUG);
+
+function logit($msg) {
+  $log->LogInfo($msg);
+}
+*/
+/**
  * returns a value if a key exists in the dictionary else
  * returns the $default value passed in
  */
 function get_arrval($arr, $k, $default) {
   return key_exists($k, $arr) ? $arr[$k] : $default;
+}
+
+function get_common_words_translated($value, $words) {
+  $trans_list = array();
+  foreach($words as $word) {
+    $trans_list[$word] = get_arrval($value, $word, $word);
+  }
+  return $trans_list;
 }
 
 /**
@@ -90,75 +108,75 @@ END;
  * of an input area on the screen
  */
 
-function widget_select_yn($varname, $value)
+function widget_select_yn($varname, $value, $t)
 {
-  $optvals  = array('Select ...' => '-', 
-                    'Yes' => 'Y',
-                    'No' => 'N');
+  $optvals  = array("{$t['Select']} ..." => '-', 
+                    "{$t['Yes']}" => 'Y',
+                    "{$t['No']}" => 'N');
   return SELECT($varname, $optvals, $value);
 }
 
-function widget_select_ynp($varname, $value)
+function widget_select_ynp($varname, $value, $t)
 {
-  $optvals  = array('Select ...' => '-', 
-                    'Yes' => 'Y',
-                    'Partial' => 'P',
-                    'No' => 'N');
+  $optvals  = array("{$t['Select']}} ..." => '-', 
+                    "{$t['Yes']}" => 'Y',
+                    "{$t['Partial']}" => 'P',
+                    "{$t['No']}" => 'N');
   return SELECT($varname, $optvals, $value);
 }
 
-function widget_select_wp($varname, $value)
+function widget_select_wp($varname, $value, $t)
 {
-  $optvals  = array('Select ...' => '-', 
-                    'Personal' => 'P',
-                    'Work' => 'W');
+  $optvals  = array("{$t['Select']} ..." => '-', 
+                    "{$t['Personal']}" => 'P',
+                    "{$t['Work']}" => 'W');
   return SELECT($varname, $optvals, $value);
 }
 
-function widget_select_yni($varname, $value)
+function widget_select_yni($varname, $value, $t)
 {
-  $optvals  = array('Select ...' => '-', 
-                    'Yes' => 'Y',
-                    'No' => 'N',
-                    'Insufficient Data' => 'I');
+  $optvals  = array("{$t['Select']} ..." => '-', 
+                    "{$t['Yes']}" => 'Y',
+                    "{$t['No']}" => 'N',
+                    "{$t['Insufficient Data']}" => 'I');
   return SELECT($varname, $optvals, $value);
 }
 
-function widget_select_stars($varname, $value)
+function widget_select_stars($varname, $value, $t)
 {
-  $optvals  = array('Select ...' => '-', 
-                    'Not Audited' => 'N',
-                    '0 Stars' => '0',
-                    '1 Star'  => '1',
-                    '2 Stars' => '2',
-                    '3 Stars' => '3',
-                    '4 Stars' => '4',
-                    '5 Stars' => '5');
+  $optvals  = array("{$t['Select']}" => '-', 
+                    "{$t['Not Audited']}" => 'N',
+                    "0 {$t['Stars']}" => '0',
+                    "1 {$t['Star']}"  => '1',
+                    "2 {$t['Stars']}" => '2',
+                    "3 {$t['Stars']}" => '3',
+                    "4 {$t['Stars']}" => '4',
+                    "5 {$t['Stars']}" => '5');
   return SELECT($varname, $optvals, $value);
 }
 
-function widget_select_lablevel($varname, $value)
+function widget_select_lablevel($varname, $value, $t)
 {
-  $optvals  = array('Select ...' => '-', 
-                    'National'   => 'N',
-                    'Reference'  => 'F',
-                    'Regional'   => 'G',
-                    'District'   => 'D',
-                    'Zonal'      => 'Z',
-                    'Field'      => 'F'
+  $optvals  = array("{$t['Select']} ..." => '-', 
+                    "{$t['National']}"   => 'N',
+                    "{$t['Reference']}"  => 'F',
+                    "{$t['Regional']}"   => 'G',
+                    "{$t['District']}"   => 'D',
+                    "{$t['Zonal']}"      => 'Z',
+                    "{$t['Field']}"      => 'F'
                     );
-  return SELECT($varname, $optvals, $value);
+  return SELECT($varname, $optvals, $value, $t);
 }
 
-function widget_select_labaffil($varname, $value)
+function widget_select_labaffil($varname, $value, $t)
 {
-  $optvals  = array('Select ...' => '-', 
-                    'Public'   => 'U',
-                    'Hospital' => 'H',
-                    'Private'  => 'P',
-                    'Research' => 'R',
-                    'Non-hospital Outpatient Clinic' => 'Z',
-                    'Other - please specify'         => 'O'
+  $optvals  = array("{$t['Select']} ..." => '-', 
+                    "{$t['Public']}"   => 'U',
+                    "{$t['Hospital']}" => 'H',
+                    "{$t['Private']}"  => 'P',
+                    "{$t['Research']}" => 'R',
+                    "{$t['Non-hospital outpatient clinic']}" => 'Z',
+                    "{$t['Other - please specify']}"         => 'O'
                     );
   return SELECT($varname, $optvals, $value);
 }
@@ -187,11 +205,11 @@ function widget_integer($name, $value, $length=0)
 /**
  * These are the representations of a row on the screen
  */
-function partial_stars($row, $value) {
+function partial_stars($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
-  $stars= widget_select_stars('stars', $value);
+  $stars= widget_select_stars('stars', $value, $t);
 $out = <<<"END"
 <td colspan=2 style="vertical-align:top;padding: 2px 4px;">
   {$text}
@@ -203,7 +221,7 @@ END;
   return $out;
 }
 
-function partial_sec_head($row, $value) {
+function partial_sec_head($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
@@ -218,7 +236,7 @@ END;
   return $out;
 }
 
-function partial_sec_head_small($row, $value) {
+function partial_sec_head_small($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
@@ -233,7 +251,7 @@ END;
   return $out;
 }
 
-function partial_info_i($row, $value) {
+function partial_info_i($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
@@ -246,7 +264,7 @@ END;
   return $out;
 }
 
-function partial_info_bn($row, $value) {
+function partial_info_bn($row, $value, $t) {
   /**
    * This implements full width information header with 
    * text in bold and normal font.
@@ -266,7 +284,7 @@ END;
   return $out;
 }
 
-function partial_sub_sec_head($row, $value) {
+function partial_sub_sec_head($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
@@ -294,12 +312,12 @@ END;
  return $out;
 }
 
-function partial_sec_element($row, $value) {
+function partial_sec_element($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
   $name = $row['varname'];
-  $mc_yn = widget_select_yn($name, $value);
+  $mc_yn = widget_select_yn($name, $value, $t);
   $tarea = TEXTAREA("{$name}_comment", $value);
   $out = <<<"END"
 <td style="vertical-align:top;padding: 2px 4px;">
@@ -323,12 +341,12 @@ END;
   return $out;
 }
 
-function partial_lablevel($row, $value) {
+function partial_lablevel($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
   $name = $row['varname'];
-  $mc_lab_level = widget_select_lablevel($name, $value);
+  $mc_lab_level = widget_select_lablevel($name, $value, $t);
   $out = <<<"END"
 <td colspan=2 style="vertical-align:top;padding: 2px 4px;">
 {$text}
@@ -341,12 +359,12 @@ END;
   return $out;
 }
 
-function partial_labaffil($row, $value) {
+function partial_labaffil($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
   $name = $row['varname'];
-  $mc_lab_affil = widget_select_labaffil($name, $value);
+  $mc_lab_affil = widget_select_labaffil($name, $value, $t);
 
   $out = <<<"END"
 <td colspan=2 style="vertical-align:top;padding: 2px 4px;">
@@ -360,7 +378,7 @@ END;
   return $out;
 }
 
-function partial_date($row, $value) {
+function partial_date($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
@@ -379,7 +397,7 @@ END;
   return $out;
 }
 
-function partial_text($row, $value) {
+function partial_text($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
@@ -396,7 +414,7 @@ END;
   
   return $out;
 }
-function partial_tab_head3($row, $value) {
+function partial_tab_head3($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
@@ -416,13 +434,13 @@ END;
   return $out;
 }
 
-function partial_pinfo($row, $value) {
+function partial_pinfo($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
   $name = $row['varname'];
   $smallint = widget_integer("{$name}_num", $value);
-  $mc_yni = widget_select_yni("{$name}_yni", $value);
+  $mc_yni = widget_select_yni("{$name}_yni", $value, $t);
   $out = <<<"END"
 <td style="vertical-align:top;padding: 2px 4px;">
 {$text}
@@ -438,13 +456,13 @@ END;
   return $out;
 }
 
-function partial_pinfo2_i($row, $value) {
+function partial_pinfo2_i($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
   $name = $row['varname'];
   $smallint = widget_integer("{$name}_num", $value);
-  $mc_yn = widget_select_yn("{$name}_yn", $value);
+  $mc_yn = widget_select_yn("{$name}_yn", $value, $t);
   $out = <<<"END"
 <td colspan=2 style="vertical-align:top;padding: 2px 4px;">
     &nbsp;&nbsp;&nbsp;&nbsp;<i>{$text}</i>
@@ -457,13 +475,13 @@ END;
   return $out;
 }
 
-function partial_pinfo2($row, $value) {
+function partial_pinfo2($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
   $name = $row['varname'];
   $smallint = widget_integer("{$name}_num", $value);
-  $mc_yn = widget_select_yn("{$name}_yn", $value);
+  $mc_yn = widget_select_yn("{$name}_yn", $value, $t);
   $out = <<<"END"
 <td colspan=2 style="vertical-align:top;padding: 2px 4px;">
   {$text}
@@ -476,7 +494,7 @@ END;
   return $out;
 }
 
-function partial_criteria_1_heading($row, $value) {
+function partial_criteria_1_heading($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
@@ -489,12 +507,12 @@ function partial_criteria_1_heading($row, $value) {
     <td rowspan="2" class="title">
       {$heading}
     </td>
-    <td width="21%" colspan=3 class="centertopbold">FREQUENCY</td> 
+    <td width="21%" colspan=3 class="centertopbold">{$t['FREQUENCY']}</td> 
   </tr>
   <tr>
-    <td width="7%" class="centertopbold">Daily</td>
-	  <td width="7%" class="centertopbold">Weekly</td>
-	  <td class="centerbold">With Every Run</td>
+    <td width="7%" class="centertopbold">{$t['Daily']}</td>
+	  <td width="7%" class="centertopbold">{$t['Weekly']}</td>
+	  <td class="centerbold">{$t['With Every Run']}</td>
   </tr>
   </table>
 </td>
@@ -503,7 +521,7 @@ END;
   return $out;
 }
 
-function partial_criteria_1_values($row, $value) {
+function partial_criteria_1_values($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
@@ -525,19 +543,19 @@ function partial_criteria_1_values($row, $value) {
     <td colspan="4" class="title">{$heading}</td>
     </tr>
     <tr>
-      <td  class="tests">Quantitative tests</td>
+      <td  class="tests">{$t['Quantitative tests']}</td>
       <td width="7%">{$i11}</td>
 	    <td width="7%">{$i12}</td>
 	    <td width="7%">{$i13}</td>
 	  </tr>
     <tr>
-      <td class="tests">Semi-quantitative tests</td>
+      <td class="tests">{$t['Semi-quantitative tests']}</td>
       <td>{$i21}</td>
 	    <td>{$i22}</td>
 	    <td>{$i23}</td>
 	  </tr>
     <tr>
-      <td class="tests">Qualitative tests</td>
+      <td class="tests">{$t['Qualitative tests']}</td>
       <td>{$i31}</td>
 	    <td>{$i32}</td>
 	    <td>{$i33}</td>
@@ -548,6 +566,7 @@ END;
 
   return $out;
 }
+
 function partial_com_and_rec($row, $value) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
@@ -569,7 +588,8 @@ END;
 
   return $out;
 }
-function partial_criteria_2_heading($row, $value) {
+
+function partial_criteria_2_heading($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
@@ -582,9 +602,9 @@ function partial_criteria_2_heading($row, $value) {
     <td rowspan="2" class="title">
       {$heading}
     </td>
-    <td width="12%" class="centertop">Date of panel receipt</td>
-    <td width="12%" class="centertop">Were results reported within 15 days?</td>
-    <td width="10%" class="centertopbold">Results & % Correct</td>
+        <td width="12%" class="centertop">{$t['Date of panel receipt']}</td>
+    <td width="12%" class="centertop">{$t['Were results reported within 15 days?']}</td>
+    <td width="10%" class="centertopbold">{$t['Results & % Correct']}</td>
   </tr>
   </table>
 </td>
@@ -592,7 +612,7 @@ END;
 
   return $out;
 }
-function partial_panel_heading($row, $value) {
+function partial_panel_heading($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
@@ -614,13 +634,13 @@ END;
   return $out;
 }
 
-function partial_panel_result($row, $value) {
+function partial_panel_result($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
   $name = $row['varname'];
   $smallint = widget_integer("{$name}_num", $value, 4);
-  $mc_yn = widget_select_yn("{$name}_yn", $value);
+  $mc_yn = widget_select_yn("{$name}_yn", $value, $t);
   $dt = widget_dt("{$name}_dt", $value, 10);
   $out = <<<"END"
 <td colspan=3>
@@ -718,7 +738,7 @@ END;
 /**
  * We render the rows here
  */
-function calculate_page($rows, $value) 
+function calculate_page($rows, $value, $tword) 
 {
   /**
    * Result of the query to get all template rows sorted in order
@@ -729,14 +749,24 @@ function calculate_page($rows, $value)
    * It will be possible to randomly pull up any group once the basic
    * profile informaiton for this audit has been saved.
    */
-  //$value = array('notme' => 'no');
+  // This is a list of words used often - get it translated only once
+  // $rows contains translated list of text
+  $words = array('Yes', 'No', 'Partial', 'Select', 'Insufficient Data', 'Personal', 'Work',
+                 'Insufficient data', 'Not Audited', 'Star', 'Stars', 'National', 'Reference',
+                 'Regional', 'District', 'Zonal', 'Field', 'Public', 'Hospital', 'Private',
+                 'Research', 'Non-hospital outpatient clinic', 'Other - please specify',
+                 'FREQUENCY', 'Daily', 'Weekly', 'With Every Run',
+                 'Quantitative tests', 'Semi-quantitative tests', 'Qualitative tests',
+                 'Date of panel receipt', 'Were results reported within 15 days?', 
+'Results & % Correct');
+  $tlist = get_common_words_translated($tword, $words);
   $tout = array();
   $tout[] = '<table border=1>';
   $tout[] = '<td style="width:359px;"></td><td style="width:164px;"></td><td  style="width:309px;"></td>';
   foreach($rows as $row){
     $type = $row['row_type'];
     $tout[] = '<tr>' 
-      . call_user_func("partial_{$type}", $row, $value) 
+      . call_user_func("partial_{$type}", $row, $value, $tlist) 
       . '</tr>';
   }
   $tout[] = '</table>';

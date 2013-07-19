@@ -4,6 +4,8 @@
  * This implements the model for Page tags
  * 
  */
+require_once 'modules/Checklist/logger.php';
+
 class Application_Model_DbTable_Page extends Application_Model_DbTable_Checklist
 {
   protected $_name = 'page';

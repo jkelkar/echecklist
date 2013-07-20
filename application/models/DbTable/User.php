@@ -10,7 +10,7 @@ class Application_Model_DbTable_Data extends Application_Model_DbTable_Checklist
 {
   protected $_name = 'user';
 
-  public function get_user($id)
+  public function getUser($id)
   {
     $id = (int)$id;
     $row = $this->fetchRow('id = ' . $id);
@@ -31,6 +31,8 @@ class Application_Model_DbTable_Data extends Application_Model_DbTable_Checklist
      * data is an array with name value pairs
      */
     $this->insert(data);
+    $newid = $this->lastInsertId();
+    return $newid;
   }
 
   public function updateUser($data, $id) {

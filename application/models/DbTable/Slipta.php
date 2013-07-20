@@ -37,25 +37,6 @@ SQL;
     return $rows;
   }
 
-  public function addAudit($artist, $title)
-  {
-    $data = array(
-		  'artist' => $artist,
-		  'title' => $title,
-		  );
-    $this->insert($data);
-  }
-  public function updateAudit($id, $artist, $title)
-  {
-    $data = array(
-		  'artist' => $artist,
-		  'title' => $title,
-		  );
-    $this->update($data, 'id = '. (int)$id);
-  }
-  public function deleteAudit($id)
-  {
-    $this->delete('id =' . (int)$id);
-  }
+  
 
 }

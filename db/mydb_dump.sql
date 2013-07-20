@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 18, 2013 at 11:11 PM
+-- Generation Time: Jul 20, 2013 at 01:04 AM
 -- Server version: 5.5.31
 -- PHP Version: 5.3.10-1ubuntu3.6
 
@@ -128,8 +128,18 @@ INSERT INTO `data_item` (`id`, `data_head_id`, `field_name`, `int_val`, `text_va
 
 CREATE TABLE IF NOT EXISTS `lab` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `labname` varchar(100) NOT NULL,
   `labnum` varchar(40) NOT NULL,
   `description` text NOT NULL,
+  `street` varchar(100) NOT NULL,
+  `street2` varchar(100) NOT NULL,
+  `city` varchar(100) NOT NULL,
+  `state` varchar(60) NOT NULL,
+  `country` varchar(40) NOT NULL,
+  `county_code` varchar(3) NOT NULL,
+  `postcode` varchar(10) NOT NULL,
+  `level` char(1) NOT NULL,
+  `affiliation` char(1) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Lab info ' AUTO_INCREMENT=2 ;
 
@@ -137,8 +147,8 @@ CREATE TABLE IF NOT EXISTS `lab` (
 -- Dumping data for table `lab`
 --
 
-INSERT INTO `lab` (`id`, `labnum`, `description`) VALUES
-(1, 'Best Lab, Inc', 'The best lab in all of Africa capable of doing almost anything.');
+INSERT INTO `lab` (`id`, `labname`, `labnum`, `description`, `street`, `street2`, `city`, `state`, `country`, `county_code`, `postcode`, `level`, `affiliation`) VALUES
+(1, 'Best Lab, Inc', 'lab-007', 'The best lab in all of Africa capable of doing almost anything.', 'No. 19 Fifth Link Road ', 'Cantonments', 'Accra', '', 'Ghana', 'GH', '', 'R', 'R');
 
 -- --------------------------------------------------------
 
@@ -521,12 +531,23 @@ INSERT INTO `tmpl_type` (`id`, `tag`, `description`) VALUES
 
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(32) NOT NULL,
   `name` varchar(100) NOT NULL,
   `user_type` varchar(10) NOT NULL,
   `password` varchar(80) NOT NULL,
   `languages` varchar(20) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Used to store allowed users' AUTO_INCREMENT=1 ;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Used to store allowed users' AUTO_INCREMENT=4 ;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`id`, `username`, `name`, `user_type`, `password`, `languages`) VALUES
+(1, 'hierarchy', 'Hier Archy', 'ADMIN', 'hierarchy', 'EN,FR,VI'),
+(2, 'oddeater', 'Odd Eater', 'USER', 'oddeater', 'EN,VI'),
+(3, 'analist', 'An ALIST', 'ANALYST', 'analist', 'EN');
 
 -- --------------------------------------------------------
 
@@ -542,7 +563,16 @@ CREATE TABLE IF NOT EXISTS `user_type` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_type` (`user_type`),
   UNIQUE KEY `user_level` (`user_level`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Maps userlevel to usertype. Lower user level can do all action of higher levels' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Maps userlevel to usertype. Lower user level can do all action of higher levels' AUTO_INCREMENT=4 ;
+
+--
+-- Dumping data for table `user_type`
+--
+
+INSERT INTO `user_type` (`id`, `user_type`, `description`, `user_level`) VALUES
+(1, 'ADMIN', 'Administrator', 1),
+(2, 'USER', 'Assessor and general user', 2),
+(3, 'ANALYST', 'Analyst ', 3);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

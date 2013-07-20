@@ -12,7 +12,7 @@ class SliptaController extends Zend_Controller_Action
   public function indexAction()
   {
 
-  }logger
+  }
 
   public function editAction()
   {
@@ -28,15 +28,15 @@ class SliptaController extends Zend_Controller_Action
       $urldata = $this->getRequest()->getParams();
       
       foreach($urldata as $n => $v) {
-        logger("{$n} ==> {$v}");
+        logit("{$n} ==> {$v}");
       }
       ("\n");
       $lang_default = 'EN';
       $nextpage = get_arrval($urldata, 'showpage', '');
       $langtag = get_arrval($urldata, 'language', $lang_default);
       $tword = $lang_word->get_words($langtag);
-      logger("Got showpage value: {$nextpage}");
-      logger("Got language value: {$langtag}");
+      logit("Got showpage value: {$nextpage}");
+      logit("Got language value: {$langtag}");
       if ($nextpage == '') {
         $nextpage = 1;
       } else {

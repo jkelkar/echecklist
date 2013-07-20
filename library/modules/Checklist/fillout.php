@@ -61,11 +61,12 @@ END;
   return $out;
 } 
 
-function TEXTAREA($name, $value)
+function TEXTAREA($name, $value, $style='')
 {
   $val = get_arrval($value, $name, '');
+  $use_style = ($style == '') ?  "width:298px;" : $style;
   $out = <<<"END"
-<textarea style="width:298px;" name="{$name}" id="{$name}" class="tarea">
+    <textarea style="{$use_style}" name="{$name}" id="{$name}" class="tarea">
 {$val}
 </textarea>
 END;
@@ -565,6 +566,29 @@ END;
 
   return $out;
 }
+
+function partial_com_and_rec($row, $value) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $name = $row['varname'];
+  $tarea = TEXTAREA($name, $value, $style="width:100%;height:400px;");
+  $out = <<<"END"
+<td colspan=3>
+  <table style="width:100%;">    
+  <tr>
+    <td>
+    <div class="bigtitlei">{$heading}</div>
+    {$tarea}
+    </td>
+  </tr>
+  </table>
+</td>
+END;
+
+  return $out;
+}
+
 function partial_criteria_2_heading($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
@@ -644,7 +668,73 @@ END;
 
   return $out;
 }
+function partial_info($row, $value) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $name = $row['varname'];
+  $tarea = TEXTAREA($name, $value, $style="width:100%;height:250px;");
+  $out = <<<"END"
+<td colspan=3>
+  <table style="width:100%;">    
+  <tr>
+     <td>
+       {$tarea}
+     </td>
+  </tr>
+  </table>
+</td>
+END;
 
+  return $out;
+}
+function partial_action_plan_heading($row, $value) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $name = $row['varname'];
+  $out = <<<"END"
+<td colspan=3>
+  <table style="width:100%;">    
+  <tr>
+    <td width="45%" class="centertopbold">
+      {$heading}
+    </td>
+    <td width="20%" class="centertopbold">Responsible Persons</td>
+    <td width="10%" class="centertopbold">Timeline</td>
+    <td class="centertopbold">Signature</td>
+  </tr>
+  </table>
+</td>
+END;
+
+  return $out;
+}
+function partial_action_plan_data($row, $value) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $name = $row['varname'];
+  $input_style = "width:100%;height:50px;";
+  $item = TEXTAREA("{$name}_item", $value, $input_style);
+  $person = TEXTAREA("{$name}_person", $value, $input_style);
+  $time = TEXTAREA("{$name}_time", $value, $input_style);
+  $sign = TEXTAREA("{$name}_item", $value, $input_style);
+  $out = <<<"END"
+<td colspan=3>
+  <table style="width:100%;">    
+  <tr>
+    <td width="45%">{$item}</td>
+    <td width="20%">{$person}</td>
+    <td width="10%">{$time}</td>                                                              
+    <td >{$sign}</td>
+  </tr>
+  </table>
+</td>
+END;
+
+  return $out;
+}
 /**
  * We render the rows here
  */

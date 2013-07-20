@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+  <lab id="1" labname="Green Lab, Inc" labnum="who-2456"
+       description="We only used the most organic ingredients."
+       street="1 Infraction Way"
+       street2="Arguments"
+       city="Dulu"
+       state=""
+       country="Ivory Coast"
+       county_code="IC"
+       postcode=""
+       level="F"
+       affiliation="P"
+       />
+  <lab id="2" labname="Noch Ein Lab, Inc"
+       labnum="lab-010"
+       description="Come to us when you need quick results."
+       street="126 Link Road "
+       street2="Arrangements"
+       city="Lagos"
+       state=""
+       country="Nigeria"
+       county_code="GH"
+       postcode=""
+       level="N"
+       affiliation="O" />
+</dataset>

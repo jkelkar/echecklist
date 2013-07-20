@@ -44,8 +44,8 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
      * Create a new lab
      * data is an array with name value pairs
      */
-    $this->insert(data);
-    $newid = $this->lastInsertId();
+    $this->insert($data);
+    $newid = $this->getAdapter()->lastInsertId();
     return $newid;
   }
 

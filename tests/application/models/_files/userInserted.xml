@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+  <user id="1" username="hierarchy" name="Hier Archy" user_type="ADMIN" password="hierarchy" 
+        languages="EN,FR,VI" />
+  <user id="2" username="oddeater" name="Odd Eater" user_type="USER" password="oddeater" 
+        languages="EN,VI" />
+  <user id="3" username="analist" name="An ALIST" user_type="ANALYST" password="analist" 
+        languages="EN" />
+  <user id="4" username="watcher" name="Lookie Loo" user_type="USER" password="watcher" 
+        languages="EN" />
+</dataset>
+  

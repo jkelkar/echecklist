@@ -6,7 +6,7 @@
 
 require_once 'modules/Checklist/logger.php';
 
-class Application_Model_DbTable_Data extends Application_Model_DbTable_Checklist
+class Application_Model_DbTable_User extends Application_Model_DbTable_Checklist
 {
   protected $_name = 'user';
 
@@ -31,7 +31,7 @@ class Application_Model_DbTable_Data extends Application_Model_DbTable_Checklist
      * data is an array with name value pairs
      */
     $this->insert(data);
-    $newid = $this->lastInsertId();
+    $newid = $this->getAdapter()->lastInsertId();
     return $newid;
   }
 

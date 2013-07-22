@@ -9,18 +9,20 @@
 /**
  * This handles logging
  */
-/*require_once 'modules/KLogger.php';
-$log = new KLogger("/var/log/log.txt", KLogger::DEBUG);
+require_once 'modules/Checklist/logger.php';
 
-function logit($msg) {
-  $log->LogInfo($msg);
-}
-*/
+
 /**
  * returns a value if a key exists in the dictionary else
  * returns the $default value passed in
  */
 function get_arrval($arr, $k, $default) {
+  logit("GA: " . gettype($arr) . "  {$k}");
+  $callers=debug_backtrace();
+  logit("TRACE: {$callers[1]['function']}");
+  if (gettype($arr) == 'string') {
+    logit("Str: {$arr}");
+  }
   return key_exists($k, $arr) ? $arr[$k] : $default;
 }
 
@@ -61,43 +63,58 @@ END;
   return $out;
 } 
 
-function TEXTAREA($name, $value, $style='')
+function TEXTAREA($name, $value, $style='', $class='')
 {
   $val = get_arrval($value, $name, '');
-  $use_style = ($style == '') ?  "width:298px;" : $style;
+  $use_style = ($style == '') ?  "style=\"width:298px;\"" : "style=\"{$style}\"";
   $out = <<<"END"
-    <textarea style="{$use_style}" name="{$name}" id="{$name}" class="tarea">
+    <textarea {$use_style} name="{$name}" id="{$name}" class="tarea">
 {$val}
 </textarea>
 END;
   return $out;
 }
 
-function INPUT($name, $value, $type='string', $length=0)
+function LABEL($name, $label_text='', $label_style="")
+{
+  $out = "<label for=\"{$name}\" style=\"{$label_style}\">{$label_text}</label>";
+  return $out;
+}
+
+function INPUT($name, $value, $type="string", $length=0, $style="", $class='')
 {
   $size = $dtype = '';
   switch($type) {
   case 'integer':
   case 'date':
   case 'datetime':
+  case 'string':
     $dtype = $type;
+    $itype = 'text';
     if ($length != 0) {
       $l = strval($length);
       $size= "size=\"{$l}\" ";
-}
+    }
     break;
     
-  case 'string':
-  default:
+  case 'password':
     // this implies a string
-    $dtype = 'string';
+    $dtype = $type;
+    $itype = $dtype;
     $l = strval($length);
     $size = "size=\"{$l}\" ";
+    break;
+  case 'submit':
+    $dtype = $type;
+    $itype = $dtype;
+    break;
+  default:
+    $dtype = 'unexpected';
   }
-  $val = get_arrval($value, $name, '');
+  $val = ($type != 'submit') ? get_arrval($value, $name, ''): $value;
   $out = <<<"END"
-<input name="{$name}" id="{$name}" 
-  type="text" class="{$dtype}" value="{$val}" {$size} > 
+    <input name="{$name}" id="{$name}" 
+  type="{$itype}" class="{$dtype} {$class}" value="{$val}" {$size} > 
 END;
 
   return $out;

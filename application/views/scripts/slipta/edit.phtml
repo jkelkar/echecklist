@@ -3,31 +3,3 @@ $this->title = "";
 $this->headTitle($this->title);
 
 ?>
-<div id="outer" style="margin-left:10px;">
-  <div id="wrapper" style="width:1100px;border: 1px solid black;">
-    <div id="leftpane" style="width:200px;min-height:600px;border:1px solid black;float:left;">
-      <script type="text/javascript">//<!--
-        d = new dTree('d');
-        <?php echo $this->treelines; ?>
-
-        document.write(d);
-// -->
-      </script>
-    </div>
-    <div id="rightpane" style="border:1px solid black;float:left;">
-      
-      <div style="margin:0 1mm;">
-        <h1> Edit away! </h1>
-        <form method="post" action="" enctype="application/x-www-form-urlencoded" name="slipta" id="slipta">
-          <?php echo $this->outlines; ?>
-          <input type="submit" value="Cancel" id="cancelbutton" name="cancel">
-          <input type="submit" value="Save" id="savebutton" name="save">
-          <input type="submit" value="Continue" id="continuebutton" name="continue">
-          
-        </form>
-      </div>
-      <div style="height: 20px;"> &nbsp;</div>
-      <div style="clear:both;"></div>
-    </div>
-  </div>
-</div>

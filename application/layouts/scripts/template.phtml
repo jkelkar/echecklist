@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8" />
+ <!--[if IE]>
+ <meta http-equiv="X-UA-Compatible" content="IE=edge">
+ <![endif]-->
+ <link rel="stylesheet" href="<?php echo $this->baseUrl().'/css/styles.css'; ?>" />
+ <link rel="stylesheet" href="<?php echo $this->baseUrl().'/css/dtree.css'; ?>" />
+ <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/dtree.js'; ?>"></script>
+ <title>The Title</title>
+</head>
+
+<body style="width:1200px;">
+<div id="header">
+  <div style="float:left;">APHL Logo </div>
+  <div style="font-size:12px;text-decoration:none;float:right;">
+   <a class="header" href="/languages">Languages</a>&nbsp;&nbsp;
+   <a class="header" href="/help">Help</a>
+  </div>
+                                    <div style="clear:both;"></div>
+</div>
+<div id="content" style="margin-left:10px;">
+<h1><?php echo $this->escape($this->title); ?></h1>
+    <?php echo $this->layout()->content; ?>
+
+<div id="outer" style="margin-left:10px;">
+  <div id="wrapper" style="width:1100px;/*border: 1px solid black;*/">
+    <div id="leftpane" style="width:200px;min-height:600px;border-right:1px solid black;float:left;">
+      <script type="text/javascript">//<!--
+        d = new dTree('d');
+        <?php echo $this->treelines; ?>
+
+        document.write(d);
+// -->
+      </script>
+    </div>
+      <div id="rightpane" style="/*border:1px solid black;*/float:left;">
+      
+      <div style="margin:0 1mm;">
+        <form method="post" action="" enctype="application/x-www-form-urlencoded" name="slipta" id="slipta">
+          <?php echo $this->outlines; ?>
+          <input type="submit" value="Cancel" id="cancelbutton" name="cancel">
+          <input type="submit" value="Save" id="savebutton" name="save">
+          <input type="submit" value="Continue" id="continuebutton" name="continue">
+          
+        </form>
+      </div>
+      <div style="height: 20px;"> &nbsp;</div>
+      <div style="clear:both;"></div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="footer">
+</div>
+
+</div>
+</body>
+</html> 

@@ -32,6 +32,16 @@ a:hover{
 	  text-decoration:none;
 }
 
+a.header, a.header:visited {
+	  outline:none;
+	  color:#389dc1;
+    text-decoration:none
+}
+
+a.header:hover{
+	  text-decoration:none;
+}
+
 section, footer, header, aside{
 	  display: block;
 }
@@ -45,9 +55,25 @@ table {
 }
 
 td {
-    border: 1px solid #666;
+    border: 1px solid #999;
 }
-
+td.n {
+    border: none;
+}
+td.f {
+    padding: 2px 3px 10px 3px;
+}
+td.s {
+    margin:5px;
+}
+input[type=submit].f {
+    padding: 2px 3px 2px 3px;
+}
+input[type=text].f,
+input[type=submit].f,
+input[type=password].f {
+    font-size: 17px;
+}
 /*td {
   border: 1px solid black;
 }
@@ -137,4 +163,9 @@ textarea.small {
 
 .select {
     font-size: .93em;
+}
+
+#header {
+    border-bottom: 1px solid #ccc;
+    padding-bottom:8px;
 }

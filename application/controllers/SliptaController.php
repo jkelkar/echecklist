@@ -82,7 +82,7 @@ class SliptaController extends Zend_Controller_Action
       $tout[] = "<a href=\"{$baseurl}/slipta/edit?showpage={$next}&language={$langtag}\">Next page</a><br />";
       $this ->view->treelines = implode("\n", $jsrows);
       $this->view->outlines = implode("\n", $tout);
-      $this->_helper->layout->setLayout('pagewrapper');
+      $this->_helper->layout->setLayout('template');
     }
   }
 

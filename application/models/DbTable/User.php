@@ -26,6 +26,18 @@ class Application_Model_DbTable_User extends Application_Model_DbTable_Checklist
     return $rows;
   }
 
+  public function getUserByUsername($username) {
+    /**
+     * get a user from userid
+     */
+    $row = $this->fetchRow("username = '{$username}'" );
+    if (!$row) {
+      throw new Exception("User with username={$username} not found");
+    }
+    return $row->toArray();
+
+  }
+
   public function newUser($data) {
     /**
      * data is an array with name value pairs

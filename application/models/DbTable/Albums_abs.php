@@ -1,4 +1,11 @@
 <?php
+
+/**
+ * For insert to return the created id
+ * We have to include the id field in the data being inserted
+ * $id = null
+ * somone said this has been fixed - best to know in advance
+ */
 class Application_Model_DbTable_Albums extends Zend_Db_Table_Abstract
 {
   protected $_name = 'albums';
@@ -29,6 +36,8 @@ class Application_Model_DbTable_Albums extends Zend_Db_Table_Abstract
 		  'title' => $title,
 		  );
     $this->insert($data);
+    $newid = $this->lastInsertId();
+    return $newid;
   }
   public function updateAlbum($id, $artist, $title)
   {

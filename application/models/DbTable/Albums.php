@@ -1,4 +1,5 @@
 <?php
+require_once '../application/models/DbTable/Checklist.php';
 class Application_Model_DbTable_Albums extends Application_Model_DbTable_Checklist
 // Zend_Db_Table_Abstract
 {

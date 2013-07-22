@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 22, 2013 at 04:05 PM
+-- Generation Time: Jul 20, 2013 at 05:05 PM
 -- Server version: 5.5.31
 -- PHP Version: 5.3.10-1ubuntu3.6
 
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `mydb`
+-- Database: `mydb_test`
 --
 
 -- --------------------------------------------------------
@@ -31,19 +31,16 @@ CREATE TABLE IF NOT EXISTS `albums` (
   `artist` varchar(100) NOT NULL,
   `title` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
 
 --
 -- Dumping data for table `albums`
 --
 
 INSERT INTO `albums` (`id`, `artist`, `title`) VALUES
-(1, 'Paolo Nutine', 'Sunny Side Up'),
-(2, 'Florence + The Machine', 'Lungs'),
-(3, 'Massive Attack', 'Heligoland'),
-(4, 'Andre Rieu', 'Forever Vienna'),
-(5, 'D''Sade', 'Soldier of Love'),
-(6, 'Baby Too', 'Stinky Poo');
+(9, 'Jamal Naqeeb', 'When I was one'),
+(10, 'Martian Joe', 'Silent Song'),
+(11, 'Man and Brot', 'Always too early');
 
 -- --------------------------------------------------------
 
@@ -98,27 +95,7 @@ CREATE TABLE IF NOT EXISTS `data_item` (
   `date_val` date NOT NULL DEFAULT '2000-01-01',
   `field_type` varchar(10) NOT NULL DEFAULT 'string',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='One row per field of data saved.' AUTO_INCREMENT=15 ;
-
---
--- Dumping data for table `data_item`
---
-
-INSERT INTO `data_item` (`id`, `data_head_id`, `field_name`, `int_val`, `text_val`, `string_val`, `date_val`, `field_type`) VALUES
-(1, 1, 'dola', 0, '', '', '2013-01-13', 'date'),
-(2, 1, 'audit_date', 0, '', '', '2013-07-14', 'date'),
-(3, 1, 'stars', 0, '', '2', '2000-01-01', 'string'),
-(4, 1, 'labaddr', 0, 'street,\r\nstreet2\r\ncity, state, zip\r\ncountry', '', '2000-01-01', 'text'),
-(5, 1, 'cleaner_num', 5, '', '', '2000-01-01', 'integer'),
-(6, 1, 'cleaner_dedicated_yn', 0, '', 'Y', '2000-01-01', 'string'),
-(7, 1, 'cleaner_trained_yn', 0, '', 'N', '2000-01-01', 'string'),
-(8, 1, 'cleaner_yni', 0, '', 'Y', '2000-01-01', 'string'),
-(9, 1, 'driver_num', 100, '', '', '2000-01-01', 'integer'),
-(10, 1, 'driver_yni', 0, '', 'I', '2000-01-01', 'string'),
-(11, 1, 'driver_dedicated_yn', 0, '', 'Y', '2000-01-01', 'string'),
-(12, 1, 'driver_trained_yn', 0, '', 'N', '2000-01-01', 'string'),
-(13, 1, 'sufficient_space_yn', 0, '', 'N', '2000-01-01', 'string'),
-(14, 1, 'sufficient_equipment_yn', 0, '', 'N', '2000-01-01', 'string');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='One row per field of data saved.' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -148,7 +125,7 @@ CREATE TABLE IF NOT EXISTS `lab` (
 --
 
 INSERT INTO `lab` (`id`, `labname`, `labnum`, `description`, `street`, `street2`, `city`, `state`, `country`, `county_code`, `postcode`, `level`, `affiliation`) VALUES
-(1, 'Best Lab, Inc', 'lab-007', 'The best lab in all of Africa capable of doing almost anything.', 'No. 19 Fifth Link Road ', 'Cantonments', 'Accra', '', 'Ghana', 'GH', '', 'R', 'R');
+(1, 'Green Lab, Inc', 'who-2456', 'We only used the most organic ingredients.', '1 Infraction Way', 'Arguments', 'Dulu', '', 'Ivory Coast', 'IC', '', 'F', 'P');
 
 -- --------------------------------------------------------
 
@@ -359,26 +336,19 @@ INSERT INTO `lang_word` (`id`, `tag`, `word`, `trans_word`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `page` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
   `tmpl_head_id` int(11) NOT NULL,
   `page_num` int(11) NOT NULL,
-  `parent` int(11) NOT NULL,
-  `leaf` varchar(1) NOT NULL,
-  `tag` varchar(64) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+  `tag` varchar(64) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `page`
 --
 
-INSERT INTO `page` (`id`, `tmpl_head_id`, `page_num`, `parent`, `leaf`, `tag`) VALUES
-(1, 1, 1, 101, 't', 'Section 1.3-1.7'),
-(2, 1, 2, 101, 't', 'Section1.8-P3 Criteria 1'),
-(3, 1, 3, 101, 't', 'P3 Criteria 2'),
-(4, 1, 100, 99, 'f', 'Part II'),
-(5, 1, 101, 100, 'f', 'Section 1'),
-(6, 1, 99, -1, 'f', 'SLIPTA');
+INSERT INTO `page` (`tmpl_head_id`, `page_num`, `tag`) VALUES
+(1, 1, 'Section 1.3-1.7'),
+(1, 2, 'Section1.8-P3 Criteria 1'),
+(1, 3, 'P3 Criteria 2');
 
 -- --------------------------------------------------------
 

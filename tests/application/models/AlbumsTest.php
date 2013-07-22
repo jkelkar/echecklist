@@ -4,17 +4,19 @@
  * This is required to bring in the database model that is to be tested
  */
 require_once '../application/models/DbTable/Albums.php';
+require_once 'application/models/ChecklistAbstract.php';
 
-class AlbumsTest extends Zend_Test_PHPUnit_DatabaseTestCase
+class AlbumsTest extends Tests_Model_Checklist_Abstract
 {
-  private $_connectionMock;
+  // private $_connectionMock;
 
   /**
    * Returns the database connection.
    * 
    * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
    */
-  protected function getConnection()
+  /**
+     protected function getConnection()
   {
     $database = 'mydb_test';
     if ($this->_connectionMock == null) {
@@ -34,6 +36,7 @@ class AlbumsTest extends Zend_Test_PHPUnit_DatabaseTestCase
     }
     return $this->_connectionMock;
   }
+  **/
   
   /**
    * @return PHPUnit_Extensions_Database_DataSet_IDataSet

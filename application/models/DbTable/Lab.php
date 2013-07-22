@@ -10,40 +10,58 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
 {
   protected $_name = 'lab';
 
-  public function get_labs($id)
+  public function getLab($id)
   {
-    // $log = new KLogger("/var/log/log.txt", KLogger::DEBUG);
-    $debug = 1;
-    $db = $this->getDb();
+    /**
+     * Get a lab with this id
+     */
     $id = (int)$id;
-    // Read the following sql with $id == tmpl_head_id
-    $sql = "select * from data_item where data_head_id = " . $id ;
-    $stmt =  $db->query($sql);
-    $rows = $stmt->fetchAll();
-    if (!$rows) {
-      throw new Exception("These is no data");
+    $row = $this->fetchRow('id = ' . $id);
+    if (!$row) {
+      throw new Exception("Could not find row $id");
     }
+    return $row->toArray();
+  }
+
+  public function getLabs() {
+    $rows = $this->fetchAll($this->select()
+			    ->order('labname'));
     return $rows;
   }
 
-  public function get_a_lab($lab_name='', $lab_num='')
-  {
-    $db = $this->getDb();
-    $namesql = "labname like '{$labname}%' ";
-    $numsql  = "lannum = '{$lab_num}' "
-    $sql = "select * from lab ";
-    if ($lab_name != '') {
-      $sql = $sql . $namesql;
-    }
-    if ($lab_num != '') {
-      $sql = $sql . $numsql;
-    }
-    $stmt =  $db->query($sql);
-    $rows = $stmt->fetchAll();
-    if (!$rows) {
-      throw new Exception("These is no data.");
-    }
+  public function getLabsByCountry($ccode) {
+    /**
+     * Return all labs in this country code
+     */
+    $rows = $this->fetchAll($this->select()
+                            ->where("country_code = ?", $ccode)
+                            ->order('labname'));
     return $rows;
+  }
+
+  public function newLab($data) {
+    /**
+     * Create a new lab
+     * data is an array with name value pairs
+     */
+    $this->insert($data);
+    $newid = $this->getAdapter()->lastInsertId();
+    return $newid;
+  }
+
+  public function updateLab($data, $id) {
+    /**
+     * Update lab at $id with this data
+     * $data is an array with name value pairs
+     */
+    $this->update($data, "id = " . (int)$id);
+  }
+   
+  public function deleteLab($ind) {
+    /**
+     * delete user at id
+     */
+    $this->delete('id = ' . (int)$id);
   }
 }
 

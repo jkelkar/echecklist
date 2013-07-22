@@ -567,7 +567,7 @@ END;
   return $out;
 }
 
-function partial_com_and_rec($row, $value) {
+function partial_com_and_rec($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
@@ -668,7 +668,7 @@ END;
 
   return $out;
 }
-function partial_info($row, $value) {
+function partial_info($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
@@ -688,7 +688,7 @@ END;
 
   return $out;
 }
-function partial_action_plan_heading($row, $value) {
+function partial_action_plan_heading($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
@@ -710,7 +710,7 @@ END;
 
   return $out;
 }
-function partial_action_plan_data($row, $value) {
+function partial_action_plan_data($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
@@ -758,7 +758,7 @@ function calculate_page($rows, $value, $tword)
                  'FREQUENCY', 'Daily', 'Weekly', 'With Every Run',
                  'Quantitative tests', 'Semi-quantitative tests', 'Qualitative tests',
                  'Date of panel receipt', 'Were results reported within 15 days?', 
-'Results & % Correct');
+                 'Results & % Correct');
   $tlist = get_common_words_translated($tword, $words);
   $tout = array();
   $tout[] = '<table border=1>';

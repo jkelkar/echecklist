@@ -45,11 +45,42 @@ class SliptaController extends Zend_Controller_Action
       // $langtag = $lang->get_tag($language);
       $rows = $slipta->getrows(1, $nextpage, $langtag); // 1 is the tmpl_head_id
       $value = $data->get_data(1); // 1 is the data_head_id
-      $page_tag = $page->get_page_tag(1, $nextpage); // FIXME
+      $nav = $page->getNav(1, $nextpage);
+      $page_row = $nav['row'];
+      $nrows = $nav['rows'];
+      //$page_row = $page->getPage(1, $nextpage); // FIXME
+      foreach($page_row as $a => $p) {
+        logit("Page data: {$a} => {$p}\n");
+      }
+      logit("Page Tag {$page_row['tag']}\n");
+      //$nav = $page->getNav(1, $nextpage);
       //$value = array('notme' => 'no');
+      // Generate the entries to make a tree - using dtree
+      $jsrows = array();
+      $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
+      $page_url = "{$baseurl}/slipta/edit?language={$langtag}";
+      foreach ($nrows as $r) {
+        /*foreach($r as $x => $y) {
+          logit("{$x} -- {$y}");
+          }*/
+        $line = "d.add({$r['page_num']},{$r['parent']}, '{$r['tag']}'";
+        if ($r['leaf'] == 't') {
+          $line = $line . ", '{$page_url}&showpage={$r['page_num']}'";
+        }
+        $line = $line . ");";
+        $jsrows[] = $line;
+        logit("Line: {$line}");
+      }
+      //logit('Dumping J');
+      //foreach ($jsrows as $j){
+      //  logit("J: {$j}");
+      //}
       $tout = calculate_page($rows, $value, $tword);
       $next = $nextpage +1;
-      $tout[] = "<a href=\"/zftest/public/slipta/edit?showpage={$next}&language={$langtag}\">Next page</a><br />";
+      //$baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
+      //  $this->_baseUrl =  $fc->getBaseUrl();
+      $tout[] = "<a href=\"{$baseurl}/slipta/edit?showpage={$next}&language={$langtag}\">Next page</a><br />";
+      $this ->view->treelines = implode("\n", $jsrows);
       $this->view->outlines = implode("\n", $tout);
       $this->_helper->layout->setLayout('pagewrapper');
     }

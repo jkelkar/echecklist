@@ -761,7 +761,7 @@ function calculate_page($rows, $value, $tword)
 'Results & % Correct');
   $tlist = get_common_words_translated($tword, $words);
   $tout = array();
-  $tout[] = '<table border=1>';
+  $tout[] = '<table border=1 style="width:800px;">';
   $tout[] = '<td style="width:359px;"></td><td style="width:164px;"></td><td  style="width:309px;"></td>';
   foreach($rows as $row){
     $type = $row['row_type'];

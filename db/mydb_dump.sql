@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 20, 2013 at 01:04 AM
+-- Generation Time: Jul 22, 2013 at 04:05 PM
 -- Server version: 5.5.31
 -- PHP Version: 5.3.10-1ubuntu3.6
 
@@ -359,19 +359,26 @@ INSERT INTO `lang_word` (`id`, `tag`, `word`, `trans_word`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `page` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `tmpl_head_id` int(11) NOT NULL,
   `page_num` int(11) NOT NULL,
-  `tag` varchar(64) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `parent` int(11) NOT NULL,
+  `leaf` varchar(1) NOT NULL,
+  `tag` varchar(64) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 
 --
 -- Dumping data for table `page`
 --
 
-INSERT INTO `page` (`tmpl_head_id`, `page_num`, `tag`) VALUES
-(1, 1, 'Section 1.3-1.7'),
-(1, 2, 'Section1.8-P3 Criteria 1'),
-(1, 3, 'P3 Criteria 2');
+INSERT INTO `page` (`id`, `tmpl_head_id`, `page_num`, `parent`, `leaf`, `tag`) VALUES
+(1, 1, 1, 101, 't', 'Section 1.3-1.7'),
+(2, 1, 2, 101, 't', 'Section1.8-P3 Criteria 1'),
+(3, 1, 3, 101, 't', 'P3 Criteria 2'),
+(4, 1, 100, 99, 'f', 'Part II'),
+(5, 1, 101, 100, 'f', 'Section 1'),
+(6, 1, 99, -1, 'f', 'SLIPTA');
 
 -- --------------------------------------------------------
 

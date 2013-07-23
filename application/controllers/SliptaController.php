@@ -60,9 +60,10 @@ class SliptaController extends Zend_Controller_Action
       $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
       $page_url = "{$baseurl}/slipta/edit?language={$langtag}";
       foreach ($nrows as $r) {
-        /*foreach($r as $x => $y) {
-          logit("{$x} -- {$y}");
-          }*/
+        //foreach($r as $x => $y) {
+        //logit("{$x} -- {$y}");
+        //}
+        logit("{$r['parent']} -> {$r['page_num']}");
         $line = "d.add({$r['page_num']},{$r['parent']}, '{$r['tag']}'";
         if ($r['leaf'] == 't') {
           $line = $line . ", '{$page_url}&showpage={$r['page_num']}'";

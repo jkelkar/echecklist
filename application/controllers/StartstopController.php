@@ -16,6 +16,7 @@ class StartstopController extends Application_Controller_Action
     parent::init();
   }
 
+  
   public function loginAction()
   {
     if ($this->getRequest()->isPost()) {
@@ -25,13 +26,19 @@ class StartstopController extends Application_Controller_Action
       $password = $formData->getPost('password', '');
       $user = new Application_Model_DbTable_User();
       $row = $user->getUserByUsername($username);
+      // $u = array();
+      $eNamespace = parent::getHandle();
+      logit("eChecklist {$eNamespace->userct}");
       foreach($row as $a => $b) {
-        logit("User: {$a} -- {$b}");
+        // logit("User: {$a} -- {$b}");
+        if ($a != 'password') {
+          $eNamespace->$a = $b; 
+          logit("Added {$a} => {$b}");
+        }
+                             
       }
-      $echecklistNamespace->user = array(
-
-                                         );
-      //$this->_helper->redirector('index');
+      //$echecklistNamespace->user = $u;
+      /* $this->_helper->redirector('index'); */
     } else {
 
       $_fields = array('username', 'password', 'submit');
@@ -48,7 +55,7 @@ class StartstopController extends Application_Controller_Action
                      array('type' => 'submit',
                            'value' => 'Login')
                      );
-      logit("flist: {$flist}");
+      // logit("flist: {$flist}");
       $outlines = dumpForm($flist);
       $this->view->formtext = $outlines;
       $this->view->title = 'Login';

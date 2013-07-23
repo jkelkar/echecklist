@@ -305,6 +305,7 @@ function partial_sub_sec_head($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
+  $info = $row['info'];
   $widget_nyp_ro = "FIXME"; // widget_nyp_ro($name, $value);
  $out =  <<<"END"
 <td style="padding: 2px 4px;">
@@ -316,6 +317,7 @@ function partial_sub_sec_head($row, $value, $t) {
 <div style="vertical-align:top;">{$text}
 </div>
 </div>
+<div style="font-style:italic;font-weight:bold;font-size:10px;">{$info}</div>
 </div>
 </td>
 <td style="vertical-align:top;padding: 2px 4px;">
@@ -332,7 +334,11 @@ END;
 function partial_sec_element($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
+  if ($heading) {
+    $heading = $heading . '<br />';
+  }
   $text = $row['text'];
+  $info = $row['info'];
   $name = $row['varname'];
   $mc_yn = widget_select_yn($name, $value, $t);
   $tarea = TEXTAREA("{$name}_comment", $value);
@@ -341,10 +347,12 @@ function partial_sec_element($row, $value, $t) {
 <div style="display:inline-block;vertical-align:top;">
 <div style="width:325px;">
 <div>
-<div style="text-decoration:underline;font-weight:bold;vertical-align:top;">{$heading}</div>
-<div style="vertical-align:top;">{$text}</div>
+    <div style="vertical-align:top;display:inline;">{$prefix}</div> 
+    <div style="text-decoration:underline;font-weight:bold;vertical-align:top;display:inline;">{$heading}</div>
+<div style="vertical-align:top;display:inline;">{$text}</div>
 </div>
 </div>
+<div style="font-style:italic;font-weight:bold;font-size:10px;margin-top:4px;">{$info}</div>
 </div>
 </td>
 <td style="vertical-align:top;padding: 2px 4px;">
@@ -752,6 +760,39 @@ END;
 
   return $out;
 }
+function partial_sec_total($row, $value, $t) {
+  return '';
+}
+function partial_sec_element_info($row, $value, $t) {
+  return '';
+}
+function partial_sec_elem_info($row, $value, $t) {
+  return '';
+}
+function partial_sub_sec_info($row, $value, $t) {
+  return '';
+}
+function partial_sec_sec_head($row, $value, $t) {
+  return '';
+}
+function get_lang_text($base, $default, $sp_lang) {
+  /**
+   * $base contains the original text
+   * $default contain default text from lang
+   * $sp_lang contains language specific text - but is not always available
+   */
+  logit("{$base} -- {$default} -- {$sp_lang}");
+  $out = '';
+  $out = $base;
+  if ($default != 'NULL') {
+    $out = $default;
+  }
+  if ($sp_lang) {
+    $out = $sp_lang;
+  }
+  return $out;
+}
+
 /**
  * We render the rows here
  */
@@ -782,8 +823,14 @@ function calculate_page($rows, $value, $tword)
   $tout[] = '<td style="width:359px;"></td><td style="width:164px;"></td><td  style="width:309px;"></td>';
   foreach($rows as $row){
     $type = $row['row_type'];
+    $arow = array();
+    $arow['prefix'] = $row['prefix'];
+    $arow['heading'] = get_lang_text($row['heading'], $row['lhdefault'], $row['lhlang']);
+    $arow['text'] = get_lang_text($row['text'], $row['ltdefault'], $row['ltlang']);
+    $arow['varname' ] = $row['varname'];
+    $arow['info'] = $row['info'];
     $tout[] = '<tr>' 
-      . call_user_func("partial_{$type}", $row, $value, $tlist) 
+      . call_user_func("partial_{$type}", $arow, $value, $tlist) 
       . '</tr>';
   }
   $tout[] = '</table>';

@@ -6,12 +6,12 @@
 require_once 'modules/Checklist/logger.php';
 class Application_Controller_Action extends Zend_Controller_Action
 {
-  public $echecklistNamespace ;
+  private static $echecklistNamespace ;
 
   public function init()
   {
     /* initialize here */
-    $echecklistNamespace = new Zend_Session_Namespace('eChecklist');
+    self::$echecklistNamespace = new Zend_Session_Namespace('eChecklist');
     Zend_Session::start();
     /* Remove this when seesions work correctly */
     if (isset($echecklistNamespace->userct)) {
@@ -24,5 +24,8 @@ class Application_Controller_Action extends Zend_Controller_Action
     logit( "User count: {$echecklistNamespace->userct}");
   }
 
-  
+  public function getHandle()
+  {
+    return self::$echecklistNamespace;
+  }
 }

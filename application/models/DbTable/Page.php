@@ -19,7 +19,7 @@ class Application_Model_DbTable_Page extends Application_Model_DbTable_Checklist
     $db = $this->getDb();
     $tmpl_head_id = (int)$tmpl_head_id;
     $sql = "select * from page where tmpl_head_id = ". $tmpl_head_id .
-      " order by parent";
+      " order by parent, page_num";
     $stmt =  $db->query($sql);
     $rows = $stmt->fetchAll();
     

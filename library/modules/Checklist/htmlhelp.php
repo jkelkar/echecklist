@@ -33,13 +33,13 @@ function dumpForm($fields, $value=array('_' => '_')) {
    *
    * $value is an array that has all values indexed by fieldname
    **/
-  logit("TOP: {$fields} _fields");
+  //logit("TOP: {$fields} _fields");
   $_fields = get_arrval($fields, '_fields', '');
   $outlines = array();
   $outlines[] = "<form method=\"post\" action=\"\" enctype=\"application/x-www-form-urlencoded\" name=\"thisform\" id=\"thisform\">";
   $outlines[] = '<table>';
   foreach($fields as $a => $b) {
-    logit("AB: {$a} == {$b}");
+    //logit("AB: {$a} == {$b}");
     if ($a[0] == '_') { continue;}
     $outlines[] = '<tr>';
     $type = $b['type'];
@@ -52,7 +52,7 @@ function dumpForm($fields, $value=array('_' => '_')) {
     case 'integer':
     case 'string':
     case 'password':
-      logit("B: {$b}");
+      //logit("B: {$b}");
       //$length = ($l == '') ? '': "size=\"{$l}\"";
       //logit("V: {$value} {$a}");
       $outlines[] = field_input($a, $value,

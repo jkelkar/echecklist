@@ -28,6 +28,9 @@ class StartstopController extends Application_Controller_Action
       foreach($row as $a => $b) {
         logit("User: {$a} -- {$b}");
       }
+      $echecklistNamespace->user = array(
+
+                                         );
       //$this->_helper->redirector('index');
     } else {
 

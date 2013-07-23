@@ -2,6 +2,7 @@
 require_once 'modules/Checklist/htmlhelp.php';
 require_once 'modules/Checklist/logger.php';
 require_once '../application/controllers/Action.php';
+
 class StartstopController extends Application_Controller_Action 
 // Zend_Controller_Action
 {
@@ -9,6 +10,10 @@ class StartstopController extends Application_Controller_Action
   public function init()
   {
     /* Initialize action controller here */
+    /**
+     * initialize parent here
+     **/
+    parent::init();
   }
 
   public function loginAction()

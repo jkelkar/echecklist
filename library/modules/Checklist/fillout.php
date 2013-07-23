@@ -17,12 +17,12 @@ require_once 'modules/Checklist/logger.php';
  * returns the $default value passed in
  */
 function get_arrval($arr, $k, $default) {
-  logit("GA: " . gettype($arr) . "  {$k}");
+  //logit("GA: " . gettype($arr) . "  {$k}");
   $callers=debug_backtrace();
-  logit("TRACE: {$callers[1]['function']}");
-  if (gettype($arr) == 'string') {
+  //logit("TRACE: {$callers[1]['function']}");
+  /*if (gettype($arr) == 'string') {
     logit("Str: {$arr}");
-  }
+    }*/
   return key_exists($k, $arr) ? $arr[$k] : $default;
 }
 

@@ -3,15 +3,17 @@
 /**
  * This is the super class for our controllers
  */
-
+require_once 'modules/Checklist/logger.php';
 class Application_Controller_Action extends Zend_Controller_Action
 {
-  protected $echecklistNamespace = new Zend_Session_Namespace('eChecklist');
+  public $echecklistNamespace ;
 
   public function init()
   {
     /* initialize here */
+    $echecklistNamespace = new Zend_Session_Namespace('eChecklist');
     Zend_Session::start();
+    /* Remove this when seesions work correctly */
     if (isset($echecklistNamespace->userct)) {
       // this will increment for each page load.
       $echecklistNamespace->userct++;
@@ -19,8 +21,7 @@ class Application_Controller_Action extends Zend_Controller_Action
       $echecklistNamespace->userct = 1; // first time
     }
     
-    echo "User count: ",
-    $echecklistNamespace->userct;
+    logit( "User count: {$echecklistNamespace->userct}");
   }
 
   

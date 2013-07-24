@@ -14,7 +14,9 @@ class Application_Model_DbTable_Checklist extends Zend_Db_Table_Abstract
     $config = new Zend_Config_Ini($path, 'staging');
     //logit("app path: {$path}");
     //logit("X: {$config->resources->db->params->dbname}");
-    $db = new Zend_Db_Adapter_Pdo_Mysql
+    $db = $this->getAdapter();
+    
+    /**new Zend_Db_Adapter_Pdo_Mysql
       (
        array(
              'host'             => $config->resources->db->params->host, //'localhost',
@@ -22,7 +24,7 @@ class Application_Model_DbTable_Checklist extends Zend_Db_Table_Abstract
              'password'         => $config->resources->db->params->password, //'3ntr0py',
              'dbname'           => $config->resources->db->params->dbname //'mydb',
              ));
-    
+    **/
     // set results to be UTF8
     $sql = "set names 'utf8'";
     $db->query($sql);

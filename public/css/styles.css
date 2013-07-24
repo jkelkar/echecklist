@@ -55,7 +55,10 @@ table {
 }
 
 td {
-    border: 1px solid #999;
+    border: 0px solid #999;
+}
+td.bpad {
+    padding-bottom:10px;
 }
 td.n {
     border: none;
@@ -157,7 +160,7 @@ textarea.small {
     padding: 5px 10px;
 }
 
-#savebutton {
+#xsavebutton {
     margin-left:537px;
 }
 

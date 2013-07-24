@@ -8,10 +8,15 @@
  <link rel="stylesheet" href="<?php echo $this->baseUrl().'/css/styles.css'; ?>" />
  <link rel="stylesheet" href="<?php echo $this->baseUrl().'/css/dtree.css'; ?>" />
  <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/dtree.js'; ?>"></script>
+ <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/jquery.js'?>" ></script>
+ <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/helpers.js'?>" ></script>
  <title>The Title</title>
 </head>
 
 <body style="width:1200px;">
+<script type="text/javascript">
+var changed = false;
+</script>
 <div id="header">
   <div style="float:left;">APHL Logo </div>
   <div style="font-size:12px;text-decoration:none;float:right;">
@@ -39,11 +44,14 @@
       
       <div style="margin:0 1mm;">
         <form method="post" action="" enctype="application/x-www-form-urlencoded" name="slipta" id="slipta">
-          <?php echo $this->outlines; ?>
-          <input type="submit" value="Cancel" id="cancelbutton" name="cancel">
-          <input type="submit" value="Save" id="savebutton" name="save">
-          <input type="submit" value="Continue" id="continuebutton" name="continue">
-          
+          <?php echo $this->outlines; 
+          	echo $this->hidden; ?>
+          <div style="width:100%;">
+          <div style="float:right;">
+          	<input type="submit" value="Cancel" id="cancelbutton" name="sbname">
+          	<input type="submit" value="Save & Exit" id="savebutton" name="sbname">
+          	<input type="submit" value="Save & Continue" id="continuebutton" name="sbname">
+          </div></div>
         </form>
       </div>
       <div style="height: 20px;"> &nbsp;</div>

@@ -15,7 +15,7 @@ class Application_Controller_Action extends Zend_Controller_Action
     $this->echecklistNamespace = new Zend_Session_Namespace('eChecklist');
     Zend_Session::start();
     /* Remove this when seesions work correctly */
-    if ($debug) {
+    if ($this->debug) {
       if (isset($echecklistNamespace->userct)) {
         // this will increment for each page load.
         $echecklistNamespace->userct++;

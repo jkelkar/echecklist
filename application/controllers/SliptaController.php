@@ -88,7 +88,7 @@ class SliptaController extends Zend_Controller_Action
       $tout = calculate_page($rows, $value, $tword);
       $next = $nextpage +1;
       // $tout[] = "<a href=\"{$baseurl}/slipta/edit?showpage={$next}&language={$langtag}\">Next page</a><br />";
-      $this ->view->treelines = implode("\n", $jsrows);
+      $this->view->treelines = implode("\n", $jsrows);
       $this->view->outlines = implode("\n", $tout);
       $this->view->hidden = implode("\n", array(
       		"<input type=\"hidden\" name=\"data_head_id\" value=\"1\">"
@@ -131,5 +131,5 @@ class SliptaController extends Zend_Controller_Action
       	default:
       }
       }
-    } 
+    }
   }

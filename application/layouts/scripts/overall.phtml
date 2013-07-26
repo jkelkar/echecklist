@@ -8,6 +8,9 @@
  <link rel="stylesheet" href="<?php echo $this->baseUrl().'/css/styles.css'; ?>" />
  <link rel="stylesheet" href="<?php echo $this->baseUrl().'/css/dtree.css'; ?>" />
  <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/dtree.js'; ?>"></script>
+ <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/jquery-1.8.3.js'?>" ></script>
+ <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/jquery-ui-1.9.2.custom.js'?>" ></script>
+ <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/helpers.js'?>" ></script>
  <title>The Title</title>
 </head>
 
@@ -21,7 +24,7 @@
   <div style="clear:both;"></div>
 </div>
 <div id="content" style="margin-left:10px;width:100%;">
-    <?php echo $this->layout()->content; ?>
+	  <?php echo $this->layout()->content; ?>
 </div>
 
 <div id="footer">
@@ -29,4 +32,4 @@
 
 </div>
 </body>
-</html> 
+</html>

@@ -797,7 +797,7 @@ function partial_criteria_2_heading($row, $value, $t) {
       {$heading}
     </td>
         <td width="12%" class="centertop">{$t['Date of panel receipt']}</td>
-    <td width="12%" class="centertop">{$t['Were results reported within 15 days?']}</td>
+    <td width="16%" class="centertop">{$t['Were results reported within 15 days?']}</td>
     <td width="10%" class="centertopbold">{$t['Results & % Correct']}</td>
   </tr>
   </table>
@@ -849,7 +849,7 @@ function partial_panel_result($row, $value, $t) {
     <td width="12%">
       {$dt}
     </td>
-    <td width="12%">
+    <td width="16%">
       {$mc_yn}
     </td>
     <td width="10%">
@@ -942,6 +942,9 @@ function partial_sub_sec_info($row, $value, $t) {
   return '';
 }
 function partial_sec_sec_head($row, $value, $t) {
+  return '';
+}
+function partial_part_head($row, $value, $t) {
   return '';
 }
 function get_lang_text($base, $default, $sp_lang) {

@@ -26,58 +26,48 @@ function log( message ) {
 }
 
 function ecAutocomplete(name, url, callback, callbackname){
-	$('#'+name).autocomplete({
-		minLength: 1,
-		delay: 80,
-		source: url,
-		messages: {
-			noResults: '',
-			results: function() {}
-		},
-		/*function(request, response) {
-        $.ajax({
-            type: 'GET',
-            url: '{$url}',
-            data: {
-                'term':request.term
-            },
-            ContentType: "application/json; chrarset=utf-8",
-            dataType: "json",
-            success:function(data){
-                // response callback
-                response(data);
-            },
-            error:function(message){
-                //pass an empty array to close the meny
-                response([]);
-            }
-        });
-		 */
-		select: function(event, ui) {
-			$('#'+name).autocomplete('destroy');
-			//$(d_id).html('');
-			// $(d_id).dialog('destroy');
-			// act.su(ui.item.id);
-			// Set the id and name to something
-			callback(name, ui.item.labname, ui.item.id);
-			$("ui-autocomplete ul").html('');
-		},
-		//appendTo: "#{$n}_results",
-		/*response: function(event, ui) {
-        var i, il, line;
-        line = '';
-        il = ui.content.length;
-        for (i=0; i< il; i++) {
-            line += '<li class="limed"><a style="color:red;" href="" >'+ui.content[i].labname+'</a></li>';
-        }
-    		$("#{$n}_results").html(line);
-    }*/
-	})
-	.data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-		return $( "<li>" )
-		.html( '<div class="pd" style="color:green;font-size:22px;" ' +
-				'onclick="'+callbackname+'(\''+name+'\',\''+item.labname+'\','+item.id+');" > '
-				+ item.id + ' ' + item.labname + "</div>" )
-		.appendTo( ul );
-	};
+  $('#'+name).autocomplete({
+    minLength: 1,
+    delay: 80,
+    source: url,
+    messages: {
+      noResults: '',
+      results: function() {}
+    },
+    select: function(event, ui) {
+      $('#'+name).autocomplete('destroy');
+      callback(name, ui.item.labname, ui.item.id);
+      $("ui-autocomplete ul").html('');
+    },
+  })
+  .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+    .html( '<div class="pd" style="color:green;font-size:22px;" ' +
+        'onclick="'+callbackname+'(\''+name+'\',\''+item.labname+
+        '\','+item.id+');" > '
+        + item.id + ' ' + item.labname + "</div>" )
+        .appendTo( ul );
+  };
 };
+
+function watch_ynp(name, score) {
+  var selector = "input[name='"+ name +"']";
+  $(selector).change(function() {
+    var out = 0;
+    switch($(this).val()) {
+      case 'Y':
+        out = score;
+        break;
+      case 'P':
+        out = 1;
+        break;
+      case 'N':
+        out = 0;
+        break;
+      default:
+        out = 99;
+    };
+    $('#'+name+'_score').val(out.toString());
+  });
+}
+

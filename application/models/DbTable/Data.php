@@ -2,7 +2,7 @@
 
 /**
  * This implements the model for template data
- * 
+ *
  */
 require_once 'modules/Checklist/logger.php';
 
@@ -29,17 +29,17 @@ class Application_Model_DbTable_Data extends Application_Model_DbTable_Checklist
       $field_name = $row['field_name'];
       switch($row['field_type']) {
       case 'integer':
-        $val = $row['int_val']; 
+        $val = $row['int_val'];
         break;
       case 'text':
         $val = $row['text_val'];
         break;
       case 'date':
-        $val = $row['date_val']; 
+        $val = $row['date_val'];
         break;
       case 'string':
       default:
-        $val = $row['string_val'];        
+        $val = $row['string_val'];
       }
       $value[$field_name] = $val;
       logit("{$field_name} ==> {$val}");
@@ -61,7 +61,7 @@ class Application_Model_DbTable_Data extends Application_Model_DbTable_Checklist
   	
   }
   
-  public function updateAData($did, $name, $value) 
+  public function updateAData($did, $name, $value)
   {
   	$suff = end(preg_split("/_/", $name));
   	logit("END: {$name} --> {$suff}");
@@ -75,6 +75,7 @@ class Application_Model_DbTable_Data extends Application_Model_DbTable_Checklist
   		case 'd':
   		case 'w':
   		case 'er':
+  		case 'score':
   			$ival = (int)$value;
   			$ftype = 'integer';
   			break;
@@ -98,15 +99,15 @@ class Application_Model_DbTable_Data extends Application_Model_DbTable_Checklist
   			$ftype = 'string';
   			break;
   		default:
-  			$ftype = 'other';	
+  			$ftype = 'other';
   	}
   	logit("UI: {$did}, '{$name}', {$ival}, '{$tval}', '{$sval}', '{$dval}', '{$ftype}'");
   	$sql = <<<"END"
- INSERT INTO data_item (data_head_id, field_name, int_val, text_val, 
- string_val, date_val, field_type) values ({$did}, '{$name}', {$ival}, '{$tval}', 
- '{$sval}', '{$dval}', '{$ftype}') 
- ON DUPLICATE KEY UPDATE 
- data_head_id={$did}, field_name='{$name}', int_val={$ival}, text_val='{$tval}', 
+ INSERT INTO data_item (data_head_id, field_name, int_val, text_val,
+ string_val, date_val, field_type) values ({$did}, '{$name}', {$ival}, '{$tval}',
+ '{$sval}', '{$dval}', '{$ftype}')
+ ON DUPLICATE KEY UPDATE
+ data_head_id={$did}, field_name='{$name}', int_val={$ival}, text_val='{$tval}',
  string_val='{$sval}', date_val='{$dval}', field_type='{$ftype}'
 END;
 

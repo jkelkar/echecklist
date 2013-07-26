@@ -34,3 +34,17 @@ For the time being we will be using the path:
 possible to see any files below ../public.
 
 Jay Kelkar 07/25 22:15
+
+
+--------------------------------------------------------------
+Leave this section at the end - Always :)
+
+Open items:
+
+Q: Calculation of sub-section scores that depend on elements
+   Somewhere there is mention of calculating the scores only at the time of 
+   changing state to either 'COMPLETE' or 'APPROVED'.
+   
+   In any case, it is more expensive to calculate the scores on the fly, 
+   as often elements go across screens and we need to have all the 
+   answers before a score can be determined.

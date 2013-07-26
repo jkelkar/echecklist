@@ -9,7 +9,7 @@
  <link rel="stylesheet" href="<?php echo $this->baseUrl().'/css/dtree.css'; ?>" />
  <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/dtree.js'; ?>"></script>
  <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/jquery-1.8.3.js'?>" ></script>
- <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/jquery-ui-1.9.2.js'?>" ></script>
+ <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/jquery-ui-1.9.2.custom.js'?>" ></script>
  <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/helpers.js'?>" ></script>
  <title>The Title</title>
 </head>
@@ -45,7 +45,7 @@ var changed = false;
       
       <div style="margin:0 1mm;">
         <form method="post" action="" enctype="application/x-www-form-urlencoded" name="slipta" id="slipta">
-          <?php echo $this->outlines; 
+          <?php echo $this->outlines;
           	echo $this->hidden; ?>
           <div style="width:100%;">
           <div style="float:right;">
@@ -68,4 +68,4 @@ var changed = false;
 
 </div>
 </body>
-</html> 
+</html>

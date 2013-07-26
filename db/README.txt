@@ -13,3 +13,24 @@ cd /vagrant
 cd zftest
 ln -s /var/www/zfs/data .
 # this will allow the session data file to be owned by www-data without which it will not work
+
+
+Sessions have been turned on.
+
+In the directory (htdocs) or document home, there should be a directory
+zfs/data/sessions that should be owned by the user which runs the 
+webserver (On Linux it is www-data).
+
+The bottom line in that in zftest/data it should find the contents of zfs/data.
+
+If this is being installed on a windows box:
+Create a directory data/sessions (instead of the path suggested above!) in the 
+zftest directory. The zftest directory should live in htdocs and if using apache, 
+the .htaccess file provided needs to be installed (done by default). 
+
+For the time being we will be using the path:
+<host ip address>/zftest/public. Later we will make this the default path and 
+<hostname>/anypath will take you directly to the application and it will not be 
+possible to see any files below ../public.
+
+Jay Kelkar 07/25 22:15

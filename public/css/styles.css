@@ -172,3 +172,8 @@ textarea.small {
     border-bottom: 1px solid #ccc;
     padding-bottom:8px;
 }
+li.limed,
+li.ui-menu-item {
+    font-family:sans-serif;
+    font-size:16px;
+}

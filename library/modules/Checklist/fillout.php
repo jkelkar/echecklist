@@ -1,6 +1,6 @@
 <?php //-*- coding: utf-8 -*-
 ?>
-<?php 
+<?php
 
 /**
  * using the widgets and partials fill out the row
@@ -56,12 +56,12 @@ function SELECT($name, $optvals, $value)
   }
   $options = implode("\n", $optout);
   $out = <<<"END"
-<select name="{$name}" id="{$name}" class="select"> 
+<select name="{$name}" id="{$name}" class="select">
   {$options}
 </select>
 END;
   return $out;
-} 
+}
 
 function RADIO($name, $optvals, $value) {
   if (count($optvals) == 0) {
@@ -78,7 +78,7 @@ function RADIO($name, $optvals, $value) {
   foreach($optvals as $n => $v) {
     $sel = ($v == $val) ? "checked=\"checked\" " : '';
     // logit("Interiem - {$val} : {$sel}: {$n} => {$v}");
-    $optout[] = "<input style=\"margin: 0 4px 0 6px;\" type=\"radio\" name=\"{$name}\" ". 
+    $optout[] = "<input style=\"margin: 0 4px 0 6px;\" type=\"radio\" name=\"{$name}\" ".
       "id=\"{$name}_{$n}\" value=\"{$v}\" {$sel} > {$n} ";
   }
   $options = implode("\n", $optout);
@@ -137,11 +137,50 @@ function INPUT($name, $value, $type="string", $length=0, $style="", $class='')
   }
   $val = ($type != 'submit') ? get_arrval($value, $name, ''): $value;
   $out = <<<"END"
-    <input name="{$name}" id="{$name}" 
-  type="{$itype}" class="{$dtype} {$class}" value="{$val}" {$size} > 
+<input name="{$name}" id="{$name}"
+type="{$itype}" class="{$dtype} {$class}" value="{$val}" {$size} >
 END;
 
     return $out;
+}
+
+function INPUT_AC($name, $value, $type="string", $length=0, $style="", $class='')
+{
+	$size = $dtype = '';
+	switch($type) {
+		case 'integer':
+		case 'date':
+		case 'datetime':
+		case 'string':
+			$dtype = $type;
+			$itype = 'text';
+			if ($length != 0) {
+				$l = strval($length);
+				$size= "size=\"{$l}\" ";
+			}
+			break;
+
+		case 'password':
+			// this implies a string
+			$dtype = $type;
+			$itype = $dtype;
+			$l = strval($length);
+			$size = "size=\"{$l}\" ";
+			break;
+		case 'submit':
+			$dtype = $type;
+			$itype = $dtype;
+			break;
+		default:
+			$dtype = 'unexpected';
+	}
+	$val = ($type != 'submit') ? get_arrval($value, $name, ''): $value;
+	$out = <<<"END"
+<input name="{$name}" id="{$name}"
+type="{$itype}" class="{$dtype} {$class}" value="" autocomplete="off" {$size} >
+END;
+
+	return $out;
 }
 
 function OPTIONS($varname, $optvals, $value) {
@@ -164,7 +203,7 @@ function OPTIONS($varname, $optvals, $value) {
 
 function widget_select_yn($varname, $value, $t)
 {
-  $optvals  = array(//"{$t['Select']} ..." => '-', 
+  $optvals  = array(//"{$t['Select']} ..." => '-',
                     "{$t['Yes']}" => 'Y',
                     "{$t['No']}" => 'N');
   return OPTIONS($varname, $optvals, $value);
@@ -172,7 +211,7 @@ function widget_select_yn($varname, $value, $t)
 
 function widget_radio_yn($varname, $value, $t)
 {
-  $optvals  = array(//"{$t['Select']} ..." => '-', 
+  $optvals  = array(//"{$t['Select']} ..." => '-',
                     "{$t['Yes']}" => 'Y',
                     "{$t['No']}" => 'N');
   return OPTIONS($varname, $optvals, $value);
@@ -180,7 +219,7 @@ function widget_radio_yn($varname, $value, $t)
 
 function widget_select_ynp($varname, $value, $t)
 {
-  $optvals  = array(//"{$t['Select']} ..." => '-', 
+  $optvals  = array(//"{$t['Select']} ..." => '-',
                     "{$t['Yes']}" => 'Y',
                     "{$t['Partial']}" => 'P',
                     "{$t['No']}" => 'N');
@@ -189,7 +228,7 @@ function widget_select_ynp($varname, $value, $t)
 
 function widget_select_wp($varname, $value, $t)
 {
-  $optvals  = array(//"{$t['Select']} ..." => '-', 
+  $optvals  = array(//"{$t['Select']} ..." => '-',
                     "{$t['Personal']}" => 'P',
                     "{$t['Work']}" => 'W');
   return OPTIONS($varname, $optvals, $value);
@@ -197,7 +236,7 @@ function widget_select_wp($varname, $value, $t)
 
 function widget_select_yni($varname, $value, $t)
 {
-  $optvals  = array(//"{$t['Select']} ..." => '-', 
+  $optvals  = array(//"{$t['Select']} ..." => '-',
                     "{$t['Yes']}" => 'Y',
                     "{$t['No']}" => 'N',
                     "{$t['Insufficient Data']}" => 'I');
@@ -206,7 +245,7 @@ function widget_select_yni($varname, $value, $t)
 
 function widget_select_stars($varname, $value, $t)
 {
-  $optvals  = array(//"{$t['Select']}" => '-', 
+  $optvals  = array(//"{$t['Select']}" => '-',
                     "{$t['Not Audited']}" => 'N',
                     "0 {$t['Stars']}" => '0',
                     "1 {$t['Star']}"  => '1',
@@ -219,7 +258,7 @@ function widget_select_stars($varname, $value, $t)
 
 function widget_select_lablevel($varname, $value, $t)
 {
-  $optvals  = array(//"{$t['Select']} ..." => '-', 
+  $optvals  = array(//"{$t['Select']} ..." => '-',
                     "{$t['National']}"   => 'N',
                     "{$t['Reference']}"  => 'F',
                     "{$t['Regional']}"   => 'G',
@@ -232,7 +271,7 @@ function widget_select_lablevel($varname, $value, $t)
 
 function widget_select_labaffil($varname, $value, $t)
 {
-  $optvals  = array(//"{$t['Select']} ..." => '-', 
+  $optvals  = array(//"{$t['Select']} ..." => '-',
                     "{$t['Public']}"   => 'U',
                     "{$t['Hospital']}" => 'H',
                     "{$t['Private']}"  => 'P',
@@ -243,7 +282,7 @@ function widget_select_labaffil($varname, $value, $t)
   return OPTIONS($varname, $optvals, $value);
 }
 
-function widget_dt($name, $value, $length=10) 
+function widget_dt($name, $value, $length=10)
 {
   return INPUT($name, $value, 'date', $length);
 }
@@ -340,7 +379,7 @@ END;
 
 function partial_info_bn($row, $value, $t) {
   /**
-   * This implements full width information header with 
+   * This implements full width information header with
    * text in bold and normal font.
    * bold text is from field heading
    * normal test is from field text
@@ -375,7 +414,7 @@ function partial_sub_sec_head($row, $value, $t) {
       <td style="padding: 2px 4px;">
         <div style="display:inline-block;width:450px;vertical-align:top;">
           <div style="width:348px;display:inline;">
-            <div style="display:inline;font-weight:bold;width:25px;vertical-align:top;">{$prefix}</div> 
+            <div style="display:inline;font-weight:bold;width:25px;vertical-align:top;">{$prefix}</div>
             <div style="display:inline;width:420px;">
               <div style="text-decoration:underline;font-weight:bold;display:inline;">{$head}</div>
               <div style="vertical-align:top;display:inline;">{$text}
@@ -414,7 +453,7 @@ function partial_sec_element_yn($row, $value, $t) {
 <div style="display:inline-block;vertical-align:top;">
 <div style="width:325px;">
 <div>
-    <div style="vertical-align:top;display:inline;">{$prefix}</div> 
+    <div style="vertical-align:top;display:inline;">{$prefix}</div>
     <div style="text-decoration:underline;font-weight:bold;vertical-align:top;display:inline;">{$heading}</div>
 <div style="vertical-align:top;display:inline;">{$text}</div>
 </div>
@@ -452,7 +491,7 @@ function partial_sec_element($row, $value, $t) {
         <div style="display:inline-block;vertical-align:top;">
           <div style="width:425px;">
             <div style="width:100%">
-              <div style="vertical-align:top;display:inline;">{$prefix}</div> 
+              <div style="vertical-align:top;display:inline;">{$prefix}</div>
               <div style="text-decoration:underline;font-weight:bold;vertical-align:top;display:inline;">{$heading}</div>
               <div style="vertical-align:top;display:inline;">{$text}</div>
             </div>
@@ -656,13 +695,13 @@ function partial_criteria_1_heading($row, $value, $t) {
   $name = $row['varname'];
   $out = <<<"END"
 <td class="bpad">
-  <table style="width:100%;">    
+  <table style="width:100%;">
   <tr>
     <td width="7%" rowspan="2" class="centertopbold">{$prefix}</td>
     <td rowspan="2" class="title">
       {$heading}
     </td>
-    <td width="21%" colspan=3 class="centertopbold">{$t['FREQUENCY']}</td> 
+    <td width="21%" colspan=3 class="centertopbold">{$t['FREQUENCY']}</td>
   </tr>
   <tr>
     <td width="7%" class="centertopbold">{$t['Daily']}</td>
@@ -692,9 +731,9 @@ function partial_criteria_1_values($row, $value, $t) {
   $i33 = widget_integer("{$name}_qlt_er", $value, 4);
   $out = <<<"END"
 <td class="bpad">
-  <table style="width:100%;">    
-  <tr> 
-    <td width="7%" rowspan="4" class="centertopbold">{$prefix}</td> 
+  <table style="width:100%;">
+  <tr>
+    <td width="7%" rowspan="4" class="centertopbold">{$prefix}</td>
     <td colspan="4" class="title">{$heading}</td>
     </tr>
     <tr>
@@ -730,7 +769,7 @@ function partial_com_and_rec($row, $value, $t) {
   $tarea = TEXTAREA($name, $value, $style="width:100%;height:400px;");
   $out = <<<"END"
 <td>
-  <table style="width:100%;">    
+  <table style="width:100%;">
   <tr>
     <td>
     <div class="bigtitlei">{$heading}</div>
@@ -751,7 +790,7 @@ function partial_criteria_2_heading($row, $value, $t) {
   $name = $row['varname'];
   $out = <<<"END"
 <td class="bpad">
-  <table style="width:100%;">    
+  <table style="width:100%;">
   <tr>
     <td width="7%" rowspan="2" class="centertopbold">{$prefix}</td>
     <td rowspan="2" class="title">
@@ -774,7 +813,7 @@ function partial_panel_heading($row, $value, $t) {
   $name = $row['varname'];
   $out = <<<"END"
 <td class="bpad">
-  <table style="width:100%;">    
+  <table style="width:100%;">
   <tr>
     <td width="7%"></td>
     <td class="title">
@@ -799,7 +838,7 @@ function partial_panel_result($row, $value, $t) {
   $dt = widget_dt("{$name}_dt", $value, 10);
   $out = <<<"END"
 <td class="bpad">
-  <table style="width:100%;">    
+  <table style="width:100%;">
   <tr>
     <td width="7%" class="centerbold">
       {$prefix}
@@ -831,7 +870,7 @@ function partial_info($row, $value, $t) {
   $tarea = TEXTAREA($name, $value, $style="width:100%;height:250px;");
   $out = <<<"END"
 <td class="bpad">
-  <table style="width:100%;">    
+  <table style="width:100%;">
   <tr>
      <td>
        {$tarea}
@@ -850,7 +889,7 @@ function partial_action_plan_heading($row, $value, $t) {
   $name = $row['varname'];
   $out = <<<"END"
 <td class="bpad">
-  <table style="width:100%;">    
+  <table style="width:100%;">
   <tr>
     <td width="45%" class="centertopbold">
       {$heading}
@@ -877,11 +916,11 @@ function partial_action_plan_data($row, $value, $t) {
   $sign = TEXTAREA("{$name}_item", $value, $input_style);
   $out = <<<"END"
 <td class="bpad">
-  <table style="width:100%;">    
+  <table style="width:100%;">
   <tr>
     <td width="45%">{$item}</td>
     <td width="20%">{$person}</td>
-    <td width="10%">{$time}</td>                                                              
+    <td width="10%">{$time}</td>
     <td >{$sign}</td>
   </tr>
   </table>
@@ -926,7 +965,7 @@ function get_lang_text($base, $default, $sp_lang) {
 /**
  * We render the rows here
  */
-function calculate_page($rows, $value, $tword) 
+function calculate_page($rows, $value, $tword)
 {
   /**
    * Result of the query to get all template rows sorted in order
@@ -945,7 +984,7 @@ function calculate_page($rows, $value, $tword)
                  'Research', 'Non-hospital outpatient clinic', 'Other - please specify',
                  'FREQUENCY', 'Daily', 'Weekly', 'With Every Run',
                  'Quantitative tests', 'Semi-quantitative tests', 'Qualitative tests',
-                 'Date of panel receipt', 'Were results reported within 15 days?', 
+                 'Date of panel receipt', 'Were results reported within 15 days?',
                  'Results & % Correct');
   $tlist = get_common_words_translated($tword, $words);
   $tout = array();
@@ -960,8 +999,8 @@ function calculate_page($rows, $value, $tword)
     $arow['text'] = get_lang_text($row['text'], $row['ltdefault'], $row['ltlang']);
     $arow['varname' ] = $row['varname'];
     $arow['info'] = $row['info'];
-    $tout[] = '<tr >' 
-      . call_user_func("partial_{$type}", $arow, $value, $tlist) 
+    $tout[] = '<tr >'
+      . call_user_func("partial_{$type}", $arow, $value, $tlist)
       . '</tr>';
   }
   $tout[] = '</table>';

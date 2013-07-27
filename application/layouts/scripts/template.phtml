@@ -7,11 +7,22 @@
  <![endif]-->
  <link rel="stylesheet" href="<?php echo $this->baseUrl().'/css/styles.css'; ?>" />
  <link rel="stylesheet" href="<?php echo $this->baseUrl().'/css/dtree.css'; ?>" />
+ <link rel="stylesheet" href="<?php echo $this->baseUrl().
+   '/jquery-ui-1.9.2.custom/css/ui-lightness/jquery-ui-1.9.2.custom.css'; ?>" />
  <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/dtree.js'; ?>"></script>
- <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/jquery-1.8.3.js'?>" ></script>
- <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/jquery-ui-1.9.2.custom.js'?>" ></script>
+ <script type="text/javascript" src="<?php echo $this->baseUrl(). '/jquery-ui-1.9.2.custom/js/jquery-1.8.3.js'?>" ></script>
+ <script type="text/javascript" src="<?php echo $this->baseUrl(). '/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.js'?>" ></script>
  <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/helpers.js'?>" ></script>
  <title>The Title</title>
+ <script>
+  $(function() {
+    $( "input[type=submit], button" )
+      .button()
+      .click(function( event ) {
+        event.preventDefault();
+      });
+  });
+  </script>
 </head>
 
 <body style="width:1200px;">
@@ -43,7 +54,7 @@ var changed = false;
     </div>
       <div id="rightpane" style="/*border:1px solid black;*/float:left;">
       
-      <div style="margin:0 1mm;">
+      <div style="margin:0 1mm;margin-bottom:15px;">
         <form method="post" action="" enctype="application/x-www-form-urlencoded" name="slipta" id="slipta">
           <?php echo $this->outlines;
           	echo $this->hidden; ?>
@@ -55,7 +66,7 @@ var changed = false;
           </div></div>
         </form>
       </div>
-      <div style="height: 20px;"> &nbsp;</div>
+      <div style="height: 65px;"> &nbsp;</div>
       <div style="clear:both;"></div>
     </div>
   </div>

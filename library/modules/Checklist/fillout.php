@@ -158,7 +158,7 @@ function INPUT($name, $value, $type="string", $length=0, $style="", $class='')
   $val = ($type != 'submit') ? get_arrval($value, $name, ''): $value;
   $out = <<<"END"
 <input name="{$name}" id="{$name}"
-type="{$itype}" class="{$dtype} {$class}" value="{$val}" {$size} >
+type="{$itype}" class="{$dtype} {$class}" style="{$style}"value="{$val}" {$size} >
 END;
 
     return $out;
@@ -275,12 +275,6 @@ function widget_select_ynp_ro($varname, $value, $t)
 <input class="ro" name="{$ro_num}" id={$ro_num}"
        type="text" readonly="readonly" value="{$v_ro_num}">
 END;
- /* $optvals  = array(//"{$t['Select']} ..." => '-',
-      "{$t['Yes']}" => 'Y',
-          "{$t['Partial']}" => 'P',
-          "{$t['No']}" => 'N');
-          return OPTIONS($varname, $optvals, $value);
-          */
   return $out;
 }
 
@@ -432,6 +426,45 @@ END;
   return $out;
 }
 
+function partial_prof_info($row, $value, $t) {
+  $name = $row['varname'];
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $intf = INPUT($name, $value, 'integer', 3, 'margin-right:10px;', '');
+  $mc_yni = widget_select_yni("{$name}_yni", $value, $t);
+  $out = <<<"END"
+<div style="width:100%;">
+<div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
+  {$text}
+</div>
+<div style="vertical-align:top;width:400px;float:right;">
+  {$intf} {$mc_yni}
+</div>
+</div>
+END;
+  return $out;
+}
+
+function partial_prof_info_yn($row, $value, $t) {
+  $name = $row['varname'];
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $mc_yn = widget_select_yn("{$name}_yn", $value, $t);
+  $out = <<<"END"
+<div style="width:100%;">
+<div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
+  {$text}
+</div>
+<div style="vertical-align:top;width:400px;float:right;">
+  {$mc_yn}
+</div>
+</div>
+END;
+  return $out;
+}
+
 function partial_integer_field($row, $value, $t) {
   $name = $row['varname'];
   $prefix = $row['prefix'];
@@ -439,7 +472,6 @@ function partial_integer_field($row, $value, $t) {
   $text = $row['text'];
   $intf = INPUT($name, $value, 'integer', 0, 'width:100%;', '');
   $out = <<<"END"
-<!--table style="width:100%;"><tr-->
 <div style="width:100%;">
 <div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
   {$text}
@@ -447,7 +479,6 @@ function partial_integer_field($row, $value, $t) {
 <div style="vertical-align:top;width:400px;float:right;">
   {$intf}
 </div>
-<!--/tr></table-->
 </div>
 END;
   return $out;
@@ -460,7 +491,6 @@ function partial_text_field($row, $value, $t) {
   $text = $row['text'];
   $tarea = TEXTAREA("{$name}_comment", $value, "width:395px;height:50px;margin-top:5px;");
   $out = <<<"END"
-<!--table style="width:100%;"><tr-->
 <div style="width:100%;">
 <div style="display:inline-block;vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left">
   {$text}
@@ -468,8 +498,7 @@ function partial_text_field($row, $value, $t) {
 <div style="display:inline-block;vertical-align:top;width:400px;float:left;">
   {$tarea}
 </div>
-    </div>
-<!--/tr></table-->
+</div>
 END;
   return $out;
 }
@@ -479,17 +508,16 @@ function partial_date_field($row, $value, $t) {
   $heading = $row['heading'];
   $text = $row['text'];
   $datef = INPUT($name, $value, 'date', 10, '', '');
+  $script = '<script> $(function() {$( "' ."#{$name}". '" ).datepicker();});</script>';
   $out = <<<"END"
-<!--table style="width:100%;"><tr-->
 <div style="width:100%;">
 <div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
   {$text}
 </div>
 <div style="vertical-align:top;;width:400px;float:left;">
-  {$datef}
+  {$datef} {$script}
 </div>
 </div>
-<!--/tr></table-->
 END;
   return $out;
 }
@@ -501,7 +529,6 @@ function partial_tel_type($row, $value, $t) {
   $text = $row['text'];
   $pwf = widget_select_pw($name, $value, $t);
   $out = <<<"END"
-<!--table style="width:100%;"><tr-->
 <div style="width:100%;">
 <div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
   {$text}
@@ -510,7 +537,6 @@ function partial_tel_type($row, $value, $t) {
   {$pwf}
 </div>
 </div>
-<!--/tr></table-->
 END;
   return $out;
 }
@@ -547,9 +573,9 @@ function partial_sec_head_lab($row, $value, $t) {
   <table style="width:100%;"><tr>
       <td style="padding: 2px 4px;">
         <div style="display:inline-block;width:100%x;vertical-align:top;">
-          <div style="width:448px;display:inline;">
+          <div style="width:788px;display:inline;">
             <div style="display:inline;font-weight:bold;width:25px;vertical-align:top;">{$prefix}</div>
-            <div style="display:inline-block;width:405px;">
+            <div style="display:inline-block;width:755px;">
               <div style="text-decoration:underline;font-weight:bold;display:inline;">{$head}</div>
               <div style="vertical-align:top;display:inline;">{$text}
               </div>
@@ -561,6 +587,18 @@ END;
   return $out;
 }
 
+function partial_sec_head_top($row, $value, $t) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $out = <<<"END"
+<div style="width:100%;border:1px solid #ccc;background-color:#f0f0f0;padding: 4px;font-size:14px;">
+<b>{$heading}</b> {$text}
+</div>
+END;
+
+  return $out;
+}
 function partial_sec_head_small($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
@@ -809,14 +847,14 @@ function partial_date($row, $value, $t) {
   $text = $row['text'];
   $name = $row['varname'];
   $dt = widget_dt($name, $value);
-
+  $script = '<script> $(function() {$( "' ."#{$name}". '" ).datepicker();});</script>';
   $out = <<<"END"
 <table style="width:100%;"><tr>
 <td style="vertical-align:top;padding: 2px 4px;">
 {$text}
 </td>
 <td style="vertical-align:top;padding: 2px 4px;">
-{$dt}
+{$dt} {$script}
 </td>
 </tr></table>
 END;
@@ -1007,7 +1045,6 @@ function partial_com_and_rec($row, $value, $t) {
   $name = $row['varname'];
   $tarea = TEXTAREA($name, $value, $style="width:100%;height:400px;");
   $out = <<<"END"
-<td>
   <table style="width:100%;">
   <tr>
     <td>
@@ -1016,7 +1053,6 @@ function partial_com_and_rec($row, $value, $t) {
     </td>
   </tr>
   </table>
-</td>
 END;
 
   return $out;
@@ -1063,6 +1099,26 @@ END;
   return $out;
 }
 
+function partial_panel_heading2($row, $value, $t) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $name = $row['varname'];
+  $sfield = widget_integer("{$name}_name", $value,32);
+  $out = <<<"END"
+  <table style="width:100%;">
+  <tr>
+    <td width="7%"></td>
+    <td class="title">
+      {$heading} {$sfield}
+    </td>
+    <td width="10%" class="percent">%</td>
+  </tr>
+  </table>
+END;
+
+      return $out;
+}
 function partial_panel_result($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
@@ -1071,6 +1127,7 @@ function partial_panel_result($row, $value, $t) {
   $smallint = widget_integer("{$name}_num", $value, 4);
   $mc_yn = widget_select_yn("{$name}_yn", $value, $t);
   $dt = widget_dt("{$name}_dt", $value, 10);
+  $script = '<script> $(function() {$( "' ."#{$name}_dt". '" ).datepicker();});</script>';
   $out = <<<"END"
   <table style="width:100%;">
   <tr>
@@ -1081,7 +1138,7 @@ function partial_panel_result($row, $value, $t) {
       {$heading}
     </td>
     <td width="12%">
-      {$dt}
+      {$dt} {$script}
     </td>
     <td width="16%">
       {$mc_yn}
@@ -1170,12 +1227,31 @@ END;
   return $out;
 }
 function partial_sec_elem_info($row, $value, $t) {
-  return '';
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+$out = <<<"END"
+<div style="width:100%;border:1px solid #ccc;background-color:#f0f0f0;padding:4px;font-size:14px;">
+  <b>{$heading}</b> {$text}
+</div>
+END;
+  return $out;
 }
 function partial_sub_sec_info($row, $value, $t) {
-  return '';
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $out = <<<"END"
+<div style="width:100%;border:1px solid #ccc;background-color:#f0f0f0;padding: 4px;font-size:14px;">
+  <i><b>{$heading}</b> {$text}</i>
+</div>
+END;
+  return $out;
 }
 function partial_sec_sec_head($row, $value, $t) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
   return '';
 }
 function partial_part_head($row, $value, $t) {
@@ -1244,7 +1320,8 @@ function calculate_page($rows, $value, $tword)
   foreach($rows as $row){
     $type = $row['row_type'];
     $arow = array();
-    $arow['prefix'] = $row['prefix'];
+    $arow['prefix'] = get_lang_text($row['prefix'], $row['lpdefault'], $row['lplang']);
+    // $row['prefix'];
     $arow['heading'] = get_lang_text($row['heading'], $row['lhdefault'], $row['lhlang']);
     $arow['text'] = get_lang_text($row['text'], $row['ltdefault'], $row['ltlang']);
     $arow['varname' ] = $row['varname'];

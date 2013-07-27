@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 27, 2013 at 02:14 AM
+-- Generation Time: Jul 27, 2013 at 01:52 PM
 -- Server version: 5.5.31
 -- PHP Version: 5.3.10-1ubuntu3.6
 
@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `data_item` (
   `field_type` varchar(10) NOT NULL DEFAULT 'string',
   PRIMARY KEY (`id`),
   UNIQUE KEY `head_data` (`data_head_id`,`field_name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='One row per field of data saved.' AUTO_INCREMENT=477 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='One row per field of data saved.' AUTO_INCREMENT=481 ;
 
 --
 -- Dumping data for table `data_item`
@@ -343,7 +343,7 @@ INSERT INTO `lab` (`id`, `labname`, `labnum`, `description`, `street`, `street2`
 CREATE TABLE IF NOT EXISTS `lang` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `row_id` varchar(5) COLLATE utf8_unicode_ci NOT NULL,
-  `default` text COLLATE utf8_unicode_ci NOT NULL,
+  `def` text COLLATE utf8_unicode_ci NOT NULL,
   `EN` text COLLATE utf8_unicode_ci NOT NULL,
   `RU` text COLLATE utf8_unicode_ci NOT NULL,
   `VI` text COLLATE utf8_unicode_ci NOT NULL,
@@ -355,7 +355,7 @@ CREATE TABLE IF NOT EXISTS `lang` (
 -- Dumping data for table `lang`
 --
 
-INSERT INTO `lang` (`id`, `row_id`, `default`, `EN`, `RU`, `VI`, `FR`) VALUES
+INSERT INTO `lang` (`id`, `row_id`, `def`, `EN`, `RU`, `VI`, `FR`) VALUES
 (1, 'A1', 'default', 'EN', 'RU', 'VI', 'FR'),
 (2, 'A2', '', '', '', '', ''),
 (3, 'A3', '1', '1- English', '2-Русский', '3- Tiếng Việt', '4-Tiếng Pháp - Francais'),
@@ -601,7 +601,7 @@ INSERT INTO `lang` (`id`, `row_id`, `default`, `EN`, `RU`, `VI`, `FR`) VALUES
 (243, 'A243', 'Are audits being carried out by persons who are not involved in lab activities in the section being audited?', 'Are audits being carried out by persons who are not involved in lab activities in the section being audited?', '', '', ''),
 (244, 'A244', 'Are the personnel conducting the internal audits trained and competent in auditing?', 'Are the personnel conducting the internal audits trained and competent in auditing?', '', '', ''),
 (245, 'A245', 'Is cause analysis performed for nonconformities/noted deficiencies?', 'Is cause analysis performed for nonconformities/noted deficiencies?', '', '', '');
-INSERT INTO `lang` (`id`, `row_id`, `default`, `EN`, `RU`, `VI`, `FR`) VALUES
+INSERT INTO `lang` (`id`, `row_id`, `def`, `EN`, `RU`, `VI`, `FR`) VALUES
 (246, 'A246', 'Are internal audit findings documented and presented to the laboratory management and relevant staff for review?', 'Are internal audit findings documented and presented to the laboratory management and relevant staff for review?', '', '', ''),
 (247, 'A247', 'Audit Recommendations and Action Plan & Follow up', 'Audit Recommendations and Action Plan & Follow up', '', '', ''),
 (248, 'A248', 'Are recommendations for corrective/preventive actions made based on audit findings; is an action plan developed with clear timelines and documented follow-up? ', 'Are recommendations for corrective/preventive actions made based on audit findings; is an action plan developed with clear timelines and documented follow-up? ', '', '', ''),
@@ -843,7 +843,7 @@ INSERT INTO `lang` (`id`, `row_id`, `default`, `EN`, `RU`, `VI`, `FR`) VALUES
 (484, 'A484', 'INTRODUCTION', 'INTRODUCTION', '', 'GIỚI THIỆU', 'INTRODUCTION'),
 (485, 'A485', 'Laboratory services are an essential component in the diagnosis and treatment of patients infected with the human immunodeficiency virus (HIV), malaria, Mycobacterium tuberculosis (TB), sexually transmitted diseases (STDs), and other infectious diseases. Presently, the laboratory infrastructure and test quality for all types of clinical laboratories remain in its nascent stages in most countries in Africa. Consequently, there is an urgent need to strengthen laboratory systems and services. The establishment of a process by which laboratories can achieve accreditation at international standards is an invaluable tool for countries to improve the quality of laboratory services.', 'Laboratory services are an essential component in the diagnosis and treatment of patients infected with the human immunodeficiency virus (HIV), malaria, Mycobacterium tuberculosis (TB), sexually transmitted diseases (STDs), and other infectious diseases. Presently, the laboratory infrastructure and test quality for all types of clinical laboratories remain in its nascent stages in most countries in Africa. Consequently, there is an urgent need to strengthen laboratory systems and services. The establishment of a process by which laboratories can achieve accreditation at international standards is an invaluable tool for countries to improve the quality of laboratory services.', '', '', ''),
 (486, 'A486', 'In accordance with WHO’s core functions of setting standards and building institutional capacity, WHO-AFRO has established the Stepwise Laboratory (Quality) Improvement Process Towards Accreditation (SLIPTA) to strengthen laboratory systems of its Member States. The Stepwise Laboratory (Quality) Improvement Process Towards Accreditation (SLIPTA) is a framework for improving quality of public health laboratories in developing countries to achieve ISO 15189 standards. It is a process that enables laboratories to develop and document their ability to detect, identify, and promptly report all diseases of public health significance that may be present in clinical specimens. This initiative was spearheaded by a number of critical resolutions, including Resolution AFR/RC58/R2 on Public Health Laboratory Strengthening, adopted by the Member States during the 58th session of the Regional Committee in September 2008 in Yaoundé, Cameroon, and the Maputo Declaration to strengthen laboratory systems. This quality improvement process towards accreditation further provides a learning opportunity and pathway for continuous improvement, a mechanism for identifying resource and training needs, a measure of progress, and a link to the WHO-AFRO National Health Laboratory Service Networks.', 'In accordance with WHO’s core functions of setting standards and building institutional capacity, WHO-AFRO has established the Stepwise Laboratory (Quality) Improvement Process Towards Accreditation (SLIPTA) to strengthen laboratory systems of its Member States. The Stepwise Laboratory (Quality) Improvement Process Towards Accreditation (SLIPTA) is a framework for improving quality of public health laboratories in developing countries to achieve ISO 15189 standards. It is a process that enables laboratories to develop and document their ability to detect, identify, and promptly report all diseases of public health significance that may be present in clinical specimens. This initiative was spearheaded by a number of critical resolutions, including Resolution AFR/RC58/R2 on Public Health Laboratory Strengthening, adopted by the Member States during the 58th session of the Regional Committee in September 2008 in Yaoundé, Cameroon, and the Maputo Declaration to strengthen laboratory systems. This quality improvement process towards accreditation further provides a learning opportunity and pathway for continuous improvement, a mechanism for identifying resource and training needs, a measure of progress, and a link to the WHO-AFRO National Health Laboratory Service Networks.', '', '', '');
-INSERT INTO `lang` (`id`, `row_id`, `default`, `EN`, `RU`, `VI`, `FR`) VALUES
+INSERT INTO `lang` (`id`, `row_id`, `def`, `EN`, `RU`, `VI`, `FR`) VALUES
 (487, 'A487', 'Clinical, public health, and reference laboratories participating in the Stepwise Laboratory (Quality) Improvement Process Towards Accreditation (SLIPTA) are reviewed bi-annually. Recognition is given for the upcoming calendar year based on progress towards meeting requirements set by international standards and on laboratory performance during the 12 months preceding the SLIPTA audit, relying on complete and accurate data, usually from the past 1-13 months to 1 month prior to evaluation.', 'Clinical, public health, and reference laboratories participating in the Stepwise Laboratory (Quality) Improvement Process Towards Accreditation (SLIPTA) are reviewed bi-annually. Recognition is given for the upcoming calendar year based on progress towards meeting requirements set by international standards and on laboratory performance during the 12 months preceding the SLIPTA audit, relying on complete and accurate data, usually from the past 1-13 months to 1 month prior to evaluation.', '', '', ''),
 (488, 'A488', 'Scope', 'Scope', '', 'Phạm vi ứng dụng', 'Portée'),
 (489, 'A489', 'This checklist specifies requirements for quality and competency aimed to develop and improve laboratory services to raise quality to established national standards. The elements of this checklist are based on ISO standard 15189:2007(E) and, to a lesser extent, CLSI guideline GP26-A4; Quality Management System: A model for Laboratory Services; Approved Guideline – Fourth Edition.', 'This checklist specifies requirements for quality and competency aimed to develop and improve laboratory services to raise quality to established national standards. The elements of this checklist are based on ISO standard 15189:2007(E) and, to a lesser extent, CLSI guideline GP26-A4; Quality Management System: A model for Laboratory Services; Approved Guideline – Fourth Edition.', '', '', ''),
@@ -1091,7 +1091,7 @@ INSERT INTO `lang` (`id`, `row_id`, `default`, `EN`, `RU`, `VI`, `FR`) VALUES
 (731, 'A731', 'Points', 'Points', '', 'Điểm', 'Points'),
 (732, 'A732', 'SUMMARY OF AUDIT', 'SUMMARY OF AUDIT', '', 'TỔNG KẾT ĐÁNH GIÁ', 'SYNTHÈSE DE L’ÉVALUATION'),
 (733, 'A733', 'Results of the last audit (if any):', 'Results of the last audit (if any):', '', 'Kết quả đánh giá của lần gần đây nhất (nếu có):', 'Résultats de la dernière évaluation (S''il existait)');
-INSERT INTO `lang` (`id`, `row_id`, `default`, `EN`, `RU`, `VI`, `FR`) VALUES
+INSERT INTO `lang` (`id`, `row_id`, `def`, `EN`, `RU`, `VI`, `FR`) VALUES
 (734, 'A734', 'Results of this audit:', 'Results of this audit:', '', 'Kết quả của lần đánh giá này:', 'Les résultats de cette évaluation:'),
 (735, 'A735', 'Visit Number (including the baseline audit):', 'Visit Number (including the baseline audit):', '', 'Số lần đánh giá (kể cả đánh giá ban đầu):', 'Visits nombre (y compris l''évaluation de base):'),
 (736, 'A736', 'Lead Auditor Signature                                                                                                                           ', 'Lead Auditor Signature                                                                                                                           ', '', 'Chữ ký của Trưởng đoàn đánh giá', 'Signature de l’évaluateur en chef                                                                                                                           '),
@@ -1297,23 +1297,24 @@ INSERT INTO `lang_text` (`id`, `tag`, `row_name`, `prefix`, `heading`, `text`, `
 
 CREATE TABLE IF NOT EXISTS `lang_word` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tag` varchar(2) COLLATE utf8_unicode_ci NOT NULL,
-  `word` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `trans_word` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `row_id` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+  `def` text COLLATE utf8_unicode_ci NOT NULL,
+  `EN` text COLLATE utf8_unicode_ci NOT NULL,
+  `VI` text COLLATE utf8_unicode_ci NOT NULL,
+  `FR` text COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Has translations of commonly used words' AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Has translations of commonly used words' AUTO_INCREMENT=10 ;
 
 --
 -- Dumping data for table `lang_word`
 --
 
-INSERT INTO `lang_word` (`id`, `tag`, `word`, `trans_word`) VALUES
-(1, 'EN', 'Yes', 'Yes'),
-(2, 'FR', 'Yes', 'Oui'),
-(3, 'VI', 'Yes', 'Có'),
-(4, 'EN', 'No', 'No'),
-(5, 'FR', 'No', 'Non'),
-(6, 'VI', 'No', 'Không');
+INSERT INTO `lang_word` (`id`, `row_id`, `def`, `EN`, `VI`, `FR`) VALUES
+(1, '', 'Yes', 'Yes', 'Có', 'Oui'),
+(4, '', 'No', 'No', 'Non', 'Không'),
+(7, '', 'Quantitative tests', 'Quantitative tests', 'Các xét nghiêm định lượng', 'Tests quantitatifs'),
+(8, '', 'Semi-quantitative tests', 'Semi-quantitative tests', 'Các xét nghiêm bán định lượng ', 'Tests semi-quantitatifs'),
+(9, '', 'Qualitative tests', 'Qualitative tests', 'Các xét nghiêm định tính', 'Tests qualitatifs');
 
 -- --------------------------------------------------------
 
@@ -1440,7 +1441,7 @@ CREATE TABLE IF NOT EXISTS `tmpl_row` (
   `element_count` int(11) NOT NULL,
   `page_num` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Stores template info of a display row.' AUTO_INCREMENT=490 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Stores template info of a display row.' AUTO_INCREMENT=491 ;
 
 --
 -- Dumping data for table `tmpl_row`
@@ -1483,8 +1484,7 @@ INSERT INTO `tmpl_row` (`id`, `tmpl_head_id`, `row_name`, `varname`, `row_type`,
 (34, 1, 'p1_driver_trained', 'driver_trained', 'prof_info_yn', 1, 4, 13, 0, 0, '', '', 'A637', '', 0, 0, 23),
 (35, 1, 'p1_other', 'other', 'prof_info', 1, 4, 14, 0, 0, '', '', 'Other', '', 0, 0, 23),
 (36, 1, 'p1_t_it_spec', '', 'info_i', 1, 4, 15, 0, 0, '', '', 'If the laboratory has IT specialists, accountants or non-laboratory-trained management staff, this should be indicated in the description of the organizational structure on the following page.', '', 0, 0, 23),
-(37, 1, 'p1_t_5', '', 'sec_head_lab', 1, 5, 0, 0, 0, '5', 'Organizational Structure', 'Does the laboratory have sufficient space, equipment, supplies, personnel, infrastructure, etc. to execute the correct and timely performance of each test and maintain the quality management system?', '', 0, 0, 24),
-(38, 1, 'p1_t_suff_space', '', 'info_bn', 1, 5, 1, 0, 0, '', 'Does the laboratory have sufficient space, equipment, supplies, personnel, infrastructure, etc. to execute the correct and timely performance of each test and maintain the quality management system?', 'If no, please elaborate in the summary and recommendations section at the end of the checklist.', '', 0, 0, 24),
+(37, 1, 'p1_t_5', '', 'sec_head_lab', 1, 5, 0, 0, 0, '5', 'Organizational Structure', '<b>Does the laboratory have sufficient space, equipment, supplies, personnel, infrastructure, etc. to execute the correct and timely performance of each test and maintain the quality management system?</b> If no, please elaborate in the summary and recommendations section at the end of the checklist.\r\n', '', 0, 0, 24),
 (39, 1, 'p1_sufficient_space', 'sufficient_space', 'prof_info_yn', 1, 5, 2, 0, 0, '', '', 'Sufficient space', '', 0, 0, 24),
 (40, 1, 'p1_sufficient_equipment', 'sufficient_equipment', 'prof_info_yn', 1, 5, 3, 0, 0, '', '', 'Equipment', '', 0, 0, 24),
 (41, 1, 'p1_sufficient_supplies', 'sufficient_supplies', 'prof_info_yn', 1, 5, 3, 0, 0, '', '', 'Supplies', '', 0, 0, 24),
@@ -1545,14 +1545,11 @@ INSERT INTO `tmpl_row` (`id`, `tmpl_head_id`, `row_name`, `varname`, `row_type`,
 (96, 1, 'p2_s01_04_32', 's010432', 'sec_element', 2, 1, 4, 32, 0, '1.4.32', '', 'A65', 'ISO 15190: 7.5', 0, 0, 2),
 (97, 1, 'p2_s01_04_info', '', 'sub_sec_info', 2, 1, 4, 100, 0, 'info', 'Standard:', 'Standard Operating Procedures (SOPs) should be established and maintained up-to-date for all tasks performed within the laboratory, safety and waste disposal, document control, specimen collection and processing, inventory control, procurement, and quality assurance. SOPs should be reviewed for accuracy and relevance on an annual basis. All policies and procedures should be approved by an authorized person.', '', 0, 0, 2),
 (98, 1, 'p2_s01_05', 's0105', 'sub_sec_head', 2, 1, 5, 0, 0, '1.5', 'A66', 'A67', '', 2, 0, 2),
-(99, 1, 'p2_s01_05_info', '', 'sub_sec_info', 2, 1, 5, 100, 0, 'info', 'Standard:', 'All procedures shall be documented and be available at the workstation for relevant staff. Documented procedures and necessary instructions shall be available in a language commonly understood by the staff in the laboratory.', '', 0, 0, 2),
-(100, 1, 'p2_s01_05_info', '', 'sub_sec_info', 2, 1, 5, 101, 0, 'info', 'ISO 15189: 5.5.3, 4.3.2 Part C', '', '', 0, 0, 2),
+(99, 1, 'p2_s01_05_info', '', 'sub_sec_info', 2, 1, 5, 100, 0, 'info', 'Standard:', 'All procedures shall be documented and be available at the workstation for relevant staff. Documented procedures and necessary instructions shall be available in a language commonly understood by the staff in the laboratory.<br />\r\n<b>ISO 15189: 5.5.3, 4.3.2 Part C</b>', '', 0, 0, 2),
 (101, 1, 'p2_s01_06', 's0106', 'sub_sec_head', 2, 1, 6, 0, 0, '1.6', 'A68', 'A69', '', 2, 0, 2),
-(102, 1, 'p2_s01_06_info', '', 'sub_sec_info', 2, 1, 6, 100, 0, 'info', 'Standard:', 'Policies, processes, programs, procedures and instructions shall be documented and communicated to all relevant staff and management must ensure that these documents are understood by staff and implemented.', '', 0, 0, 2),
-(103, 1, 'p2_s01_06_info', '', 'sub_sec_info', 2, 1, 6, 101, 0, 'info', 'ISO 15189: 4.2.1', '', '', 0, 0, 2),
+(102, 1, 'p2_s01_06_info', '', 'sub_sec_info', 2, 1, 6, 100, 0, 'info', 'Standard:', 'Policies, processes, programs, procedures and instructions shall be documented and communicated to all relevant staff and management must ensure that these documents are understood by staff and implemented.<br />\r\n<b>ISO 15189: 4.2.1</b>', '', 0, 0, 2),
 (104, 1, 'p2_s01_07', 's0107', 'sub_sec_head', 2, 1, 7, 0, 0, '1.7', 'A70', 'A71', '', 2, 0, 2),
-(105, 1, 'p2_s01_07_info', '', 'sub_sec_info', 2, 1, 7, 100, 0, 'info', 'Standard:', 'The document control log or other documentation should capture the date the policy/procedure went into service, schedule of review, the identity of the reviewers, and the date of discontinuation.', '', 0, 0, 2),
-(106, 1, 'p2_s01_07_info', '', 'sub_sec_info', 2, 1, 7, 101, 0, 'info', 'ISO 15189: 4.3.1, 4.3.2 Part (e) and (f): 4.3.2 - ', '“Procedures shall be adopted to ensure that e) invalid or obsolete documents are promptly removed from all points of use, or otherwise assured against inadvertent use; and f) retained or archived superseded documents are appropriately identified to prevent their inadvertent use.', '', 0, 0, 2),
+(105, 1, 'p2_s01_07_info', '', 'sub_sec_info', 2, 1, 7, 100, 0, 'info', 'Standard:', 'The document control log or other documentation should capture the date the policy/procedure went into service, schedule of review, the identity of the reviewers, and the date of discontinuation.\r\n<br />\r\n<b>ISO 15189: 4.3.1, 4.3.2 Part (e) and (f): 4.3.2 - </b>\r\n“Procedures shall be adopted to ensure that e) invalid or obsolete documents are promptly removed from all points of use, or otherwise assured against inadvertent use; and f) retained or archived superseded documents are appropriately identified to prevent their inadvertent use.', '', 0, 0, 2),
 (107, 1, 'p2_s01_08', 's0108', 'sub_sec_head', 2, 1, 8, 0, 0, '1.8', 'A72', 'A73', '', 2, 0, 2),
 (108, 1, 'p2_s01_08_info', '', 'sub_sec_info', 2, 1, 8, 100, 0, 'info', 'Standard:', 'Discontinued policies/procedures should be retained or archived in a separate file or place clearly marked to avoid use for the period of time required by laboratory and/or national policy.', '', 0, 0, 2),
 (109, 1, 'p2_s01_08_info', '', 'sub_sec_info', 2, 1, 8, 101, 0, 'info', 'ISO 15189: 4.3.1, 4.3.2  Part (e) and (f) – see above', '', '', 0, 0, 2),
@@ -1883,48 +1880,48 @@ INSERT INTO `tmpl_row` (`id`, `tmpl_head_id`, `row_name`, `varname`, `row_type`,
 (434, 1, 'p2_s12_20', 's1220', 'sub_sec_head', 2, 12, 20, 0, 0, '12.20', '', 'A444', '', 2, 0, 13),
 (435, 1, 'p2_s12_21', 's1221', 'sub_sec_head', 2, 12, 21, 0, 0, '12.21', '', 'A445', '', 2, 0, 13),
 (436, 1, 'p2_s12_total', '', 'sec_total', 2, 12, 100, 0, 0, '12', '', 'A446', '', 0, 0, 13),
-(437, 1, 'p2_s13', '', 'criteria_1_heading', 2, 13, 0, 0, 0, 'A513', 'A514', '', '', 0, 0, 14),
+(437, 1, 'p2_s13', '', 'criteria_1_heading', 2, 13, 0, 2, 0, 'A513', 'A514', '', '', 0, 0, 14),
 (438, 1, 'p2_s13_01', 'monconval', 'criteria_1_values', 2, 13, 1, 0, 0, '1.1', 'A519', '', '', 0, 0, 14),
 (439, 1, 'p2_s13_02', 'monintstd', 'criteria_1_values', 2, 13, 2, 0, 0, '1.2', 'A523', '', '', 0, 0, 14),
-(440, 1, 'p2_s13_03', 'monqualkit', 'criteria_1_values', 2, 13, 3, 0, 0, '1.3', 'A527', '', '', 0, 0, 14);
-INSERT INTO `tmpl_row` (`id`, `tmpl_head_id`, `row_name`, `varname`, `row_type`, `part`, `level1`, `level2`, `level3`, `level4`, `prefix`, `heading`, `text`, `info`, `score`, `element_count`, `page_num`) VALUES
+(440, 1, 'p2_s13_03', 'monqualkit', 'criteria_1_values', 2, 13, 3, 0, 0, '1.3', 'A527', '', '', 0, 0, 14),
 (441, 1, 'p2_s13_04', 'docconkit', 'criteria_1_values', 2, 13, 4, 0, 0, '1.4', 'A531', '', '', 0, 0, 14),
 (442, 1, 'p2_s13_com', 'criteria1_com', 'com_and_rec', 2, 13, 100, 0, 0, '', 'A510', '', '', 0, 0, 14),
 (443, 1, 'p2_t_s14', '', 'criteria_2_heading', 2, 14, 0, 0, 0, 'A536', 'A537', '', '', 0, 0, 15),
 (444, 1, 'p2_t_s14_01to02', '', 'panel_heading', 2, 14, 0, 1, 0, '', 'A544', '', '', 0, 0, 15),
-(445, 1, 'p2_s14_01', 'panel_res', 'panel_result', 2, 14, 1, 0, 0, '2.1', 'A545', '', '', 0, 0, 15),
-(446, 1, 'p2_s14_02', 'panel_res', 'panel_result', 2, 14, 2, 0, 0, '2.2', 'A546', '', '', 0, 0, 15),
+(445, 1, 'p2_s14_01', 'hivser_mr', 'panel_result', 2, 14, 1, 0, 0, '2.1', 'A545', '', '', 0, 0, 15);
+INSERT INTO `tmpl_row` (`id`, `tmpl_head_id`, `row_name`, `varname`, `row_type`, `part`, `level1`, `level2`, `level3`, `level4`, `prefix`, `heading`, `text`, `info`, `score`, `element_count`, `page_num`) VALUES
+(446, 1, 'p2_s14_02', 'hivser_smr', 'panel_result', 2, 14, 2, 0, 0, '2.2', 'A546', '', '', 0, 0, 15),
 (447, 1, 'p2_t_s14_03to04', '', 'panel_heading', 2, 14, 2, 1, 0, '', 'A547', '', '', 0, 0, 15),
-(448, 1, 'p2_s14_03', 'panel_res', 'panel_result', 2, 14, 3, 0, 0, '2.3', 'A548', '', '', 0, 0, 15),
-(449, 1, 'p2_s14_04', 'panel_res', 'panel_result', 2, 14, 4, 0, 0, '2.4', 'A549', '', '', 0, 0, 15),
+(448, 1, 'p2_s14_03', 'hivpcr_mr', 'panel_result', 2, 14, 3, 0, 0, '2.3', 'A548', '', '', 0, 0, 15),
+(449, 1, 'p2_s14_04', 'hivpcr_smr', 'panel_result', 2, 14, 4, 0, 0, '2.4', 'A549', '', '', 0, 0, 15),
 (450, 1, 'p2_t_s14_05to06', '', 'panel_heading', 2, 14, 4, 1, 0, '', 'A550', '', '', 0, 0, 15),
-(451, 1, 'p2_s14_05', 'panel_res', 'panel_result', 2, 14, 5, 0, 0, '2.5', 'A551', '', '', 0, 0, 15),
-(452, 1, 'p2_s14_06', 'panel_res', 'panel_result', 2, 14, 6, 0, 0, '2.6', 'A552', '', '', 0, 0, 15),
+(451, 1, 'p2_s14_05', 'hivload_mr', 'panel_result', 2, 14, 5, 0, 0, '2.5', 'A551', '', '', 0, 0, 15),
+(452, 1, 'p2_s14_06', 'hivload_smr', 'panel_result', 2, 14, 6, 0, 0, '2.6', 'A552', '', '', 0, 0, 15),
 (453, 1, 'p2_t_s14_07to08', '', 'panel_heading', 2, 14, 6, 1, 0, '', 'A553', '', '', 0, 0, 15),
-(454, 1, 'p2_s14_07', 'panel_res', 'panel_result', 2, 14, 7, 0, 0, '2.7', 'A554', '', '', 0, 0, 15),
-(455, 1, 'p2_s14_08', 'panel_res', 'panel_result', 2, 14, 8, 0, 0, '2.8', 'A555', '', '', 0, 0, 15),
+(454, 1, 'p2_s14_07', 'cd4ct_mr', 'panel_result', 2, 14, 7, 0, 0, '2.7', 'A554', '', '', 0, 0, 15),
+(455, 1, 'p2_s14_08', 'cd4ct_smr', 'panel_result', 2, 14, 8, 0, 0, '2.8', 'A555', '', '', 0, 0, 15),
 (456, 1, 'p2_t_s14_09to10', '', 'panel_heading', 2, 14, 8, 1, 0, '', 'A556', '', '', 0, 0, 15),
-(457, 1, 'p2_s14_09', 'panel_res', 'panel_result', 2, 14, 9, 0, 0, '2.9', 'A557', '', '', 0, 0, 15),
-(458, 1, 'p2_s14_10', 'panel_res', 'panel_result', 2, 14, 10, 0, 0, '2.10', 'A558', '', '', 0, 0, 15),
+(457, 1, 'p2_s14_09', 'chem_mr', 'panel_result', 2, 14, 9, 0, 0, '2.9', 'A557', '', '', 0, 0, 15),
+(458, 1, 'p2_s14_10', 'chem_smr', 'panel_result', 2, 14, 10, 0, 0, '2.10', 'A558', '', '', 0, 0, 15),
 (459, 1, 'p2_t_s14_11to12', '', 'panel_heading', 2, 14, 10, 1, 0, '', 'A559', '', '', 0, 0, 15),
-(460, 1, 'p2_s14_11', 'panel_res', 'panel_result', 2, 14, 11, 0, 0, '2.11', 'A560', '', '', 0, 0, 15),
-(461, 1, 'p2_s14_12', 'panel_res', 'panel_result', 2, 14, 12, 0, 0, '2.12', 'A561', '', '', 0, 0, 15),
+(460, 1, 'p2_s14_11', 'hema_mr', 'panel_result', 2, 14, 11, 0, 0, '2.11', 'A560', '', '', 0, 0, 15),
+(461, 1, 'p2_s14_12', 'hema_smr', 'panel_result', 2, 14, 12, 0, 0, '2.12', 'A561', '', '', 0, 0, 15),
 (462, 1, 'p2_t_s14_13to14', '', 'panel_heading', 2, 14, 12, 1, 0, '', 'A562', '', '', 0, 0, 15),
-(463, 1, 'p2_s14_13', 'panel_res', 'panel_result', 2, 14, 13, 0, 0, '2.13', 'A563', '', '', 0, 0, 15),
-(464, 1, 'p2_s14_14', 'panel_res', 'panel_result', 2, 14, 14, 0, 0, '2.14', 'A564', '', '', 0, 0, 15),
+(463, 1, 'p2_s14_13', 'mala_mr', 'panel_result', 2, 14, 13, 0, 0, '2.13', 'A563', '', '', 0, 0, 15),
+(464, 1, 'p2_s14_14', 'mala_smr', 'panel_result', 2, 14, 14, 0, 0, '2.14', 'A564', '', '', 0, 0, 15),
 (465, 1, 'p2_t_s14_15to20', '', 'panel_heading', 2, 14, 14, 1, 0, '', 'A565', '', '', 0, 0, 15),
-(466, 1, 'p2_s14_15', 'panel_res', 'panel_result', 2, 14, 15, 0, 0, '2.15', 'A566', '', '', 0, 0, 15),
-(467, 1, 'p2_s14_16', 'panel_res', 'panel_result', 2, 14, 16, 0, 0, '2.16', 'A567', '', '', 0, 0, 15),
-(468, 1, 'p2_s14_17', 'panel_res', 'panel_result', 2, 14, 17, 0, 0, '2.17', 'A568', '', '', 0, 0, 15),
-(469, 1, 'p2_s14_18', 'panel_res', 'panel_result', 2, 14, 18, 0, 0, '2.18', 'A569', '', '', 0, 0, 15),
-(470, 1, 'p2_s14_19', 'panel_res', 'panel_result', 2, 14, 19, 0, 0, '2.19', 'A570', '', '', 0, 0, 15),
-(471, 1, 'p2_s14_20', 'panel_res', 'panel_result', 2, 14, 20, 0, 0, '2.20', 'A571', '', '', 0, 0, 15),
-(472, 1, 'p2_t_s14_21to22', '', 'panel_heading', 2, 14, 20, 1, 0, '', 'A572', '', '', 0, 0, 15),
-(473, 1, 'p2_s14_21', 'panel_res', 'panel_result', 2, 14, 21, 0, 0, '2.21', 'A573', '', '', 0, 0, 15),
-(474, 1, 'p2_s14_22', 'panel_res', 'panel_result', 2, 14, 22, 0, 0, '2.22', 'A574', '', '', 0, 0, 15),
-(475, 1, 'p2_t_s14_23to24', '', 'panel_heading', 2, 14, 22, 1, 0, '', 'A575', '', '', 0, 0, 15),
-(476, 1, 'p2_s14_23', 'panel_res', 'panel_result', 2, 14, 23, 0, 0, '2.23', 'A576', '', '', 0, 0, 15),
-(477, 1, 'p2_s14_24', 'panel_res', 'panel_result', 2, 14, 24, 0, 0, '2.24', 'A577', '', '', 0, 0, 15),
+(466, 1, 'p2_s14_15', 'tbsmear_mr', 'panel_result', 2, 14, 15, 0, 0, '2.15', 'A566', '', '', 0, 0, 15),
+(467, 1, 'p2_s14_16', 'tbsmear_smr', 'panel_result', 2, 14, 16, 0, 0, '2.16', 'A567', '', '', 0, 0, 15),
+(468, 1, 'p2_s14_17', 'tbcult_mr', 'panel_result', 2, 14, 17, 0, 0, '2.17', 'A568', '', '', 0, 0, 15),
+(469, 1, 'p2_s14_18', 'tbcult_smr', 'panel_result', 2, 14, 18, 0, 0, '2.18', 'A569', '', '', 0, 0, 15),
+(470, 1, 'p2_s14_19', 'tbdrugs_mr', 'panel_result', 2, 14, 19, 0, 0, '2.19', 'A570', '', '', 0, 0, 15),
+(471, 1, 'p2_s14_20', 'tndrugs_smr', 'panel_result', 2, 14, 20, 0, 0, '2.20', 'A571', '', '', 0, 0, 15),
+(472, 1, 'p2_t_s14_21to22', 'othdis1', 'panel_heading2', 2, 14, 20, 1, 0, '', 'A572', '', '', 0, 0, 15),
+(473, 1, 'p2_s14_21', 'othdis1_mr', 'panel_result', 2, 14, 21, 0, 0, '2.21', 'A573', '', '', 0, 0, 15),
+(474, 1, 'p2_s14_22', 'othdis1_smr', 'panel_result', 2, 14, 22, 0, 0, '2.22', 'A574', '', '', 0, 0, 15),
+(475, 1, 'p2_t_s14_23to24', 'othdis2', 'panel_heading2', 2, 14, 22, 1, 0, '', 'A575', '', '', 0, 0, 15),
+(476, 1, 'p2_s14_23', 'othdis2_mr', 'panel_result', 2, 14, 23, 0, 0, '2.23', 'A576', '', '', 0, 0, 15),
+(477, 1, 'p2_s14_24', 'othdis2_smr', 'panel_result', 2, 14, 24, 0, 0, '2.24', 'A577', '', '', 0, 0, 15),
 (478, 1, 'p3_t', '', 'part_head', 3, 0, 0, 0, 0, '', 'A717', '', '', 0, 0, 16),
 (479, 1, 'p3_t_s1', '', 'sec_head', 3, 1, 0, 0, 0, '', 'A713', '', '', 0, 0, 16),
 (480, 1, 'p3_t_s01_01', '', 'sec_head_small', 3, 1, 0, 1, 0, '', 'A714', '', '', 0, 0, 16),
@@ -1936,7 +1933,8 @@ INSERT INTO `tmpl_row` (`id`, `tmpl_head_id`, `row_name`, `varname`, `row_type`,
 (486, 1, 'p3_t_s03', '', 'sec_head', 3, 3, 0, 0, 0, '', 'A721', '', '', 0, 0, 17),
 (487, 1, 'p3_t_s03_00_01', '', 'action_plan_heading', 3, 3, 0, 1, 0, '', 'A723', '', '', 0, 0, 17),
 (488, 1, 'p3_s5_01_01', 'action', 'action_plan_data', 3, 3, 1, 0, 0, '', '', '', '', 0, 0, 17),
-(489, 1, 'p3_t_s5_02', '', 'sec_head_small', 3, 5, 2, 0, 0, '', 'Criteria for SLIPTA 5 star certification and accreditation of internal standards', '', '', 0, 0, 18);
+(489, 1, 'p3_t_s5_02', '', 'sec_head_small', 3, 5, 2, 0, 0, '', 'Criteria for SLIPTA 5 star certification and accreditation of internal standards', '', '', 0, 0, 18),
+(490, 1, 'p1_s13_00_01', '', 'sec_head_top', 2, 13, 0, 1, 0, '', '', '<h2>ETHICAL PRINCIPLES IN LABORATORY MEDICINE</h2>\r\n<br />\r\n<b>Laboratories shall uphold the principle that the welfare and interest of the patient are paramount and patients should be treated fairly and without discrimination. (ISO 15189 Annex C.2.1)</b>\r\n<br /> <br />\r\nEvery medical laboratory shall provide its services to all users in a manner that respects their health rights and without discrimination. (ISO 15189 Annex C 2.2)<br />\r\n<br />\r\nEvery medical laboratory shall ensure that patient consent is obtained for all procedures carried out on the patient. In emergency situations, if consent is not possible under these circumstances, necessary procedures may be carried out, provided they are in the best interest of the patient. (ISO 15189 Annex C 4.1)<br />\r\n<br />\r\nMedical laboratories should have in place policy guidelines that address conflicts of interest, undue internal or external pressure, and confidentiality that could influence the credibility of the work conducted and information generated by the laboratory. (ISO 15189 Clause 4.1.4 and 4.1.5 b, c, d and 5.1.13)<br />\r\n<br />\r\nPersonnel employed within medical laboratories shall not compromise their organization by engaging in activities that could adversely affect quality of work, competence, impartiality, judgment or operational integrity. (ISO 15189 Clause 4.1.5 b, d).', '', 0, 0, 14);
 
 -- --------------------------------------------------------
 

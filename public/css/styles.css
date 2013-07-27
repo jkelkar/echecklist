@@ -185,5 +185,5 @@ input[type=text].ro {
   border: none;
   font-weight: bold;
   font-size: 14px;	 
-}
+  width: 20px;
 }

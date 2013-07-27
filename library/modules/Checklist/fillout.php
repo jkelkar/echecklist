@@ -243,13 +243,13 @@ function widget_select_yn($varname, $value, $t)
   return OPTIONS($varname, $optvals, $value);
 }
 
-function widget_radio_yn($varname, $value, $t)
+/*function widget_radio_yn($varname, $value, $t)
 {
   $optvals  = array(//"{$t['Select']} ..." => '-',
                     "{$t['Yes']}" => 'Y',
                     "{$t['No']}" => 'N');
   return OPTIONS($varname, $optvals, $value);
-}
+}*/
 
 function widget_select_ynp($varname, $value, $t)
 {
@@ -258,6 +258,30 @@ function widget_select_ynp($varname, $value, $t)
                     "{$t['Partial']}" => 'P',
                     "{$t['No']}" => 'N');
   return OPTIONS($varname, $optvals, $value);
+}
+
+function widget_select_ynp_ro($varname, $value, $t)
+{
+  /*
+   * This is a display for calculated choices
+   */
+  $ro_char = "{$varname}_ynp";
+  $v_ro_char = get_arrval($value, $ro_char, 'N');
+  $ro_num = "{$varname}_num";
+  $v_ro_num = get_arrval($value, $ro_num, 0);
+  $out = <<<"END"
+<input class="ro" name="{$ro_char}" id={$ro_char}"
+       type="text" readonly="readonly" value="{$v_ro_char}">
+<input class="ro" name="{$ro_num}" id={$ro_num}"
+       type="text" readonly="readonly" value="{$v_ro_num}">
+END;
+ /* $optvals  = array(//"{$t['Select']} ..." => '-',
+      "{$t['Yes']}" => 'Y',
+          "{$t['Partial']}" => 'P',
+          "{$t['No']}" => 'N');
+          return OPTIONS($varname, $optvals, $value);
+          */
+  return $out;
 }
 
 function widget_select_ynp_calc($varname, $value, $t, $score)
@@ -283,6 +307,25 @@ function widget_select_yni($varname, $value, $t)
                     "{$t['No']}" => 'N',
                     "{$t['Insufficient Data']}" => 'I');
   return OPTIONS($varname, $optvals, $value);
+}
+
+function widget_select_pw($varname, $value, $t) {
+  $optvals = array ( // "{$t['Select']} ..." => '-',
+      "{$t['Personal']}" => 'P',
+      "{$t['Work']}" => 'W'
+  );
+  return OPTIONS ( $varname, $optvals, $value );
+
+}
+
+function widget_select_yna($varname, $value, $t) {
+  $optvals = array ( // "{$t['Select']} ..." => '-',
+      "{$t['Yes']}" => 'Y',
+      "{$t['No']}" => 'N',
+      "{$t['N/A']}" => 'A'
+  );
+  return OPTIONS ( $varname, $optvals, $value );
+
 }
 
 function widget_select_stars($varname, $value, $t)
@@ -354,14 +397,120 @@ function partial_stars($row, $value, $t) {
   $text = $row['text'];
   $stars= widget_select_stars('stars', $value, $t);
 $out = <<<"END"
-<table style="width:100%;"><tr>
-<td style="vertical-align:top;padding: 2px 4px;">
+<!--table style="width:100%;"><tr-->
+<div style="width:100%;">
+<div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
   {$text}
-</td>
-<td style="vertical-align:top;padding: 2px 4px;">
+</div>
+<div style="vertical-align:top;width:400px;float:left;">
   {$stars}
-</td>
-</tr></table>
+</div>
+    </div>
+<!--/tr></table-->
+END;
+  return $out;
+}
+
+function partial_string_field($row, $value, $t) {
+  $name = $row['varname'];
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $stringf = INPUT($name, $value, 'string', 55, 'width:100%;', '');
+  $out = <<<"END"
+<!--table style="width:100%;"><tr-->
+<div style="width:100%;">
+<div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
+  {$text}
+</div>
+<div style="vertical-align:top;width:400px;float:left;">
+  {$stringf}
+</div>
+<!--/tr></table-->
+</div>
+END;
+  return $out;
+}
+
+function partial_integer_field($row, $value, $t) {
+  $name = $row['varname'];
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $intf = INPUT($name, $value, 'integer', 0, 'width:100%;', '');
+  $out = <<<"END"
+<!--table style="width:100%;"><tr-->
+<div style="width:100%;">
+<div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
+  {$text}
+</div>
+<div style="vertical-align:top;width:400px;float:right;">
+  {$intf}
+</div>
+<!--/tr></table-->
+</div>
+END;
+  return $out;
+}
+
+function partial_text_field($row, $value, $t) {
+  $name = $row['varname'];
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $tarea = TEXTAREA("{$name}_comment", $value, "width:395px;height:50px;margin-top:5px;");
+  $out = <<<"END"
+<!--table style="width:100%;"><tr-->
+<div style="width:100%;">
+<div style="display:inline-block;vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left">
+  {$text}
+</div>
+<div style="display:inline-block;vertical-align:top;width:400px;float:left;">
+  {$tarea}
+</div>
+    </div>
+<!--/tr></table-->
+END;
+  return $out;
+}
+function partial_date_field($row, $value, $t) {
+  $name = $row['varname'];
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $datef = INPUT($name, $value, 'date', 10, '', '');
+  $out = <<<"END"
+<!--table style="width:100%;"><tr-->
+<div style="width:100%;">
+<div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
+  {$text}
+</div>
+<div style="vertical-align:top;;width:400px;float:left;">
+  {$datef}
+</div>
+</div>
+<!--/tr></table-->
+END;
+  return $out;
+}
+
+function partial_tel_type($row, $value, $t) {
+  $name = $row['varname'];
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $pwf = widget_select_pw($name, $value, $t);
+  $out = <<<"END"
+<!--table style="width:100%;"><tr-->
+<div style="width:100%;">
+<div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
+  {$text}
+</div>
+<div style="vertical-align:top; ;width:400px;float:left;">
+  {$pwf}
+</div>
+</div>
+<!--/tr></table-->
 END;
   return $out;
 }
@@ -380,6 +529,35 @@ function partial_sec_head($row, $value, $t) {
 </tr></table>
 END;
   
+  return $out;
+}
+
+function partial_sec_head_lab($row, $value, $t) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $info = $row['info'];
+  $name = $row['varname'];
+  $max_score = $row['score'];
+  $widget_nyp = widget_select_ynp_calc($name, $value, $t, $max_score);
+  // widget_select_ynp($name, $value, $t);; // widget_nyp_ro($name, $value);
+  $head = ($heading) ? "{$heading}<br />" : "";
+  $tarea = TEXTAREA("{$name}_comment", $value, "width:100%;height:50px;margin-top:5px;");
+  $out = <<<"END"
+  <table style="width:100%;"><tr>
+      <td style="padding: 2px 4px;">
+        <div style="display:inline-block;width:100%x;vertical-align:top;">
+          <div style="width:448px;display:inline;">
+            <div style="display:inline;font-weight:bold;width:25px;vertical-align:top;">{$prefix}</div>
+            <div style="display:inline-block;width:405px;">
+              <div style="text-decoration:underline;font-weight:bold;display:inline;">{$head}</div>
+              <div style="vertical-align:top;display:inline;">{$text}
+              </div>
+            </div>
+      </td>
+  </tr></table>
+END;
+
   return $out;
 }
 
@@ -484,8 +662,9 @@ function partial_sub_sec_head_ro($row, $value, $t) {
 	$info = $row['info'];
 	$name = $row['varname'];
 	$max_score = $row['score'];
-	$widget_nyp_ro = 'N/Y/P FIXME';
-	$score = '# FIXME';
+	$widget_nyp_ro = widget_select_ynp_ro($name, $value, $t); //'N/Y/P FIXME';
+	$ynp_ro = "{$name}_ynp";
+	$this_score = get_arrval($value, $ynp_ro, 99); //'# FIXME';
 	$head = ($heading) ? "{$heading}<br />" : "";
 	$out = <<<"END"
   <table style="width:100%;"><tr>
@@ -504,7 +683,7 @@ function partial_sub_sec_head_ro($row, $value, $t) {
       </td>
       <td style="vertical-align:top;padding: 2px 4px;width:350px;">
       <div style="margin-right:5px;display:inline;">{$widget_nyp_ro}</div>
-      <div style="display:inline;">{$score} / <b>{$max_score}</b></div>
+      <!--div style="display:inline;">{$this_score} / <b>{$max_score}</b></div-->
       </td>
   </tr></table>
 END;
@@ -520,7 +699,7 @@ function partial_sec_element_yn($row, $value, $t) {
   $text = $row['text'];
   $info = $row['info'];
   $name = $row['varname'];
-  $mc_yn = widget_radio_yn($name, $value, $t);
+  $mc_yn = widget_select_yn("{$varname}_yn", $value, $t);
   $tarea = TEXTAREA("{$name}_comment", $value, "width:100%;height:50px;");
   $out = <<<"END"
 <table style="width:100%;"><tr>
@@ -557,7 +736,7 @@ function partial_sec_element($row, $value, $t) {
   $text = $row['text'];
   $info = $row['info'];
   $name = $row['varname'];
-  $mc_yn = widget_radio_yn($name, $value, $t);
+  $mc_yn = widget_select_yn("{$name}_yn", $value, $t);
   $tarea = TEXTAREA("{$name}_comment", $value, "width:100%;height:50px;margin-top:6px;");
   $out = <<<"END"
   <table style="width=100%;"><tr>
@@ -575,8 +754,6 @@ function partial_sec_element($row, $value, $t) {
       </td>
       <td  style="vertical-align:top;padding: 2px 4px;width:350px;">
         <div style="">{$mc_yn} </div>
-        <!--/td -->
-        <!-- td style="vertical-align:top;padding: 2px 4px;" -->
         {$tarea}
       </td>
 </tr></table>
@@ -593,10 +770,10 @@ function partial_lablevel($row, $value, $t) {
   $mc_lab_level = widget_select_lablevel($name, $value, $t);
   $out = <<<"END"
 <table style="width:100%;"><tr>
-<td style="vertical-align:top;padding: 2px 4px;">
+<td style="vertical-align:top;padding: 2px 7px 2px 4px;width:400px;text-align:right;">
 {$text}
 </td>
-<td style="vertical-align:top;padding: 2px 4px;">
+<td style="vertical-align:top;padding: 2px 4px;width:400px;">
 {$mc_lab_level}
 </td>
 </tr></table>
@@ -614,10 +791,10 @@ function partial_labaffil($row, $value, $t) {
 
   $out = <<<"END"
 <table style="width:100%;"><tr>
-<td style="vertical-align:top;padding: 2px 4px;">
+<td style="vertical-align:top;padding: 2px 7px 2px 4px;width:400px;text-align:right;">
 {$text}
 </td>
-<td style="vertical-align:top;padding: 2px 4px;">
+<td style="vertical-align:top;padding: 2px 4px;width:400px;">
 {$mc_lab_affil}
 </td>
 </tr></table>
@@ -1026,7 +1203,7 @@ function get_lang_text($base, $default, $sp_lang) {
   logit("{$base} -- {$default} -- {$sp_lang}");
   $out = '';
   $out = $base;
-  if ($default != 'NULL') {
+  if ($default) {
     $out = $default;
   }
   if ($sp_lang) {

@@ -22,7 +22,7 @@ class Application_Model_DbTable_Slipta extends Application_Model_DbTable_Checkli
         left join lang lt on (r.text = lt.row_id)
    where r.tmpl_head_id = {$id}
     and r.page_num = {$page_num}
-    order by r.part, r.level1, r.level2, r.level3, r.level4, r.level5, element
+    order by r.part, r.level1, r.level2, r.level3, r.level4
 SQL;
     // logit("SQL: {$sql}");
     $stmt =  $db->query($sql);

@@ -28,22 +28,14 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
   	/**
   	 * Get a labname and id by beginning of a labname
   	 */
-  	$db = $this->getDb();
+    $sql = "select id, labname from lab where labname like '{$name}%' order by labname limit 0, 4";
+    $jenc = $this->queryRowsAsJSON($sql);
+  	/*$db = $this->getDb();
   	$stmt = $db->query("select id, labname from lab where labname like '{$name}%' order by labname limit 0, 4");
   	$rows = $stmt->fetchAll();
   	$jenc = json_encode($rows);
+  	*/
   	return $jenc;
-  	/*return $rows;
-  	logit("Finddb: {$name}");
-  	$rows = $this->fetchAll($this->select()
-  			->where("labname like '{$name}%' ")
-  			->limit(4, 0)
-  	);
-  	if (!$row) {
-  		throw new Exception("Could not find row $id");
-  	}
-  	$jenc = json_encode($rows);
-  	return $jenc;*/
   }
   
   public function getLabs() {

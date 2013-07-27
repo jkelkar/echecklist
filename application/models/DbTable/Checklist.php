@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This fetches the db handle so we can run straight SQL 
+ * This fetches the db handle so we can run straight SQL
  * queries with it/
  */
 require_once 'modules/Checklist/logger.php';
@@ -36,4 +36,38 @@ class Application_Model_DbTable_Checklist extends Zend_Db_Table_Abstract
     $db->query($sql);
     return $db;
   }
+  
+  public function queryRows($sql) {
+    /*
+     * This runs the sql against the database and returns the result
+     * as $rows
+     */
+    $db = $this->getDb();
+    $stmt = $db->query($sql);
+    $rows = $stmt->fetchAll();
+    return $rows;
+  }
+  
+  public function queryRowcount($sql) {
+    /*
+     * This runs the sql against the database and returns the count
+    */
+    $db = $this->getDb();
+    $stmt = $db->query($sql);
+    $ct = $stmt->rowCount();
+    return $ct;
+  }
+  
+  public function queryRowsAsJSON($sql) {
+    /*
+     * This runs the sql against the database and returns the result
+     * as JSON
+     */
+    $db = $this->getDb();
+    $stmt = $db->query($sql);
+    $rows = $stmt->fetchAll();
+    $jenc = json_encode($rows);
+    return $jenc;
+  }
 }
+

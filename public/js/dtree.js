@@ -50,9 +50,9 @@ function dTree(objName) {
 			plus		: '../js/img/plus.gif',
 			plusBottom	: '../js/img/plusbottom.gif',
 			minus		: '../js/img/minus.gif',
-			minusBottom	: '../jsimg/minusbottom.gif',
-			nlPlus		: '../jsimg/nolines_plus.gif',
-			nlMinus		: '../jsimg/nolines_minus.gif'
+			minusBottom	: '../js/img/minusbottom.gif',
+			nlPlus		: '../js/img/nolines_plus.gif',
+			nlMinus		: '../js/img/nolines_minus.gif'
 	};
 	this.obj = objName;
 	this.aNodes = [];

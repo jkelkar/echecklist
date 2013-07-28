@@ -86,14 +86,14 @@ class IndexController extends Zend_Controller_Action
   /**
    * This shows the rows in excel format and makes it available for download
    */
-  public function inexcelAction() 
+  public function inexcelAction()
   {
     echo 'Starting the excel conversion' ;
     require_once 'modules/AlbumsExcel.php';
       
     $albums = new Application_Model_DbTable_Albums();
     $sql = "order by artist name";
-    // $this->view->albums = $albums->fetchAll();                                                     
+    // $this->view->albums = $albums->fetchAll();
     $rows = $albums->getAlbums();
       
     doit($rows);
@@ -125,7 +125,7 @@ class IndexController extends Zend_Controller_Action
     return ob_get_clean();
   }
 
-  public function renderZendToString() 
+  public function renderZendToString()
   {
     $data = $this->render('index/index', 'index', true);
     return $data;
@@ -142,6 +142,7 @@ class IndexController extends Zend_Controller_Action
     $html = $this->view->render('index/index.phtml');
     // echo 'Data: ' . $html;
     require_once 'modules/mpdf56/examples/testmpdf.php';
+    
     html2pdf($html);
     /**
      * $data = $this->renderZendToString();

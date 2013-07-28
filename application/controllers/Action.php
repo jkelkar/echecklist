@@ -26,5 +26,20 @@ class Application_Controller_Action extends Zend_Controller_Action
       logit( "User count: {$echecklistNamespace->userct}");
     }
   }
+  
+  public function convert2PDF($html)
+  {
+    //echo 'Create HTML & then convert it to PDF!';
+    /* $data = $this->renderPhpToString(); */
+    /**$albums = new Application_Model_DbTable_Albums();
+    $sql = "order by artist name";
+    $this->view->albums = $albums->getAlbums();
+    $html = $this->view->render('index/index.phtml');
+    logit("Data: {$html}");
+    **/
+    require_once 'modules/mpdf56/examples/testmpdf.php';
+    html2pdf($html);
+    
+  }
 
 }

@@ -44,7 +44,7 @@ class SliptaController extends Zend_Controller_Action
         logit("Got language value: {$langtag}");
       }
       if ($nextpage == '') {
-        $nextpage = 1;
+        $nextpage = 20; // this is the first page of slipta template
       } else {
         $nextpage = (int)$nextpage;
       }
@@ -132,4 +132,49 @@ class SliptaController extends Zend_Controller_Action
       }
       }
     }
+    
+    public function inpdf2Action()
+    {
+      //echo 'Create HTML & then convert it to PDF!';
+      /* $data = $this->renderPhpToString(); */
+      /*$albums = new Application_Model_DbTable_Albums();
+      $sql = "order by artist name";
+      $this->view->albums = $albums->getAlbums();
+      $html = $this->view->render('index/index.phtml');
+      */
+      
+      $html = file_get_contents('./slipta_1_saved.html');
+      //logit("Data: {strlen($html)}");
+      //echo strlen($html);
+      //exit();
+
+      require_once 'modules/mpdf56/examples/testmpdf.php';
+      html2pdf($html);
+       
+      /**
+       * $data = $this->renderZendToString();
+       * echo "Rendered: " . $data ."\n";
+      */
+    }
   }
+  
+  /**
+   * echo getcwd();
+      echo 'dirname: ', dirname('.');
+      if ($handle = opendir ( '.' )) {
+      echo "Directory handle: $handle\n";
+      echo "Entries:\n";
+      
+      // This is the correct way to loop over the directory.
+      while ( false !== ($entry = readdir ( $handle )) ) {
+        echo "Dir: {$entry}<br />";
+      }
+      
+      // This is the WRONG way to loop over the directory.
+      while ( $entry = readdir ( $handle ) ) {
+        echo "FILE: {$entry}<br />";
+      }
+      
+      closedir ( $handle );
+    }
+    */

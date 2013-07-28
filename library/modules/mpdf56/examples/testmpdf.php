@@ -1,16 +1,16 @@
 <?php
 
 
-function html2pdf($html) 
+function html2pdf($html)
 {
   
   //==============================================================
   //==============================================================
   //==============================================================
-  echo 'Current dir: ' . __DIR__ . ' ' . getcwd() . "\n";
+  //echo 'Current dir: ' . __DIR__ . ' ' . getcwd() . "\n";
   include("modules/mpdf56/mpdf.php");
   
-  $mpdf=new mPDF(); 
+  $mpdf=new mPDF();
   
   $mpdf->WriteHTML($html);
   $mpdf->Output();

@@ -20,7 +20,7 @@ class SliptaController extends Zend_Controller_Action
   public function editAction()
   {
     $slipta = new Application_Model_DbTable_Slipta();
-    $data = new Application_Model_DbTable_Data();
+    $data = new Application_Model_DbTable_AuditData();
     $page = new Application_Model_DbTable_Page();
     $lang = new Application_Model_DbTable_Language();
     $lang_word = new Application_Model_DbTable_langword();
@@ -48,9 +48,9 @@ class SliptaController extends Zend_Controller_Action
       } else {
         $nextpage = (int)$nextpage;
       }
-      $rows = $slipta->getrows(1, $nextpage, $langtag); // 1 is the tmpl_head_id
-      $value = $data->get_data(1);                      // 1 is the data_head_id
-      $nav = $page->getNav(1, $nextpage);               // 1 is the tmpl_head_id
+      $rows = $slipta->getrows(1, $nextpage, $langtag); // 1 is the template_id
+      $value = $data->get_data(1);                      // 1 is the audit_id
+      $nav = $page->getNav(1, $nextpage);               // 1 is the template_id
       $page_row = $nav['row'];
       $nrows = $nav['rows'];
 
@@ -64,12 +64,15 @@ class SliptaController extends Zend_Controller_Action
       $jsrows = array();
       $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
       $page_url = "{$baseurl}/slipta/edit?language={$langtag}";
-      foreach ($nrows as $r) {
+      foreach ( $nrows as $r ) {
         if ($this->debug) {
-          foreach($r as $x => $y) {
-            logit("{$x} -- {$y}");
+          
+          if ($this->debug) {
+            foreach ( $r as $x => $y ) {
+              logit ( "{$x} -- {$y}" );
+            }
+            logit ( "{$r['parent']} -> {$r['page_num']}" );
           }
-          logit("{$r['parent']} -> {$r['page_num']}");
         }
         $line = "d.add({$r['page_num']},{$r['parent']}, '{$r['tag']}'";
         if ($r['leaf'] == 't') { // draw a URL for a leaf node not otherwise
@@ -87,9 +90,16 @@ class SliptaController extends Zend_Controller_Action
       }
       $tout = calculate_page($rows, $value, $tword);
       $next = $nextpage +1;
-      // $tout[] = "<a href=\"{$baseurl}/slipta/edit?showpage={$next}&language={$langtag}\">Next page</a><br />";
       $this->view->treelines = implode("\n", $jsrows);
       $this->view->outlines = implode("\n", $tout);
+      $this->view->buttons = <<<"END"
+<div style="width:100%;">
+  <div style="float:right;">
+    <input type="submit" value="Cancel" id="cancelbutton" name="sbname">
+    <input type="submit" value="Save" id="savebutton" name="sbname">
+    <input type="submit" value="Save & Continue" id="continuebutton" name="sbname">
+</div></div>
+END;
       $this->view->hidden = implode("\n", array(
       		"<input type=\"hidden\" name=\"data_head_id\" value=\"1\">"
       ));
@@ -156,25 +166,32 @@ class SliptaController extends Zend_Controller_Action
        * echo "Rendered: " . $data ."\n";
       */
     }
-  }
-  
-  /**
-   * echo getcwd();
-      echo 'dirname: ', dirname('.');
-      if ($handle = opendir ( '.' )) {
-      echo "Directory handle: $handle\n";
-      echo "Entries:\n";
+    
+    public function html2pdfdomAction() {
+      // get the HTML
+      /*ob_start();
+      include(dirname(__FILE__).'/res/exemple00.php');
+      $content = ob_get_clean();
+      */
+      // convert in PDF
       
-      // This is the correct way to loop over the directory.
-      while ( false !== ($entry = readdir ( $handle )) ) {
-        echo "Dir: {$entry}<br />";
+      
+      $html = file_get_contents('./slipta_1_saved.html');
+      logit("HTML: {$html}");
+
+      require_once 'modules/html2pdf_v4.03/html2pdf.class.php';
+      try
+      {
+        $html2pdf = new HTML2PDF('P', 'Letter', 'en');
+        //      $html2pdf->setModeDebug();
+        $html2pdf->setDefaultFont('Arial');
+        $html2pdf->writeHTML($html, isset($_GET['vuehtml']));
+        $html2pdf->Output('test_slipta.pdf');
       }
-      
-      // This is the WRONG way to loop over the directory.
-      while ( $entry = readdir ( $handle ) ) {
-        echo "FILE: {$entry}<br />";
+      catch(HTML2PDF_exception $e) {
+        echo $e;
+        exit;
       }
-      
-      closedir ( $handle );
     }
-    */
+  }
+ 

@@ -3,7 +3,7 @@ require_once 'modules/Checklist/htmlhelp.php';
 require_once 'modules/Checklist/logger.php';
 require_once '../application/controllers/Action.php';
 
-class StartstopController extends Application_Controller_Action 
+class StartstopController extends Application_Controller_Action
 // Zend_Controller_Action
 {
 
@@ -27,15 +27,14 @@ class StartstopController extends Application_Controller_Action
       $user = new Application_Model_DbTable_User();
       $row = $user->getUserByUsername($username);
       // $u = array();
-      $eNamespace = parent::getHandle();
+      //$eNamespace = parent::getHandle();
       logit("eChecklist {$eNamespace->userct}");
+      $eNamespace->user = array();
       foreach($row as $a => $b) {
-        // logit("User: {$a} -- {$b}");
-        if ($a != 'password') {
-          $eNamespace->$a = $b; 
+        if ($a != 'password') { // FIXME - goto BCRYPT
+          $eNamespace->user[$a] = $b;
           logit("Added {$a} => {$b}");
         }
-                             
       }
       //$echecklistNamespace->user = $u;
       /* $this->_helper->redirector('index'); */
@@ -62,6 +61,11 @@ class StartstopController extends Application_Controller_Action
       $this->_helper->layout->setLayout('overall');
     }
     //}
+  }
+  
+  public function logoutAction() {
+    /* logout and clear the user entry from the session */
+    unset($eNamespace->user);
   }
   
   /**public function addAction()

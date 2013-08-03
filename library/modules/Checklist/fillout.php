@@ -238,8 +238,8 @@ function OPTIONS_CALC($varname, $optvals, $value, $score) {
 function widget_select_yn($varname, $value, $t)
 {
   $optvals  = array(//"{$t['Select']} ..." => '-',
-                    "{$t['Yes']}" => 'Y',
-                    "{$t['No']}" => 'N');
+                    "{$t['Yes']}" => 'YES',
+                    "{$t['No']}" => 'NO');
   return OPTIONS($varname, $optvals, $value);
 }
 
@@ -254,9 +254,9 @@ function widget_select_yn($varname, $value, $t)
 function widget_select_ynp($varname, $value, $t)
 {
   $optvals  = array(//"{$t['Select']} ..." => '-',
-                    "{$t['Yes']}" => 'Y',
-                    "{$t['Partial']}" => 'P',
-                    "{$t['No']}" => 'N');
+                    "{$t['Yes']}" => 'YES',
+                    "{$t['Partial']}" => 'PARTIAL',
+                    "{$t['No']}" => 'NO');
   return OPTIONS($varname, $optvals, $value);
 }
 
@@ -266,7 +266,7 @@ function widget_select_ynp_ro($varname, $value, $t)
    * This is a display for calculated choices
    */
   $ro_char = "{$varname}_ynp";
-  $v_ro_char = get_arrval($value, $ro_char, 'N');
+  $v_ro_char = get_arrval($value, $ro_char, 'NO');
   $ro_num = "{$varname}_num";
   $v_ro_num = get_arrval($value, $ro_num, 0);
   $out = <<<"END"
@@ -281,24 +281,24 @@ END;
 function widget_select_ynp_calc($varname, $value, $t, $score)
 {
 	$optvals  = array(//"{$t['Select']} ..." => '-',
-			"{$t['Yes']}" => 'Y',
-			"{$t['Partial']}" => 'P',
-			"{$t['No']}" => 'N');
+			"{$t['Yes']}" => 'YES',
+			"{$t['Partial']}" => 'PARTIAL',
+			"{$t['No']}" => 'NO');
 	return OPTIONS_CALC($varname, $optvals, $value, $score);
 }
 function widget_select_wp($varname, $value, $t)
 {
   $optvals  = array(//"{$t['Select']} ..." => '-',
-                    "{$t['Personal']}" => 'P',
-                    "{$t['Work']}" => 'W');
+                    "{$t['Personal']}" => 'PERSONAL',
+                    "{$t['Work']}" => 'WORK');
   return OPTIONS($varname, $optvals, $value);
 }
 
 function widget_select_yni($varname, $value, $t)
 {
   $optvals  = array(//"{$t['Select']} ..." => '-',
-                    "{$t['Yes']}" => 'Y',
-                    "{$t['No']}" => 'N',
+                    "{$t['Yes']}" => 'YES',
+                    "{$t['No']}" => 'NO',
                     "{$t['Insufficient Data']}" => 'I');
   return OPTIONS($varname, $optvals, $value);
 }
@@ -338,12 +338,12 @@ function widget_select_stars($varname, $value, $t)
 function widget_select_lablevel($varname, $value, $t)
 {
   $optvals  = array(//"{$t['Select']} ..." => '-',
-                    "{$t['National']}"   => 'N',
-                    "{$t['Reference']}"  => 'F',
-                    "{$t['Regional']}"   => 'G',
-                    "{$t['District']}"   => 'D',
-                    "{$t['Zonal']}"      => 'Z',
-                    "{$t['Field']}"      => 'F'
+                    "{$t['National']}"   => 'NATIONAL',
+                    "{$t['Reference']}"  => 'REFERENCE',
+                    "{$t['Regional']}"   => 'REGIONAL',
+                    "{$t['District']}"   => 'DISTRICT',
+                    "{$t['Zonal']}"      => 'ZONAL',
+                    "{$t['Field']}"      => 'FIELD'
                     );
   return OPTIONS($varname, $optvals, $value, $t);
 }
@@ -351,15 +351,26 @@ function widget_select_lablevel($varname, $value, $t)
 function widget_select_labaffil($varname, $value, $t)
 {
   $optvals  = array(//"{$t['Select']} ..." => '-',
-                    "{$t['Public']}"   => 'U',
-                    "{$t['Hospital']}" => 'H',
-                    "{$t['Private']}"  => 'P',
-                    "{$t['Research']}" => 'R',
-                    "{$t['Non-hospital outpatient clinic']}" => 'Z',
-                    "{$t['Other - please specify']}"         => 'O'
+                    "{$t['Public']}"   => 'PUBLIC',
+                    "{$t['Hospital']}" => 'HOSPITAL',
+                    "{$t['Private']}"  => 'PRIVATE',
+                    "{$t['Research']}" => 'RESEARCH',
+                    "{$t['Non-hospital outpatient clinic']}" => 'NONHOSPITAL',
+                    "{$t['Other - please specify']}"         => 'OTHER'
                     );
   return OPTIONS($varname, $optvals, $value);
 }
+
+function widget_select_slmtastatus($varname, $value, $t)
+{
+  $optvals  = array(//"{$t['Select']} ..." => '-',
+      "{$t['Official ASLM Audit']}"   => 'ASLM',
+      "{$t['SLMTA Audit']}" => 'SLMTA',
+      "{$t['Base Line Assessment']}"  => 'BASELINE',
+      "{$t['Non SLMTA Audit']}" => 'NONSLMTA'
+  );
+  return OPTIONS($varname, $optvals, $value);
+  }
 
 function widget_dt($name, $value, $length=10)
 {
@@ -818,6 +829,26 @@ function partial_lablevel($row, $value, $t) {
 END;
 
   return $out;
+}
+
+function partial_slmta_status($row, $value, $t) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $name = $row['varname'];
+  $mc_slmta_status = widget_select_slmtastatus($name, $value, $t);
+  $out = <<<"END"
+<table style="width:100%;"><tr>
+<td style="vertical-align:top;padding: 2px 7px 2px 4px;width:400px;text-align:right;">
+{$text}
+</td>
+<td style="vertical-align:top;padding: 2px 4px;width:400px;">
+{$mc_slmta_status}
+</td>
+</tr></table>
+END;
+
+return $out;
 }
 
 function partial_labaffil($row, $value, $t) {
@@ -1311,7 +1342,8 @@ function calculate_page($rows, $value, $tword)
                  'FREQUENCY', 'Daily', 'Weekly', 'With Every Run',
                  'Quantitative tests', 'Semi-quantitative tests', 'Qualitative tests',
                  'Date of panel receipt', 'Were results reported within 15 days?',
-                 'Results & % Correct');
+                 'Results & % Correct', 'Official ASLM Audit', 'SLMTA Audit',
+                 'Base Line Assessment', 'Non SLMTA Audit');
   $tlist = get_common_words_translated($tword, $words);
   $tout = array();
   $tout[] = '<table border=0 style="width:800px;">';

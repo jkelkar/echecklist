@@ -28,31 +28,29 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
   	/**
   	 * Get a labname and id by beginning of a labname
   	 */
-    $sql = "select id, labname from lab where labname like '{$name}%' order by labname limit 0, 4";
-    $jenc = $this->queryRowsAsJSON($sql);
-  	/*$db = $this->getDb();
-  	$stmt = $db->query("select id, labname from lab where labname like '{$name}%' order by labname limit 0, 4");
-  	$rows = $stmt->fetchAll();
-  	$jenc = json_encode($rows);
-  	*/
-  	return $jenc;
+    $sql = "select * from lab where labname like '{$name}%' " .
+      "and country like '{$ctry}%' order by labname limit 0, 4";
+    // $jenc = $this->queryRowsAsJSON($sql);
+  	// return $jenc;
+  	 $rows = $this->queryRows($sql);
+  	 return $rows;
   }
   
-  public function getLabs() {
+  /*public function getLabs() {
     $rows = $this->fetchAll($this->select()
 			    ->order('labname'));
     return $rows;
-  }
+  }*/
 
-  public function getLabsByCountry($ccode) {
-    /**
+  /*public function getLabsByCountry($ccode) {
+    / **
      * Return all labs in this country code
-     */
+     * /
     $rows = $this->fetchAll($this->select()
                             ->where("country_code = ?", $ccode)
                             ->order('labname'));
     return $rows;
-  }
+  }*/
 
   public function newLab($data) {
     /**

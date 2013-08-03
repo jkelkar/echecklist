@@ -149,4 +149,23 @@ class IndexController extends Zend_Controller_Action
      * echo "Rendered: " . $data ."\n";
      */
   }
+  
+  public function html2pdfdomAction() {
+    require_once("modules/dompdf/dompdf_config.inc.php");
+    /*$html = ob_get_contents();
+    ob_end_flush();
+    */
+    //$html = $this->render('index/index', 'index', true);
+    $albums = new Application_Model_DbTable_Albums();
+    $sql = "order by artist name";
+    // $this->view->albums = $albums->fetchAll();
+    $this->view->albums = $albums->getAlbums();
+    $html = $this->view->render('index/index.phtml');
+    logit("HTML: {$html}");
+    $dompdf = new DOMPDF();
+    $dompdf->load_html($html);
+    $dompdf->render();
+    $dompdf->stream("Time Table.pdf");
+    
+  }
 }

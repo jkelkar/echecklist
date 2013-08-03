@@ -6,7 +6,7 @@
 require_once 'modules/Checklist/logger.php';
 
 class Application_Model_DbTable_Slipta extends Application_Model_DbTable_Checklist {
-  protected $_name = 'slipta';
+  protected $_name = 'template_rows';
 
   public function getrows($id, $page_num, $lang) {
     $db = $this->getDb ();
@@ -17,16 +17,16 @@ class Application_Model_DbTable_Slipta extends Application_Model_DbTable_Checkli
       lp.row_id lprowid, lp.def lpdefault, lp.{$lang} lplang,
       lh.row_id lhrowid, lh.def lhdefault, lh.{$lang} lhlang,
       lt.row_id ltrowid, lt.def ltdefault, lt.{$lang} ltlang
-      from tmpl_row r left join lang lp on (r.prefix = lp.row_id)
+      from template_row r left join lang lp on (r.prefix = lp.row_id)
         left join lang lh on (r.heading = lh.row_id)
         left join lang lt on (r.text = lt.row_id)
-   where r.tmpl_head_id = {$id}
+   where r.template_id = {$id}
     and r.page_num = {$page_num}
     order by r.part, r.level1, r.level2, r.level3, r.level4
 SQL;
     // logit("SQL: {$sql}");
-    $stmt = $db->query ( $sql );
-    $rows = $stmt->fetchAll ();
+    // $stmt = $db->query ( $sql );
+    $rows = $this->queryRows($sql); // $stmt->fetchAll ();
     if (! $rows) {
       throw new Exception ( "No rows available for this template." );
     }

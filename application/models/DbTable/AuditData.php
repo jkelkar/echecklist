@@ -5,16 +5,14 @@
  */
 require_once 'modules/Checklist/logger.php';
 
-class Application_Model_DbTable_Data extends Application_Model_DbTable_Checklist {
-  protected $_name = 'data';
+class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Checklist {
+  protected $_name = 'audit_data';
 
   public function get_data($did) {
-    // global $log;
     $debug = 1;
     $db = $this->getDb ();
     $did = ( int ) $did;
-    // Read the following sql with $id == data_head_id
-    $sql = "select * from data_item where data_head_id = " . $did;
+    $sql = "select * from audit_data where audit_id = {$did}";
     $stmt = $db->query ( $sql );
     $rows = $stmt->fetchAll ();
     if (! $rows) {
@@ -45,20 +43,20 @@ class Application_Model_DbTable_Data extends Application_Model_DbTable_Checklist
   
   }
 
-  public function updateData($data, $did) {
-    /**
+  /*public function updateData($data, $did) {
+    / **
      * Update user at $id with this data
      * $data is an array with name value pairs
-     */
+     * /
     $did = ( int ) $did;
     foreach ( $data as $n => $v ) {
       logit ( "BEFORE: {$n} ==> {$v}" );
       $this->updateAData ( $did, $n, $v );
     }
   
-  }
+  } */
 
-  public function updateAData($did, $name, $value) {
+  public function updateAuditData($did, $name, $value) {
     $suff = end ( preg_split ( "/_/", $name ) );
     logit ( "END: {$name} --> {$suff}" );
     $ival = 0;
@@ -99,29 +97,25 @@ class Application_Model_DbTable_Data extends Application_Model_DbTable_Checklist
     }
     logit ( "UI: {$did}, '{$name}', {$ival}, '{$tval}', '{$sval}', '{$dval}', '{$ftype}'" );
     $sql = <<<"END"
- INSERT INTO data_item (data_head_id, field_name, int_val, text_val,
+ INSERT INTO audit_data (audit_id, field_name, int_val, text_val,
  string_val, date_val, field_type) values ({$did}, '{$name}', {$ival}, '{$tval}',
  '{$sval}', '{$dval}', '{$ftype}')
  ON DUPLICATE KEY UPDATE
- data_head_id={$did}, field_name='{$name}', int_val={$ival}, text_val='{$tval}',
+ audit_id={$did}, field_name='{$name}', int_val={$ival}, text_val='{$tval}',
  string_val='{$sval}', date_val='{$dval}', field_type='{$ftype}'
 END;
     $ct = $this->queryRowcount ( $sql );
-    /*
-     * $db = $this->getDb (); $stmt = $db->query( $sql ); $ct = $stmt->rowCount ();
-     */
     return $ct;
-  
   }
 
-  public function getTmplHeadId($did) {
+  public function getTemplateId($did) {
     /*
-     * Get tmpl_head_id from data_head table matching the $did (data_head_id) provided
+     * Get template_id from audit table matching the $did (audit_id) provided
      */
     $did = ( int ) $did;
-    $sql = "select tmpl_head_id from data_head where id = {$did}";
+    $sql = "select template_id from audit where id = {$did}";
     $rows = $this->queryRows($sql);
-    return $rows[0]['tmpl_row_id'];
+    return $rows[0]['template_id'];
   }
 
   public function update_scores($did) {
@@ -130,11 +124,11 @@ END;
      */
     $did = ( int ) $did;
     // Get tmpl_head_id for this $did
-    $tid = $this->getTmplHeadId($did);
+    $tid = $this->getTemplateId($did);
     $sql = <<<"END"
-select * from tmpl_row tr, data_head dh, data_item di
- where tr.tmpl_head_id = dh.tmpl_head_id
-   and dh.id = di.data_head_id
+select * from template_row tr, audit au, audit_data ad
+ where tr.template_id = au.template_id
+   and au.id = ad.audit_id
 END;
   }
 }

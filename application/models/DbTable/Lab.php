@@ -23,6 +23,39 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
     return $row->toArray();
   }
 
+  public function getLabs($data, $start, $ct) {
+    /*
+     * Get $ct labs starting at position $start
+     */
+    logit("Lab:getLabs: ".print_r($data, true)." {$start}, {$ct}");
+    $sql = "select * from lab where 1=1 ";
+    foreach ($data as $a => $b) {
+      $sql = $sql . " and {$a} like '{$b}%' ";
+    }
+    $sql = $sql . " limit {$start}, {$ct}";
+    logit("getLabs: {$sql}");
+    $rows = $this->queryRows( $sql );
+    foreach($rows as $row) {
+      logit("{$row['labname']} -- {$row['country']}");
+    }
+    if (count($rows) == 0) {
+      $rows = array();
+    }
+    return $rows;
+  
+  }
+  
+  public function getAllLabs( $start, $ct) {
+    logit("Labs: getalllabs");
+    $sql = "select * from lab limit {$start}, {$ct}";
+    logit("getAllLabs: {$sql}");
+    $rows = $this->queryRows( $sql );
+    foreach($rows as $row) {
+      logit("{$row['labname']} -- {$row['country']}");
+    }
+    return $rows;
+  }
+  
   public function getLabByPartialName($name)
   {
   	/**

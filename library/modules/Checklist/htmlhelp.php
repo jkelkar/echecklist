@@ -28,8 +28,8 @@ function field_input($name, $value, $type, $length=0, $style='',
     }
   
     $out = <<<"END"
-  <td class="n f" >{$lab}</td>
-  <td class="n f" >{$w1}{$inp}{$w2}</td>
+  <td class="n f right" style=width:400px;">{$lab}</td>
+  <td class="n f" style=width:400px;">{$w1}{$inp}{$w2}</td>
 END;
   default:
   }
@@ -55,7 +55,7 @@ function dumpForm($fields, $value=array('_' => '_')) {
   $outlines[] = "<form method=\"post\" action=\"\" " .
     "enctype=\"application/x-www-form-urlencoded\" " .
   	"name=\"thisform\" id=\"thisform\">";
-  $outlines[] = '<table>';
+  $outlines[] = '<table style="width:800px;">';
   $acomplete = array();
   $wrap = array('','');
   foreach($fields as $a => $b) {
@@ -76,14 +76,14 @@ function dumpForm($fields, $value=array('_' => '_')) {
     case 'datetime':
     case 'integer':
     case 'string':
-    case 'password':
       //logit("B: {$b}");
       //$length = ($l == '') ? '': "size=\"{$l}\"";
       //logit("V: {$value} {$a}");
-      if ($auto) {
+      if ($auto) { // autocomplete enabled
       	$wrap[0] = "<div style=\"margin: 3px 0;width: 210px;\">";
       	$wrap[1] = "<ul id=\"{$a}_results\"></ul></div>";
       }
+    case 'password':
       $outlines[] = field_input($a, $value,
                                 $type, $l, '',
                                 $b['label'], '', 'table', $wrap);
@@ -106,10 +106,7 @@ function dumpForm($fields, $value=array('_' => '_')) {
   /**
    * Add in all calls for autocomplte here
    */
-  /*
-   *  $outlines[] = '<script>';
-   *	$outlines[] = '$(function() {';
-   */
+  
   foreach ($acomplete as $n => $v) {
   	foreach($v as $n1 => $v1) {
   			logit("1: {$n1} => {$v1}");
@@ -135,9 +132,6 @@ END;
   	logit("JSL {$jslines}");
   	$outlines[] = $jslines;
   }
-  /*$outlines[] = "});";
-  $outlines[] = '</script>';
-  */
   logit("OUTL: " . implode("\n", $outlines));
   return implode("\n", $outlines);
 }

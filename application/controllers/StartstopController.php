@@ -45,7 +45,7 @@ class StartstopController extends Application_Controller_Action
                      'username' =>
                      array('type'=>'string',
                            'length' => 32,
-                           'label' => 'Userid:'),
+                           'label' => 'Email Address:'),
                      'password' =>
                      array('type'=>'password',
                            'length' => 32,

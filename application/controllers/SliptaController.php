@@ -95,9 +95,9 @@ class SliptaController extends Zend_Controller_Action
       $this->view->buttons = <<<"END"
 <div style="width:100%;">
   <div style="float:right;">
-    <input type="submit" value="Cancel" id="cancelbutton" name="sbname">
-    <input type="submit" value="Save" id="savebutton" name="sbname">
-    <input type="submit" value="Save & Continue" id="continuebutton" name="sbname">
+    <input type="submit" value="Cancel" id="cancelbutton" name="sbcancel">
+    <input type="submit" value="Save" id="savebutton" name="sbsave">
+    <input type="submit" value="Save & Continue" id="continuebutton" name="sbsavec">
 </div></div>
 END;
       $this->view->hidden = implode("\n", array(

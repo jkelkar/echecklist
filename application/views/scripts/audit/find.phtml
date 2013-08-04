@@ -1,0 +1,68 @@
+<?php
+require_once 'modules/Checklist/fillout.php';
+$this->title = "";
+$this->headTitle($this->title);
+
+function TR($strx, $class='') {
+  return "<tr class=\"{$class}\" >".implode("\n", $strx) ."</tr>";
+}
+function TD($str, $class='') {
+  return "<td class=\"{$class}\" >{$str}</td>";
+}
+function IMG($src, $class='') {
+  return "<img src=\"{$src}\" class=\"{$class}\" /> ";
+}
+function SELECT_LIVE($arr, $name, $value, $class='') {
+  $opts = array();
+  $opts['ALL'] = 'ALL';
+  foreach($arr as $a) {
+    $opts[$a] = $a;
+  }
+  return OPTIONS($name, $opts, $value);
+}
+
+
+$value = array();
+$items = array ();
+// labname
+$items [] = <<<"END"
+ <script>
+$(function() {
+$( ".dpicker" ).datepicker({
+showOn: "button",
+buttonImage: "{$this->baseurl}/images/dtwidget.jpg",
+buttonImageOnly: true
+});
+});
+</script>
+END;
+$items [] = "<table>";
+$items [] = TR ( array (
+    TD ( 'Lab Name', 'rightpad' ),
+    TD ( INPUT ( 'labname', $value, 'string', '', '' ), '' )
+) );
+$items [] = TR ( array (
+    TD ( 'Country', 'rightpad' ),
+    TD ( INPUT ( 'country', $value, 'string', '', '' ), '' )
+) );
+
+$items [] = TR ( array (
+    TD ( 'Start Date', 'rightpad' ),
+    TD ( INPUT ( 'stdate', $value, 'date', '', '', 'dpicker' )  )
+) );
+$items [] = TR ( array (
+    TD ( 'End Date', 'rightpad' ),
+    TD ( INPUT ( 'enddate', $value, 'date', '', '', 'dpicker' )  )
+) );
+$items [] = TR ( array (
+    TD ( 'Audit Type', 'rightpad' ),
+    TD ( SELECT_LIVE(array('SLIPTA', 'BAT', 'TB'), 'audittype', $value)  )
+) );
+$items [] = TR ( array (
+    TD ( ''),
+    TD ( BUTTON( 'getlabs', 'getlabs', 'Search', 'submit', 'padding: 3px 8px;', ''))
+) );
+$items [] = "</table>";
+$this->leftitems = implode("\n", $items);
+?>
+

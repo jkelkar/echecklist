@@ -71,3 +71,50 @@ function watch_ynp(name, score) {
   });
 }
 
+function clear() {
+  var url = $(location).attr('href');
+  //window.location.pathname;
+    window.location= url;
+}
+/*
+$('form').click(function(event) {
+    //event.preventDefautlt();
+  $(this).data('clicked',$(event.target))
+});
+
+function formSubmit() {
+/ *  if ($('form input[name=sbsave]').data('clicked').is('[name=sbsave]'))
+      alert('save');
+  if ($('form input[name=sbsavec]').data('clicked').is('[name=sbsavec]'))
+    alert('save&c');
+  * /
+  
+}*/
+/*$(document).ready(function() {
+  $("form").submit(function() { 
+
+    var val = $("input[type=submit][clicked=true]").val();
+
+    switch (val) {
+      case 'Cancel':
+      case 'Save':
+      case 'Save & Continue':
+        alert(val);
+        break;
+      default:  
+    }
+
+  });
+});
+
+$("form input[type=submit]").click(function() {
+  $("input[type=submit]", $(this).parents("form")).removeAttr("clicked");
+  $(this).attr("clicked", "true");
+});
+*/ 
+
+function save() {
+  var url = $(location).attr('href');
+  
+}
+  

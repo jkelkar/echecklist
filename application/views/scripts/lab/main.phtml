@@ -1,0 +1,37 @@
+<?php
+$this->title = "";
+$this->headTitle($this->title);
+
+?>
+
+<div style="margin: 10px auto; width: 1100px; min-height: 300px;">
+	<div>
+		<div style="display: block;float:left;width:515px;">
+			<center>
+				<div style="margin-bottom: 10px;font-size:40px;">
+					Use an<br /> Existing Lab
+				</div>
+			</center>
+			  <table style="margin-left:100px;">
+			<?php
+			foreach($this->rows as $row) {
+  $url = "{$this->baseurl}/lab/select?labid={$row['id']}";
+  $out = "<tr><td class=\"line\"><a href=\"{$url}\">{$row['labname']}</a> | <!--/td-->".
+  "<!--td class=\"line\"--><a href=\"{$url}\">{$row['country']}</a></td></tr>";
+  echo "{$out}";
+  }
+			?>
+			</table>
+		</div>
+		<div style="width:70px;min-height:250px;display:block;float:left;">
+		<hr width="1" size="450">
+		<div style="border:1px solid black;font-size:40px;font-weight:bold;background-color:white;position:relative;top:-250px;left:-30px;">&nbsp;OR&nbsp;</div>
+		<div style="clear:both;"></div>
+		 </div>
+		<div style="display: block;float:left;width:515px;">
+			<center>
+				<div style="margin-bottom: 10px;font-size:40px;">Create a New Lab</div>
+			</center>
+		</div>
+	</div>
+</div>

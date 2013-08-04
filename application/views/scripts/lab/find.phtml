@@ -1,0 +1,63 @@
+<?php
+require_once 'modules/Checklist/fillout.php';
+$this->title = "";
+$this->headTitle($this->title);
+
+$value = array('getlabs' => 'Select');
+$items = array ();
+// labname
+$items [] = <<<"END"
+ <script>
+$(function() {
+$( ".dpicker" ).datepicker({
+showOn: "button",
+buttonImage: "{$this->baseurl}/images/dtwidget.jpg",
+buttonImageOnly: true
+});
+});
+</script>
+END;
+$items [] = "<table>";
+$items [] = TR ( array (
+    TD ( 'Lab Name', 'rightpad' ),
+    TD ( INPUT ( 'labname', $value, 'string', '', '' ), '' )
+) );
+$items [] = TR ( array (
+    TD ( 'Country', 'rightpad' ),
+    TD ( INPUT ( 'country', $value, 'string', '', '' ), '' )
+) );
+
+
+// BUTTON( 'getlabs', 'getlabs', 'Search', 'submit', 'padding: 3px 8px;', ''))
+$items [] = TR ( array (
+    TD ( ''),
+    TD ( "<button name='getlabs' id='getlabs' type='submit' onclick=\"$('form').submit();\" >Select</button.")
+) );
+$items [] = "</table>";
+$this->leftitems = implode("\n", $items);
+//logit("output: {$this->leftitems}");
+
+$ll = array ();
+$ll [] = "<table>";
+$ll [] = TR ( array (
+    TH ( 'Lab Number' , 'min100') . TH ( 'Lab Name'  , 'min100'),
+    TH ( 'Country'  , 'min100'),
+    TH ( 'Level'  , 'min100'),
+    TH ( 'Affiliation'  , 'min100')
+) );
+logit ( "LABS: " . print_r ( $this->lrows, true ) );
+if (count ( $this->lrows ) > 0) {
+  foreach ( $this->lrows as $lab ) {
+    $ll [] = TR ( array (
+        TD ( "{$lab['labnum']}" ),
+        TD ( "{$lab['labname']}" ),
+        TD ( "{$lab['country']}" ),
+        TD ( "{$lab['level']}" ) . TD ( "{$lab['affiliation']}" )
+    ) );
+  }
+}
+$ll [] = "</table>";
+$this->outlines = implode ( "\n", $ll );
+logit("Outlines: {$this->outlines}");
+?>
+

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 03, 2013 at 07:46 PM
+-- Generation Time: Aug 05, 2013 at 12:03 AM
 -- Server version: 5.5.31
 -- PHP Version: 5.3.10-1ubuntu3.6
 
@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS `audit_data` (
   `field_type` varchar(10) CHARACTER SET utf8 NOT NULL DEFAULT 'string',
   PRIMARY KEY (`id`),
   UNIQUE KEY `head_data` (`audit_id`,`field_name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='One row per field of data saved.' AUTO_INCREMENT=477 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='One row per field of data saved.' AUTO_INCREMENT=483 ;
 
 --
 -- Dumping data for table `audit_data`
@@ -284,7 +284,13 @@ INSERT INTO `audit_data` (`id`, `audit_id`, `field_name`, `int_val`, `text_val`,
 (473, 1, 'audit_date', 0, '', '', '0000-00-00', 'other'),
 (474, 1, 'dola', 0, '', '', '0000-00-00', 'other'),
 (475, 1, 'stars', 0, '', '', '0000-00-00', 'other'),
-(476, 1, 'names_affil_comment', 0, '', '', '0000-00-00', 'text');
+(476, 1, 'names_affil_comment', 0, '', '', '0000-00-00', 'text'),
+(477, 1, 'sufficient_space_yn', 0, '', 'YES', '0000-00-00', 'string'),
+(478, 1, 'sufficient_equipment_yn', 0, '', 'NO', '0000-00-00', 'string'),
+(479, 1, 'sufficient_supplies_yn', 0, '', 'YES', '0000-00-00', 'string'),
+(480, 1, 'sufficient_personnel_yn', 0, '', 'NO', '0000-00-00', 'string'),
+(481, 1, 'sufficient_infra_yn', 0, '', 'YES', '0000-00-00', 'string'),
+(482, 1, 'action', 0, '', '', '0000-00-00', 'other');
 
 -- --------------------------------------------------------
 

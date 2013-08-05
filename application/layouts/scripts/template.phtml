@@ -9,13 +9,22 @@
 	href="<?php echo $this->baseUrl().'/css/styles.css'; ?>" />
 <link rel="stylesheet"
 	href="<?php echo $this->baseUrl().'/css/dtree.css'; ?>" />
-<link rel="stylesheet"
+<link rel="stylesheet"	href="<?php
+echo $this->baseUrl () . '/jquery-ui-1.10.3.custom/css/smoothness/jquery-ui-1.10.3.custom.css';
+?>" />
+<script type="text/javascript"src="<?php
+echo $this->baseUrl () . '/jquery-ui-1.10.3.custom/js/jquery-1.9.1.js';?>"></script>
+<!--script type="text/javascript" src="<?php
+echo $this->baseUrl () . '/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.js';
+?>" /></script-->
+
+
+
+<!--link rel="stylesheet"
 	href="<?php
 
 echo $this->baseUrl () . '/jquery-ui-1.9.2.custom/css/ui-lightness/jquery-ui-1.9.2.custom.css';
 ?>" />
-<script type="text/javascript"
-	src="<?php echo $this->baseUrl(). '/js/dtree.js'; ?>"></script>
 <script type="text/javascript"
 	src="<?php
 
@@ -23,9 +32,11 @@ echo $this->baseUrl () . '/jquery-ui-1.9.2.custom/js/jquery-1.8.3.js'?>"></scrip
 <script type="text/javascript"
 	src="<?php
 
-echo $this->baseUrl () . '/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.js'?>"></script>
+echo $this->baseUrl () . '/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.js'?>"></script-->
 <script type="text/javascript"
 	src="<?php echo $this->baseUrl(). '/js/helpers.js'?>"></script>
+<script type="text/javascript"
+	src="<?php echo $this->baseUrl(). '/js/dtree.js'; ?>"></script>
 <title>The Title</title>
 <script>
   $(function() {
@@ -103,27 +114,9 @@ var changed = false;
 
 	</div>
 	<script>
+	
+	
 	/*$(function() {
-	  $("form").submit(function() {
-
-	    var val = $("input[type=submit][clicked=true]").val();
-
-	    switch (val) {
-	      case 'Cancel':
-	      case 'Save':
-	      case 'Save & Continue':
-	        alert(val);
-	        break;
-	      default:
-	    }
-
-	  });
-	});
-	$("form input[type=submit]").click(function() {
-	  $("input[type=submit]", $(this).parents("form")).removeAttr("clicked");
-	  $(this).attr("clicked", "true");
-	});*/
-	$(function() {
 	$('form input[type=submit]').click(function(event) {
 	    //event.preventDefautlt();
 	  $(this).data('clicked',$(event.target));
@@ -132,15 +125,10 @@ var changed = false;
 	  var data = $('form').serialize();
 	  alert(data);
 	});
-	});
-	//function formSubmit() {
-	/*  if ($('form input[name=sbsave]').data('clicked').is('[name=sbsave]'))
-	      alert('save');
-	  if ($('form input[name=sbsavec]').data('clicked').is('[name=sbsavec]'))
-	    alert('save&c');
-	  */
-	  
-	//}
+	});*/
+
+	
+
 	</script>
 </body>
 </html>

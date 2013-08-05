@@ -37,24 +37,24 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
           $val = $row ['string_val'];
       }
       $value [$field_name] = $val;
-      logit ( "{$field_name} ==> {$val}" );
+      //logit ( "{$field_name} ==> {$val}" );
     }
     return $value;
   
   }
 
-  /*public function updateData($data, $did) {
-    / **
+  public function updateData($data, $did) {
+    /**
      * Update user at $id with this data
      * $data is an array with name value pairs
-     * /
+     */
     $did = ( int ) $did;
     foreach ( $data as $n => $v ) {
       logit ( "BEFORE: {$n} ==> {$v}" );
-      $this->updateAData ( $did, $n, $v );
+      $this->updateAuditData ( $did, $n, $v );
     }
   
-  } */
+  }
 
   public function updateAuditData($did, $name, $value) {
     $suff = end ( preg_split ( "/_/", $name ) );

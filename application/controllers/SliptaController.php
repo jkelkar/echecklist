@@ -24,13 +24,13 @@ class SliptaController extends Zend_Controller_Action
     $page = new Application_Model_DbTable_Page();
     $lang = new Application_Model_DbTable_Language();
     $lang_word = new Application_Model_DbTable_langword();
-
+    logit('In slipta beginning');
     if (!$this->getRequest()->isPost()) {
       // write out the page
       $urldata = $this->getRequest()->getParams();
-      if ($this->debug) {
+      if ($this->debug != 0) {
         foreach($urldata as $n => $v) {
-          logit("{$n} ==> {$v}");
+          logit("{$n} ==>x {$v}");
         }
         logit("\n");
       }
@@ -95,27 +95,28 @@ class SliptaController extends Zend_Controller_Action
       $this->view->buttons = <<<"END"
 <div style="width:100%;">
   <div style="float:right;">
-    <input type="submit" value="Cancel" id="cancelbutton" name="sbcancel">
-    <input type="submit" value="Save" id="savebutton" name="sbsave">
-    <input type="submit" value="Save & Continue" id="continuebutton" name="sbsavec">
+    <input type="submit" value="Cancel" id="cancelbutton" name="sbname">
+    <input type="submit" value="Save" id="savebutton" name="sbname">
+    <input type="submit" value="Save & Continue" id="continuebutton" name="sbname">
 </div></div>
 END;
       $this->view->hidden = implode("\n", array(
-      		"<input type=\"hidden\" name=\"data_head_id\" value=\"1\">"
+      		"<input type=\"hidden\" name=\"audit_id\" value=\"1\">"
       ));
       $this->_helper->layout->setLayout('template');
     } else {
       // Handle the POST request here
+      logit('In post for slipta');
       $formData =  $this->getRequest()->getPost();
       $dvalue = array();
-      $not_include = array('sbname', 'data_head_id', 'id');
+      $not_include = array('sbname', 'audit_id', 'id');
       foreach($formData as $a => $b) {
-        //logit("FD: {$a} -- {$b}");
+        logit("FD: {$a} -- {$b}");
         if (in_array($a, $not_include) ) { continue;}
         $dvalue[$a] = $b;
       }
-      $sbname = $formData['sbname'];
-      logit("Sbname: {$sbname}");
+      $sbname = $formData['action'];
+      logit("action: {$sbname}");
       switch($sbname) {
       	case 'Cancel':
       		logit("Sbname: {$sbname} switch");
@@ -128,13 +129,15 @@ END;
       		logit("URINEW: {$newuri}");
       		$this->redirect($newuri);
       		break;
-      	case 'Save & Exit':
+      	case 'Save':
       		//save the data and goto main page
-      		break;
+      		//break;
       	case 'Save & Continue':
       		// save data and go the next logical page
       		// for now just save the data
-      		$did = $formData['data_head_id'];
+      	  logit("S&C: {$formData['action']}");
+      	  logit("S&C: {$formData['audit_id']}");
+      		$did = $formData['audit_id'];
       		$data->updateData($dvalue, $did);
       		break;
       	

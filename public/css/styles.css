@@ -15,7 +15,7 @@ html {
 }
 
 body {
-	font: 15px "Arial Narrow", sans-serif;
+	font: 15px "Arial", sans-serif;/*15px "Arial Narrow", sans-serif; */
 	color: #4f4f4f;
 }
 
@@ -80,8 +80,11 @@ input[type=submit].f {
 	padding: 2px 3px 2px 3px;
 }
 
+input.integer, input.string, input.date,
 input[type=text].f,input[type=submit].f,input[type=password].f {
-	font-size: 17px;
+	border: 1px solid #999;
+	padding: 2px 4px;
+	font-size: 15px;
 }
 /*td {
   border: 1px solid black;
@@ -164,6 +167,16 @@ img.x16
 {
 	 height:16px;
 	 width:16px
+}
+textarea {
+	font-family: Arial, sans-serif;
+	font-size: 15px;
+	border : 1px solid #999;
+	padding: 3px 5px;
+	
+}
+textarea.nc {
+	border: 1px solid blue;
 }
 textarea.ta50px {
 	width: 100%;

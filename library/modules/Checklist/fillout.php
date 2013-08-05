@@ -111,7 +111,7 @@ function TEXTAREA($name, $value, $style = '', $class = '') {
   $val = get_arrval ( $value, $name, '' );
   $use_style = ($style == '') ? "style=\"height:50px;\"" : "style=\"{$style}\"";
   $out = <<<"END"
-    <textarea {$use_style} onchange="noteChange();" name="{$name}" id="{$name}" class="tarea">{$val}</textarea>
+    <textarea {$use_style} onchange="noteChange();" name="{$name}" id="{$name}" class="tarea {$class}">{$val}</textarea>
 END;
   return $out;
 
@@ -497,7 +497,7 @@ function widget_select_slmtastatus($varname, $value, $t) {
 
 }
 
-function widget_dt($name, $value, $length = 10) {
+function widget_dt($name, $value, $length = 14) {
   return INPUT ( $name, $value, 'date', $length );
 
 }
@@ -649,15 +649,15 @@ function partial_date_field($row, $value, $t) {
   $prefix = $row ['prefix'];
   $heading = $row ['heading'];
   $text = $row ['text'];
-  $datef = INPUT ( $name, $value, 'date', 10, '', '' );
-  $script = '<script> $(function() {$( "' . "#{$name}" . '" ).datepicker();});</script>';
+  $datef = INPUT ( $name, $value, 'date', 14, '', '' );
+  //$script = '<script> $(function() {$( "' . "#{$name}" . '" ).datepicker();});</script>';
   $out = <<<"END"
 <div style="width:100%;">
 <div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
   {$text}
 </div>
 <div style="vertical-align:top;;width:400px;float:left;">
-  {$datef} {$script}
+  {$datef}
 </div>
 </div>
 END;
@@ -814,16 +814,31 @@ function partial_sub_sec_head($row, $value, $t) {
   // widget_select_ynp($name, $value, $t);; // widget_nyp_ro($name, $value);
   $head = ($heading) ? "{$heading}<br />" : "";
   $tarea = TEXTAREA ( "{$name}_comment", $value, "width:100%;height:50px;margin-top:5px;" );
+  $tareanc = TEXTAREA ( "{$name}_note", $value, "width:100%;height:50px;margin-top:6px;" , 'nc');
+  $ncval = get_arrval ( $value, $name.'_nc', 'F' );
+  $checked = '';
+  $scoreval = get_arrval ( $value, $name.'_score', 0 );
+  if ($ncval == 'T') {
+    $checked = 'checked';
+    $vis = '';
+  } else {
+    $ncval = 'F';
+    $vis = "display:none;";
+  }
   $out = <<<"END"
   <table style="width:100%;"><tr>
-      <td style="padding: 2px 4px;">
+      <td style="padding: 2px 4px;vertical-align:top;">
         <div style="display:inline-block;width:450px;vertical-align:top;">
           <div style="width:448px;display:inline;">
             <div style="display:inline;font-weight:bold;width:25px;vertical-align:top;">{$prefix}</div>
             <div style="display:inline-block;width:405px;">
               <div style="text-decoration:underline;font-weight:bold;display:inline;">{$head}</div>
-              <div style="vertical-align:top;display:inline;">{$text}
-              </div>
+              <div style="vertical-align:top;display:inline;">{$text}<br />
+              <div style="width:100%;text-align:right;margin-top:5px;">
+            <input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
+              onclick="toggleNCBox(this);">Non-Compliant
+                <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
+                </div></div>
             </div>
             <div
             style="font-style:italic;font-weight:bold;font-size:10px;margin-top:5px;">{$info}</div>
@@ -832,10 +847,14 @@ function partial_sub_sec_head($row, $value, $t) {
       <td style="vertical-align:top;padding: 2px 4px;width:350px;">
         <div style="margin-right:5px;display:inline;">{$widget_nyp}</div>
 <div style="display:inline;">
-<input class="ro" name="{$name}_score" id="{$name}_score" value=""
+<input class="ro" name="{$name}_score" id="{$name}_score" value="{$scoreval}"
        type="text"  size="2">
  / <b>{$max_score}</b></div>
         <div>{$tarea}</div>
+     <div id="div{$name}_nc" style="{$vis}" >
+        Notes:<br />
+        {$tareanc}
+        </div>
       </td>
   </tr></table>
 END;
@@ -853,8 +872,9 @@ function partial_sub_sec_head_ro($row, $value, $t) {
   $max_score = $row ['score'];
   $widget_nyp_ro = widget_select_ynp_ro ( $name, $value, $t ); // 'N/Y/P FIXME';
   $ynp_ro = "{$name}_ynp";
-  $this_score = get_arrval ( $value, $ynp_ro, 99 ); // '# FIXME';
+  $this_score = get_arrval ( $value, $ynp_ro, 0 ); // '# FIXME';
   $head = ($heading) ? "{$heading}<br />" : "";
+  logit("SRO: ". print_r($row, true));
   $out = <<<"END"
   <table style="width:100%;"><tr>
       <td style="padding: 2px 4px;">
@@ -872,7 +892,9 @@ function partial_sub_sec_head_ro($row, $value, $t) {
       </td>
       <td style="vertical-align:top;padding: 2px 4px;width:350px;">
       <div style="margin-right:5px;display:inline;">{$widget_nyp_ro}</div>
-      <!--div style="display:inline;">{$this_score} / <b>{$max_score}</b></div-->
+      <!--div style="display:inline;">
+      <input class="ro" name="{$name}_score" id="{$name}_score" value=""
+       type="text"  size="2"> / <b>{$max_score}</b></div-->
       </td>
   </tr></table>
 END;
@@ -930,6 +952,16 @@ function partial_sec_element($row, $value, $t) {
   $name = $row ['varname'];
   $mc_yn = widget_select_yn ( "{$name}_yn", $value, $t );
   $tarea = TEXTAREA ( "{$name}_comment", $value, "width:100%;height:50px;margin-top:6px;" );
+  $tareanc = TEXTAREA ( "{$name}_note", $value, "width:100%;height:50px;margin-top:6px;" , 'nc');
+  $ncval = get_arrval ( $value, $name.'_nc', 'F' );
+  $checked = '';
+  if ($ncval === 'T') {
+    $checked = 'checked';
+    $vis = '';
+  } else {
+    $ncval = 'F';
+    $vis = "display:none;";
+  }
   $out = <<<"END"
   <table style="width=100%;"><tr>
       <td style="vertical-align:top;padding: 2px 4px;width:450px;">
@@ -938,7 +970,12 @@ function partial_sec_element($row, $value, $t) {
             <div style="width:100%">
               <div style="vertical-align:top;display:inline;">{$prefix}</div>
               <div style="text-decoration:underline;font-weight:bold;vertical-align:top;display:inline;">{$heading}</div>
-              <div style="vertical-align:top;display:inline;">{$text}</div>
+              <div style="vertical-align:top;display:inline;">{$text}<br />
+              <div style="width:100%;text-align:right;margin-top:5px;">
+            <input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
+              onclick="toggleNCBox(this);">Non-Compliant
+                <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
+                </div></div>
             </div>
           </div>
           <div style="font-style:italic;font-weight:bold;font-size:10px;margin-top:4px;">{$info}</div>
@@ -947,6 +984,10 @@ function partial_sec_element($row, $value, $t) {
       <td  style="vertical-align:top;padding: 2px 4px;width:350px;">
         <div style="">{$mc_yn} </div>
         {$tarea}
+        <div id="div{$name}_nc" style="{$vis}" >
+        Notes:<br />
+        {$tareanc}
+        </div>
       </td>
 </tr></table>
 END;

@@ -20,7 +20,7 @@ class Application_Model_DbTable_Lang extends Application_Model_DbTable_Checklist
         $val = $row ['default'];
         if ($row[$lang]) {
           $val = $row [$lang];
-          $out ["A{$row['row_id']}"] = val;
+          $out ["AA{$row['row_id']}"] = val;
         }
       }
     }

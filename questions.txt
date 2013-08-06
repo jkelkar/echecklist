@@ -1,0 +1,15 @@
+These are questions for the 8/06 meeting:
+
+1. How much of the explanation and info text should be available on the screen?
+2. PDF quality: In apprearance, how close to the printed PDF does the PDF output have to look?
+
+Questions for Amitabh:
+
+First pick the lab then:
+0. Is the SLMTA status lab wide? Should we make it part of the lab info?
+0A. In addition to the SLMTA case at the top, should we add the rest of the slmta fields here too?
+1. Make a final decision on how to select a lab, user and audit
+2. Can we go through the flow of the application
+
+9. Can we use a PDF printer to print the PDF from the screen? (I show a filled out HTML on the screen and 
+then we print it to the PDF printer.

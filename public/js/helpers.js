@@ -126,10 +126,10 @@ function toggleNCBox(here) {
   var state = $('#'+id).prop('checked');
   if (!!state) {
     $(name).val('T');
-    $(divname).show();
+    $(divname).show(1000);
   } else {
     $(name).val('F');
-    $(divname).hide();
+    $(divname).hide(1000);
   }
 }
 

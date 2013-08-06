@@ -318,9 +318,9 @@ function widget_select_ynp_ro($varname, $value, $t) {
   $v_ro_num = get_arrval ( $value, $ro_num, 0 );
   $out = <<<"END"
 <input class="ro" name="{$ro_char}" id={$ro_char}"
-       type="text" readonly="readonly" value="{$v_ro_char}">
+       type="text" readonly="readonly" value="{$v_ro_char}" length=3>
 <input class="ro" name="{$ro_num}" id={$ro_num}"
-       type="text" readonly="readonly" value="{$v_ro_num}">
+       type="text" readonly="readonly" value="{$v_ro_num}" length=3>
 END;
   return $out;
 
@@ -381,9 +381,9 @@ function widget_select_pw($varname, $value, $t) {
 
 function getYNA($t) {
   return array ( // "{$t['Select']} ..." => '-',
-      "{$t['Yes']}" => 'Y',
-      "{$t['No']}" => 'N',
-      "{$t['N/A']}" => 'A'
+      "{$t['Yes']}" => 'YES',
+      "{$t['No']}" => 'NO',
+      "{$t['N/A']}" => 'N/A'
   );
 
 }
@@ -393,6 +393,7 @@ function widget_select_yna($varname, $value, $t) {
   /*
    * array ( // "{$t['Select']} ..." => '-', "{$t['Yes']}" => 'Y', "{$t['No']}" => 'N', "{$t['N/A']}" => 'A' );
    */
+  logit("YNA: ". print_r($optvals, true));
   return OPTIONS ( $varname, $optvals, $value );
 
 }
@@ -524,7 +525,8 @@ function partial_stars($row, $value, $t) {
   $prefix = $row ['prefix'];
   $heading = $row ['heading'];
   $text = $row ['text'];
-  $stars = widget_select_stars ( 'stars', $value, $t );
+  $name = $row['varname'];
+  $stars = widget_select_stars ( "{$name}_stars", $value, $t );
   $out = <<<"END"
 <!--table style="width:100%;"><tr-->
 <div style="width:100%;">
@@ -835,8 +837,8 @@ function partial_sub_sec_head($row, $value, $t) {
               <div style="text-decoration:underline;font-weight:bold;display:inline;">{$head}</div>
               <div style="vertical-align:top;display:inline;">{$text}<br />
               <div style="width:100%;text-align:right;margin-top:5px;">
-            <input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
-              onclick="toggleNCBox(this);">Non-Compliant
+            <label><input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
+              onclick="toggleNCBox(this);">Non-Compliant</label>
                 <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
                 </div></div>
             </div>
@@ -892,9 +894,9 @@ function partial_sub_sec_head_ro($row, $value, $t) {
       </td>
       <td style="vertical-align:top;padding: 2px 4px;width:350px;">
       <div style="margin-right:5px;display:inline;">{$widget_nyp_ro}</div>
-      <!--div style="display:inline;">
+      <div style="display:inline;">
       <input class="ro" name="{$name}_score" id="{$name}_score" value=""
-       type="text"  size="2"> / <b>{$max_score}</b></div-->
+       type="text"  size="2"> / <b>{$max_score}</b></div>
       </td>
   </tr></table>
 END;
@@ -941,6 +943,61 @@ END;
 
 }
 
+function partial_sec_element_yna($row, $value, $t) {
+  $prefix = $row ['prefix'];
+  $heading = $row ['heading'];
+  if ($heading) {
+    $heading = $heading . '<br />';
+  }
+  $text = $row ['text'];
+  $info = $row ['info'];
+  $name = $row ['varname'];
+  $mc_yna = widget_select_yna ( "{$name}_yna", $value, $t );
+  $tarea = TEXTAREA ( "{$name}_comment", $value, "width:100%;height:50px;margin-top:6px;" );
+  $tareanc = TEXTAREA ( "{$name}_note", $value, "width:100%;height:50px;margin-top:6px;" , 'nc');
+  $ncval = get_arrval ( $value, $name.'_nc', 'F' );
+  $checked = '';
+  if ($ncval === 'T') {
+    $checked = 'checked';
+    $vis = '';
+  } else {
+    $ncval = 'F';
+    $vis = "display:none;";
+  }
+  $out = <<<"END"
+  <table style="width=100%;"><tr>
+      <td style="vertical-align:top;padding: 2px 4px;width:450px;">
+        <div style="display:inline-block;vertical-align:top;">
+          <div style="width:425px;">
+            <div style="width:100%">
+              <div style="vertical-align:top;display:inline;">{$prefix}</div>
+              <div style="text-decoration:underline;font-weight:bold;vertical-align:top;display:inline;">{$heading}</div>
+              <div style="vertical-align:top;display:inline;">{$text}<br />
+              <div style="width:100%;text-align:right;margin-top:5px;">
+            <label><input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
+              onclick="toggleNCBox(this);">Non-Compliant</label>
+                <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
+                </div></div>
+            </div>
+          </div>
+          <div style="font-style:italic;font-weight:bold;font-size:10px;margin-top:4px;">{$info}</div>
+        </div>
+      </td>
+      <td  style="vertical-align:top;padding: 2px 4px;width:350px;">
+        <div style="">{$mc_yna} </div>
+        {$tarea}
+        <div id="div{$name}_nc" style="{$vis}" >
+        Notes:<br />
+        {$tareanc}
+        </div>
+      </td>
+</tr></table>
+END;
+
+        return $out;
+
+}
+
 function partial_sec_element($row, $value, $t) {
   $prefix = $row ['prefix'];
   $heading = $row ['heading'];
@@ -972,8 +1029,8 @@ function partial_sec_element($row, $value, $t) {
               <div style="text-decoration:underline;font-weight:bold;vertical-align:top;display:inline;">{$heading}</div>
               <div style="vertical-align:top;display:inline;">{$text}<br />
               <div style="width:100%;text-align:right;margin-top:5px;">
-            <input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
-              onclick="toggleNCBox(this);">Non-Compliant
+            <label><input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
+              onclick="toggleNCBox(this);">Non-Compliant</label>
                 <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
                 </div></div>
             </div>
@@ -1549,6 +1606,7 @@ function getTranslatables($tword) {
   $words = array (
       'Yes',
       'No',
+      'N/A',
       'Partial',
       'Select',
       'Insufficient Data',
@@ -1603,7 +1661,16 @@ function calculate_page($rows, $value, $tword) {
   // This is a list of words used often - get it translated only once
   // $rows contains translated list of text
   /*
-   * $words = array('Yes', 'No', 'Partial', 'Select', 'Insufficient Data', 'Personal', 'Work', 'Insufficient data', 'Not Audited', 'Star', 'Stars', 'National', 'Reference', 'Regional', 'District', 'Zonal', 'Field', 'Public', 'Hospital', 'Private', 'Research', 'Non-hospital outpatient clinic', 'Other - please specify', 'FREQUENCY', 'Daily', 'Weekly', 'With Every Run', 'Quantitative tests', 'Semi-quantitative tests', 'Qualitative tests', 'Date of panel receipt', 'Were results reported within 15 days?', 'Results & % Correct', 'Official ASLM Audit', 'SLMTA Audit', 'Base Line Assessment', 'Non SLMTA Audit'); $tlist = get_common_words_translated($tword, $words);
+   * $words = array('Yes', 'No', 'Partial', 'Select', 'Insufficient Data',
+   * 'Personal', 'Work', 'Insufficient data', 'Not Audited', 'Star', 'Stars',
+   * 'National', 'Reference', 'Regional', 'District', 'Zonal', 'Field',
+   * 'Public', 'Hospital', 'Private', 'Research', 'Non-hospital outpatient clinic',
+   * 'Other - please specify', 'FREQUENCY', 'Daily', 'Weekly', 'With Every Run',
+   * 'Quantitative tests', 'Semi-quantitative tests', 'Qualitative tests',
+   * 'Date of panel receipt', 'Were results reported within 15 days?',
+   * 'Results & % Correct', 'Official ASLM Audit', 'SLMTA Audit',
+   * 'Base Line Assessment', 'Non SLMTA Audit');
+   * $tlist = get_common_words_translated($tword, $words);
    */
   $tlist = getTranslatables ( $tword );
   $tout = array ();

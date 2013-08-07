@@ -69,10 +69,36 @@ function watch_ynp(name, score) {
         out = 0;
     };
     $('#'+name+'_score').val(out.toString());
+    $('#'+name+'_icon').remove();
+    changed = true;
   });
 }
 
-function clear() {
+function watch_radio(name) {
+  var selector = "input[name="+ name +"]";
+  $(selector).click(function() {
+    //$('#'+name+'_icon').attr('src', '');
+    $("#"+name+'_icon').remove();
+    changed= true;
+  });
+}
+
+function watch_select(name, baseurl) {
+  var selector = "#"+name;
+  $(selector).change(function() {
+    switch($(this).val()) {
+      case '-':
+        $(this).after(' <img id="' + name + '_icon" ' + 'src="'+baseurl+'/cancel-on.png" />');
+        changed = true;
+        break;
+      default:
+        $("#"+name+'_icon').remove();
+        changed= true;
+    }
+  });
+}
+
+function clear()  {
   var url = $(location).attr('href');
   //window.location.pathname;
   window.location= url;
@@ -131,6 +157,19 @@ function toggleNCBox(here) {
     $(name).val('F');
     $(divname).hide(1000);
   }
+}
+// for template only - with id=rightpane
+function resetSize() {
+  var ht = $(window).height();
+  var wt = $(window).width();
+  var rht = ht - 34;
+  $('#rightpane').css('height', rht+'px');
+}
+
+function getRadioClicked(name) {
+  $("input:radio[name="+name+"]").click(function() {
+    var value = $this.val();
+  });
 }
 
 /* From web2py.js */

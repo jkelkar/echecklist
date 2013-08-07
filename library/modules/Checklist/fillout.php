@@ -1,5 +1,5 @@
 <?php
-//-*- coding: utf-8 -*-
+// -*- coding: utf-8 -*-
 ?>
 <?php
 
@@ -14,7 +14,7 @@ require_once 'modules/Checklist/logger.php';
 
 /**
  * returns a value if a key exists in the dictionary else
- * returns the $default value passed in
+ * returns the $default value <sed in
  */
 function get_arrval($arr, $k, $default) {
   // logit("GA: " . gettype($arr) . " {$k}");
@@ -44,6 +44,7 @@ function SELECT($name, $optvals, $value) {
   if (count ( $optvals ) == 0) {
     throw new Exception ( 'Optvals has no elements', 0 );
   }
+  $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
   $optout = array ();
   $val = get_arrval ( $value, $name, '' );
   // $log->LogInfo("{$name} - {$val}");
@@ -55,11 +56,15 @@ function SELECT($name, $optvals, $value) {
     // $log->LogInfo("Interiem - {$val} : {$sel}: {$n} => {$v}");
     $optout [] = "<option {$sel} value=\"{$v}\">{$n}</option>";
   }
+  $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
+  $icon = ($val != '-') ? '' : "<img id=\"{$name}_icon\" src=\"{$baseurl}/cancel-on.png\" />";
+  
   $options = implode ( "\n", $optout );
   $out = <<<"END"
 <select name="{$name}" id="{$name}" class="select">
   {$options}
-</select>
+</select> {$icon}
+<script> watch_select("{$name}", "{$baseurl}" );</script>
 END;
   return $out;
 
@@ -80,8 +85,10 @@ function RADIO($name, $optvals, $value) {
     // logit("Interiem - {$val} : {$sel}: {$n} => {$v}");
     $optout [] = "<input style=\"margin: 0 4px 0 6px;\" type=\"radio\" name=\"{$name}\" " . "id=\"{$name}_{$n}\" value=\"{$v}\" {$sel} > {$n} ";
   }
+  $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
+  $optout [] = ($val != '') ? '' : "<img id=\"{$name}_icon\" src=\"{$baseurl}/cancel-on.png\" />";
   $options = implode ( "\n", $optout );
-  $out = $options;
+  $out = $options . "\n<script> watch_radio('{$name}');</script>";$options;
   return $out;
 
 }
@@ -101,6 +108,8 @@ function RADIO_CALC($name, $optvals, $value, $score) {
     // logit("Interiem - {$val} : {$sel}: {$n} => {$v}");
     $optout [] = "<input style=\"margin: 0 4px 0 6px;\" type=\"radio\" name=\"{$name}\" " . "id=\"{$name}_{$n}\" value=\"{$v}\" {$sel} > {$n} ";
   }
+  $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
+  $optout [] = ($val != '') ? '' : "<img id=\"{$name}_icon\" src=\"{$baseurl}/cancel-on.png\" />";
   $options = implode ( "\n", $optout );
   $out = $options . "\n<script> watch_ynp('{$name}', {$score});</script>";
   return $out;
@@ -393,13 +402,14 @@ function widget_select_yna($varname, $value, $t) {
   /*
    * array ( // "{$t['Select']} ..." => '-', "{$t['Yes']}" => 'Y', "{$t['No']}" => 'N', "{$t['N/A']}" => 'A' );
    */
-  logit("YNA: ". print_r($optvals, true));
+  logit ( "YNA: " . print_r ( $optvals, true ) );
   return OPTIONS ( $varname, $optvals, $value );
 
 }
 
 function getStars($t) {
-  return array ( // "{$t['Select']}" => '-',
+  return array (
+      "{$t['Select']}" => '-',
       "{$t['Not Audited']}" => 'N',
       "0 {$t['Stars']}" => '0',
       "1 {$t['Star']}" => '1',
@@ -408,7 +418,6 @@ function getStars($t) {
       "4 {$t['Stars']}" => '4',
       "5 {$t['Stars']}" => '5'
   );
-
 }
 
 function getStarsRev($t) {
@@ -432,7 +441,8 @@ function widget_select_stars($varname, $value, $t) {
 }
 
 function getLevels($t) {
-  return array ( // " {$t['Select']} ..." => '-',
+  return array (
+      "{$t['Select']} ..." => '-',
       "{$t['National']}" => 'NATIONAL',
       "{$t['Reference']}" => 'REFERENCE',
       "{$t['Regional']}" => 'REGIONAL',
@@ -446,20 +456,15 @@ function getLevels($t) {
 function widget_select_lablevel($varname, $value, $t) {
   $optvals = getLevels ( $t );
   /*
-   * array(//"{$t['Select']} ..." => '-',
-   * "{$t['National']}" => 'NATIONAL',
-   * "{$t['Reference']}" => 'REFERENCE',
-   * "{$t['Regional']}" => 'REGIONAL',
-   * "{$t['District']}" => 'DISTRICT',
-   * "{$t['Zonal']}" => 'ZONAL',
-   * "{$t['Field']}" => 'FIELD' );
+   * array(//"{$t['Select']} ..." => '-', "{$t['National']}" => 'NATIONAL', "{$t['Reference']}" => 'REFERENCE', "{$t['Regional']}" => 'REGIONAL', "{$t['District']}" => 'DISTRICT', "{$t['Zonal']}" => 'ZONAL', "{$t['Field']}" => 'FIELD' );
    */
-  return OPTIONS ( $varname, $optvals, $value);
+  return OPTIONS ( $varname, $optvals, $value );
 
 }
 
 function getAffiliations($t) {
-  return array ( // "{$t['Select']} ..." => '-',
+  return array (
+      "{$t['Select']} ..." => '-',
       "{$t['Public']}" => 'PUBLIC',
       "{$t['Hospital']}" => 'HOSPITAL',
       "{$t['Private']}" => 'PRIVATE',
@@ -480,7 +485,8 @@ function widget_select_labaffil($varname, $value, $t) {
 }
 
 function getSLMTAStatus($t) {
-  return array ( // "{$t['Select']} ..." => '-',
+  return array (
+      "{$t['Select']} ..." => '-',
       "{$t['Official ASLM Audit']}" => 'ASLM',
       "{$t['SLMTA Audit']}" => 'SLMTA',
       "{$t['Base Line Assessment']}" => 'BASELINE',
@@ -525,10 +531,9 @@ function partial_stars($row, $value, $t) {
   $prefix = $row ['prefix'];
   $heading = $row ['heading'];
   $text = $row ['text'];
-  $name = $row['varname'];
+  $name = $row ['varname'];
   $stars = widget_select_stars ( "{$name}_stars", $value, $t );
   $out = <<<"END"
-<!--table style="width:100%;"><tr-->
 <div style="width:100%;">
 <div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
   {$text}
@@ -537,7 +542,6 @@ function partial_stars($row, $value, $t) {
   {$stars}
 </div>
     </div>
-<!--/tr></table-->
 END;
   return $out;
 
@@ -550,7 +554,6 @@ function partial_string_field($row, $value, $t) {
   $text = $row ['text'];
   $stringf = INPUT ( $name, $value, 'string', 55, 'width:100%;', '' );
   $out = <<<"END"
-<!--table style="width:100%;"><tr-->
 <div style="width:100%;">
 <div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
   {$text}
@@ -558,7 +561,6 @@ function partial_string_field($row, $value, $t) {
 <div style="vertical-align:top;width:400px;float:left;">
   {$stringf}
 </div>
-<!--/tr></table-->
 </div>
 END;
   return $out;
@@ -652,7 +654,7 @@ function partial_date_field($row, $value, $t) {
   $heading = $row ['heading'];
   $text = $row ['text'];
   $datef = INPUT ( $name, $value, 'date', 14, '', '' );
-  //$script = '<script> $(function() {$( "' . "#{$name}" . '" ).datepicker();});</script>';
+  // $script = '<script> $(function() {$( "' . "#{$name}" . '" ).datepicker();});</script>';
   $out = <<<"END"
 <div style="width:100%;">
 <div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
@@ -816,10 +818,10 @@ function partial_sub_sec_head($row, $value, $t) {
   // widget_select_ynp($name, $value, $t);; // widget_nyp_ro($name, $value);
   $head = ($heading) ? "{$heading}<br />" : "";
   $tarea = TEXTAREA ( "{$name}_comment", $value, "width:100%;height:50px;margin-top:5px;" );
-  $tareanc = TEXTAREA ( "{$name}_note", $value, "width:100%;height:50px;margin-top:6px;" , 'nc');
-  $ncval = get_arrval ( $value, $name.'_nc', 'F' );
+  $tareanc = TEXTAREA ( "{$name}_note", $value, "width:100%;height:50px;margin-top:6px;", 'nc' );
+  $ncval = get_arrval ( $value, $name . '_nc', 'F' );
   $checked = '';
-  $scoreval = get_arrval ( $value, $name.'_score', 0 );
+  $scoreval = get_arrval ( $value, $name . '_score', 0 );
   if ($ncval == 'T') {
     $checked = 'checked';
     $vis = '';
@@ -876,7 +878,7 @@ function partial_sub_sec_head_ro($row, $value, $t) {
   $ynp_ro = "{$name}_ynp";
   $this_score = get_arrval ( $value, $ynp_ro, 0 ); // '# FIXME';
   $head = ($heading) ? "{$heading}<br />" : "";
-  logit("SRO: ". print_r($row, true));
+  logit ( "SRO: " . print_r ( $row, true ) );
   $out = <<<"END"
   <table style="width:100%;"><tr>
       <td style="padding: 2px 4px;">
@@ -954,8 +956,8 @@ function partial_sec_element_yna($row, $value, $t) {
   $name = $row ['varname'];
   $mc_yna = widget_select_yna ( "{$name}_yna", $value, $t );
   $tarea = TEXTAREA ( "{$name}_comment", $value, "width:100%;height:50px;margin-top:6px;" );
-  $tareanc = TEXTAREA ( "{$name}_note", $value, "width:100%;height:50px;margin-top:6px;" , 'nc');
-  $ncval = get_arrval ( $value, $name.'_nc', 'F' );
+  $tareanc = TEXTAREA ( "{$name}_note", $value, "width:100%;height:50px;margin-top:6px;", 'nc' );
+  $ncval = get_arrval ( $value, $name . '_nc', 'F' );
   $checked = '';
   if ($ncval === 'T') {
     $checked = 'checked';
@@ -993,8 +995,8 @@ function partial_sec_element_yna($row, $value, $t) {
       </td>
 </tr></table>
 END;
-
-        return $out;
+  
+  return $out;
 
 }
 
@@ -1009,8 +1011,8 @@ function partial_sec_element($row, $value, $t) {
   $name = $row ['varname'];
   $mc_yn = widget_select_yn ( "{$name}_yn", $value, $t );
   $tarea = TEXTAREA ( "{$name}_comment", $value, "width:100%;height:50px;margin-top:6px;" );
-  $tareanc = TEXTAREA ( "{$name}_note", $value, "width:100%;height:50px;margin-top:6px;" , 'nc');
-  $ncval = get_arrval ( $value, $name.'_nc', 'F' );
+  $tareanc = TEXTAREA ( "{$name}_note", $value, "width:100%;height:50px;margin-top:6px;", 'nc' );
+  $ncval = get_arrval ( $value, $name . '_nc', 'F' );
   $checked = '';
   if ($ncval === 'T') {
     $checked = 'checked';
@@ -1061,7 +1063,7 @@ function partial_lablevel($row, $value, $t) {
   $mc_lab_level = widget_select_lablevel ( $name, $value, $t );
   $out = <<<"END"
 <table style="width:100%;"><tr>
-<td style="vertical-align:top;padding: 2px 7px 2px 4px;width:400px;text-align:right;">
+<td style="vertical-align:top;padding-right:10px;width:390px;text-align:right;">
 {$text}
 </td>
 <td style="vertical-align:top;padding: 2px 4px;width:400px;">
@@ -1082,7 +1084,7 @@ function partial_slmta_status($row, $value, $t) {
   $mc_slmta_status = widget_select_slmtastatus ( $name, $value, $t );
   $out = <<<"END"
 <table style="width:100%;"><tr>
-<td style="vertical-align:top;padding: 2px 7px 2px 4px;width:400px;text-align:right;">
+<td style="vertical-align:top;padding-right:10px;width:390px;text-align:right;">
 {$text}
 </td>
 <td style="vertical-align:top;padding: 2px 4px;width:400px;">
@@ -1104,7 +1106,7 @@ function partial_labaffil($row, $value, $t) {
   
   $out = <<<"END"
 <table style="width:100%;"><tr>
-<td style="vertical-align:top;padding: 2px 7px 2px 4px;width:400px;text-align:right;">
+<td style="vertical-align:top;padding-right:10px; width:390px;text-align:right;">
 {$text}
 </td>
 <td style="vertical-align:top;padding: 2px 4px;width:400px;">
@@ -1194,7 +1196,6 @@ function partial_pinfo($row, $value, $t) {
   <table style="width:100%;"><tr>
       <td style="vertical-align:top;padding: 2px 4px;width:500px;">
         <div style="float:left;">{$text}</div>
-      <!--/td>
       <td style="vertical-align:top;padding: 2px 4px;width:100px;"-->
         <div style="float:right;">{$smallint}</div>
       </td>
@@ -1661,16 +1662,7 @@ function calculate_page($rows, $value, $tword) {
   // This is a list of words used often - get it translated only once
   // $rows contains translated list of text
   /*
-   * $words = array('Yes', 'No', 'Partial', 'Select', 'Insufficient Data',
-   * 'Personal', 'Work', 'Insufficient data', 'Not Audited', 'Star', 'Stars',
-   * 'National', 'Reference', 'Regional', 'District', 'Zonal', 'Field',
-   * 'Public', 'Hospital', 'Private', 'Research', 'Non-hospital outpatient clinic',
-   * 'Other - please specify', 'FREQUENCY', 'Daily', 'Weekly', 'With Every Run',
-   * 'Quantitative tests', 'Semi-quantitative tests', 'Qualitative tests',
-   * 'Date of panel receipt', 'Were results reported within 15 days?',
-   * 'Results & % Correct', 'Official ASLM Audit', 'SLMTA Audit',
-   * 'Base Line Assessment', 'Non SLMTA Audit');
-   * $tlist = get_common_words_translated($tword, $words);
+   * $words = array('Yes', 'No', 'Partial', 'Select', 'Insufficient Data', 'Personal', 'Work', 'Insufficient data', 'Not Audited', 'Star', 'Stars', 'National', 'Reference', 'Regional', 'District', 'Zonal', 'Field', 'Public', 'Hospital', 'Private', 'Research', 'Non-hospital outpatient clinic', 'Other - please specify', 'FREQUENCY', 'Daily', 'Weekly', 'With Every Run', 'Quantitative tests', 'Semi-quantitative tests', 'Qualitative tests', 'Date of panel receipt', 'Were results reported within 15 days?', 'Results & % Correct', 'Official ASLM Audit', 'SLMTA Audit', 'Base Line Assessment', 'Non SLMTA Audit'); $tlist = get_common_words_translated($tword, $words);
    */
   $tlist = getTranslatables ( $tword );
   $tout = array ();

@@ -498,7 +498,11 @@ function getSLMTAStatus($t) {
 function widget_select_slmtastatus($varname, $value, $t) {
   $optvals = getSLMTAStatus ( $t );
   /*
-   * array(//"{$t['Select']} ..." => '-', "{$t['Official ASLM Audit']}" => 'ASLM', "{$t['SLMTA Audit']}" => 'SLMTA', "{$t['Base Line Assessment']}" => 'BASELINE', "{$t['Non SLMTA Audit']}" => 'NONSLMTA' );
+   * array(//"{$t['Select']} ..." => '-',
+   * "{$t['Official ASLM Audit']}" => 'ASLM',
+   * "{$t['SLMTA Audit']}" => 'SLMTA',
+   * "{$t['Base Line Assessment']}" => 'BASELINE',
+   * "{$t['Non SLMTA Audit']}" => 'NONSLMTA' );
    */
   return OPTIONS ( $varname, $optvals, $value );
 
@@ -1106,7 +1110,7 @@ function partial_labaffil($row, $value, $t) {
   
   $out = <<<"END"
 <table style="width:100%;"><tr>
-<td style="vertical-align:top;padding-right:10px; width:390px;text-align:right;">
+<td style="vertical-align:top;padding-right:10px; width:39<0px;text-align:right;">
 {$text}
 </td>
 <td style="vertical-align:top;padding: 2px 4px;width:400px;">

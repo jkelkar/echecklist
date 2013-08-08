@@ -129,10 +129,10 @@ var labname = '', labid = 0;
 ecAutocomplete('{$n}', '{$url}', {$callback}, '{$callback}');
 </script>
 END;
-  	logit("JSL {$jslines}");
+  	//logit("JSL {$jslines}");
   	$outlines[] = $jslines;
   }
-  logit("OUTL: " . implode("\n", $outlines));
+  //logit("OUTL: " . implode("\n", $outlines));
   return implode("\n", $outlines);
 }
 

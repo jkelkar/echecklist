@@ -225,8 +225,9 @@ textarea.small {
 	margin-left: 537px;
 }
 
-.select {
-	font-size: .93em;
+select {
+	font-size: 1.2em; /*.93em;*/
+	line-height: 17px;
 }
 
 #header {

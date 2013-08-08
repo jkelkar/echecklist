@@ -45,7 +45,7 @@
   <script type="text/javascript">
     var changed = false;
   </script>
-  <div id="header">
+  <!-- div id="header">
     <div style="float: left;">APHL Logo</div>
     <div style="font-size: 12px; text-decoration: none; float: right;">
       <a class="header" href="/admin">Admin</a>&nbsp;&nbsp;&nbsp;
@@ -57,7 +57,8 @@
       <a  class="header" href="/help">Help</a>
     </div>
     <div style="clear: both;"></div>
-  </div>
+  </div-->
+  <?php echo $this->header; ?>
   <div id="content" style="margin-left: 10px;">
     <h1><?php echo $this->escape($this->title); ?></h1>
     <?php echo $this->layout()->content; ?>

@@ -1,13 +1,15 @@
 <?php
 require_once 'modules/Checklist/fillout.php';
 require_once 'modules/Checklist/logger.php';
+require_once '../application/controllers/Action.php';
 
-class SliptaController extends Zend_Controller_Action {
-  private $debug = 0;
-  private $mainpage = '';
+class SliptaController extends Application_Controller_Action {
+  public $debug = 0;
+  // private $mainpage = '';
+  
   public function init() {
     /* Initialize action controller here */
-    // $debug = 0;
+    parent::init();
   }
 
   public function indexAction() {
@@ -31,17 +33,13 @@ class SliptaController extends Zend_Controller_Action {
     logit ( 'In slipta beginning' );
     if (! $this->getRequest ()->isPost ()) {
       // write out the page
-      // $urldata = $this->getRequest()->getParams();
       if ($this->debug != 0) {
         foreach ( $urldata as $n => $v ) {
-          logit ( "{$n} ==>x {$v}" );
+          logit ( "{$n} ==> {$v}" );
         }
         logit ( "\n" );
       }
-      //$lang_default = 'EN';
-      // $thispage = get_arrval($urldata, 'showpage', '');
-      // $langtag = get_arrval($urldata, 'language', $lang_default);
-      
+
       $tword = $lang_word->get_words ( $langtag );
       if ($this->debug) {
         logit ( "Got showpage value: {$thispage}" );
@@ -115,11 +113,11 @@ END;
       $this->view->hidden = implode ( "\n", array (
           "<input type=\"hidden\" name=\"audit_id\" value=\"1\">"
       ) );
+      logit("HEADER: {$this->view->header}");
       $this->_helper->layout->setLayout ( 'template' );
     } else {
       // Handle the POST request here
       logit ( 'In post for slipta' );
-      // $nextpage = 0;
       $formData = $this->getRequest ()->getPost ();
       $dvalue = array ();
       $not_include = array (

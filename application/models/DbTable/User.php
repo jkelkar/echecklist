@@ -26,6 +26,19 @@ class Application_Model_DbTable_User extends Application_Model_DbTable_Checklist
     return $rows;
   }
 
+  public function getUserByUsername($username) {
+    /**
+     * get a user from userid
+     */
+    $sql = "select * from user where username = '{$username}'";
+    //$row = $this->fetchRow("username = '{$username}'" );
+    $rows = $this->queryRows($sql);
+    if (!$rows) {
+      throw new Exception("No matching users found");
+    }
+    return $rows[0];
+  }
+
   public function getUsersByUsername($username) {
     /**
      * get a user from userid
@@ -38,7 +51,6 @@ class Application_Model_DbTable_User extends Application_Model_DbTable_Checklist
     }
     return $rows;
   }
-
   public function newUser($data) {
     /**
      * data is an array with name value pairs

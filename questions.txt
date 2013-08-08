@@ -1,7 +1,8 @@
 These are questions for the 8/06 meeting:
 
 1. How much of the explanation and info text should be available on the screen?
-2. PDF quality: In apprearance, how close to the printed PDF does the PDF output have to look?
+2. Application flow
+. PDF quality: In apprearance, how close to the printed PDF does the PDF output have to look?
 
 Questions for Amitabh:
 

@@ -3,36 +3,26 @@
 <head>
 <meta charset="utf-8" />
  <!--[if IE]>
- <meta http-equiv="X-UA-Compatible" content="IE=edge">
+ <meta http-equiv="X-UA-Compatible" content="IE=edge" />
  <![endif]-->
+ <title>The Title</title>
  <link rel="stylesheet" href="<?php echo $this->baseUrl().'/css/styles.css'; ?>" />
  <link rel="stylesheet" href="<?php echo $this->baseUrl().'/css/dtree.css'; ?>" />
- <link rel="stylesheet"
-	href="<?php
- echo $this->baseUrl () . '/jquery-ui-1.9.2.custom/css/ui-lightness/jquery-ui-1.9.2.custom.css';
-?>" />
+<script type="text/javascript"
+	src="<?php echo $this->baseUrl () . '/jquery-ui-1.9.2.custom/js/jquery-1.8.3.js'; ?>"></script>
 
 <script type="text/javascript"
-	src="<?php echo $this->baseUrl () . '/jquery-ui-1.9.2.custom/js/jquery-1.8.3.js'?>"></script>
-<script type="text/javascript"
-	src="<?php
-
-echo $this->baseUrl () . '/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.js'?>"></script>
-<script type="text/javascript"
-	src="<?php echo $this->baseUrl(). '/js/helpers.js'?>"></script>
- <!-- script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/dtree.js'; ?>"></script>
- <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/jquery-1.8.3.js'?>" ></script>
- <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/jquery-ui-1.9.2.custom.js'?>" ></script>
- <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/helpers.js'?>" ></script-->
- <title>The Title</title>
+	src="<?php echo $this->baseUrl(). '/js/helpers.js'; ?>"></script>
+ 
+ 
 </head>
 
 <body style="width:1200px;">
-<div id="header">
+<!--div id="header">
   <div style="float:left;">APHL Logo </div>
   <div style="font-size:12px;text-decoration:none;float:right;">
 			<a class="header" href="/admin">Admin</a>&nbsp;&nbsp;&nbsp; <a
-				class="header" href="/logout">Logout</a>&nbsp;&nbsp;&nbsp; <a
+				class="header" href="<?php echo "{$this->baseurl()}/startstop/logout";?>">Logout</a>&nbsp;&nbsp;&nbsp; <a
 				class="header" href="/import">Import</a>&nbsp;&nbsp;&nbsp; <a
 				class="header" href="/export">Export</a>&nbsp;&nbsp;&nbsp; <a
 				class="header" href="/languages">Languages</a>&nbsp;&nbsp;&nbsp; <a
@@ -40,7 +30,8 @@ echo $this->baseUrl () . '/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.js'?
 				class="header" href="/help">Help</a>
   </div>
   <div style="clear:both;"></div>
-</div>
+</div-->
+<?php echo $this->header; ?>
 <div id="content" style="margin-left:10px;width:100%;">
 	  <?php echo $this->layout()->content; ?>
 </div>

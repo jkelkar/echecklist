@@ -1,7 +1,32 @@
 <?php
 $this->title = "Login";
 $this->headTitle($this->title);
-
+// setting up the dialog
+$_fields = array (
+    'username',
+    'password',
+    'submit'
+);
+$flist = array (
+    '_fields' => $_fields,
+    'username' => array (
+        'type' => 'string',
+        'length' => 32,
+        'label' => 'Email Address:'
+    ),
+    'password' => array (
+        'type' => 'password',
+        'length' => 32,
+        'label' => 'Password:'
+    ),
+    'submit' => array (
+        'type' => 'submit',
+        'value' => 'Login'
+    )
+);
+// logit("flist: {$flist}");
+$outlines = dumpForm ( $flist );
+$this->formtext = $outlines;
 ?>
 
 <div style="margin: 10px auto;width:800px;">

@@ -5,32 +5,20 @@
     <!--[if IE]>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <![endif]-->
-    <link rel="stylesheet"
-          href="<?php echo $this->baseUrl().'/css/styles.css'; ?>" />
-    <link rel="stylesheet"
-          href="<?php echo $this->baseUrl().'/css/dtree.css'; ?>" />
-    <!-- link rel="stylesheet"	href="<?php
-         echo $this->baseUrl () . '/jquery-ui-1.10.3.custom/css/smoothness/jquery-ui-1.10.3.custom.css';
-         ?>" / -->
-    <script type="text/javascript"
-            src="<?php
-                 echo $this->baseUrl () . '/jquery-ui-1.10.3.custom/js/jquery-1.9.1.js';
-                 ?>"></script>
-    <link rel="stylesheet"
-          href="<?php echo $this->baseUrl().'/css/calendar.css'; ?>" />
-
-    <script type="text/javascript"
-            src="<?php
-                 echo $this->baseUrl () . '/js/calendar.js';
-                 ?>" />
-</script>
-
-<script type="text/javascript"
-        src="<?php echo $this->baseUrl(). '/js/helpers.js'?>"></script>
-<script type="text/javascript"
-        src="<?php echo $this->baseUrl(). '/js/dtree.js'; ?>"></script>
-<title>The Title</title>
-<script>
+    <link rel="stylesheet" href="<?php echo $this->baseUrl().'/css/styles.css'; ?>" />
+    <link rel="stylesheet" href="<?php echo $this->baseUrl().'/css/dtree.css'; ?>" />
+    <!--script type="text/javascript"
+            src="<?php echo $this->baseUrl () . '/jquery-ui-1.10.3.custom/js/jquery-1.9.1.js'; ?>"></script>
+    <script type="text/javascript" src="<?php echo $this->baseUrl () . '/charisma/js/jquery-1.7.2.min.js'; ?>" / -->
+    </script>
+    <!-- link rel="stylesheet" href="<?php echo $this->baseUrl().'/css/calendar.css'; ?>" />
+    <script type="text/javascript" src="<?php echo $this->baseUrl() . '/js/calendar.js'; ?>" ></script-->
+    <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/dtree.js'; ?>"></script>
+    <?php echo $this->headLink(); ?>
+    <?php echo $this->headScript(); ?>
+    <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/helpers.js'?>"></script>
+    <title>The Title</title>
+    <script>
   /*$(function() {
   $( "input[type=submit], button" )
   .button()
@@ -38,76 +26,52 @@
   event.preventDefault();
   });
   });*/
-</script>
-</head>
+   </script>
+  </head>
 
-<body style="width: 1200px;">
-  <script type="text/javascript">
-    var changed = false;
-  </script>
-  <!-- div id="header">
-    <div style="float: left;">APHL Logo</div>
-    <div style="font-size: 12px; text-decoration: none; float: right;">
-      <a class="header" href="/admin">Admin</a>&nbsp;&nbsp;&nbsp;
-      <a class="header" href="/logout">Logout</a>&nbsp;&nbsp;&nbsp;
-      <a class="header" href="/import">Import</a>&nbsp;&nbsp;&nbsp;
-      <a  class="header" href="/export">Export</a>&nbsp;&nbsp;&nbsp;
-      <a class="header" href="/languages">Languages</a>&nbsp;&nbsp;&nbsp;
-      <a class="header" href="/profile">User Profile</a>&nbsp;&nbsp;&nbsp;
-      <a  class="header" href="/help">Help</a>
-    </div>
-    <div style="clear: both;"></div>
-  </div-->
-  <?php echo $this->header; ?>
-  <div id="content" style="margin-left: 10px;">
-    <h1><?php echo $this->escape($this->title); ?></h1>
-    <?php echo $this->layout()->content; ?>
+  <body style="width: 1200px;">
+    <script type="text/javascript">
+      var changed = false;
+    </script>
+    <?php echo $this->header; ?>
+    <div id="content" style="margin-left: 10px;">
+      <h1><?php echo $this->escape($this->title); ?></h1>
+      <?php echo $this->layout()->content; ?>
 
-    <div id="outer" style="margin-left: 10px;">
-      <div id="wrapper" style="overflow:auto;">
-        <div id="leftpane"
-             style="width: 200px; min-height: 500px; border-right: none; background-color: #fffff0; float: left;">
-          <script type="text/javascript">//<!--
-                                               d = new dTree('d');
-                                               <?php echo $this->treelines; ?>
-                                               document.write(d);
-                                               // -->
-          </script>
-        </div>
-        <div id="rightpane"
+      <div id="outer" style="margin-left: 10px;">
+        <div id="wrapper" style="overflow:auto;">
+          <div id="leftpane"
+               style="width: 200px; min-height: 500px; border-right: none; background-color: #fffff0; float: left;">
+            <script type="text/javascript">d = new dTree('d'); <?php echo $this->treelines; ?> document.write(d);</script>
+          </div>
+          <div id="rightpane"
              style="height: 600px; overflow: auto; float: left; width: 975px;">
-          <!--div id="rightcontent" style="width: 100%;"-->
             <div style="margin: 0 10px; margin-bottom: 15px;width:810px;">
               <form method="post" action=""
                     enctype="application/x-www-form-urlencoded" name="slipta"
                     id="slipta">
-                <?php
-                   
-                   echo $this->outlines;
-                echo $this->hidden;
-                ?> <input type="hidden" name="action">
-
+                <?php echo $this->outlines; echo $this->hidden; ?>
+                <input type="hidden" name="action">
                 <?php echo $this->buttons; ?>
               </form>
             </div>
             <div style="height: 65px;">&nbsp;</div>
             <div style="clear: both;"></div>
-          <!--/div--><div style="clear:both;"></div>
-        </div><!-- rightpane -->
-      </div> <!-- wrapper --><div style="clear:both;"></div>
-    </div><!-- outer -->
-	</div><!-- content -->
-
-	<div id="footer"></div>
-
-</div>
-<script>
-                $(function() {
-                  resetSize();
-                  $(window).resize(function(){
-                      resetSize();
-                  });
-                });
-</script>
-</body>
+            <div style="clear:both;"></div>
+          </div><!-- rightpane -->
+        </div> <!-- wrapper -->
+        <div style="clear:both;"></div>
+      </div><!-- outer -->
+	  </div><!-- content -->
+	  <div id="footer"></div>
+	 
+    <script>
+$(function() {
+resetSize();
+$(window).resize(function(){
+    resetSize();
+  });
+});
+    </script>
+  </body>
 </html>

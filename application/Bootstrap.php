@@ -27,8 +27,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     return $view;
   }
   
-  public function _initConditions()
-  {
+  public function _initConditions()  {
     $config = $this->getOptions();
     
     if (isset($config['resources']))
@@ -40,6 +39,27 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
       }
   }
+
+  /*protected function _initPlaceholders()  {
+    $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
+    $this->bootstrap('View');
+    $view = $this->getResource('View');
+    //$view->doctype('XHTML1_STRICT');
+    
+    // Set the initial title and separator:
+    $view->headTitle('eChecklist')
+      ->setSeparator(' :: ');
+    
+    // Set the initial stylesheet:
+    $csslist = array('/css/styles.css', '/css/dtree.css');
+    foreach($csslist as $f) {
+      $view->headLink()->appendStylesheet("{$baseurl}{$f}");
+    }
+    $jslist = array('/jquery-ui-1.9.2.custom/js/jquery-1.8.3.js', '/js/helpers.js');
+    foreach($jslist as $f) {
+      $view->headScript()->appendFile("{$baseurl}{$f}");
+    }
+    }*/
   /**
    //$config = new Zend_Config_Ini('/var/www/zftest/application/configs/application.ini',
    //				APPLICATION_ENV);

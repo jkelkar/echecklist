@@ -171,9 +171,13 @@ function getRadioClicked(name) {
     var value = $this.val();
   });
 }
+$(function() {
+  $('.datepicker').datepicker();
+});
+
 
 /* From web2py.js */
-
+/*
 function popup(url) {
   newwindow=window.open(url,'name','height=400,width=600');
   if (window.focus) newwindow.focus();
@@ -280,6 +284,6 @@ function web2py_ajax_page(method, action, data, target) {
     });
 }
 
-
+*/
 
 

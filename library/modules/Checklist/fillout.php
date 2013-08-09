@@ -135,8 +135,15 @@ function LABEL($name, $label_text = '', $label_style = "") {
 function INPUT($name, $value, $type = "string", $length = 0, $style = "", $class = '') {
   $size = $dtype = '';
   switch ($type) {
-    case 'integer' :
     case 'date' :
+      $dtype = 'datepicker'; //input-xlarge datepicker hasDatepicker';
+      $itype = 'text';
+      if ($length != 0) {
+        $l = strval ( $length );
+        $size = "size=\"{$l}\" ";
+      }
+      break;
+    case 'integer' :
     case 'datetime' :
     case 'string' :
       $dtype = $type;
@@ -174,8 +181,15 @@ END;
 function INPUT_AC($name, $value, $type = "string", $length = 0, $style = "", $class = '') {
   $size = $dtype = '';
   switch ($type) {
-    case 'integer' :
     case 'date' :
+      $dtype = 'input-xlarge datepicker hasDatepicker';
+      $itype = 'text';
+      if ($length != 0) {
+        $l = strval ( $length );
+        $size = "size=\"{$l}\" ";
+      }
+      break;
+    case 'integer' :
     case 'datetime' :
     case 'string' :
       $dtype = $type;
@@ -664,7 +678,7 @@ function partial_date_field($row, $value, $t) {
 <div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
   {$text}
 </div>
-<div style="vertical-align:top;;width:400px;float:left;">
+<div style="vertical-align:top;width:400px;float:left;">
   {$datef}
 </div>
 </div>
@@ -719,7 +733,7 @@ function partial_sec_head_lab($row, $value, $t) {
   $name = $row ['varname'];
   $max_score = $row ['score'];
   $widget_nyp = widget_select_ynp_calc ( $name, $value, $t, $max_score );
-  // widget_select_ynp($name, $value, $t);; // widget_nyp_ro($name, $value);
+  // widget_select_ynp($name, $value, $t); // widget_nyp_ro($name, $value);
   $head = ($heading) ? "{$heading}<br />" : "";
   $tarea = TEXTAREA ( "{$name}_comment", $value, "width:100%;height:50px;margin-top:5px;" );
   $out = <<<"END"
@@ -819,7 +833,7 @@ function partial_sub_sec_head($row, $value, $t) {
   $name = $row ['varname'];
   $max_score = $row ['score'];
   $widget_nyp = widget_select_ynp_calc ( $name, $value, $t, $max_score );
-  // widget_select_ynp($name, $value, $t);; // widget_nyp_ro($name, $value);
+  // widget_select_ynp($name, $value, $t); // widget_nyp_ro($name, $value);
   $head = ($heading) ? "{$heading}<br />" : "";
   $tarea = TEXTAREA ( "{$name}_comment", $value, "width:100%;height:50px;margin-top:5px;" );
   $tareanc = TEXTAREA ( "{$name}_note", $value, "width:100%;height:50px;margin-top:6px;", 'nc' );

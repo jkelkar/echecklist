@@ -12,16 +12,17 @@ class Application_Model_DbTable_Slipta extends Application_Model_DbTable_Checkli
     $db = $this->getDb ();
     $id = ( int ) $id;
     $sql = <<<"SQL"
- select r.varname, r.row_type,  r.score, r.page_num,
+ select r.varname, r.row_type, r.score, p.page_num,
       r.prefix, r.heading, r.text, r.info,
       lp.row_id lprowid, lp.def lpdefault, lp.{$lang} lplang,
       lh.row_id lhrowid, lh.def lhdefault, lh.{$lang} lhlang,
       lt.row_id ltrowid, lt.def ltdefault, lt.{$lang} ltlang
-      from template_row r left join lang lp on (r.prefix = lp.row_id)
+      from page p, template_row r left join lang lp on (r.prefix = lp.row_id)
         left join lang lh on (r.heading = lh.row_id)
         left join lang lt on (r.text = lt.row_id)
    where r.template_id = {$id}
-    and r.page_num = {$page_num}
+    and p.page_id = r.page_id
+    and p.page_num = {$page_num}
     order by r.part, r.level1, r.level2, r.level3, r.level4
 SQL;
     // logit("SQL: {$sql}");

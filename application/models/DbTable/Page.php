@@ -19,7 +19,7 @@ class Application_Model_DbTable_Page extends Application_Model_DbTable_Checklist
     $db = $this->getDb();
     $template_id = (int)$template_id;
     $sql = "select * from page where template_id = ". $template_id .
-      " order by parent, page_num";
+      " order by parent, page_id";
     $stmt =  $db->query($sql);
     $rows = $stmt->fetchAll();
     
@@ -29,8 +29,7 @@ class Application_Model_DbTable_Page extends Application_Model_DbTable_Checklist
     return $rows;
   }
 
-  public function getPage($template_id, $page_num)
-  {
+  public function getPage($template_id, $page_num) {
     $db = $this->getDb();
     $template_id = (int)$template_id;
     $page_num = (int)$page_num;

@@ -104,93 +104,65 @@ class Application_Controller_Action extends Zend_Controller_Action {
     logit ( "Scripts: {$this->view->headScript()}" );
   
   }
-  /*
-<div class="navbar">
-		<div class="navbar-inner">
-			<div class="container-fluid">
-				<a class="btn btn-navbar" data-toggle="collapse" data-target=".top-nav.nav-collapse,.sidebar-nav.nav-collapse">
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</a>
-				<a class="brand" href="index.html"> <img alt="Charisma Logo" src="img/logo20.png"> <span>Charisma</span></a>
-				
-				<!-- theme selector starts -->
-				<div class="btn-group pull-right theme-container">
-					<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-						<i class="icon-tint"></i><span class="hidden-phone"> Change Theme / Skin</span>
-						<span class="caret"></span>
-					</a>
-					<ul class="dropdown-menu" id="themes">
-						<li><a data-value="classic" href="#"><i class="icon-blank"></i> Classic</a></li>
-						<li><a data-value="cerulean" href="#"><i class="icon-blank icon-ok"></i> Cerulean</a></li>
-						<li><a data-value="cyborg" href="#"><i class="icon-blank"></i> Cyborg</a></li>
-						<li><a data-value="redy" href="#"><i class="icon-blank"></i> Redy</a></li>
-						<li><a data-value="journal" href="#"><i class="icon-blank"></i> Journal</a></li>
-						<li><a data-value="simplex" href="#"><i class="icon-blank"></i> Simplex</a></li>
-						<li><a data-value="slate" href="#"><i class="icon-blank"></i> Slate</a></li>
-						<li><a data-value="spacelab" href="#"><i class="icon-blank"></i> Spacelab</a></li>
-						<li><a data-value="united" href="#"><i class="icon-blank"></i> United</a></li>
-					</ul>
-				</div>
-				<!-- theme selector ends -->
-				
-				<!-- user dropdown starts -->
-				<div class="btn-group pull-right">
-					<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-						<i class="icon-user"></i><span class="hidden-phone"> admin</span>
-						<span class="caret"></span>
-					</a>
-					<ul class="dropdown-menu">
-						<li><a href="#">Profile</a></li>
-						<li class="divider"></li>
-						<li><a href="login.html">Logout</a></li>
-					</ul>
-				</div>
-				<!-- user dropdown ends -->
-				
-				<div class="top-nav nav-collapse">
-					<ul class="nav">
-						<li><a href="#">Visit Site</a></li>
-						<li>
-							<form class="navbar-search pull-left">
-								<input placeholder="Search" class="search-query span2" name="query" type="text">
-							</form>
-						</li>
-					</ul>
-				</div><!--/.nav-collapse -->
-			</div>
-		</div>
-	</div>
-  */
+ 
   public function setHeader() {
     /* Create the top line */
     $dt = date('j M, Y');
     $name_header = '';
     if ($this->usertype != '') {
-      $name_header = "Hello, {$this->userfullname}";
+      $name_header = "&nbsp {$this->userfullname}";
     }
     $this->header = <<<"END"
 <div class="navbar">
   <div class="navbar-inner">
 		<div class="container-fluid">
 			<a class="brand" href="index.html"> 
-        <img alt="Charisma Logo" src="img/logo20.png"> <span>eChecklist</span>
+        <span title=".icon  .icon-black  .icon-check " class="icon icon-black icon-check"></span> <span>eChecklist</span>
       </a>
     
 				   
 END;
     if ($this->usertype != '') {
       $this->header = $this->header . <<<"END"
-  <div class="btn-group pull-left" style="margin-left:200px;"><a class="btn" href="{$this->baseurl}/audit/main">Audits</a></div>
-  <div class="btn-group pull-left"><a class="btn" href="{$this->baseurl}/lab/main">Labs</a></div>
-  <div class="btn-group pull-left"><a class="btn" href="{$this->baseurl}/user/main">Users</a></div>
-  <!--div class="btn-group pull-left"><a class="btn" href="{$this->baseurl}/startstop/logout">Logout</a></div-->
+  <div class="btn-group pull-left" style="margin-left:200px;">
+<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+<span title=".icon  .icon-blue .icon-clipboard " class="icon icon-blue icon-clipboard"></span>
+        <span class="hidden-phone">Audits</span>
+<span class="caret"></span></a>
+<ul class="dropdown-menu">
+        <li><a href="{$this->baseurl}/audit/start">New Audit</a></li>
+        <li><a href="{$this->baseurl}/audit/find">Find</a></li>
+        <li class="divider"></li>
+        <li><a href="{$this->baseurl}/audit/import">Import</a></li>
+				</ul>
+</div>
+
+  <div class="btn-group pull-left">
+<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+  <span title=".icon  .icon-blue  .icon-tag " class="icon icon-blue icon-tag"></span>
+  <span class="hidden-phone">Labs</span>
+  <span class="caret"></span></a>
+<ul class="dropdown-menu">
+					<li><a href="{$this->baseurl}/lab/create">New Lab</a></li>
+					<li><a href="{$this->baseurl}/lab/find">Find Lab</a></li>
+				</ul>
+</div>
+
+  <div class="btn-group pull-left">
+<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+<span title=".icon  .icon-blue  .icon-user " class="icon icon-blue icon-user"></span>
+<span class="hidden-phone">Users</span>
+<span class="caret"></span></a>
+<ul class="dropdown-menu">
+					<li><a href="{$this->baseurl}/user/create">New User</a></li>
+					<li><a href="{$this->baseurl}/user/find">Find User</a></li>
+				</ul>
+</div>
     
 END;
     } else {
       $this->header = $this->header . <<<"END"
-  <div class="btn-group pull-left"><a class="btn" href="{$this->baseurl}/startstop/login">Login</a></div>
+  <div class="btn-group pull-left" style="margin-left:200px;"><a class="btn" href="{$this->baseurl}/startstop/login">Login</a></div>
 
 END;
     }
@@ -200,17 +172,18 @@ END;
     <!-- user dropdown starts -->
 			<div class="btn-group pull-right">
 				<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-          <i class="icon-user"></i><span class="hidden-phone"> {$name_header}</span>
-						<span class="caret"></span>
+          <span title=".icon  .icon-blue  .icon-contacts " class="icon icon-blue icon-contacts"></span>
+          <span class="hidden-phone"> {$name_header}</span>
+					<span class="caret"></span>
 				</a>
 				<ul class="dropdown-menu">
-					<li><a href="#">Profile</a></li>
+					<li><a href="{$this->baseurl}/user/profile">Profile</a></li>
 					<li class="divider"></li>
-					<li><a href="login.html">Logout</a></li>
+					<li><a href="{$this->baseurl}/startstop/logout">Logout</a></li>
 				</ul>
 			</div>
 			<!-- user dropdown ends -->
-      <div class="btn-group pull-right">
+                                                        <div class="btn-group pull-right" style="top:6px;font-size:16px;">
       {$dt}
       </div> 
    </div>

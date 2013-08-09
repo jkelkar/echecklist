@@ -542,6 +542,55 @@ function widget_integer($name, $value, $length = 0) {
 
 }
 
+function partial_main_heading($row) {
+  $prefix = $row ['prefix'];
+  $heading = $row ['heading'];
+  $text = $row ['text'];
+  $name = $row ['varname'];
+$out = <<<"END"
+<div style="width:100%;">
+  <center><div class="maintitle">
+    {$heading}
+  </div></center>
+</div>
+END;
+  return $out;
+
+}
+
+function partial_main2($row) {
+  $prefix = $row ['prefix'];
+  $heading = $row ['heading'];
+  $text = $row ['text'];
+  $name = $row ['varname'];
+$out = <<<"END"
+<div style="width:100%;">
+  <center><div class="maintitle2">
+    {$heading}
+  </div></center>
+</div>
+END;
+  return $out;
+
+}
+
+function partial_banner_rev($row) {
+  $prefix = $row ['prefix'];
+  $heading = $row ['heading'];
+  $text = $row ['text'];
+  $name = $row ['varname'];
+$out = <<<"END"
+<div style="width:100%;">
+  <div class="banner_rev">
+  {$prefix} {$heading}
+  </div>
+  <div class="normal">{$text}</div>
+</div>
+END;
+  return $out;
+
+}
+
 /**
  * These are the representations of a row on the screen
  */
@@ -1682,6 +1731,8 @@ function calculate_page($rows, $value, $tword) {
   /*
    * $words = array('Yes', 'No', 'Partial', 'Select', 'Insufficient Data', 'Personal', 'Work', 'Insufficient data', 'Not Audited', 'Star', 'Stars', 'National', 'Reference', 'Regional', 'District', 'Zonal', 'Field', 'Public', 'Hospital', 'Private', 'Research', 'Non-hospital outpatient clinic', 'Other - please specify', 'FREQUENCY', 'Daily', 'Weekly', 'With Every Run', 'Quantitative tests', 'Semi-quantitative tests', 'Qualitative tests', 'Date of panel receipt', 'Were results reported within 15 days?', 'Results & % Correct', 'Official ASLM Audit', 'SLMTA Audit', 'Base Line Assessment', 'Non SLMTA Audit'); $tlist = get_common_words_translated($tword, $words);
    */
+  $show_only = array('main_heading', 'main2', 'banner_rev', 'part_head', 'sec_head_lab',
+                   'tab_head3', 'info_i');
   $tlist = getTranslatables ( $tword );
   $tout = array ();
   $tout [] = '<table border=0 style="width:825px;">';
@@ -1697,7 +1748,11 @@ function calculate_page($rows, $value, $tword) {
     $arow ['varname'] = $row ['varname'];
     $arow ['info'] = $row ['info'];
     $arow ['score'] = $row ['score'];
-    $tout [] = '<tr ><td class="bpad">' . call_user_func ( "partial_{$type}", $arow, $value, $tlist ) . '</td></tr>';
+    $bpad = 'class="bpad"';
+    if (in_array($type, $show_only)) {
+      $bpad = '';
+    }
+    $tout [] = "<tr ><td {$bpad}>" .call_user_func ( "partial_{$type}", $arow, $value, $tlist ) . '</td></tr>';
   }
   $tout [] = '</table>';
   return $tout;

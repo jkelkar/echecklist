@@ -68,7 +68,7 @@ td.line {
 
 td.bpad {
     padding-top: 9px;
-	  padding-bottom: 5px;
+	  padding-bottom: 1px;
 	  /* border-bottom: 1px solid #ccc;*/
 }
 
@@ -282,4 +282,43 @@ ul.buttons {
 }
 ul.buttons li {
     display: inline-block;
+}
+div.maintitle {
+    font-family: "Times New Roman", serif;
+    width: 600px;
+    margin-top:16px;
+    font-size: 38px;
+    line-height:45px;
+    font-weight:bold;
+}
+div.maintitle2 {
+    font-family: "Times New Roman", serif;
+    width: 700px;
+    margin-top:16px;
+    font-size: 32px;
+    line-height:37px;
+}
+div.banner_rev {
+    background-color: #000;
+    margin-top:16px;
+    padding: 5px 0 5px 8px;
+    font-size: 18px;
+    font-weight:bold;
+    color: white;
+}
+div.normal {
+    padding: 4px 45px;
+    font-size: 1.2em;
+    line-height: 1.33em; 
+}
+table.table800 {
+    width: 800px;
+    border-collapse: collapse;
+}
+td.center {
+    border: 1px solid black;
+    text-alignment: center;
+}
+b.plus {
+    font-size: 1.15em;
 }

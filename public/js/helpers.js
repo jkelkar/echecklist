@@ -172,7 +172,12 @@ function getRadioClicked(name) {
   });
 }
 $(function() {
-  $('.datepicker').datepicker();
+    $('.datepicker').datepicker();
+    $('.bpad').mouseover( function() {
+        $(this).css('background-color', '#ccffcc');
+    }).mouseout(function() {
+        $(this).css('background-color', '#ffffff');
+    });
 });
 
 

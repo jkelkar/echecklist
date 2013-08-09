@@ -597,7 +597,7 @@ function partial_prof_info($row, $value, $t) {
 <div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
   {$text}
 </div>
-<div style="vertical-align:top;width:400px;float:right;">
+<div style="vertical-align:top;width:400px;float:left;">
   {$intf} {$mc_yni}
 </div>
 </div>
@@ -617,7 +617,7 @@ function partial_prof_info_yn($row, $value, $t) {
 <div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
   {$text}
 </div>
-<div style="vertical-align:top;width:400px;float:right;">
+<div style="vertical-align:top;width:400px;float:left;">
   {$mc_yn}
 </div>
 </div>
@@ -637,7 +637,7 @@ function partial_integer_field($row, $value, $t) {
 <div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
   {$text}
 </div>
-<div style="vertical-align:top;width:400px;float:right;">
+<div style="vertical-align:top;width:400px;float:left;">
   {$intf}
 </div>
 </div>
@@ -1684,7 +1684,7 @@ function calculate_page($rows, $value, $tword) {
    */
   $tlist = getTranslatables ( $tword );
   $tout = array ();
-  $tout [] = '<table border=0 style="width:800px;">';
+  $tout [] = '<table border=0 style="width:825px;">';
   // $tout[] = '<tr><td style="width:359px;"></td><td style="width:164px;"></td><
   // td style="width:309px;"></td><tr>';
   foreach ( $rows as $row ) {

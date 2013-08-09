@@ -1,7 +1,7 @@
 <?php
 require_once 'modules/Checklist/fillout.php';
 require_once 'modules/Checklist/logger.php';
-require_once '../application/controllers/Action.php';
+require_once '../application/controllers/ActionController.php';
 
 class SliptaController extends Application_Controller_Action {
   public $debug = 0;

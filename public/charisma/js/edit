@@ -1,0 +1,242 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <!--[if IE]>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <![endif]-->
+    <link href="/zftest/public/css/styles.css" media="screen" rel="stylesheet" type="text/css" >
+<link href="/zftest/public/css/dtree.css" media="screen" rel="stylesheet" type="text/css" >
+<link href="/zftest/public/charisma/css/bootstrap-responsive.css" media="screen" rel="stylesheet" type="text/css" >
+<link href="/zftest/public/charisma/css/charisma-app.css" media="screen" rel="stylesheet" type="text/css" >
+<link href="/zftest/public/charisma/css/jquery-ui-1.8.21.custom.css" media="screen" rel="stylesheet" type="text/css" >
+<link href="/zftest/public/charisma/css/fullcalendar.css" media="screen" rel="stylesheet" type="text/css" >
+<link href="/zftest/public/charisma/css/chosen.css" media="screen" rel="stylesheet" type="text/css" >
+<link href="/zftest/public/charisma/css/uniform.default.css" media="screen" rel="stylesheet" type="text/css" >
+<link href="/zftest/public/charisma/css/jquery.noty.css" media="screen" rel="stylesheet" type="text/css" >
+<link href="/zftest/public/charisma/css/noty_theme_default.css" media="screen" rel="stylesheet" type="text/css" >
+<link href="/zftest/public/charisma/css/elfinder.min.css" media="screen" rel="stylesheet" type="text/css" >
+<link href="/zftest/public/charisma/css/elfinder.theme.css" media="screen" rel="stylesheet" type="text/css" >
+<link href="/zftest/public/charisma/css/opa-icons.css" media="screen" rel="stylesheet" type="text/css" >    <title>The Title</title>
+    <meta name="description" content="eChecklist Audit Application" />
+    <meta name="author" content="Jay Kelkar, jkelkar (at) gmail (dot) com" />
+    <link rel="shortcut icon" href="{$this->baseurl}/charisma/img/favicon.ico" />
+    <script type="text/javascript"
+     src="/zftest/public/js/dtree.js"></script>
+    <script type="text/javascript"
+     src="/zftest/public/charisma/js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript"
+     src="/zftest/public/js/helpers.js"></script>
+    <script>
+       /*$(function() {
+         $( "input[type=submit], button" )
+            .button()
+            .click(function( event ) {
+              event.preventDefault();
+           });
+         });
+       */
+    </script>
+  </head>
+
+  <body style="width: 1200px;">
+    <script type="text/javascript">
+     var changed = false;
+    </script>
+    <div id="header">
+  <div style="float:left;">APHL Logo </div>
+  <div style="font-size:12px;text-decoration:none;float:right;">
+    <div style="color:black;display:inline;">
+      8 Aug, 2013 &nbsp;&nbsp;&nbsp;
+    </div>&nbsp;&nbsp;&nbsp;
+     <a class="header" href="/zftest/public/startstop/login">Login</a>&nbsp;&nbsp;&nbsp;	</div>
+  <div style="clear:both;"></div>
+</div>    <div id="content" style="margin-left: 10px;">
+      <h1></h1>
+            <div id="outer" style="margin-left: 10px;">
+        <div id="wrapper" style="overflow:auto;">
+          <div id="leftpane"
+             style="width: 200px; min-height: 500px;
+             border-right: none; background-color: #fffff0; float: left;">
+            <script type="text/javascript">
+$(function() {
+//<!--
+d = new dTree('d');
+d.add(99,-1, 'SLIPTA');
+d.add(100,99, 'Part I');
+d.add(101,99, 'Part II');
+d.add(102,99, 'Part III');
+d.add(20,100, '1', '/zftest/public/slipta/edit?language=EN&showpage=20');
+d.add(21,100, '2', '/zftest/public/slipta/edit?language=EN&showpage=21');
+d.add(22,100, '3', '/zftest/public/slipta/edit?language=EN&showpage=22');
+d.add(23,100, '4', '/zftest/public/slipta/edit?language=EN&showpage=23');
+d.add(24,100, '5', '/zftest/public/slipta/edit?language=EN&showpage=24');
+d.add(2,101, 'Section 1', '/zftest/public/slipta/edit?language=EN&showpage=2');
+d.add(3,101, 'Section 2', '/zftest/public/slipta/edit?language=EN&showpage=3');
+d.add(4,101, 'Section 3', '/zftest/public/slipta/edit?language=EN&showpage=4');
+d.add(5,101, 'Section 4', '/zftest/public/slipta/edit?language=EN&showpage=5');
+d.add(6,101, 'Section 5', '/zftest/public/slipta/edit?language=EN&showpage=6');
+d.add(7,101, 'Section 6', '/zftest/public/slipta/edit?language=EN&showpage=7');
+d.add(8,101, 'Section 7', '/zftest/public/slipta/edit?language=EN&showpage=8');
+d.add(9,101, 'Section 8', '/zftest/public/slipta/edit?language=EN&showpage=9');
+d.add(10,101, 'Section 9', '/zftest/public/slipta/edit?language=EN&showpage=10');
+d.add(11,101, 'Section 10', '/zftest/public/slipta/edit?language=EN&showpage=11');
+d.add(12,101, 'Section 11', '/zftest/public/slipta/edit?language=EN&showpage=12');
+d.add(13,101, 'Section 12', '/zftest/public/slipta/edit?language=EN&showpage=13');
+d.add(14,101, 'Criteria 1', '/zftest/public/slipta/edit?language=EN&showpage=14');
+d.add(15,101, 'Criteria 2', '/zftest/public/slipta/edit?language=EN&showpage=15');
+d.add(16,102, 'Summary', '/zftest/public/slipta/edit?language=EN&showpage=16');
+d.add(17,102, 'Action Plan', '/zftest/public/slipta/edit?language=EN&showpage=17');document.write(d);
+// -->
+});
+            </script>
+          </div>
+          <div id="rightpane"
+            style="height: 600px; overflow: auto; float: left; width: 975px;">
+            <div style="margin: 0 10px; margin-bottom: 15px;width:810px;">
+              <form method="post" action="" name="slipta" id="slipta"
+                enctype="application/x-www-form-urlencoded" >
+                <table border=0 style="width:800px;">
+<tr ><td class="bpad"><table style="width:100%;"><tr>
+<td style="font-size:18px;text-transform:uppercase;padding: 2px 4px;">
+<div style="">
+<div style="vertical-align:top;"> </div>
+</div>
+</td>
+</tr></table></td></tr>
+<tr ><td class="bpad">  <table style="width:100%;"><tr>
+      <td style="padding: 2px 4px;">
+        <div style="display:inline-block;width:100%x;vertical-align:top;">
+          <div style="width:788px;display:inline;">
+            <div style="display:inline;font-weight:bold;width:25px;vertical-align:top;">1</div>
+            <div style="display:inline-block;width:755px;">
+              <div style="text-decoration:underline;font-weight:bold;display:inline;">Audit Information<br /></div>
+              <div style="vertical-align:top;display:inline;">
+              </div>
+            </div>
+      </td>
+  </tr></table></td></tr>
+<tr ><td class="bpad"><table style="width:100%;"><tr>
+<td style="vertical-align:top;padding-right:10px;width:390px;text-align:right;">
+SLMTA status
+</td>
+<td style="vertical-align:top;padding: 2px 4px;width:400px;">
+<select name="slmta_status" id="slmta_status" class="select">
+  <option selected=selected  value="-">Select ...</option>
+<option  value="ASLM">Official ASLM Audit</option>
+<option  value="SLMTA">SLMTA Audit</option>
+<option  value="BASELINE">Base Line Assessment</option>
+<option  value="NONSLMTA">Non SLMTA Audit</option>
+</select> <img id="slmta_status_icon" src="/zftest/public/cancel-on.png" />
+<script> watch_select("slmta_status", "/zftest/public" );</script>
+</td>
+</tr></table></td></tr>
+<tr ><td class="bpad"><div style="width:100%;">
+<div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
+  Date of Audit
+</div>
+<div style="vertical-align:top;;width:400px;float:left;">
+  <input name="audit_date" id="audit_date"
+type="text" class="date " style="" value="08/06/2013" size="14"  >
+</div>
+</div></td></tr>
+<tr ><td class="bpad"><div style="width:100%;">
+<div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
+  Date of Last Audit
+</div>
+<div style="vertical-align:top;;width:400px;float:left;">
+  <input name="dola" id="dola"
+type="text" class="date " style="" value="07/09/2013" size="14"  >
+</div>
+</div></td></tr>
+<tr ><td class="bpad"><div style="width:100%;">
+<div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
+  Prior Audit Status
+</div>
+<div style="vertical-align:top;width:400px;float:left;">
+  <select name="pas_stars" id="pas_stars" class="select">
+  <option selected=selected  value="-">Select</option>
+<option  value="N">Not Audited</option>
+<option  value="0">0 Stars</option>
+<option  value="1">1 Star</option>
+<option  value="2">2 Stars</option>
+<option  value="3">3 Stars</option>
+<option  value="4">4 Stars</option>
+<option  value="5">5 Stars</option>
+</select> <img id="pas_stars_icon" src="/zftest/public/cancel-on.png" />
+<script> watch_select("pas_stars", "/zftest/public" );</script>
+</div>
+    </div></td></tr>
+<tr ><td class="bpad"><div style="width:100%;">
+<div style="display:inline-block;vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left">
+  Name(s) and Affiliation(s) of Auditor(s)
+</div>
+<div style="display:inline-block;vertical-align:top;width:400px;float:left;">
+      <textarea style="width:395px;height:50px;margin-top:5px;" onchange="noteChange();" name="names_affil_t_comment" id="names_affil_t_comment" class="tarea ">Auditor 1 Affiliation
+Auditor 2 Affiliation
+Auditor 3 Affiliation
+Auditor 4 Affiliation</textarea>
+</div>
+</div></td></tr>
+</table><input type="hidden" name="audit_id" value="1">                <input type="hidden" name="action" value="" />
+                <div style="width:100%;">
+          <input type="hidden" name="nextpage" value="21" />
+  <div style="float:right;">
+    <input type="submit" value="Cancel" id="cancelbutton" name="sbname">
+    <input type="submit" value="Save" id="savebutton" name="sbname">
+    <input type="submit" value="Save & Continue" id="continuebutton" name="sbname">
+</div></div>
+<script>
+$(function() {
+  d.closeAll();
+  d.openTo(20, true);
+});
+</script>              </form>
+            </div>
+            <div style="height: 65px;">&nbsp;</div>
+            <div style="clear: both;"></div>
+            <div style="clear:both;"></div>
+            <!--  /div> -->
+          </div><!-- rightpane -->
+        </div> <!-- wrapper -->
+        <div style="clear:both;"></div>
+      </div><!-- outer -->
+	  </div><!-- content -->
+
+	  <div id="footer"></div>
+  <!--  /div -->
+  <script type="text/javascript" src="/zftest/public/charisma/js/jquery-ui-1.8.21.custom.min.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/bootstrap-transition.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/bootstrap-alert.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/bootstrap-modal.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/bootstrap-dropdown.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/bootstrap-scrollspy.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/bootstrap-tab.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/bootstrap-tooltip.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/bootstrap-popover.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/bootstrap-button.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/bootstrap-collapse.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/bootstrap-carousel.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/bootstrap-typeahead.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/jquery.cookie.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/fullcalendar.min.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/jquery.chosen.min.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/jquery.uniform.min.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/jquery.colorbox.min.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/jquery.noty.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/jquery.elfinder.min.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/jquery.raty.min.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/jquery.autogrow-textarea.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/jquery.history.js"></script>
+<script type="text/javascript" src="/zftest/public/charisma/js/charisma.js"></script>
+  <script>
+  $(function() {
+    resetSize();
+    $(window).resize(function(){
+      resetSize();
+    });
+  });
+  </script>
+  </body>
+</html>

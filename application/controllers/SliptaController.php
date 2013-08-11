@@ -31,6 +31,9 @@ class SliptaController extends Application_Controller_Action {
     $thispage = get_arrval ( $urldata, 'showpage', '' );
     $langtag = get_arrval ( $urldata, 'language', $lang_default );
     logit ( 'In slipta beginning' );
+    $nav = $page->getNav ( 1, $thispage ); // 1 is the template_id
+    $page_row = $nav ['row'];
+    $nrows = $nav ['rows'];
     if (! $this->getRequest ()->isPost ()) {
       // write out the page
       if ($this->debug != 0) {
@@ -50,11 +53,10 @@ class SliptaController extends Application_Controller_Action {
       } else {
         $thispage = ( int ) $thispage;
       }
+      //$rows = $slipta->getrows ( 1, $thispage, $langtag ); // 1 is the template_id
       $rows = $slipta->getrows ( 1, $thispage, $langtag ); // 1 is the template_id
       $value = $data->get_data ( 1 ); // 1 is the audit_id
-      $nav = $page->getNav ( 1, $thispage ); // 1 is the template_id
-      $page_row = $nav ['row'];
-      $nrows = $nav ['rows'];
+      
       
       if ($this->debug) {
         foreach ( $page_row as $a => $p ) {

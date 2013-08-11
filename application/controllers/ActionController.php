@@ -130,10 +130,10 @@ END;
         <span class="hidden-phone">Audits</span>
 <span class="caret"></span></a>
 <ul class="dropdown-menu">
-        <li><a href="{$this->baseurl}/audit/start">New Audit</a></li>
-        <li><a href="{$this->baseurl}/audit/find">Find</a></li>
+        <li><a href="{$this->baseurl}/audit/start"><span title=".icon  .icon-green .icon-clipboard " class="icon icon-green icon-clipboard"></span> New Audit</a></li>
+        <li><a href="{$this->baseurl}/audit/find"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Find</a></li>
         <li class="divider"></li>
-        <li><a href="{$this->baseurl}/audit/import">Import</a></li>
+        <li><a href="{$this->baseurl}/audit/import"><span title=".icon  .icon-blue .icon-import " class="icon icon-blue icon-archive"></span> Import</a></li>
 				</ul>
 </div>
 
@@ -143,8 +143,8 @@ END;
   <span class="hidden-phone">Labs</span>
   <span class="caret"></span></a>
 <ul class="dropdown-menu">
-					<li><a href="{$this->baseurl}/lab/create">New Lab</a></li>
-					<li><a href="{$this->baseurl}/lab/find">Find Lab</a></li>
+					<li><a href="{$this->baseurl}/lab/create"><span title=".icon  .icon-green  .icon-tag " class="icon icon-green icon-tag"></span> New Lab</a></li>
+					<li><a href="{$this->baseurl}/lab/find"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Find Lab</a></li>
 				</ul>
 </div>
 
@@ -154,8 +154,8 @@ END;
 <span class="hidden-phone">Users</span>
 <span class="caret"></span></a>
 <ul class="dropdown-menu">
-					<li><a href="{$this->baseurl}/user/create">New User</a></li>
-					<li><a href="{$this->baseurl}/user/find">Find User</a></li>
+					<li><a href="{$this->baseurl}/user/create"><span title=".icon  .icon-green  .icon-user " class="icon icon-green icon-user"></span> New User</a></li>
+					<li><a href="{$this->baseurl}/user/find"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span>Find User</a></li>
 				</ul>
 </div>
     
@@ -172,12 +172,12 @@ END;
     <!-- user dropdown starts -->
 			<div class="btn-group pull-right">
 				<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-          <span title=".icon  .icon-blue  .icon-contacts " class="icon icon-blue icon-contacts"></span>
+          <span title=".icon  .icon-orange  .icon-user " class="icon icon-orange icon-user"></span>
           <span class="hidden-phone"> {$name_header}</span>
 					<span class="caret"></span>
 				</a>
 				<ul class="dropdown-menu">
-					<li><a href="{$this->baseurl}/user/profile">Profile</a></li>
+					<li><a href="{$this->baseurl}/user/profile"><span title=".icon  .icon-blue  .icon-contacts " class="icon icon-blue icon-contacts"></span> Profile</a></li>
 					<li class="divider"></li>
 					<li><a href="{$this->baseurl}/startstop/logout">Logout</a></li>
 				</ul>

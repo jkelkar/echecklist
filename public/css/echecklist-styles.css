@@ -23,7 +23,9 @@ body {
 	line-height: 18px;
 	color: #555555;
 }
-
+h2 {
+    color: black;
+}
 a,a:visited {
 	outline: none;
 	color: #389dc1;
@@ -60,7 +62,9 @@ table {
 td {
 	border: 0px solid #999;
 }
-
+td.border {
+    border: 1px solid #333;
+}
 td.line {
 	font-size: 18px;
 	padding: 3px 10px;
@@ -69,6 +73,7 @@ td.line {
 td.bpad {
     padding-top: 9px;
 	  padding-bottom: 1px;
+    width: 820px;
 	  /* border-bottom: 1px solid #ccc;*/
 }
 
@@ -109,6 +114,12 @@ input[type=text].f,input[type=submit].f,input[type=password].f {
 	padding: 3px 8px;
 	font-size: 15px;
 }
+input.integer {
+    width:35px;
+}
+input.datepicker {
+    width:100px;
+}
 label {
     display: block;
     padding-left: 15px;
@@ -140,17 +151,25 @@ td.centerbold {
 td.centertop {
 	text-align: center;
 	vertical-align: top;
+  font-size: 1.2em;
 }
-
+td.topbold {
+   padding:3px 4px;
+	 vertical-align: top;
+	 font-weight: bold;
+   font-size: 1.2em;
+}
 td.centertopbold {
+    padding:3px 4px;
 	text-align: center;
 	vertical-align: top;
 	font-weight: bold;
+  font-size: 1.2em;
 }
 
 td.right {
 	text-align: right;
-}
+} 
 
 td.rightpad {
   text-align: right;
@@ -159,6 +178,7 @@ td.rightpad {
 td.title {
 	text-align: left;
 	vertical-align: top;
+  font-size: 1.2em;
 	font-weight: bold;
 	padding-left: 5px;
 }
@@ -184,16 +204,19 @@ td.min100 {
 td.tests {
 	text-align: right;
 	padding-right: 5px;
+  font-size: 1.2em;
 }
 
 td.panel {
 	text-align: left;
 	padding-left: 15px;
+  font-size: 1.2em;
 }
 
 td.percent {
 	text-align: right;
 	font-weight: bold;
+  font-size: 1.2em;
 }
 
 td.comments {
@@ -217,7 +240,7 @@ textarea.nc {
 	border: 1px solid blue;
 }
 textarea.ta50px {
-	width: 100%;
+	width: 750px;;
 	height: 50px;
 	border: 0;
 }
@@ -265,7 +288,7 @@ li.limed,li.ui-menu-item {
 
 input[type=text].ro {
 	text-align: right;
-	background-color: #fefefe;
+	background-color: #ccccff; /*#fefefe;*/
 	color: #0099ff;
 	border: none;
 	font-weight: bold;
@@ -301,18 +324,38 @@ div.maintitle2 {
 div.banner_rev {
     background-color: #000;
     margin-top:16px;
-    padding: 5px 0 5px 8px;
+    margin-bottom: 16px;
+    padding: 5px 0 5px 10px ;
     font-size: 18px;
     font-weight:bold;
     color: white;
+    width: 790px;
 }
 div.normal {
-    padding: 4px 45px;
+    padding: 4px 10px;
     font-size: 1.2em;
     line-height: 1.33em; 
+    width: 780px;
+}
+div.full {
+    padding: 4px 0px;
+    font-size: 1.2em;
+    line-height: 1.33em; 
+    width: 800px;
+}
+div.normal_border {
+    border: 2px solid #333;
+    padding: 4px 10px;
+    font-size: 1.2em;
+    line-height: 1.33em; 
+    width: 780px;
 }
 table.table800 {
     width: 800px;
+    border-collapse: collapse;
+}
+table.table801 {
+    width: 850px;
     border-collapse: collapse;
 }
 td.center {

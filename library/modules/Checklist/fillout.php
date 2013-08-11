@@ -342,11 +342,12 @@ function widget_select_ynp_ro($varname, $value, $t) {
   $out = <<<"END"
 <input class="ro" name="{$ro_char}" id={$ro_char}"
        type="text" readonly="readonly" value="{$v_ro_char}" length=3>
-<input class="ro" name="{$ro_num}" id={$ro_num}"
-       type="text" readonly="readonly" value="{$v_ro_num}" length=3>
 END;
   return $out;
-
+/*
+<input class="ro" name="{$ro_num}" id={$ro_num}"
+       type="text" readonly="readonly" value="{$v_ro_num}" length=3>
+*/
 }
 
 function widget_select_ynp_calc($varname, $value, $t, $score) {
@@ -574,6 +575,34 @@ END;
 
 }
 
+function partial_normal($row) {
+  $prefix = $row ['prefix'];
+  $heading = $row ['heading'];
+  $text = $row ['text'];
+  $name = $row ['varname'];
+$out = <<<"END"
+<div style="width:100%;">
+  <div class="normal">{$text}</div>
+</div>
+END;
+  return $out;
+
+}
+
+function partial_full($row) {
+  $prefix = $row ['prefix'];
+  $heading = $row ['heading'];
+  $text = $row ['text'];
+  $name = $row ['varname'];
+$out = <<<"END"
+<div style="width:100%;">
+  <div class="full">{$text}</div>
+</div>
+END;
+  return $out;
+
+}
+
 function partial_banner_rev($row) {
   $prefix = $row ['prefix'];
   $heading = $row ['heading'];
@@ -591,6 +620,22 @@ END;
 
 }
 
+function partial_banner_rev_border($row) {
+  $prefix = $row ['prefix'];
+  $heading = $row ['heading'];
+  $text = $row ['text'];
+  $name = $row ['varname'];
+$out = <<<"END"
+<div style="width:100%;">
+  <div class="banner_rev">
+  {$prefix} {$heading}
+  </div>
+  <div class="normal_border">{$text}</div>
+</div>
+END;
+  return $out;
+
+}
 /**
  * These are the representations of a row on the screen
  */
@@ -897,37 +942,39 @@ function partial_sub_sec_head($row, $value, $t) {
     $vis = "display:none;";
   }
   $out = <<<"END"
-  <table style="width:100%;"><tr>
-      <td style="padding: 2px 4px;vertical-align:top;">
-        <div style="display:inline-block;width:450px;vertical-align:top;">
-          <div style="width:448px;display:inline;">
-            <div style="display:inline;font-weight:bold;width:25px;vertical-align:top;">{$prefix}</div>
-            <div style="display:inline-block;width:405px;">
-              <div style="text-decoration:underline;font-weight:bold;display:inline;">{$head}</div>
-              <div style="vertical-align:top;display:inline;">{$text}<br />
+<table style="width:810px;">
+  <tr>
+    <td style="padding: 2px 4px;vertical-align:top;">
+      <div style="display:inline-block;width:440px;vertical-align:top;">
+        <div style="width:438px;display:inline;">
+          <div style="display:inline;font-weight:bold;width:25px;vertical-align:top;">{$prefix}</div>
+          <div style="display:inline-block;width:405px;">
+            <div style="text-decoration:underline;font-weight:bold;display:inline;">{$head}</div>
+            <div style="vertical-align:top;display:inline;">{$text}<br />
               <div style="width:100%;text-align:right;margin-top:5px;">
-            <label><input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
-              onclick="toggleNCBox(this);">Non-Compliant</label>
+                <label><input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
+                              onclick="toggleNCBox(this);">Non-Compliant</label>
                 <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
-                </div></div>
-            </div>
-            <div
-            style="font-style:italic;font-weight:bold;font-size:10px;margin-top:5px;">{$info}</div>
+            </div></div>
           </div>
-      </td>
-      <td style="vertical-align:top;padding: 2px 4px;width:350px;">
-        <div style="margin-right:5px;display:inline;">{$widget_nyp}</div>
-<div style="display:inline;">
-<input class="ro" name="{$name}_score" id="{$name}_score" value="{$scoreval}"
-       type="text"  size="2">
- / <b>{$max_score}</b></div>
-        <div>{$tarea}</div>
-     <div id="div{$name}_nc" style="{$vis}" >
+          <div
+             style="font-style:italic;font-weight:bold;font-size:10px;margin-top:5px;">{$info}</div>
+        </div>
+      </div>
+    </td>
+    <td style="vertical-align:top;padding: 2px 4px;width:350px;">
+      <div style="margin-right:5px;display:inline;">{$widget_nyp}</div>
+      <div style="display:inline;float:right;">
+        <input class="ro" name="{$name}_score" id="{$name}_score" value="{$scoreval}"
+               type="text"  size="2">
+        / <b>{$max_score}</b></div>
+      <div>{$tarea}</div>
+      <div id="div{$name}_nc" style="{$vis}" >
         Notes:<br />
         {$tareanc}
-        </div>
-      </td>
-  </tr></table>
+      </div>
+    </td>
+</tr></table>
 END;
   
   return $out;
@@ -949,7 +996,7 @@ function partial_sub_sec_head_ro($row, $value, $t) {
   $out = <<<"END"
   <table style="width:100%;"><tr>
       <td style="padding: 2px 4px;">
-        <div style="display:inline-block;width:450px;vertical-align:top;">
+        <div style="display:inline-block;width:440px;vertical-align:top;">
           <div style="width:448px;display:inline;">
             <div style="display:inline;font-weight:bold;width:25px;vertical-align:top;">{$prefix}</div>
             <div style="display:inline-block;width:405px;">
@@ -962,10 +1009,10 @@ function partial_sub_sec_head_ro($row, $value, $t) {
           </div>
       </td>
       <td style="vertical-align:top;padding: 2px 4px;width:350px;">
-      <div style="margin-right:5px;display:inline;">{$widget_nyp_ro}</div>
-      <div style="display:inline;">
+      <div style="display:inline;float:right;margin-right:21px;">
       <input class="ro" name="{$name}_score" id="{$name}_score" value=""
        type="text"  size="2"> / <b>{$max_score}</b></div>
+      <div style="margin-right:5px;display:inline;float:right;">{$widget_nyp_ro}</div>
       </td>
   </tr></table>
 END;
@@ -1035,7 +1082,7 @@ function partial_sec_element_yna($row, $value, $t) {
   }
   $out = <<<"END"
   <table style="width=100%;"><tr>
-      <td style="vertical-align:top;padding: 2px 4px;width:450px;">
+      <td style="vertical-align:top;padding: 2px 4px;width:440px;">
         <div style="display:inline-block;vertical-align:top;">
           <div style="width:425px;">
             <div style="width:100%">
@@ -1090,7 +1137,7 @@ function partial_sec_element($row, $value, $t) {
   }
   $out = <<<"END"
   <table style="width=100%;"><tr>
-      <td style="vertical-align:top;padding: 2px 4px;width:450px;">
+      <td style="vertical-align:top;padding: 2px 4px;width:440px;">
         <div style="display:inline-block;vertical-align:top;">
           <div style="width:425px;">
             <div style="width:100%">
@@ -1421,10 +1468,10 @@ function partial_criteria_2_heading($row, $value, $t) {
   <table style="width:100%;">
   <tr>
     <td width="7%" rowspan="2" class="centertopbold">{$prefix}</td>
-    <td rowspan="2" class="title">
+    <td rowspan="2" class="topbold">
       {$heading}
     </td>
-        <td width="12%" class="centertop">{$t['Date of panel receipt']}</td>
+        <td width="16%" class="centertop">{$t['Date of panel receipt']}</td>
     <td width="16%" class="centertop">{$t['Were results reported within 15 days?']}</td>
     <td width="10%" class="centertopbold">{$t['Results & % Correct']}</td>
   </tr>
@@ -1490,13 +1537,13 @@ function partial_panel_result($row, $value, $t) {
   $out = <<<"END"
   <table style="width:100%;">
   <tr>
-    <td width="7%" class="centerbold">
+    <td width="7%" class="title">
       {$prefix}
     </td>
     <td class="panel">
       {$heading}
     </td>
-    <td width="12%">
+    <td width="16%">
       {$dt} {$script}
     </td>
     <td width="16%">
@@ -1565,7 +1612,7 @@ function partial_action_plan_data($row, $value, $t) {
   $time = TEXTAREA ( "{$name}_time", $value, $input_style );
   $sign = TEXTAREA ( "{$name}_item", $value, $input_style );
   $out = <<<"END"
-  <table style="width:100%;">
+  <table style="width:810px;">
   <tr>
     <td width="45%">{$item}</td>
     <td width="20%">{$person}</td>
@@ -1580,7 +1627,32 @@ END;
 }
 
 function partial_sec_total($row, $value, $t) {
-  return '';
+  $prefix = $row ['prefix'];
+  $heading = $row ['heading'];
+  //$text = $row ['text'];
+  //$info = $row ['info'];
+  $name = $row ['varname'];
+  $max_score = $row ['score'];
+  $widget_nyp_ro = widget_select_ynp_ro ( $name, $value, $t ); // 'N/Y/P FIXME';
+  $ynp_ro = "{$name}_ynp";
+  $this_score = get_arrval ( $value, $ynp_ro, 0 ); // '# FIXME';
+  $head = ($heading) ? "{$heading}<br />" : "";
+  logit ( "SRO: " . print_r ( $row, true ) );
+  $out = <<<"END"
+<table style="width:100%;"><tr>
+    <td style="padding: 2px 4px;width:722px;background:#ccccff;">  
+    <div style="font-size:16px;font-weight:bold;background;#ccccff;">{$heading}
+</div>     
+    </td>
+    <td style="vertical-align:top;padding: 2px 4px;width:76px;background:#ccccff;">
+      <div style="display:inline;">
+        <input class="ro" name="{$name}_score" id="{$name}_score" value=""
+               type="text"  size="2"> / <b>{$max_score}</b></div>
+    </td>
+</tr></table>
+END;
+  
+  return $out;
 
 }
 
@@ -1596,13 +1668,26 @@ END;
   return $out;
 
 }
-
 function partial_sec_elem_info($row, $value, $t) {
   $prefix = $row ['prefix'];
   $heading = $row ['heading'];
   $text = $row ['text'];
+  // $name = $row['varname'];
   $out = <<<"END"
-<div style="width:100%;border:1px solid #ccc;background-color:#f0f0f0;padding:4px;font-size:14px;">
+  {$text}
+END;
+  
+  return $out;
+
+}
+
+function partial_sec_elem_info_normal($row, $value, $t) {
+  $prefix = $row ['prefix'];
+  $heading = $row ['heading'];
+  $text = $row ['text'];
+  $out = <<<"END"
+<div style="width:820px;border:1px solid #ccc;
+     background-color:#f0f0f0;padding:4px;font-size:14px;">
   <b>{$heading}</b> {$text}
 </div>
 END;
@@ -1615,7 +1700,8 @@ function partial_sub_sec_info($row, $value, $t) {
   $heading = $row ['heading'];
   $text = $row ['text'];
   $out = <<<"END"
-<div style="width:100%;border:1px solid #ccc;background-color:#f0f0f0;padding: 4px;font-size:14px;">
+<div style="width:820px;border:1px solid #ccc;
+     background-color:#f0f0f0;padding: 4px;font-size:12px;">
   <i><b>{$heading}</b> {$text}</i>
 </div>
 END;
@@ -1648,6 +1734,18 @@ END;
 
 }
 
+function partial_img($row) {
+  /* paint the image to the screen */
+  $heading = $row ['heading'];
+  $baseurl = $row ['baseurl'];
+  $out = <<<"END"
+<div style="width:100%;">
+    <img style="width:797px;" src="{$baseurl}/images/{$heading}" />     
+</div>
+END;
+  return $out;
+
+}
 function get_lang_text($base, $default, $sp_lang) {
   /**
    * $base contains the original text
@@ -1731,10 +1829,13 @@ function calculate_page($rows, $value, $tword) {
   /*
    * $words = array('Yes', 'No', 'Partial', 'Select', 'Insufficient Data', 'Personal', 'Work', 'Insufficient data', 'Not Audited', 'Star', 'Stars', 'National', 'Reference', 'Regional', 'District', 'Zonal', 'Field', 'Public', 'Hospital', 'Private', 'Research', 'Non-hospital outpatient clinic', 'Other - please specify', 'FREQUENCY', 'Daily', 'Weekly', 'With Every Run', 'Quantitative tests', 'Semi-quantitative tests', 'Qualitative tests', 'Date of panel receipt', 'Were results reported within 15 days?', 'Results & % Correct', 'Official ASLM Audit', 'SLMTA Audit', 'Base Line Assessment', 'Non SLMTA Audit'); $tlist = get_common_words_translated($tword, $words);
    */
-  $show_only = array('main_heading', 'main2', 'banner_rev', 'part_head', 'sec_head_lab',
-                   'tab_head3', 'info_i');
+  $show_only = array('main_heading', 'main2', 'banner_rev', 'banner_rev_border', 
+                     'part_head', 'sec_head_lab', 'tab_head3', 'info_i', 'img', 'normal',
+                     'sec_elem_info', 'sec_elem_info_normal', 'sec_element_info',
+                     'sub_sec_info', 'sec_total', 'sec_head_top', 'sec_head', 'action_plan_heading');
   $tlist = getTranslatables ( $tword );
   $tout = array ();
+  $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
   $tout [] = '<table border=0 style="width:825px;">';
   // $tout[] = '<tr><td style="width:359px;"></td><td style="width:164px;"></td><
   // td style="width:309px;"></td><tr>';
@@ -1748,10 +1849,13 @@ function calculate_page($rows, $value, $tword) {
     $arow ['varname'] = $row ['varname'];
     $arow ['info'] = $row ['info'];
     $arow ['score'] = $row ['score'];
+    $arow ['baseurl'] = $baseurl;
     $bpad = 'class="bpad"';
+
     if (in_array($type, $show_only)) {
       $bpad = '';
     }
+    if ($type == '') {logit("ROW: ".print_r($row, true));}
     $tout [] = "<tr ><td {$bpad}>" .call_user_func ( "partial_{$type}", $arow, $value, $tlist ) . '</td></tr>';
   }
   $tout [] = '</table>';

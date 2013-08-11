@@ -12,7 +12,7 @@ class Application_Model_DbTable_Slipta extends Application_Model_DbTable_Checkli
     $db = $this->getDb ();
     $id = ( int ) $id;
     $sql = <<<"SQL"
- select r.varname, r.row_type, r.score, p.page_num,
+      select r.varname, r.row_type, r.score, p.page_num, p.page_id,
       r.prefix, r.heading, r.text, r.info,
       lp.row_id lprowid, lp.def lpdefault, lp.{$lang} lplang,
       lh.row_id lhrowid, lh.def lhdefault, lh.{$lang} lhlang,

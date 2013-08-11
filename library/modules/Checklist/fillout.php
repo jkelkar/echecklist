@@ -122,6 +122,7 @@ function TEXTAREA($name, $value, $style = '', $class = '') {
   $out = <<<"END"
     <textarea {$use_style} onchange="noteChange();" name="{$name}" id="{$name}" class="tarea {$class}">{$val}</textarea>
 END;
+  logit("TA: {$name} {$out}");
   return $out;
 
 }
@@ -841,6 +842,8 @@ function partial_sec_head_lab($row, $value, $t) {
               <div style="vertical-align:top;display:inline;">{$text}
               </div>
             </div>
+          </div>
+        </div>
       </td>
   </tr></table>
 END;
@@ -1144,11 +1147,12 @@ function partial_sec_element($row, $value, $t) {
               <div style="vertical-align:top;display:inline;">{$prefix}</div>
               <div style="text-decoration:underline;font-weight:bold;vertical-align:top;display:inline;">{$heading}</div>
               <div style="vertical-align:top;display:inline;">{$text}<br />
-              <div style="width:100%;text-align:right;margin-top:5px;">
-            <label><input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
-              onclick="toggleNCBox(this);">Non-Compliant</label>
-                <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
-                </div></div>
+                <div style="width:100%;text-align:right;margin-top:5px;">
+                  <label><input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
+                          onclick="toggleNCBox(this);">Non-Compliant</label>
+                  <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
+                </div>
+              </div>
             </div>
           </div>
           <div style="font-style:italic;font-weight:bold;font-size:10px;margin-top:4px;">{$info}</div>
@@ -1746,6 +1750,89 @@ END;
   return $out;
 
 }
+
+function partial_bat_sec_head($row) {
+  // $prefix = $row ['prefix'];
+  $heading = $row ['heading'];
+  // $text = $row ['text'];
+  // $name = $row ['varname'];
+$out = <<<"END"
+<div style="width:100%;">
+  <div class="bat_banner_rev">
+  {$heading}
+  </div>
+</div>
+END;
+  return $out;
+}
+
+function partial_bat_element($row, $value, $t) {
+  $prefix = $row ['prefix'];
+  $heading = $row ['heading'];
+  $text = $row ['text'];
+  $info = $row ['info'];
+  $dinfo = '';
+  if ($info != '') {
+    $dinfo = "<div style=\"border:1px solid #999;background-color:#eee;font-style:italic;\">{$info}</div>";
+  }
+  $name = $row ['varname'];
+  $mc_yna = widget_select_yna ( "{$name}_yna", $value, $t );
+  $tarea = TEXTAREA ( "{$name}_comment", $value, "width:100%;height:50px;margin-top:6px;" );
+  $tareanc = TEXTAREA ( "{$name}_note", $value, "width:100%;height:50px;margin-top:6px;", 'nc' );
+  $ncval = get_arrval ( $value, $name . '_nc', 'F' );
+  $checked = '';
+  if ($ncval === 'T') {
+    $checked = 'checked';
+    $vis = '';
+  } else {
+    $ncval = 'F';
+    $vis = "display:none;";
+  }
+  $out = <<<"END"
+<div style="width:100%;">
+  <div style="padding: 2px 4px;">
+    <div style="display:inline-block;width:100%x;vertical-align:top;">
+      <div style="width:390px;padding-right:10px;display:inline;float:left;">
+        <div style="display:inline;font-weight:bold;width:30px;vertical-align:top;">{$prefix}</div>
+        <div style="display:inline-block;width:340px;">
+          <div style="vertical-align:top;display:inline;">{$text}
+            <div style="width:100%;text-align:right;margin-top:5px;">
+              <label><input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
+                      onclick="toggleNCBox(this);">Non-Compliant</label>
+              <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="width:400px;display:inline;float:left;">
+        <div style="">{$mc_yna} </div>
+          {$tarea}
+        <div id="div{$name}_nc" style="{$vis}" >
+          Notes:<br /> {$tareanc}
+        </div>
+      </div>
+    </div>
+    {$dinfo}
+  </div>
+</div>
+END;
+  return $out;
+}
+
+function partial_bat_comment($row, $value, $t){
+  $name = $row ['varname'];
+  $tarea = TEXTAREA ( $name, $value, "width:810px;height:50px;margin:6px 10px 4px 10px;");
+  $out = <<<"END"
+<div style="width:100%;">
+  <div class="bat_comment">
+  {$tarea}
+  </div>
+</div>
+END;
+  return $out;
+}
+
+/* the bottom line */
 function get_lang_text($base, $default, $sp_lang) {
   /**
    * $base contains the original text
@@ -1832,7 +1919,8 @@ function calculate_page($rows, $value, $tword) {
   $show_only = array('main_heading', 'main2', 'banner_rev', 'banner_rev_border', 
                      'part_head', 'sec_head_lab', 'tab_head3', 'info_i', 'img', 'normal',
                      'sec_elem_info', 'sec_elem_info_normal', 'sec_element_info',
-                     'sub_sec_info', 'sec_total', 'sec_head_top', 'sec_head', 'action_plan_heading');
+                     'sub_sec_info', 'sec_total', 'sec_head_top', 'sec_head', 'action_plan_heading',
+                     'full');
   $tlist = getTranslatables ( $tword );
   $tout = array ();
   $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();

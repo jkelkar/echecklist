@@ -18,9 +18,9 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     //$stmt = $db->query ( $sql );
     //$rows = $stmt->fetchAll ();
     $rows = $this->queryRows($sql);
-    if (! $rows) {
+    /*if (! $rows) {
       throw new Exception ( "There is no data" );
-    }
+      }*/
     $value = array ();
     foreach ( $rows as $row ) {
       $val = '';
@@ -159,11 +159,11 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
         $ftype = 'string';
         $sval = $value;
     }
-    logit ( "UI: {$did}, '{$name}', {$ival}, '{$tval}', '{$sval}', '{$dval->format($ISOformat)}', '{$bval}', {$ftype}'" );
+    logit ( "AD: {$did}, '{$name}', {$ival}, '{$tval}', '{$sval}', '{$dval->format($ISOformat)}', '{$bval}', {$ftype}'" );
     $sql = <<<"END"
  INSERT INTO audit_data (audit_id, field_name, int_val, text_val,
  string_val, date_val, bool_val, field_type) values ({$did}, '{$name}', {$ival}, '{$tval}',
- '{$sval}', '{$bval}', '{$dval->format($ISOformat)}', '{$ftype}')
+ '{$sval}', '{$dval->format($ISOformat)}', '{$bval}', '{$ftype}')
  ON DUPLICATE KEY UPDATE
  audit_id={$did}, field_name='{$name}', int_val={$ival}, text_val='{$tval}',
  string_val='{$sval}', date_val='{$dval->format($ISOformat)}', bool_val='{$bval}',

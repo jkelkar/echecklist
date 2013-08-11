@@ -55,7 +55,7 @@ END;
   }
 
   public function editAction() {
-    $template_id = 1; // FIXME
+    //$template_id = 1; // FIXME
     $lang_default= 'EN';
     $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
     $mainpage = "/";
@@ -70,18 +70,18 @@ END;
     $pinfo = explode("/", $vars);
     logit('PARTS: '. print_r($pinfo, true));
     $audit_id = (int)  $pinfo[3];
-    $tid = $data->getTemplateId($audit_id);
+    $template_id = $data->getTemplateId($audit_id);
     $langtag = $pinfo[4];
     $thispage = $pinfo[5];
     
     if ($thispage == '') {
-      $fp = $page->getStartPage($tid); //1 is the template id
+      $fp = $page->getStartPage($template_id); //1 is the template id
         $thispage = $fp; // this is the first page of slipta template
       } else {
         $thispage = ( int ) $thispage;
       }
     logit ( 'In slipta beginning' );
-    $nav = $page->getNav ( $tid, $thispage ); // 1 is the template_id
+    $nav = $page->getNav ( $template_id, $thispage ); // 1 is the template_id
     $page_row = $nav ['row'];
     $nrows = $nav ['rows'];
     if (! $this->getRequest ()->isPost ()) {
@@ -93,7 +93,7 @@ END;
         //}
       
       //$rows = $audit->getrows ( 1, $thispage, $langtag ); // 1 is the template_id
-      $rows = $audit->getrows ( $tid, $thispage, $langtag ); // 1 is the template_id
+      $rows = $audit->getrows ( $template_id, $thispage, $langtag ); // 1 is the template_id
       $value = $data->get_data ( $audit_id ); // 1 is the audit_id
       
       
@@ -155,9 +155,9 @@ $(function() {
 END;
       */
       $this->view->hidden = implode ( "\n", array (
-          "<input type=\"hidden\" name=\"audit_id\" value=\"1\">"
+          "<input type=\"hidden\" name=\"audit_id\" value=\"{$audit_id}\">"
       ) );
-      logit("HEADER: {$this->view->header}");
+      // logit("HEADER: {$this->view->header}");
       $this->_helper->layout->setLayout ( 'template' );
     } else {
       // Handle the POST request here

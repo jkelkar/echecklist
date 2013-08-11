@@ -239,6 +239,10 @@ textarea {
 textarea.nc {
 	border: 1px solid blue;
 }
+textarea.ta_bc {
+    width: 810px;
+    height: 50px;
+}
 textarea.ta50px {
 	width: 750px;;
 	height: 50px;
@@ -330,6 +334,16 @@ div.banner_rev {
     font-weight:bold;
     color: white;
     width: 790px;
+}
+div.bat_banner_rev {
+    background-color: #000;
+    margin-top:16px;
+    margin-bottom: 16px;
+    padding: 5px 0 5px 10px ;
+    font-size: 18px;
+    font-weight:bold;
+    color: white;
+    width: 810px;
 }
 div.normal {
     padding: 4px 10px;

@@ -5,7 +5,7 @@
  */
 require_once 'modules/Checklist/logger.php';
 
-class Application_Model_DbTable_Slipta extends Application_Model_DbTable_Checklist {
+class Application_Model_DbTable_AuditRows extends Application_Model_DbTable_Checklist {
   protected $_name = 'template_rows';
 
   public function getrows($id, $page_num, $lang) {

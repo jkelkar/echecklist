@@ -100,9 +100,10 @@ class Application_Controller_Action extends Zend_Controller_Action {
     foreach ( $jslist as $f ) {
       $this->view->headScript ()->appendFile ( "{$this->baseurl}{$f}" );
     }
+    /*
     logit ( "Links: {$this->view->headLink()}" );
     logit ( "Scripts: {$this->view->headScript()}" );
-  
+    */
   }
  
   public function setHeader() {
@@ -133,6 +134,10 @@ END;
         <li><a href="{$this->baseurl}/audit/start"><span title=".icon  .icon-green .icon-clipboard " class="icon icon-green icon-clipboard"></span> New Audit</a></li>
         <li><a href="{$this->baseurl}/audit/find"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Find</a></li>
         <li class="divider"></li>
+<li><a href="{$this->baseurl}/audit/edit/1/EN/"><span title=".icon  .icon-blue  .icon-edit " class="icon icon-blue icon-edit"></span> Edit 1</a></li>
+<li><a href="{$this->baseurl}/audit/edit/2/EN/"><span title=".icon  .icon-blue  .icon-edit " class="icon icon-blue icon-edit"></span> Edit 2</a></li>
+<li><a href="{$this->baseurl}/audit/edit/3/EN/"><span title=".icon  .icon-blue  .icon-edit " class="icon icon-blue icon-edit"></span> Edit 3</a></li>
+        <li class="divider"></li>
         <li><a href="{$this->baseurl}/audit/import"><span title=".icon  .icon-blue .icon-import " class="icon icon-blue icon-archive"></span> Import</a></li>
 				</ul>
 </div>
@@ -162,7 +167,8 @@ END;
 END;
     } else {
       $this->header = $this->header . <<<"END"
-  <div class="btn-group pull-left" style="margin-left:200px;"><a class="btn" href="{$this->baseurl}/startstop/login">Login</a></div>
+  <div class="btn-group pull-left" style="margin-left:200px;">
+<a class="btn" href="{$this->baseurl}/startstop/login"><span title=".icon  .icon-blue  .icon-contacts " class="icon icon-blue icon-contacts"></span> Login</a></div>
 
 END;
     }
@@ -192,7 +198,7 @@ END;
 END;
     
     $this->view->header = $this->header;
-    logit("_HEADER: {$this->view->header}");
+    // logit("_HEADER: {$this->view->header}");
   }
 
   public function convert2PDF($html)

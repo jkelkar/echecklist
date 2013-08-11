@@ -52,6 +52,21 @@ class Application_Model_DbTable_Page extends Application_Model_DbTable_Checklist
     return $rows[0];
   }
 
+public function getStartPage($template_id) {
+    $db = $this->getDb();
+    $template_id = (int)$template_id;
+    logit("PAGE: {$template_id} ");
+    $sql = "select * from page where template_id = ". $template_id .
+      " and start = 't'" ;
+    $stmt =  $db->query($sql);
+    $rows = $stmt->fetchAll();
+    
+    if (!$rows) {
+      throw new Exception("Could not find page.");
+    }
+    return $rows[0]['page_num'];
+  }
+
   public function getNav($template_id, $page_num)
   {
     /**

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 11, 2013 at 03:43 AM
+-- Generation Time: Aug 11, 2013 at 02:00 PM
 -- Server version: 5.5.31
 -- PHP Version: 5.3.10-1ubuntu3.6
 
@@ -2456,6 +2456,8 @@ CREATE TABLE IF NOT EXISTS `page` (
   `next_page_num` int(11) NOT NULL,
   `leaf` varchar(1) NOT NULL,
   `tag` varchar(64) NOT NULL,
+  `start` char(1) NOT NULL COMMENT 'This is the start page',
+  `display_only` char(1) NOT NULL COMMENT 'Only display items on this page',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=31 ;
 
@@ -2463,36 +2465,36 @@ CREATE TABLE IF NOT EXISTS `page` (
 -- Dumping data for table `page`
 --
 
-INSERT INTO `page` (`id`, `template_id`, `page_id`, `parent`, `page_num`, `next_page_num`, `leaf`, `tag`) VALUES
-(2, 1, 1, -1, 99, 0, 'f', 'SLIPTA'),
-(3, 1, 2, 99, 25, 20, 't', 'Main Page'),
-(4, 1, 3, 99, 100, 0, 'f', 'Part I'),
-(5, 1, 4, 100, 20, 21, 't', '1 Audit Information'),
-(6, 1, 5, 100, 21, 22, 't', '2 Lab Information'),
-(7, 1, 6, 100, 22, 23, 't', '3 Level & Affiliation Information'),
-(8, 1, 7, 100, 23, 24, 't', '4 Laboratory Staffing Summary'),
-(9, 1, 8, 100, 24, 2, 't', '5 Organizational Structure'),
-(10, 1, 9, 99, 101, 0, 'f', 'Part II'),
-(11, 1, 10, 101, 18, 2, 't', 'Prelude'),
-(12, 1, 11, 101, 2, 3, 't', 'Section 1'),
-(13, 1, 12, 101, 3, 4, 't', 'Section 2'),
-(14, 1, 13, 101, 4, 5, 't', 'Section 3'),
-(15, 1, 14, 101, 5, 6, 't', 'Section 4'),
-(16, 1, 15, 101, 6, 7, 't', 'Section 5'),
-(17, 1, 16, 101, 7, 8, 't', 'Section 6'),
-(18, 1, 17, 101, 8, 9, 't', 'Section 7'),
-(19, 1, 18, 101, 9, 10, 't', 'Section 8'),
-(20, 1, 19, 101, 10, 11, 't', 'Section 9'),
-(21, 1, 20, 101, 11, 12, 't', 'Section 10'),
-(22, 1, 21, 101, 12, 13, 't', 'Section 11'),
-(23, 1, 22, 101, 13, 14, 't', 'Section 12'),
-(24, 1, 23, 101, 14, 15, 't', 'Ethical Principles'),
-(25, 1, 24, 101, 15, 16, 't', 'Criteria 1'),
-(26, 1, 25, 101, 16, 17, 't', 'Criteria 2'),
-(27, 1, 26, 99, 102, 0, 'f', 'Part III'),
-(28, 1, 27, 102, 17, 18, 't', 'Summary'),
-(29, 1, 28, 102, 19, 20, 't', 'Action Plan'),
-(30, 1, 29, 102, 26, 999, 't', 'SLIPTA Certification');
+INSERT INTO `page` (`id`, `template_id`, `page_id`, `parent`, `page_num`, `next_page_num`, `leaf`, `tag`, `start`, `display_only`) VALUES
+(2, 1, 1, -1, 99, 0, 'f', 'SLIPTA', 'f', 'f'),
+(3, 1, 2, 99, 25, 20, 't', 'Main Page', 't', 't'),
+(4, 1, 3, 99, 100, 0, 'f', 'Part I', 'f', 'f'),
+(5, 1, 4, 100, 20, 21, 't', '1 Audit Information', 'f', 'f'),
+(6, 1, 5, 100, 21, 22, 't', '2 Lab Information', 'f', 'f'),
+(7, 1, 6, 100, 22, 23, 't', '3 Level & Affiliation Information', 'f', 'f'),
+(8, 1, 7, 100, 23, 24, 't', '4 Laboratory Staffing Summary', 'f', 'f'),
+(9, 1, 8, 100, 24, 2, 't', '5 Organizational Structure', 'f', 'f'),
+(10, 1, 9, 99, 101, 0, 'f', 'Part II', 'f', 'f'),
+(11, 1, 10, 101, 18, 2, 't', 'Prelude', 'f', 't'),
+(12, 1, 11, 101, 2, 3, 't', 'Section 1', 'f', 'f'),
+(13, 1, 12, 101, 3, 4, 't', 'Section 2', 'f', 'f'),
+(14, 1, 13, 101, 4, 5, 't', 'Section 3', 'f', 'f'),
+(15, 1, 14, 101, 5, 6, 't', 'Section 4', 'f', 'f'),
+(16, 1, 15, 101, 6, 7, 't', 'Section 5', 'f', 'f'),
+(17, 1, 16, 101, 7, 8, 't', 'Section 6', 'f', 'f'),
+(18, 1, 17, 101, 8, 9, 't', 'Section 7', 'f', 'f'),
+(19, 1, 18, 101, 9, 10, 't', 'Section 8', 'f', 'f'),
+(20, 1, 19, 101, 10, 11, 't', 'Section 9', 'f', 'f'),
+(21, 1, 20, 101, 11, 12, 't', 'Section 10', 'f', 'f'),
+(22, 1, 21, 101, 12, 13, 't', 'Section 11', 'f', 'f'),
+(23, 1, 22, 101, 13, 14, 't', 'Section 12', 'f', 'f'),
+(24, 1, 23, 101, 14, 15, 't', 'Ethical Principles', 'f', 't'),
+(25, 1, 24, 101, 15, 16, 't', 'Criteria 1', 'f', 'f'),
+(26, 1, 25, 101, 16, 17, 't', 'Criteria 2', 'f', 'f'),
+(27, 1, 26, 99, 102, 0, 'f', 'Part III', 'f', 'f'),
+(28, 1, 27, 102, 17, 18, 't', 'Summary', 'f', 'f'),
+(29, 1, 28, 102, 19, 20, 't', 'Action Plan', 'f', 'f'),
+(30, 1, 29, 102, 26, 999, 't', 'SLIPTA Certification', 'f', 't');
 
 -- --------------------------------------------------------
 
@@ -2671,12 +2673,12 @@ INSERT INTO `template_row` (`id`, `template_id`, `row_name`, `varname`, `row_typ
 (92, 1, 'p2_s01_04_03', 's010403', 'sec_element', 2, 1, 4, 3, 0, '1.4.3', '', 'AA36', 'ISO15189: 4.1.6', 0, 0, 11),
 (93, 1, 'p2_s01_04_04', 's010404', 'sec_element', 2, 1, 4, 4, 0, '1.4.4', '', 'AA37', 'Standard: ISO 15189:  4.4', 0, 0, 11),
 (94, 1, 'p2_s01_04_05', 's010405', 'sec_element', 2, 1, 4, 5, 0, '1.4.5', '', 'AA38', 'Standard: ISO 15189:  4.5.1', 0, 0, 11),
-(95, 1, 'p2_s01_04_06', 's010406', 'sec_element', 2, 1, 4, 6, 0, '1.4.6', '', 'AA39', '', 0, 0, 11),
+(95, 1, 'p2_s01_04_06', 's010406', 'sec_element', 2, 1, 4, 6, 0, '1.4.6', '', 'AA39', 'Standard: ISO 15189: 4.6', 0, 0, 11),
 (96, 1, 'p2_s01_04_07', 's010407', 'sec_element', 2, 1, 4, 7, 0, '1.4.7', '', 'AA40', ' ISO 15189: 4.7 ', 0, 0, 11),
 (97, 1, 'p2_s01_04_08', 's010408', 'sec_element', 2, 1, 4, 8, 0, '1.4.8', '', 'AA41', 'Standard: ISO 15189: 4.8', 0, 0, 11),
 (98, 1, 'p2_s01_04_09', 's010409', 'sec_element', 2, 1, 4, 9, 0, '1.4.9', '', 'AA42', 'Standard: ISO 15189: 4.9', 0, 0, 11),
 (99, 1, 'p2_s01_04_10', 's010410', 'sec_element', 2, 1, 4, 10, 0, '1.4.10', '', 'AA43', 'Standard: ISO 15189: 4.10', 0, 0, 11),
-(100, 1, 'p2_s01_04_11', 's010411', 'sec_element', 2, 1, 4, 11, 0, '1.4.11', '', 'AA44', '', 0, 0, 11),
+(100, 1, 'p2_s01_04_11', 's010411', 'sec_element', 2, 1, 4, 11, 0, '1.4.11', '', 'AA44', 'Standard: ISO 15189: 4.11', 0, 0, 11),
 (101, 1, 'p2_s01_04_12', 's010412', 'sec_element', 2, 1, 4, 12, 0, '1.4.12', '', 'AA45', 'Standard: ISO 15189: 4.12', 0, 0, 11),
 (102, 1, 'p2_s01_04_13', 's010413', 'sec_element', 2, 1, 4, 13, 0, '1.4.13', '', 'AA46', 'Standard: ISO 15189: 4.13', 0, 0, 11),
 (103, 1, 'p2_s01_04_14', 's010414', 'sec_element', 2, 1, 4, 14, 0, '1.4.14', '', 'AA47', 'Standard: ISO 15189: 4.14 ', 0, 0, 11),
@@ -2819,9 +2821,9 @@ INSERT INTO `template_row` (`id`, `template_id`, `row_name`, `varname`, `row_typ
 (240, 1, '', '', 'sub_sec_info', 2, 3, 8, 100, 0, '', 'Standard:', ' "Laboratory management shall ensure that appropriate communication processes are established within the laboratory and that communication takes place regarding the effectiveness of the quality management system. "The laboratory should hold regular staff meetings to ensure communication within the laboratory. Meetings should have recorded notes to facilitate review of progress over time.<br /><b>ISO 15189: 4.1.6</b>', '', 0, 0, 13),
 (241, 1, 'p2_s03_total', '', 'sec_total', 2, 3, 100, 0, 0, '', 'AA183', '', '', 20, 0, 13),
 (242, 1, '', '', 'sec_elem_info_normal', 2, 4, 0, 1, 0, '', '', 'For each item, please circle either Yes (Y), Partial (P), or No (N). All elements of the question must be satisfactorily present to indicate "yes". Provide explanation or further comments for each "partial" or "no" response.', '', 0, 0, 14),
-(243, 1, 'p2_t_s04', 's04', 'sec_head', 2, 4, 0, 2, 0, '4', 'AA184', '', '', 0, 0, 14),
-(244, 1, 'p2_s04_01', 's0401', 'sub_sec_head', 2, 4, 1, 0, 0, '4.1', 'AA185', 'AA186', '', 2, 0, 14);
+(243, 1, 'p2_t_s04', 's04', 'sec_head', 2, 4, 0, 2, 0, '4', 'AA184', '', '', 0, 0, 14);
 INSERT INTO `template_row` (`id`, `template_id`, `row_name`, `varname`, `row_type`, `part`, `level1`, `level2`, `level3`, `level4`, `prefix`, `heading`, `text`, `info`, `score`, `element_count`, `page_id`) VALUES
+(244, 1, 'p2_s04_01', 's0401', 'sub_sec_head', 2, 4, 1, 0, 0, '4.1', 'AA185', 'AA186', '', 2, 0, 14),
 (245, 1, '', '', 'sub_sec_info', 2, 4, 1, 100, 0, '', 'Standard:', ' Professionally-qualified staff should provide advice on sample type, examination choice, frequency, and results interpretation.<br /><b>ISO 15189:4.7; 4.12.5</b>', '', 0, 0, 14),
 (246, 1, 'p2_s04_02', 's0402', 'sub_sec_head', 2, 4, 2, 0, 0, '4.2', 'AA187', 'AA188', '', 2, 0, 14),
 (247, 1, '', '', 'sub_sec_info', 2, 4, 2, 100, 0, '', 'Standard:', ' The laboratory should provide its clients with a handbook that outlines the laboratory’s hours of operation, available tests, specimen collection instructions, packaging and shipping directions, and expected turnaround times.<br /><b>ISO 15189: 4.7, 4.12.5, 5.5.6</b>', '', 0, 0, 14),
@@ -3094,9 +3096,9 @@ INSERT INTO `template_row` (`id`, `template_id`, `row_name`, `varname`, `row_typ
 (515, 1, 'p2_s12_10', 's1210', 'sub_sec_head', 2, 12, 10, 0, 0, '12.1', '', 'AA421', '', 2, 0, 22),
 (516, 1, '', '', 'sub_sec_info', 2, 12, 10, 100, 0, '', 'Standard:', ' Waste should be separated according to biohazard risk, with infectious and non-infectious waste disposed of in separate containers. Infectious waste should be discarded into containers that do not leak and are clearly marked with a biohazard symbol. Sharp instruments and needles should be discarded in puncture resistant containers. Both infectious waste and sharps containers should be autoclaved before being discarded to decontaminate potentially infectious material. To prevent injury from exposed waste, infectious waste should be incinerated, burnt in a pit, or buried.<br /><b>ISO 15190:22</b>', '', 0, 0, 22),
 (517, 1, 'p2_s12_11', 's1211', 'sub_sec_head_ro', 2, 12, 11, 0, 0, '12.11', '', 'AA422', '', 2, 0, 22),
-(518, 1, 'p2_t_s12_11', '', 'sec_element_info', 2, 12, 11, 0, 1, 'head', '', '', '', 0, 0, 22),
-(519, 1, 'p2_s12_11_01', 's121101', 'sec_element', 2, 12, 11, 1, 0, '12.11.01', '', 'AA423', '', 0, 0, 22);
+(518, 1, 'p2_t_s12_11', '', 'sec_element_info', 2, 12, 11, 0, 1, 'head', '', '', '', 0, 0, 22);
 INSERT INTO `template_row` (`id`, `template_id`, `row_name`, `varname`, `row_type`, `part`, `level1`, `level2`, `level3`, `level4`, `prefix`, `heading`, `text`, `info`, `score`, `element_count`, `page_id`) VALUES
+(519, 1, 'p2_s12_11_01', 's121101', 'sec_element', 2, 12, 11, 1, 0, '12.11.01', '', 'AA423', '', 0, 0, 22),
 (520, 1, 'p2_s12_11_02', 's121102', 'sec_element', 2, 12, 11, 2, 0, '12.11.02', '', 'AA424', '', 0, 0, 22),
 (521, 1, 'p2_s12_11_03', 's121103', 'sec_element', 2, 12, 11, 3, 0, '12.11.03', '', 'AA425', '', 0, 0, 22),
 (522, 1, 'p2_s12_11_04', 's121104', 'sec_element', 2, 12, 11, 4, 0, '12.11.04', '', 'AA426', '', 0, 0, 22),
@@ -3187,7 +3189,7 @@ INSERT INTO `template_row` (`id`, `template_id`, `row_name`, `varname`, `row_typ
 (607, 1, 'p3_t_s03_00_01', '', 'action_plan_heading', 3, 3, 0, 1, 0, '', 'AA723', '', '', 0, 0, 28),
 (608, 1, 'p3_s5_01_01', 'action01', 'action_plan_data', 3, 3, 1, 0, 0, '', '', '', '', 0, 0, 28),
 (609, 1, '', '', 'banner_rev', 3, 5, 2, 0, 0, '', 'Criteria for SLIPTA 5 star certification and accreditation of  international standards)', '<div style="width:780px;">\r\n<ol>\r\n<li><b>Test results are reported by the laboratory on at least 80% of specimens within the turnaround time specified (and documented) by the laboratory in consultation with its clients.</b> <i>Turnaround time to be interpreted as time from receipt of specimen in laboratory until results reported.</i> <b>DATA NOT COLLECTED ON THIS ELEMENT</b></li>\r\n<br /><br />\r\n<li><b>Internal quality control (IQC) procedures are practiced for all testing methods used by the laboratory.</b>\r\n<br />\r\nOrdinarily, each test kit has a set of positive and negative controls that are to be included in each test run. These controls included with the test kit are considered internal controls, while any other controls included in the run are referred to as external controls. QC data sheets and summaries of corrective action are retained for documentation and discussion with auditor.</li>\r\n<br /><br />\r\n<li> <b>The scores on the two most recent WHO AFRO approved proficiency tests are 80% or better.</b> <br />\r\nProficiency test (PT) results must be reported within 15 days of panel receipt. Laboratories that receive less than 80% on two consecutive PT challenges will lose their certification until such time that they are able to successfully demonstrate achievement of 80% or greater on two consecutive PT challenges. Unacceptable PT results must be addressed and corrective action taken.\r\n<br /><br />\r\n<i>NOTE: A laboratory that has failed to demonstrate achievement of 80% or greater on the two most recent PT challenges will not be awarded any stars, regardless of the checklist score they received upon audit.</i>\r\n</li></ol><br /><br />\r\n</div>\r\n', '', 0, 0, 29),
-(610, 1, '', '', 'full', 3, 5, 3, 0, 0, '', '', '<br /><table border="1" class="table801">  <tr> <td>   <table border="1" class="table800">      <tr>        <td width="70%"><b><br />Score on annual on-site inspection is at least 55%</b> (at least 143 points):<br /><br /></td>        <td class="centertop">Score</td>        <td width="7%" class="centerbold">Y</td>        <td width="7%" class="centerbold">N</td>      </tr>    </table></td>  </tr>  <tr> <td>   <table border="1" class="table800">      <tr>         <td width="16%" class="center"><br /><b>No Stars</b><br />(0 - 142 pts)<br />< <i>55%</i><br /><br /></td>        <td width="17%" class="center"><br /><b>1 Star</b><br />(143 - 165 pts)<br /><i>55% - 64%</i><br /><br /></td>        <td width="16%" class="center"><br /><b>2 Stars</b><br />(166 - 191 pts)<br /><i>65% - 74%</i><br /><br /></td>        <td width="17%" class="center"><br /><b>3 Stars</b><br />(192 - 217 pts)<br /><i>75% - 84%</i><br /><br /></td>        <td width="17%" class="center"><br /><b>4 Stars</b><br />(218 - 243 pts)<br /><i>85% - 94%</i><br /><br /></td>        <td class="center"><br /><b>5 Stars</b><br />(244 - 258 pts)<br / >=<i>95%</i><br /><br /></td>      </tr>     </table>  </tr>  <tr>  <td>  <table border="1" class="table800">      <tr>        <td class="normaltitle">Lead Auditor Signature<br />Date          <textarea class="ta50px">          </textarea>        </td>      </tr>    </table> </td> </tr></table>\r\n', '', 0, 0, 29),
+(610, 1, '', '', 'full', 3, 5, 3, 0, 0, '', '', '<br /><table border="1" class="table800">  <tr> <td>   <table border="1" class="table800"> <tr> <td width="70%" class="border"><b><br />Score on annual on-site inspection is at least 55%</b> (at least 143 points):<br /><br /></td><td class="centertop border">Score</td> <td width="7%" class="centerbold border">Y</td> <td width="7%" class="centerbold border">N</td>      </tr>    </table></td>  </tr>  <tr> <td>   <table border="1" class="table800">      <tr>         <td width="16%" class="center"><br /><b>No Stars</b><br />(0 - 142 pts)<br />< <i>55%</i><br /><br /></td>        <td width="17%" class="center"><br /><b>1 Star</b><br />(143 - 165 pts)<br /><i>55% - 64%</i><br /><br /></td>        <td width="16%" class="center"><br /><b>2 Stars</b><br />(166 - 191 pts)<br /><i>65% - 74%</i><br /><br /></td>        <td width="17%" class="center"><br /><b>3 Stars</b><br />(192 - 217 pts)<br /><i>75% - 84%</i><br /><br /></td>        <td width="17%" class="center"><br /><b>4 Stars</b><br />(218 - 243 pts)<br /><i>85% - 94%</i><br /><br /></td>        <td class="center"><br /><b>5 Stars</b><br />(244 - 258 pts)<br / >=<i>95%</i><br /><br /></td>      </tr>     </table>  </tr>  <tr>  <td>  <table border="1" class="table800">      <tr>        <td class="normaltitle">Lead Auditor Signature<br />Date          <textarea class="ta50px">          </textarea>        </td>      </tr>    </table> </td> </tr></table>\r\n', '', 0, 0, 29),
 (612, 1, '', '', 'banner_rev_border', 3, 5, 5, 0, 0, '', 'SOURCES CONSULTED', '<div style="padding-left:7px;">        <br /><br />AS 4633 (ISO 15189) Field Application Document: 2009        <br /><br />Centers for Disease Control - Atlanta - Global AIDS Program. (2008). Laboratory Management Framework and Guidelines. Atlanta, GA: Katy Yao, PhD.        <br /><br />CLSI/NCCLS. <i>Application of a Quality Management System Model for Laboratory Services; Approved Guideline--Third Edition.</i> CLSI/NCCLS document GP26-A3. Wayne, PA: NCCLS; 2004. www.clsi.org        <br /><br />CLSI/NCCLS. <i>A Quality Management System Model for Health Care; Approved Guideline--Second Edition.</i> CLSI/NCCLS document HS01-A2. Wayne, PA: NCCLS; 2004. www.clsi.org        <br /><br />College of American Pathologists, USA. (2010). Laboratory General  and Chemistry and Toxicology Checklists.        <br /><br />Guidance for Laboratory Quality Management System in the Caribbean - A Stepwise Improvement Process. (2012)        <br /><br />International Standards Organization, Geneva (2007) Medical Laboratories - ISO 15189: Particular Requirements for Quality and Competence, 2nd Edition        <br /><br />Ministry of Public Health, Thailand. (2008). Thailand Medical Technology Council Quality System Checklist.        <br /><br />National Institutes of Health, (2007, Feb 05). DAIDS Laboratory Assessment Visit Report. Retrieved July 8, 2008, from National Institutes of Health Web site: <a href="http://www3.niaid.nih.gov/research/resources/DAIDSClinRsrch/Laboratories.htm">http://www3.niaid.nih.gov/research/resources/DAIDSClinRsrch/Laboratories.htm</a>        <br /><br />National Institutes of Health, (2007, Feb 05). Chemical, Laboratory: Quality Assurance and Quality Improvement Monitors. CHECKLIST FOR SITE SOP REQUIRED ELEMENTS, Retrieved July 8, 2008, from <a href="http://www3.niaid.nih.gov/research/resources/DAIDSClinRsrch/Laboratories.htm">http://www3.niaid.nih.gov/research/resources/DAIDSClinRsrch/Laboratories.htm</a>        <br /><br />National Institutes of Health, (2007, Feb 05). Laboratory: Chemical, Biohazard and Occupational Safety, Containment and Disposal. CHECKLIST FOR SITE SOP REQUIRED ELEMENTS, Retrieved July 8, 2008, from <a href="http://www3.niaid.nih.gov/research/resources/DAIDSClinRsrch/Laboratories.htm">http://www3.niaid.nih.gov/research/resources/DAIDSClinRsrch/Laboratories.htm</a>        <br /><br />National Institutes of Health, (2007, Feb 05). Laboratory: Chemical, Biohazard and Occupational Safety, Containment and Disposal. CHECKLIST FOR SITE SOP REQUIRED ELEMENTS, Retrieved July 8, 2008, from <a href="http://www3.niaid.nih.gov/research/resources/DAIDSClinRsrch/Laboratories.htm">http://www3.niaid.nih.gov/research/resources/DAIDSClinRsrch/Laboratories.htm</a>           <br /><br />PPD, Wilmington, North Carolina, (2007). Laboratory Report.        <br /><br />South African National Accreditation System (SANAS). (2005). Audit Checklist, SANAS 10378:2005.        <br /><br />USAID Deliver Project. The Logistics Handbook. (2007). Task Order 1.        <br /><br />      </div>   ', '', 0, 0, 29),
 (613, 1, '', '', 'sec_elem_info_normal', 2, 9, 0, 1, 0, '', '', 'For each item, please circle either Yes (Y), Partial (P), or No (N). All elements of the question must be satisfactorily present to indicate "yes". Provide explanation or further comments for each "partial" or "no" response.', '', 0, 0, 19),
 (614, 1, '', '', 'sec_elem_info_normal', 2, 11, 0, 1, 0, '', '', 'For each item, please circle either Yes (Y), Partial (P), or No (N). All elements of the question must be satisfactorily present to indicate "yes". Provide explanation or further comments for each "partial" or "no" response.', '', 0, 0, 21),

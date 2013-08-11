@@ -257,7 +257,7 @@ textarea.small {
 	border: 0;
 }
 
-#cancelbutton,#savebutton,#continuebutton {
+#cancelbutton,#savebutton,#continuebutton,#nextbutton {
 	background-color: #ffffee;
 	font-size: 18px;
 	margin-top: 15px;

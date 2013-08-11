@@ -82,6 +82,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     }
     return $rows[0];
   }
+
   public function updateData($data, $did) {
     /**
      * Update user at $id with this data
@@ -180,6 +181,9 @@ END;
     $did = ( int ) $did;
     $sql = "select template_id from audit where id = {$did}";
     $rows = $this->queryRows ( $sql );
+    if (! $rows) {
+      throw new Exception ( "Cannot find Audit data for id: {$audit_id}" );
+    }
     return $rows [0] ['template_id'];
   
   }
@@ -198,6 +202,5 @@ select * from template_row tr, audit au, audit_data ad
 END;
   
   }
-  
   
 }

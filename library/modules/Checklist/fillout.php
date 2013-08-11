@@ -1198,10 +1198,10 @@ function partial_slmta_status($row, $value, $t) {
   $mc_slmta_status = widget_select_slmtastatus ( $name, $value, $t );
   $out = <<<"END"
 <table style="width:100%;"><tr>
-<td style="vertical-align:top;padding-right:10px;width:390px;text-align:right;">
+<td style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
 {$text}
 </td>
-<td style="vertical-align:top;padding: 2px 4px;width:400px;">
+<td style="vertical-align:top;width:400px;float:left;">
 {$mc_slmta_status}
 </td>
 </tr></table>

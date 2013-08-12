@@ -23,6 +23,7 @@ class AuditController extends Application_Controller_Action {
     $display = ($page['display_only'] == 't') ;
     $buttons = '';
     $thispage = $page['page_num'];
+    $this->view->thispage = $thispage;
     $nextpage = $page['next_page_num'];
     if ($display) {
     $buttons = <<<"END"
@@ -66,9 +67,9 @@ END;
     $lang = new Application_Model_DbTable_Language ();
     $lang_word = new Application_Model_DbTable_langword ();
     $vars = $this->_request->getPathInfo();
-    logit("VARS: {$vars}");
+    //logit("VARS: {$vars}");
     $pinfo = explode("/", $vars);
-    logit('PARTS: '. print_r($pinfo, true));
+    //logit('PARTS: '. print_r($pinfo, true));
     $audit_id = (int)  $pinfo[3];
     $template_id = $data->getTemplateId($audit_id);
     $langtag = $pinfo[4];
@@ -87,12 +88,11 @@ END;
     if (! $this->getRequest ()->isPost ()) {
       // write out the page
       $tword = $lang_word->get_words ( $langtag );
-      //if ($this->debug) {
+      if ($this->debug) {
         logit ( "Got showpage value: {$thispage}" );
         logit ( "Got language value: {$langtag}" );
-        //}
+      }
       
-      //$rows = $audit->getrows ( 1, $thispage, $langtag ); // 1 is the template_id
       $rows = $audit->getrows ( $template_id, $thispage, $langtag ); // 1 is the template_id
       $value = $data->get_data ( $audit_id ); // 1 is the audit_id
       
@@ -105,16 +105,13 @@ END;
       logit ( "Page Tag {$page_row['tag']}\n" );
       // Generate the entries to make a tree - using dtree
       $jsrows = array ();
-      $page_url = "{$baseurl}/audit/edit/{$audit_id}/{$langtag}"; //?language={$langtag}";
+      $page_url = "{$baseurl}/audit/edit/{$audit_id}/{$langtag}"; 
       foreach ( $nrows as $r ) {
-        if ($this->debug) {
-          
-          if ($this->debug) {
-            foreach ( $r as $x => $y ) {
-              logit ( "{$x} -- {$y}" );
-            }
-            logit ( "{$r['parent']} -> {$r['page_num']}" );
+        if ($this->debug) {          
+          foreach ( $r as $x => $y ) {
+            logit ( "{$x} -- {$y}" );
           }
+          logit ( "{$r['parent']} -> {$r['page_num']}" );
         }
         $purl = "{$page_url}/{$r['page_num']}";
         $line = "d.add({$r['page_num']},{$r['parent']}, '{$r['tag']}'";
@@ -138,22 +135,7 @@ END;
       $this->view->treelines = implode ( "\n", $jsrows );
       $this->view->outlines = implode ( "\n", $tout );
       $this->getButtons($page_row);
-      /*$this->view->buttons = <<<"END"
-<div style="width:100%;">
-          <input type="hidden" name="nextpage" value="{$next}" />
-  <div style="float:right;">
-    <input type="submit" value="Cancel" id="cancelbutton" name="sbname">
-    <input type="submit" value="Save" id="savebutton" name="sbname">
-    <input type="submit" value="Save & Continue" id="continuebutton" name="sbname">
-</div></div>
-<script>
-$(function() {
-  d.closeAll();
-  d.openTo({$thispage}, true);
-});
-</script>
-END;
-      */
+     
       $this->view->hidden = implode ( "\n", array (
           "<input type=\"hidden\" name=\"audit_id\" value=\"{$audit_id}\">"
       ) );
@@ -170,7 +152,7 @@ END;
           'id'
       );
       foreach ( $formData as $a => $b ) {
-        logit ( "FD: {$a} -- {$b}" );
+        //logit ( "FD: {$a} -- {$b}" );
         if (in_array ( $a, $not_include )) {
           continue;
         }
@@ -184,14 +166,16 @@ END;
       $uri = Zend_Controller_Front::getInstance ()->getRequest ()->getRequestUri ();
       logit ( "URI: {$uri}" );
       $u = preg_split ( "/\//", $uri );
-      foreach ( $u as $un ) {
-        logit ( "U: {$un}" );
+      if ($thi->debug) {
+        foreach ( $u as $un ) {
+          logit ( "U: {$un}" );
+        }
       }
       $newuri = implode ( '/', array_slice ( $u, 3 ) );
       $pagerow = $page->getPage ( $template_id, $thispage );
       $nextpage = $pagerow['next_page_num'];
       
-      $page_url = "/audit/edit/{$audit_id}/{$langtag}/{$nextpage}"; //?language={$langtag}&showpage={$nextpage}";
+      $page_url = "/audit/edit/{$audit_id}/{$langtag}/{$nextpage}"; 
       logit ( "URINEW: {$newuri}" );
       switch ($sbname) {
       case 'Cancel' :

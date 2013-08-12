@@ -122,13 +122,13 @@ function TEXTAREA($name, $value, $style = '', $class = '') {
   $out = <<<"END"
     <textarea {$use_style} onchange="noteChange();" name="{$name}" id="{$name}" class="tarea {$class}">{$val}</textarea>
 END;
-  logit("TA: {$name} {$out}");
+  //logit("TA: {$name} {$out}");
   return $out;
 
 }
 
-function LABEL($name, $label_text = '', $label_style = "") {
-  $out = "<label for=\"{$name}\" style=\"{$label_style}\">{$label_text}</label>";
+function LABEL($name, $label_text = '', $label_style = "", $label_class="") {
+  $out = "<label for=\"{$name}\" style=\"{$label_style}\" class=\"{$label_class}\">{$label_text}</label>";
   return $out;
 
 }
@@ -171,7 +171,7 @@ function INPUT($name, $value, $type = "string", $length = 0, $style = "", $class
   }
   $val = ($type != 'submit') ? get_arrval ( $value, $name, '' ) : $value;
   $out = <<<"END"
-<input name="{$name}" id="{$name}"
+<input name="{$name}" id="{$name}" onchange="noteChange();"
 type="{$itype}" class="{$dtype} {$class}" style="{$style}" value="{$val}" {$size} >
 END;
   
@@ -217,7 +217,7 @@ function INPUT_AC($name, $value, $type = "string", $length = 0, $style = "", $cl
   }
   $val = ($type != 'submit') ? get_arrval ( $value, $name, '' ) : $value;
   $out = <<<"END"
-<input name="{$name}" id="{$name}"
+<input name="{$name}" id="{$name}" onchange="noteChange();"
 type="{$itype}" class="{$dtype} {$class}" value="" autocomplete="off" {$size} >
 END;
   
@@ -418,7 +418,7 @@ function widget_select_yna($varname, $value, $t) {
   /*
    * array ( // "{$t['Select']} ..." => '-', "{$t['Yes']}" => 'Y', "{$t['No']}" => 'N', "{$t['N/A']}" => 'A' );
    */
-  logit ( "YNA: " . print_r ( $optvals, true ) );
+  //logit ( "YNA: " . print_r ( $optvals, true ) );
   return OPTIONS ( $varname, $optvals, $value );
 
 }
@@ -995,7 +995,7 @@ function partial_sub_sec_head_ro($row, $value, $t) {
   $ynp_ro = "{$name}_ynp";
   $this_score = get_arrval ( $value, $ynp_ro, 0 ); // '# FIXME';
   $head = ($heading) ? "{$heading}<br />" : "";
-  logit ( "SRO: " . print_r ( $row, true ) );
+  //logit ( "SRO: " . print_r ( $row, true ) );
   $out = <<<"END"
   <table style="width:100%;"><tr>
       <td style="padding: 2px 4px;">
@@ -1184,7 +1184,7 @@ function partial_lablevel($row, $value, $t) {
 <td style="vertical-align:top;padding-right:10px;width:390px;text-align:right;">
 {$text}
 </td>
-<td style="vertical-align:top;padding: 2px 4px;width:400px;">
+<td style="vertical-align:top;padding: 2px 4px;width:400px;float:left;">
 {$mc_lab_level}
 </td>
 </tr></table>
@@ -1224,10 +1224,10 @@ function partial_labaffil($row, $value, $t) {
   
   $out = <<<"END"
 <table style="width:100%;"><tr>
-<td style="vertical-align:top;padding-right:10px; width:39<0px;text-align:right;">
+<td style="vertical-align:top;padding-right:10px; width:390px;text-align:right;">
 {$text}
 </td>
-<td style="vertical-align:top;padding: 2px 4px;width:400px;">
+<td style="vertical-align:top;padding: 2px 4px;width:400px;float:left;">
 {$mc_lab_affil}
 </td>
 </tr></table>
@@ -1641,7 +1641,7 @@ function partial_sec_total($row, $value, $t) {
   $ynp_ro = "{$name}_ynp";
   $this_score = get_arrval ( $value, $ynp_ro, 0 ); // '# FIXME';
   $head = ($heading) ? "{$heading}<br />" : "";
-  logit ( "SRO: " . print_r ( $row, true ) );
+  //logit ( "SRO: " . print_r ( $row, true ) );
   $out = <<<"END"
 <table style="width:100%;"><tr>
     <td style="padding: 2px 4px;width:722px;background:#ccccff;">  
@@ -1839,7 +1839,7 @@ function get_lang_text($base, $default, $sp_lang) {
    * $default contain default text from lang
    * $sp_lang contains language specific text - but is not always available
    */
-  logit ( "{$base} -- {$default} -- {$sp_lang}" );
+  //logit ( "{$base} -- {$default} -- {$sp_lang}" );
   $out = '';
   $out = $base;
   if ($default) {

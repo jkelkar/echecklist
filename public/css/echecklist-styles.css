@@ -88,6 +88,7 @@ td.f {
 td.s {
 	margin: 5px;
 }
+
 input {
 	background-color: #ffffff;
 border: 1px solid #cccccc;
@@ -124,6 +125,9 @@ label {
     display: block;
     padding-left: 15px;
     text-indent: -15px;
+}
+label.inp {
+    font-size: 1.3em;
 }
 input[type=checkbox] {
     width: 13px;

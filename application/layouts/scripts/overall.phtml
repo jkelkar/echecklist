@@ -1,45 +1,58 @@
 <!DOCTYPE HTML>
 <html>
- <head>
+  <head>
     <meta charset="utf-8" />
     <!--[if IE]>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <![endif]-->
+    <?php echo $this->headLink(); ?>
+    <?php echo $this->headScript(); ?>
     <link rel="stylesheet" href="<?php echo $this->baseUrl().'/css/styles.css'; ?>" />
     <link rel="stylesheet" href="<?php echo $this->baseUrl().'/css/dtree.css'; ?>" />
-    <!--script type="text/javascript"
-            src="<?php echo $this->baseUrl () . '/jquery-ui-1.10.3.custom/js/jquery-1.9.1.js'; ?>"></script>
-    <script type="text/javascript" src="<?php echo $this->baseUrl () . '/charisma/js/jquery-1.7.2.min.js'; ?>" / -->
-    </script>
-    <!-- link rel="stylesheet" href="<?php echo $this->baseUrl().'/css/calendar.css'; ?>" />
-    <script type="text/javascript" src="<?php echo $this->baseUrl() . '/js/calendar.js'; ?>" ></script-->
     <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/dtree.js'; ?>"></script>
     <?php echo $this->headLink(); ?>
     <?php echo $this->headScript(); ?>
     <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/helpers.js'?>"></script>
     <title>The Title</title>
     <script>
-  /*$(function() {
-  $( "input[type=submit], button" )
-  .button()
-  .click(function( event ) {
-  event.preventDefault();
-  });
-  });*/
-   </script>
+      /*$(function() {
+      $( "input[type=submit], button" )
+      .button()
+      .click(function( event ) {
+      event.preventDefault();
+      });
+      });*/
+    </script>
   </head>
+  
 
-
-<body style="width:1200px;">
-
-<?php echo $this->header; ?>
-<div id="content" style="margin-left:10px;width:100%;">
-	  <?php echo $this->layout()->content; ?>
-</div>
-
-<div id="footer">
-</div>
-
-
-</body>
+  <body style="width:1200px;">
+    <script type="text/javascript">
+      var changed = false;
+    </script>
+    <?php echo $this->header; ?>
+    <div id="content" style="margin: 20px 0 0 10px;">
+      <div id="outer" style="margin-left: 10px;">
+        <div id="wrapper" style="overflow:auto;">
+          <div id="pane"
+               style="height: 600px; overflow: auto; float: left; width: 975px;">
+            <div style="margin: 0 10px; margin: 15px 0;width:820px;">
+              <form method="post" action=""
+                    enctype="application/x-www-form-urlencoded" name="doit"
+                    id="doit">
+                <?php echo $this->layout()->content; ?>
+                <?php echo $this->outlines; echo $this->hidden; ?>
+                <input type="hidden" name="action">
+              </form>
+            </div>
+            <div style="height: 65px;">&nbsp;</div>
+            <div style="clear: both;"></div>
+          </div><!-- pane -->
+        </div> <!-- wrapper -->
+        <div style="clear:both;"></div>
+      </div><!-- outer -->
+    </div><!-- content -->
+    <div id="footer"></div>
+    
+  </body>
 </html>

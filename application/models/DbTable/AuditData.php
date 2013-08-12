@@ -90,7 +90,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
      */
     $did = ( int ) $did;
     foreach ( $data as $n => $v ) {
-      logit ( "BEFORE: {$n} ==> {$v}" );
+      //logit ( "BEFORE: {$n} ==> {$v}" );
       $this->updateAuditData ( $did, $n, $v );
     }
   
@@ -98,7 +98,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
 
   public function updateAuditData($did, $name, $value) {
     $suff = end ( preg_split ( "/_/", $name ) );
-    logit ( "END: {$name} --> {$suff}" );
+    //logit ( "END: {$name} --> {$suff}" );
     $format = 'm/d/Y';
     $ISOformat = 'Y-m-d';
     $ival = 0;

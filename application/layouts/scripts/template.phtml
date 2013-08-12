@@ -5,16 +5,8 @@
     <!--[if IE]>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <![endif]-->
-    <!--link rel="stylesheet" href="<?php echo $this->baseUrl().'/css/styles.css'; ?>" />
-    <link rel="stylesheet" href="<?php echo $this->baseUrl().'/css/dtree.css'; ?>" />
-    <script type="text/javascript" src="<?php echo $this->baseUrl () . '/charisma/js/jquery-1.7.2.min.js'; ?>" / -->
-    </script>
-    <!-- link rel="stylesheet" href="<?php echo $this->baseUrl().'/css/calendar.css'; ?>" />
-    <script type="text/javascript" src="<?php echo $this->baseUrl() . '/js/calendar.js'; ?>" ></script>
-    <script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/dtree.js'; ?>"></script-->
     <?php echo $this->headLink(); ?>
     <?php echo $this->headScript(); ?>
-    <!--script type="text/javascript" src="<?php echo $this->baseUrl(). '/js/helpers.js'?>"></script-->
     <title>The Title</title>
     <script>
   /*$(function() {
@@ -30,6 +22,7 @@
   <body style="width: 1200px;">
     <script type="text/javascript">
       var changed = false;
+      var oldloc = <?php echo $this->thispage; ?>;
     </script>
     <?php echo $this->header; ?>
     <div id="content" style="margin-left: 10px;">
@@ -55,7 +48,6 @@
             </div>
             <div style="height: 65px;">&nbsp;</div>
             <div style="clear: both;"></div>
-            <div style="clear:both;"></div>
           </div><!-- rightpane -->
         </div> <!-- wrapper -->
         <div style="clear:both;"></div>

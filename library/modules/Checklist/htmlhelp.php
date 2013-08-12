@@ -6,7 +6,7 @@ require_once 'modules/Checklist/fillout.php';
 require_once 'modules/Checklist/logger.php';
 
 function field_input($name, $value, $type, $length=0, $style='',
-                     $label_text='', $label_style = '', $formstyle='table',
+                     $label_text='', $label_style = '', $label_class='', $formstyle='table',
 		                 $wrapper=array('', ''))
 {
 	logit("FS: {$name}, {$type}, {$length}, {$style}, {$label_text}, {$label_style}, {$formstyle}, ");
@@ -20,7 +20,7 @@ function field_input($name, $value, $type, $length=0, $style='',
 	}
   switch ($formstyle) {
   case 'table':
-    $lab = LABEL($name, $label_text, $label_style);
+    $lab = LABEL($name, $label_text, $label_style, $label_class);
     if ($w1 == '') {
     	$inp = INPUT($name, $value, $type, $length, $style, 'f');
     } else {
@@ -86,7 +86,7 @@ function dumpForm($fields, $value=array('_' => '_')) {
     case 'password':
       $outlines[] = field_input($a, $value,
                                 $type, $l, '',
-                                $b['label'], '', 'table', $wrap);
+                                $b['label'], '', 'inp', 'table', $wrap);
       break;
     case 'submit':
       $val = get_arrval($b, 'value', '');
@@ -108,9 +108,11 @@ function dumpForm($fields, $value=array('_' => '_')) {
    */
   
   foreach ($acomplete as $n => $v) {
-  	foreach($v as $n1 => $v1) {
+  	/*
+      foreach($v as $n1 => $v1) {
   			logit("1: {$n1} => {$v1}");
   	}
+    */
   	$url = $callback = '';
   	if (array_key_exists('url', $v)) {
   		$url = $v['url'];

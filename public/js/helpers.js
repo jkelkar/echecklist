@@ -17,7 +17,6 @@ function setlab(id, lab_name, lab_id) {
   labname = lab_name;
   labid = lab_id;
   $(".ui-autocomplete").html('');
-  //return false;
 }
 
 function log( message ) {
@@ -103,46 +102,9 @@ function clear()  {
   //window.location.pathname;
   window.location= url;
 }
-/*
-$('form').click(function(event) {
-    //event.preventDefautlt();
-  $(this).data('clicked',$(event.target))
-});
-
-function formSubmit() {
-/ *  if ($('form input[name=sbsave]').data('clicked').is('[name=sbsave]'))
-      alert('save');
-  if ($('form input[name=sbsavec]').data('clicked').is('[name=sbsavec]'))
-    alert('save&c');
- * /
-
-}*/
-/*$(document).ready(function() {
-  $("form").submit(function() { 
-
-    var val = $("input[type=submit][clicked=true]").val();
-
-    switch (val) {
-      case 'Cancel':
-      case 'Save':
-      case 'Save & Continue':
-        alert(val);
-        break;
-      default:  
-    }
-
-  });
-});
-
-$("form input[type=submit]").click(function() {
-  $("input[type=submit]", $(this).parents("form")).removeAttr("clicked");
-  $(this).attr("clicked", "true");
-});
- */ 
 
 function save() {
   var url = $(location).attr('href');
-
 }
 
 function toggleNCBox(here) {
@@ -178,6 +140,44 @@ $(function() {
     }).mouseout(function() {
         $(this).css('background-color', '#ffffff');
     });
+    $('.node,.nodeSel').click(function(e){
+        if (changed==true && !confirm("Do you want to continue without saving changes?")) {
+            d.closeAll();
+            d.openTo(oldloc, true);
+            e.stopPropagation()
+            return false;
+        } else {
+            return true;
+        }
+    });
 });
 
+function fmtint(val, wid) {
+    var out = '00000000';
+    //out = out.substr(0, wid);
+    var outval = val.toString();
+    if (outval.length > wid) {
+        out = outval;
+    } else {
+        outval = out.substr(0, wid - outval.length) + outval;
+    }
+    return outval;
+}
 
+function count_radio_yna(section, maxct) {
+    var yesct = 0,
+        noct = 0, 
+        nact= 0,
+        unset = 0;
+    var i, val;
+    for (i = 1; i < maxct+1; i++) { 
+        val = $('input[name='+section+fmtint(i, 2)+'_yna]:checked').val();
+        switch(val) {
+        case 'YES': yesct++; break;
+        case 'NO': noct++; break;
+        case 'N/A': nact++; break;
+        default: unset++; 
+        }
+    }
+    return [yesct, noct, nact, unset];
+}

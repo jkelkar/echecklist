@@ -105,7 +105,53 @@ class Application_Controller_Action extends Zend_Controller_Action {
     logit ( "Scripts: {$this->view->headScript()}" );
     */
   }
- 
+
+  public function makeIcon($name, $color='', $size='') {
+    return "<span title=\".icon{$size}  .icon-{$color} .icon-{$name} \" class=\"icon{$size} icon-{$color} icon-{$name}\"></span>";
+  }
+
+  public function makeMenu($menu) {
+    /*
+     * The input is an array of arrays
+     * array(top, array(array(icon, item),))+
+     *
+     * The top level creates buttons the rest create the menu items
+     *
+     */
+    $out = array();
+    $out[] = "<div class=\"btn-group pull-left\">";
+    
+    foreach($menu as $mx)  {
+      $i = 0;
+      foreach($mx as $m) {
+          $i++;
+          switch($i) {
+          case 1:
+            $icon = $m['icon'];
+            $out[] = "<a class=\"btn dropdown-toggle\" data-toggle=\"dropdown\" href=\"{$m['url']}\">";
+            $out[] = $this->makeIcon($icon[0], $icon[1]);
+            $out[] = "<span class=\"hidden-phone\">{$m['text']}</span><span class=\"caret\"></span></a>";
+            $out[] = "<ul class=\"dropdown-menu\">";
+            break;
+          default:
+            foreach ($m as $mi) {
+              if (in_array('divider', $mi)) { 
+                $out[] = '<li class="divider"></li>';
+                continue;
+              }
+              $icon = $mi['icon'];
+              $out[] = "<li><a href=\"{$this->baseurl}{$mi['url']}\">".
+                $this->makeIcon($icon[0], $icon[1]).
+                " {$mi['text']}</a></li>";
+            }
+          }
+          $out[] = "</ul></div>";
+        }
+    }
+    return implode("\n", $out);
+  } 
+
+  
   public function setHeader() {
     /* Create the top line */
     $dt = date('j M, Y');
@@ -164,6 +210,17 @@ END;
 				</ul>
 </div>
     
+<div class="btn-group pull-left">
+<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+<span title=".icon  .icon-blue  .icon-flag " class="icon icon-blue icon-flag"></span>
+<span class="hidden-phone">Language</span>
+<span class="caret"></span></a>
+<ul class="dropdown-menu">
+					<li><a href="{$this->baseurl}/language/switch/EN"><span title=".icon  .icon-green  .icon-flag " class="icon icon-green icon-flag"></span> English</a></li>
+					<li><a href="{$this->baseurl}/language/switch/FR"><span title=".icon  .icon-green  .icon-flag " class="icon icon-green icon-flag"></span> French</a></li>
+					<li><a href="{$this->baseurl}/language/switch/VI"><span title=".icon  .icon-green  .icon-flag " class="icon icon-green icon-flag"></span> Vietnamese</a></li>
+				</ul>
+</div>
 END;
     } else {
       $this->header = $this->header . <<<"END"
@@ -198,7 +255,55 @@ END;
 END;
     
     $this->view->header = $this->header;
+    /*
     // logit("_HEADER: {$this->view->header}");
+    // this is only a test!
+    $menu = array(
+                  array(
+                        array("icon"=>array('clipboard', 'blue'), 'text'=> 'Audits', 'url'=>'#'
+                              ),
+                        array(
+                              array("icon"=>array('clipboard', 'green'), 'text'=> 'New Audit', 'url'=>'/user/create'),
+                              array("icon"=>array('search', 'blue'), 'text'=> 'Find Audit', 'url'=>'/user/find'),
+                              array('divider' => true),
+                              array("icon"=>array('edit', 'blue'), 'text'=> 'Edit Audit 1', 'url'=>'/audit/edit/1/EN/'),
+                              array("icon"=>array('edit', 'blue'), 'text'=> 'Edit Audit 2', 'url'=>'/audit/edit/2/EN/'),
+                              array("icon"=>array('edit', 'blue'), 'text'=> 'Edit Audit 3', 'url'=>'/audit/edit/3/EN/')
+                              array('divider' => true),
+                              array("icon"=>array('import', 'blue'), 'text'=> 'Import', 'url'=>'/audit/import'),
+                              )
+                        ),
+                  array(
+                        array("icon"=>array('tag', 'blue'), 'text'=> 'Labs', 'url'=>'#'
+                              ),
+                        array(
+                              array("icon"=>array('tag', 'green'), 'text'=> 'New Lab', 'url'=>'/lab/create'),
+                              array("icon"=>array('search', 'blue'), 'text'=> 'Find Lab', 'url'=>'/lab/find')
+                              )
+                        
+                        ),
+                  array(
+                        array("icon"=>array('user', 'blue'), 'text'=> 'Users', 'url'=>'#'
+                              ),
+                        array(
+                              array("icon"=>array('user', 'green'), 'text'=> 'New User', 'url'=>'/user/create'),
+                              array("icon"=>array('search', 'blue'), 'text'=> 'Find User', 'url'=>'/user/find')
+                              )
+                        )
+                  );
+    logit('MENU: '. $this->makeMenu($menu)); 
+    $lin = array(
+                  array(
+                        array("icon"=>array('user', 'orange'), 'text'=> 'This user', 'url'=>'#'
+                              ),
+                        array(
+                              array("icon"=>array('contacts', 'green'), 'text'=> 'Profile', 'url'=>'/user/profile'),
+                              array('divider' => true),
+                              array("icon"=>array('contacts', 'orange'), 'text'=> 'Logout', 'url'=>'/startstop/logout')
+                              )
+                        )
+                 );
+    logit('MENU: '. $this->makeMenu($menu)); */
   }
 
   public function convert2PDF($html)

@@ -165,22 +165,23 @@ function fmtint(val, wid) {
     return outval;
 }
 
-function count_radio_yna(section, maxct) {
+function count_ynaa_add(name) {
     var yesct = 0,
         noct = 0, 
-        nact= 0,
-        unset = 0;
+        nact= 0;
     var i, val;
-    for (i = 1; i < maxct+1; i++) { 
-        val = $('input[name='+section+fmtint(i, 2)+'_yna]:checked').val();
-        switch(val) {
+    $('input[name$="_ynaa"]:checked').each( function(i) {
+        switch($(this).val()) {
         case 'YES': yesct++; break;
-        case 'NO': noct++; break;
+        case 'NO':  noct++; break;
         case 'N/A': nact++; break;
-        default: unset++; 
+        default: 
         }
-    }
-    return [yesct, noct, nact, unset];
+        $('#'+name+'_y_ct').val(yesct);
+        $('#'+name+'_n_ct').val(noct);
+        $('#'+name+'_na_ct').val(nact);
+    });
+    var na;
 }
 
 function track_yn(name) {

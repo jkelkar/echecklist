@@ -306,7 +306,8 @@ input[type=text].ro {
 	color: #0099ff;
 	border: none;
 	font-weight: bold;
-	font-size: 14px;
+	font-size: 17px;
+  padding-top:5px;
 	width: 30px;
 }
 .brand {

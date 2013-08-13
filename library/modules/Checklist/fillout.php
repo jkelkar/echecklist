@@ -121,6 +121,35 @@ function RADIO_CALC($name, $optvals, $value, $score) {
 
 }
 
+function RADIO_ADD($name, $optvals, $value) {
+  /* 
+   * Adds up the count of y, n and na
+   */
+  if (count ( $optvals ) == 0) {
+    throw new Exception ( 'Optvals has no elements', 0 );
+  }
+  $optout = array ();
+  $val = get_arrval ( $value, $name, '' );
+  // logit("{$name} - {$val}");
+  /*
+   * foreach ($value as $n => $v) { logit("Values {$n} - {$v}"); }
+   */
+  foreach ( $optvals as $n => $v ) {
+    $sel = ($v == $val) ? "checked=\"checked\" " : '';
+    $sendid = substr($name, 0, 3);
+    // logit("Interiem - {$val} : {$sel}: {$n} => {$v}");
+    $optout [] = "<input style=\"margin: 0 4px 0 6px;\" type=\"radio\" name=\"{$name}\" " . 
+      "id=\"{$name}_{$n}\" value=\"{$v}\" {$sel} onclick=\"count_ynaa_add('{$sendid}');\">".
+      " <label class=\"il\" for=\"{$name}_{$n}\">{$n}</label> ";
+  }
+  $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
+  $optout [] = ($val != '') ? '' : "<img id=\"{$name}_icon\" src=\"{$baseurl}/cancel-on.png\" />";
+  $out = implode ( "\n", $optout );
+  //$out = $options; // . "\n<script> count_yna_add('{$name}');</script>";
+  return $out;
+
+}
+
 function TEXTAREA($name, $value, $style = '', $class = '') {
   $val = get_arrval ( $value, $name, '' );
   $use_style = ($style == '') ? "style=\"height:50px;\"" : "style=\"{$style}\"";
@@ -295,6 +324,21 @@ function OPTIONS_CALC($varname, $optvals, $value, $score) {
 
 }
 
+
+function OPTIONS_ADD($varname, $optvals, $value) {
+  /**
+   * Depending on the number of optvals we choose select or Radio buttons
+   *
+   * 3 or less gets Radio
+   */
+  $ct = count ( $optvals );
+  if (count ( $optvals ) <= 3) {
+    return RADIO_ADD ( $varname, $optvals, $value );
+  } else {
+    return SELECT ( $varname, $optvals, $value );
+  }
+
+}
 /**
  * These implement widgets each of which is responsible for an instance
  * of an input area on the screen
@@ -364,6 +408,12 @@ function widget_select_ynp_calc($varname, $value, $t, $score) {
 
 }
 
+function widget_select_yna_add($varname, $value, $t) {
+  $optvals = getYNA ( $t );
+  return OPTIONS_ADD ( $varname, $optvals, $value );
+
+}
+
 function widget_select_wp($varname, $value, $t) {
   $optvals = array ( // "{$t['Select']} ..." => '-',
       "{$t['Personal']}" => 'PERSONAL',
@@ -420,7 +470,10 @@ function getYNA($t) {
 function widget_select_yna($varname, $value, $t) {
   $optvals = getYNA ( $t );
   /*
-   * array ( // "{$t['Select']} ..." => '-', "{$t['Yes']}" => 'Y', "{$t['No']}" => 'N', "{$t['N/A']}" => 'A' );
+   * array ( // "{$t['Select']} ..." => '-', 
+   * "{$t['Yes']}" => 'Y', 
+   * "{$t['No']}" => 'N', 
+   * "{$t['N/A']}" => 'A' );
    */
   //logit ( "YNA: " . print_r ( $optvals, true ) );
   return OPTIONS ( $varname, $optvals, $value );
@@ -832,7 +885,6 @@ function partial_sec_head_lab($row, $value, $t) {
   $name = $row ['varname'];
   $max_score = $row ['score'];
   $widget_nyp = widget_select_ynp_calc ( $name, $value, $t, $max_score );
-  // widget_select_ynp($name, $value, $t); // widget_nyp_ro($name, $value);
   $head = ($heading) ? "{$heading}<br />" : "";
   $tarea = TEXTAREA ( "{$name}_comment", $value, "width:100%;height:50px;margin-top:5px;" );
   $out = <<<"END"
@@ -935,7 +987,6 @@ function partial_sub_sec_head($row, $value, $t) {
   $ec = $row['element_count'];
   $max_score = $row ['score'];
   $widget_nyp = widget_select_ynp_calc ( $name, $value, $t, $max_score );
-  // widget_select_ynp($name, $value, $t); // widget_nyp_ro($name, $value);
   $head = ($heading) ? "{$heading}<br />" : "";
   $tarea = TEXTAREA ( "{$name}_comment", $value, "width:100%;height:50px;margin-top:5px;" );
   $tareanc = TEXTAREA ( "{$name}_note", $value, "width:100%;height:50px;margin-top:6px;", 'nc' );
@@ -1790,7 +1841,7 @@ function partial_bat_element($row, $value, $t) {
     $dinfo = "<div style=\"border:1px solid #999;background-color:#eee;font-style:italic;\">{$info}</div>";
   }
   $name = $row ['varname'];
-  $mc_yna = widget_select_yna ( "{$name}_yna", $value, $t );
+  $mc_yna = widget_select_yna_add ( "{$name}_ynaa", $value, $t );
   $tarea = TEXTAREA ( "{$name}_comment", $value, "width:100%;height:50px;margin-top:6px;" );
   $tareanc = TEXTAREA ( "{$name}_note", $value, "width:100%;height:50px;margin-top:6px;", 'nc' );
   $ncval = get_arrval ( $value, $name . '_nc', 'F' );
@@ -1846,7 +1897,45 @@ END;
   return $out;
 }
 
-/* the bottom line */
+function partial_ynna_ct($row, $value, $t) {
+  /*
+   * Yes, No and N/A count for the section
+   */
+  // $prefix = $row ['prefix'];
+  $name = $row ['varname'];
+  $heading = $row ['heading'];
+  $v_y_ct = get_arrval($value, "{$name}_y_ct", 0);
+  $v_n_ct = get_arrval($value, "{$name}_n_ct", 0);
+  $v_na_ct = get_arrval($value, "{$name}_na_ct", 0);
+  //$text = $row ['text'];
+  //$info = $row ['info'];
+  $name = $row ['varname'];
+  $ec = $row['element_count'];
+  $out = <<<"END"
+<div style="padding: 2px; 4px;width:810px;background:#ccccff;">
+  <div style="font-size:14px;padding: 4px;font-weight:bold;background:#ccccff;width:570px;float:left;">{$heading}</div>     
+  <div style="display:inline;float:right;margin-left:5px;background:#ccccff;">
+N/A<input class="ro" name="{$name}_na_ct" id="{$name}_na_ct" value="{$v_na_ct}" 
+           type="text"  size="2">
+  </div>
+  <div style="display:inline;float:right;margin-left:5px;background:#ccccff;">
+No<input class="ro" name="{$name}_n_ct" id="{$name}_n_ct" value="{$v_n_ct}" 
+           type="text"  size="2">
+  </div>
+ <div style="display:inline;float:right;margin-left:5px;background:#ccccff;">
+Yes<input class="ro" name="{$name}_y_ct" id="{$name}_y_ct" value="{$v_y_ct}"  
+           type="text"  size="2">
+  </div>
+<div style="clear:both;"></div>
+</div>
+END;
+  
+  return $out;
+
+}
+/* 
+ * the bottom line 
+ */
 function get_lang_text($base, $default, $sp_lang) {
   /**
    * $base contains the original text

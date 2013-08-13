@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Karla|Ubuntu);
+/*@import url(https://fonts.googleapis.com/css?family=Karla|Ubuntu);*/
 /*!
  * Bootstrap v2.0.4
  *
@@ -363,7 +363,7 @@ h4,
 h5,
 h6 {
   margin: 0;
-  font-family: 'Karla', sans-serif;
+  font-family: Arial, sans-serif; /*'Karla', sans-serif;*/
   font-weight: bold;
   color: #317eac;
   text-rendering: optimizelegibility;
@@ -4203,7 +4203,7 @@ a.badge:hover {
   visibility: hidden;
 }
 .navbar,.top-block {
-  font-family: 'Karla', sans-serif;
+  font-family: Arial, sans-serif; /*'Karla', sans-serif; */
 }
 .navbar .navbar-inner {
   background-color: #3f9fd9;
@@ -4240,7 +4240,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', e
   background-color: #cccccc;
 }
 div.subnav {
-  font-family: 'Karla', sans-serif;
+  font-family: Arial, sans-serif; /*'Karla', sans-serif;*/
 }
 .btn {
   background-color: #ffffff;

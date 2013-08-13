@@ -70,6 +70,7 @@ function watch_ynp(name, score) {
     $('#'+name+'_score').val(out.toString());
     $('#'+name+'_icon').remove();
     changed = true;
+      set_total(name.substr(0,3));
   });
 }
 

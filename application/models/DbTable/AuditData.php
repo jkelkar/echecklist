@@ -187,7 +187,7 @@ END;
      */
     // get all scores in the audit
     $sql = "select * from audit_data where audit_id = {$did} ".
-      " and field_name like '%_score' ";
+      " and field_name like 's___total' ";
     $rows = $this->queryRows($sql);
     if (count($rows) > 0) {
       $final_score = 0;

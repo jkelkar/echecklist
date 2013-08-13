@@ -343,8 +343,10 @@ function widget_select_ynp_ro($varname, $value, $t) {
    */
   $ro_char = "{$varname}_ynp";
   $v_ro_char = get_arrval ( $value, $ro_char, 'N' );
-  $ro_num = "{$varname}_num";
-  $v_ro_num = get_arrval ( $value, $ro_num, 0 );
+  /*
+    $ro_num = "{$varname}_num";
+    $v_ro_num = get_arrval ( $value, $ro_num, 0 );
+  */
   $out = <<<"END"
 <input class="ro" name="{$ro_char}" id="{$ro_char}"
        type="text" readonly="readonly" value="{$v_ro_char}" size=3>

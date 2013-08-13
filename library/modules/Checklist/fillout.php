@@ -83,7 +83,9 @@ function RADIO($name, $optvals, $value) {
   foreach ( $optvals as $n => $v ) {
     $sel = ($v == $val) ? "checked=\"checked\" " : '';
     // logit("Interiem - {$val} : {$sel}: {$n} => {$v}");
-    $optout [] = "<input style=\"margin: 0 4px 0 6px;\" type=\"radio\" name=\"{$name}\" " . "id=\"{$name}_{$n}\" value=\"{$v}\" {$sel} > {$n} ";
+    $optout [] = "<input style=\"margin: 0 4px 0 6px;\" type=\"radio\" name=\"{$name}\" " . 
+      "id=\"{$name}_{$n}\" value=\"{$v}\" onclick='click_sub_sec(\"{$name}\");'  {$sel} >".
+      "<label class=\"il\" for=\"{$name}_{$n}\"> {$n}</label> ";
   }
   $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
   $optout [] = ($val != '') ? '' : "<img id=\"{$name}_icon\" src=\"{$baseurl}/cancel-on.png\" />";
@@ -105,8 +107,11 @@ function RADIO_CALC($name, $optvals, $value, $score) {
    */
   foreach ( $optvals as $n => $v ) {
     $sel = ($v == $val) ? "checked=\"checked\" " : '';
+    $sendid = substr($name, 0, 3);
     // logit("Interiem - {$val} : {$sel}: {$n} => {$v}");
-    $optout [] = "<input style=\"margin: 0 4px 0 6px;\" type=\"radio\" name=\"{$name}\" " . "id=\"{$name}_{$n}\" value=\"{$v}\" {$sel} > {$n} ";
+    $optout [] = "<input style=\"margin: 0 4px 0 6px;\" type=\"radio\" name=\"{$name}\" " . 
+      "id=\"{$name}_{$n}\" value=\"{$v}\" {$sel} onclick=\"set_total('{$sendid}');\">".
+      " <label class=\"il\" for=\"{$name}_{$n}\">{$n}</label> ";
   }
   $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
   $optout [] = ($val != '') ? '' : "<img id=\"{$name}_icon\" src=\"{$baseurl}/cancel-on.png\" />";
@@ -337,18 +342,15 @@ function widget_select_ynp_ro($varname, $value, $t) {
    * This is a display for calculated choices
    */
   $ro_char = "{$varname}_ynp";
-  $v_ro_char = get_arrval ( $value, $ro_char, 'NO' );
+  $v_ro_char = get_arrval ( $value, $ro_char, 'N' );
   $ro_num = "{$varname}_num";
   $v_ro_num = get_arrval ( $value, $ro_num, 0 );
   $out = <<<"END"
-<input class="ro" name="{$ro_char}" id={$ro_char}"
-       type="text" readonly="readonly" value="{$v_ro_char}" length=3>
+<input class="ro" name="{$ro_char}" id="{$ro_char}"
+       type="text" readonly="readonly" value="{$v_ro_char}" size=3>
 END;
   return $out;
-/*
-<input class="ro" name="{$ro_num}" id={$ro_num}"
-       type="text" readonly="readonly" value="{$v_ro_num}" length=3>
-*/
+
 }
 
 function widget_select_ynp_calc($varname, $value, $t, $score) {
@@ -928,6 +930,7 @@ function partial_sub_sec_head($row, $value, $t) {
   $text = $row ['text'];
   $info = $row ['info'];
   $name = $row ['varname'];
+  $ec = $row['element_count'];
   $max_score = $row ['score'];
   $widget_nyp = widget_select_ynp_calc ( $name, $value, $t, $max_score );
   // widget_select_ynp($name, $value, $t); // widget_nyp_ro($name, $value);
@@ -936,7 +939,9 @@ function partial_sub_sec_head($row, $value, $t) {
   $tareanc = TEXTAREA ( "{$name}_note", $value, "width:100%;height:50px;margin-top:6px;", 'nc' );
   $ncval = get_arrval ( $value, $name . '_nc', 'F' );
   $checked = '';
-  $scoreval = get_arrval ( $value, $name . '_score', 0 );
+  $nscore = "{$name}_score";
+  //logit("NSCORE: ". $nscore);
+  $scoreval = get_arrval ( $value, $nscore, 0 );
   if ($ncval == 'T') {
     $checked = 'checked';
     $vis = '';
@@ -968,7 +973,7 @@ function partial_sub_sec_head($row, $value, $t) {
     <td style="vertical-align:top;padding: 2px 4px;width:350px;">
       <div style="margin-right:5px;display:inline;">{$widget_nyp}</div>
       <div style="display:inline;float:right;">
-        <input class="ro" name="{$name}_score" id="{$name}_score" value="{$scoreval}"
+        <input class="ro" name="{$name}_score" id="{$name}_score" value="{$scoreval}" rel="{$ec}"
                type="text"  size="2">
         / <b>{$max_score}</b></div>
       <div>{$tarea}</div>
@@ -990,9 +995,13 @@ function partial_sub_sec_head_ro($row, $value, $t) {
   $text = $row ['text'];
   $info = $row ['info'];
   $name = $row ['varname'];
+  $ec = $row['element_count'];
   $max_score = $row ['score'];
   $widget_nyp_ro = widget_select_ynp_ro ( $name, $value, $t ); // 'N/Y/P FIXME';
   $ynp_ro = "{$name}_ynp";
+  $nscore = "{$name}_score";
+  //logit("NSCORE: ". $nscore);
+  $scoreval = get_arrval ( $value, $nscore, 0 );
   $this_score = get_arrval ( $value, $ynp_ro, 0 ); // '# FIXME';
   $head = ($heading) ? "{$heading}<br />" : "";
   //logit ( "SRO: " . print_r ( $row, true ) );
@@ -1013,8 +1022,8 @@ function partial_sub_sec_head_ro($row, $value, $t) {
       </td>
       <td style="vertical-align:top;padding: 2px 4px;width:350px;">
       <div style="display:inline;float:right;margin-right:21px;">
-      <input class="ro" name="{$name}_score" id="{$name}_score" value=""
-       type="text"  size="2"> / <b>{$max_score}</b></div>
+        <input class="ro" name="{$name}_score" id="{$name}_score" value="{$scoreval}" rel="{$ec}"
+               type="text"  size="2" onclick="set_score('{$name}_score', {$max_score});"> / <b>{$max_score}</b></div>
       <div style="margin-right:5px;display:inline;float:right;">{$widget_nyp_ro}</div>
       </td>
   </tr></table>
@@ -1636,12 +1645,15 @@ function partial_sec_total($row, $value, $t) {
   //$text = $row ['text'];
   //$info = $row ['info'];
   $name = $row ['varname'];
+  $ec = $row['element_count'];
   $max_score = $row ['score'];
   $widget_nyp_ro = widget_select_ynp_ro ( $name, $value, $t ); // 'N/Y/P FIXME';
   $ynp_ro = "{$name}_ynp";
   $this_score = get_arrval ( $value, $ynp_ro, 0 ); // '# FIXME';
   $head = ($heading) ? "{$heading}<br />" : "";
   //logit ( "SRO: " . print_r ( $row, true ) );
+  //$scoreval = get_arrval ( $value, $name, 0 );
+  $this_score = get_arrval ( $value, $name, 0 );
   $out = <<<"END"
 <table style="width:100%;"><tr>
     <td style="padding: 2px 4px;width:722px;background:#ccccff;">  
@@ -1650,7 +1662,7 @@ function partial_sec_total($row, $value, $t) {
     </td>
     <td style="vertical-align:top;padding: 2px 4px;width:76px;background:#ccccff;">
       <div style="display:inline;">
-        <input class="ro" name="{$name}_score" id="{$name}_score" value=""
+        <input class="ro" name="{$name}" id="{$name}" value="{$this_score}" rel="{$ec}"
                type="text"  size="2"> / <b>{$max_score}</b></div>
     </td>
 </tr></table>
@@ -1938,6 +1950,7 @@ function calculate_page($rows, $value, $tword) {
     $arow ['info'] = $row ['info'];
     $arow ['score'] = $row ['score'];
     $arow ['baseurl'] = $baseurl;
+    $arow['element_count'] = $row['element_count'];
     $bpad = 'class="bpad"';
 
     if (in_array($type, $show_only)) {

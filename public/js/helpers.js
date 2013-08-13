@@ -181,3 +181,64 @@ function count_radio_yna(section, maxct) {
     }
     return [yesct, noct, nact, unset];
 }
+
+function track_yn(name) {
+    var topname = name.substr(0,5);
+    
+}
+
+function set_score(id, score) {
+    var ct = $('#'+id).attr('rel');
+    var p = id.split('_')[0];
+    var yesct = 0,
+        noct = 0, 
+        nact= 0,
+        unset = 0;
+    var val, thisid;
+    $('input^="'+p+'"]:checked').each(function(i) {
+        var thisname = $(this).attr('name');
+        var x = p;
+        if (thisname.substr(0, 5) == p && thisname.substr(-2) == 'yn') {
+            switch($(this).val()) {
+            case 'YES': yesct++; break;
+            case 'NO': noct++;break;
+            default: unset++; 
+            }
+        
+            var rel = $('#'+id).attr('rel');
+            var calcval = 0;
+            var ynp = 'N';
+            rel = parseInt(rel);
+            if (yesct == rel) {
+                calcval = score;
+                ynp = 'Y';
+            } else if (yesct <rel && yesct > 0) {
+                calcval = 1;
+                ynp = 'P';
+            } 
+            $('#'+id).val(calcval.toString());
+            $('#'+p+'_ynp').val(ynp);
+            set_total(id.substr(0,3));
+        }
+    });
+}
+
+function set_total(id) {
+    var myid = id+ '_total';
+    var total = 0;
+    var val;
+   $('input[name$="_score"]').each( function(i) {
+       val = $(this).val();
+       val = parseInt(val);
+       val = (isNaN(val)) ? 0: val;
+       total = total + val;
+       $('#'+myid).val(total);
+       var abc = 0;
+   });
+    var xx= 0;
+}
+
+function click_sub_sec(name) {
+    var ssid = name.substr(0, 5);
+    $('#'+ssid+'_score').click();
+}

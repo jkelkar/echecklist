@@ -13,7 +13,7 @@ class Application_Model_DbTable_AuditRows extends Application_Model_DbTable_Chec
     $id = ( int ) $id;
     $sql = <<<"SQL"
       select r.varname, r.row_type, r.score, p.page_num, p.page_id,
-      r.prefix, r.heading, r.text, r.info,
+      r.prefix, r.heading, r.text, r.info, r.element_count,
       lp.row_id lprowid, lp.def lpdefault, lp.{$lang} lplang,
       lh.row_id lhrowid, lh.def lhdefault, lh.{$lang} lhlang,
       lt.row_id ltrowid, lt.def ltdefault, lt.{$lang} ltlang

@@ -109,15 +109,16 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     $dval = new DateTime ();
     switch ($suff) {
       // stuff to be ignored
-      case 'cb' :
-      case 'nextpage':
-        break;
-      case 'num' :
-      case 'd' :
-      case 'w' :
-      case 'er' :
-      case 'int' :
-      case 'score' :
+    case 'cb' :
+    case 'nextpage':
+      break;
+    case 'num' :
+    case 'd' :
+    case 'w' :
+    case 'er' :
+    case 'int' :
+    case 'score' :
+    case 'total':
         $ival = ( int ) $value;
         $ftype = 'integer';
         break;

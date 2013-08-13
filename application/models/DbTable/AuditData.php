@@ -11,7 +11,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
   private $format = 'm/d/Y';
   private $ISOformat = 'Y-m-d';
 
-  public function get_data($did) {
+  public function getData($did) {
     // $db = $this->getDb ();
     $did = ( int ) $did;
     $sql = "select * from audit_data where audit_id = {$did}";
@@ -92,6 +92,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     foreach ( $data as $n => $v ) {
       //logit ( "BEFORE: {$n} ==> {$v}" );
       $this->updateAuditData ( $did, $n, $v );
+      $this->updateFinalScore($did);
     }
   
   }
@@ -112,46 +113,50 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     case 'cb' :
     case 'nextpage':
       break;
+      // these are considered to be integers
     case 'num' :
+    case 'ct':
     case 'd' :
     case 'w' :
     case 'er' :
     case 'int' :
     case 'score' :
     case 'total':
-        $ival = ( int ) $value;
-        $ftype = 'integer';
-        break;
-      // ---------
-      case 'dt' :
-      case 'date' :
-        $ftype = 'date';
-        $dt = date_parse_from_format ( $format, $value );
-        $date = new DateTime ();
-        $date->setDate ( $dt ['year'], $dt ['month'], $dt ['day'] );
-        $dval = $date;
-        break;
-      // ---------
-      case 'comment' :
-      case 'note' :
-      case 't' :
-        $tval = $value;
-        $ftype = 'text';
-        break;
-      // ---------
-      case 'nc' :
-        $bval = ($value === 'T')? 'T' : 'F';
-        $ftype = 'bool';
-        break;
-      // ---------
-      case 'item' :
-      case 'person' :
-      case 'sig' :
-      case 'time' :
-      case 'yn' :
-      case 'yni' :
-      case 'ynp' :
-      case 'yna' :
+      $ival = ( int ) $value;
+      $ftype = 'integer';
+      break;
+      // --------- dates
+    case 'dt' :
+    case 'date' :
+      $ftype = 'date';
+      $dt = date_parse_from_format ( $format, $value );
+      $date = new DateTime ();
+      $date->setDate ( $dt ['year'], $dt ['month'], $dt ['day'] );
+      $dval = $date;
+      break;
+      // --------- TEXT - multiple lines
+    case 'comment' :
+    case 'note' :
+    case 't' :
+      $tval = $value;
+      $ftype = 'text';
+      break;
+      // --------- Boolean values T/F
+    case 'nc' :
+      $bval = ($value === 'T')? 'T' : 'F';
+      $ftype = 'bool';
+      break;
+      // --------- String values - default is also string type
+    case 'item' :
+    case 'person' :
+    case 'sig' :
+    case 'time' :
+    case 'yn' :
+    case 'yni' :
+    case 'ynp' :
+    case 'yna' :
+    case 'n':
+    case 'y':
         $sval = $value;
         $ftype = 'string';
         break;
@@ -175,6 +180,65 @@ END;
   
   }
 
+  public function updateFinalScore($did) {
+    /*
+     * Each time the data is saved, we need to compute the 
+     * current final score - at the end it will be up to date!
+     */
+    // get all scores in the audit
+    $sql = "select * from audit_data where audit_id = {$did} ".
+      " and field_name like '%_score' ";
+    $rows = $this->queryRows($sql);
+    if (count($rows) > 0) {
+      $final_score = 0;
+      
+      foreach($rows as $row) {
+        if ($row['field_name'] != 'final_score') {
+          // Since integer values are stored in audit_data.int_val
+          $final_score += $row['int_val'];
+        }
+      }
+      // calculate if it is a minimum of 55% or 143 points
+      $this->updateAuditData($did, 'final_score', $final_score);
+      $final_y = '';
+      $final_n = '';
+      if ($final_score > 142) {
+        $final_y = 'Y';
+      } else {
+        $final_n = 'N';
+      }
+      $this->updateAuditData($did, 'final_y', $final_y);
+      $this->updateAuditData($did, 'final_n', $final_n);
+    }
+    // update the totals for BAT & TB
+    $sql = "select * from audit_data where audit_id = {$did} ".
+      " and field_name like '%_ct' ";
+    $rows = $this->queryRows($sql);
+    if (count($rows) > 0) {
+      $final_y_ct = 0;
+      $final_n_ct = 0;
+      $final_na_ct = 0;
+      
+      foreach($rows as $row) {
+        $rn = $row['field_name'];
+        if (substr($rn, 0, 5) != 'final') {
+          // Since integer values are stored in audit_data.int_val
+          $name = substr($rn, 4);
+          switch($name) {
+          case 'y_ct': $final_y_ct += $row['int_val'];break;
+          case 'n_ct': $final_n_ct += $row['int_val'];break;
+          case 'na_ct':$final_na_ct += $row['int_val'];break;
+          default:
+          }
+        }
+      }
+      // calculate if it is a minimum of 55% or 143 points
+      $this->updateAuditData($did, 'final_y_ct', $final_y_ct);
+      $this->updateAuditData($did, 'final_n_ct', $final_n_ct);
+      $this->updateAuditData($did, 'final_na_ct', $final_na_ct);
+    }
+    
+  }
   public function getTemplateId($did) {
     /*
      * Get template_id from audit table matching the $did (audit_id) provided

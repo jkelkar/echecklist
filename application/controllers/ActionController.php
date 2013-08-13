@@ -171,7 +171,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
 END;
     if ($this->usertype != '') {
       $this->header = $this->header . <<<"END"
-  <div class="btn-group pull-left" style="margin-left:200px;">
+  <div class="btn-group pull-left" style="margin-left:100px;">
 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
 <span title=".icon  .icon-blue .icon-clipboard " class="icon icon-blue icon-clipboard"></span>
         <span class="hidden-phone">Audits</span>

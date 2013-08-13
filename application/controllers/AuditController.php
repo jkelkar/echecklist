@@ -94,7 +94,7 @@ END;
       }
       
       $rows = $audit->getrows ( $template_id, $thispage, $langtag ); // 1 is the template_id
-      $value = $data->get_data ( $audit_id ); // 1 is the audit_id
+      $value = $data->getData ( $audit_id ); // 1 is the audit_id
       
       
       if ($this->debug) {

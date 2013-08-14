@@ -72,8 +72,8 @@ END;
     //logit('PARTS: '. print_r($pinfo, true));
     $audit_id = (int)  $pinfo[3];
     $template_id = $data->getTemplateId($audit_id);
-    $langtag = $pinfo[4];
-    $thispage = $pinfo[5];
+    $langtag = $this->echecklistNamespace->lang;
+    $thispage = (int) $pinfo[4];
     
     if ($thispage == '') {
       $fp = $page->getStartPage($template_id); //1 is the template id
@@ -87,7 +87,7 @@ END;
     $nrows = $nav ['rows'];
     if (! $this->getRequest ()->isPost ()) {
       // write out the page
-      $tword = $lang_word->get_words ( $langtag );
+      $tword = $lang_word->getWords ( $langtag );
       if ($this->debug) {
         logit ( "Got showpage value: {$thispage}" );
         logit ( "Got language value: {$langtag}" );
@@ -105,7 +105,7 @@ END;
       logit ( "Page Tag {$page_row['tag']}\n" );
       // Generate the entries to make a tree - using dtree
       $jsrows = array ();
-      $page_url = "{$baseurl}/audit/edit/{$audit_id}/{$langtag}"; 
+      $page_url = "{$baseurl}/audit/edit/{$audit_id}"; 
       foreach ( $nrows as $r ) {
         if ($this->debug) {          
           foreach ( $r as $x => $y ) {
@@ -175,7 +175,7 @@ END;
       $pagerow = $page->getPage ( $template_id, $thispage );
       $nextpage = $pagerow['next_page_num'];
       
-      $page_url = "/audit/edit/{$audit_id}/{$langtag}/{$nextpage}"; 
+      $page_url = "/audit/edit/{$audit_id}/{$nextpage}"; 
       logit ( "URINEW: {$newuri}" );
       switch ($sbname) {
       case 'Cancel' :

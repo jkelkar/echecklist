@@ -10,7 +10,7 @@ class Application_Model_DbTable_Langword extends Application_Model_DbTable_Check
 {
   protected $_name = 'lang_word';
 
-  public function get_words_orig($tag)
+  public function getWordsOrig($tag)
   {
     $debug = 1;
     $db = $this->getDb();
@@ -29,7 +29,7 @@ class Application_Model_DbTable_Langword extends Application_Model_DbTable_Check
     return $tword;
   }
   
-  public function get_words($lname) {
+  public function getWords($lname) {
     $sql = "select def, {$lname} from lang_word";
     logit("SQL: {$sql}");
     $rows = $this->queryRows($sql);

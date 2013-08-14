@@ -67,9 +67,13 @@ function dumpForm($fields, $value=array('_' => '_')) {
     	$auto = true;
     }
     $outlines[] = '<tr>';
+    $name = $a;
     $type = $b['type'];
+
     $l = get_arrval($b, 'length', '');
     switch ($type) {
+      //case 'labaffil':
+      //$outlines = widget_select_labaffil($name, array(), 
     case 'text':
       break;
     case 'date':

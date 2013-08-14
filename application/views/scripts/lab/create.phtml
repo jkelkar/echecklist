@@ -1,0 +1,112 @@
+
+<?php
+$this->title = "Create Lab";
+$this->headTitle($this->title);
+// setting up the dialog
+$_fields = array (
+                  'labname', 'labnum', 'street', 'street2', 'street3', 'city',
+                  'state', 'country', labtel', labfax', 'labemail', 'lablevel',
+                  'labaffil', 'submit');
+
+$flist = array (
+    '_fields' => $_fields,
+    'labname' => array (
+        'type' => 'string',
+        'length' => 40,
+        'label' => 'Lab Name:'
+    ),
+    'labnum' => array (
+        'type' => 'string',
+        'length' => 40,
+        'label' => 'Lab Number:'
+    ),
+    'street' => array (
+        'type' => 'string',
+        'length' => 80,
+        'label' => 'Address:'
+    ),
+    'street2' => array (
+        'type' => 'string',
+        'length' => 80,
+        'label' => ''
+                        ),
+    'street3' => array (
+        'type' => 'string',
+        'length' => 80,
+        'label' => ''
+    ),
+    'city' => array (
+        'type' => 'string',
+        'length' => 60,
+        'label' => 'City:'
+    ),
+    'State' => array (
+        'type' => 'string',
+        'length' => 60,
+        'label' => 'State/Province:'
+    ),
+    'country' => array (
+         'type' => 'string', // select
+        'length' => 60,
+        'label' => 'Country:'
+    ),
+    'labtel' => array (
+        'type' => 'string',
+        'length' => 20,
+        'label' => 'Lab Telephone:'
+    ),
+    'labfax' => array (
+        'type' => 'string',
+        'length' => 20,
+        'label' => 'Lab Fax:'
+    ),
+    'labemail' => array (
+        'type' => 'string',
+        'length' => 80,
+        'label' => 'Lab Email:'
+    ),
+    'lablevel' => array (
+        'type' => 'string', //lablevel
+        'length' => 40,
+        'label' => 'Lab Name:'
+    ),
+    'labaffil' => array (
+        'type' => 'string', // lab affil
+        'length' => 40,
+        'label' => 'Lab Name:'
+    ),
+    'submit' => array (
+        'type' => 'submit',
+        'value' => 'Create'
+    )
+);
+/*
+$out = array();
+$out[] = '<form method="post" action="" enctype="application/x-www-form-urlencoded" .
+  	' name= "thisform" id="thisform">';
+
+$out[] = '<table>';
+$out[] = '<tr><td class="n">
+
+$out[] = '</table></form>';
+*/
+// logit("flist: {$flist}");
+$outlines = dumpForm ( $flist );
+$this->formtext = $outlines;
+?>
+
+<div style="margin: 10px auto;width:800px;">
+  <center><h1 style="margin-bottom:10px;"><?php echo $this->title; ?></h1></center>
+  <div style="margin:15px 0;">
+  <?php echo $this->formtext; ?>
+  </div>
+</div>
+<div style="margin: auto;padding:20px 30px;font-size: 1.3em;width:400px;">
+  Login here to get access to Audits.
+  The following type of audits can be worked on here:
+  <ul>
+    <li>SLIPTA</li>
+    <li>BIosafety</li>
+    <li>TB</li>
+  </ul>
+</div>

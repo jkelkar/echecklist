@@ -26,6 +26,7 @@ function Node(id, pid, name, url, title, target, icon, iconOpen, open) {
 	this._ai = 0;
 	this._p;
 };
+var prefix = '../../../';
 
 //Tree object
 function dTree(objName) {
@@ -41,21 +42,22 @@ function dTree(objName) {
 			inOrder					: false
 	};
 
+
 	this.icon = {
-			root		: '../../../../js/img/base.gif',
-			folder		: '../../../../js/img/folder.gif',
-			folderOpen	: '../../../../js/img/folderopen.gif',
-			node		: '../../../../js/img/page.gif',
-			empty		: '../../../../js/img/empty.gif',
-			line		: '../../../../js/img/line.gif',
-			join		: '../../../../js/img/join.gif',
-			joinBottom	: '../../../../js/img/joinbottom.gif',
-			plus		: '../../../../js/img/plus.gif',
-			plusBottom	: '../../../../js/img/plusbottom.gif',
-			minus		: '../../../../js/img/minus.gif',
-			minusBottom	: '../../../../js/img/minusbottom.gif',
-			nlPlus		: '../../../../js/img/nolines_plus.gif',
-			nlMinus		: '../../../../js/img/nolines_minus.gif'
+			root		: prefix +'js/img/base.gif',
+			folder		: prefix + 'js/img/folder.gif',
+			folderOpen	: prefix + 'js/img/folderopen.gif',
+			node		: prefix + 'js/img/page.gif',
+			empty		: prefix + 'js/img/empty.gif',
+			line		: prefix + 'js/img/line.gif',
+			join		: prefix + 'js/img/join.gif',
+			joinBottom	: prefix + 'js/img/joinbottom.gif',
+			plus		: prefix + 'js/img/plus.gif',
+			plusBottom	: prefix + 'js/img/plusbottom.gif',
+			minus		: prefix + 'js/img/minus.gif',
+			minusBottom	: prefix + 'js/img/minusbottom.gif',
+			nlPlus		: prefix + 'js/img/nolines_plus.gif',
+			nlMinus		: prefix + 'js/img/nolines_minus.gif'
 	};
 	this.obj = objName;
 	this.aNodes = [];

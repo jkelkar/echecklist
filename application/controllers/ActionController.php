@@ -39,6 +39,9 @@ class Application_Controller_Action extends Zend_Controller_Action {
       $this->userid = $u ['id'];
       logit ( "{$this->username}, {$this->usertype}, {$this->userfullname}, {$this->userid}" );
     }
+    if (!isset ( $this->echecklistNamespace->lang)) {
+      $this->echecklistNamespace->lang = 'EN';
+    }
     Zend_Session::start ();
     
   }
@@ -180,9 +183,9 @@ END;
         <li><a href="{$this->baseurl}/audit/start"><span title=".icon  .icon-green .icon-clipboard " class="icon icon-green icon-clipboard"></span> New Audit</a></li>
         <li><a href="{$this->baseurl}/audit/find"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Find</a></li>
         <li class="divider"></li>
-<li><a href="{$this->baseurl}/audit/edit/1/EN/"><span title=".icon  .icon-blue  .icon-edit " class="icon icon-blue icon-edit"></span> Edit 1</a></li>
-<li><a href="{$this->baseurl}/audit/edit/2/EN/"><span title=".icon  .icon-blue  .icon-edit " class="icon icon-blue icon-edit"></span> Edit 2</a></li>
-<li><a href="{$this->baseurl}/audit/edit/3/EN/"><span title=".icon  .icon-blue  .icon-edit " class="icon icon-blue icon-edit"></span> Edit 3</a></li>
+<li><a href="{$this->baseurl}/audit/edit/1/"><span title=".icon  .icon-blue  .icon-edit " class="icon icon-blue icon-edit"></span> Edit 1</a></li>
+<li><a href="{$this->baseurl}/audit/edit/2/"><span title=".icon  .icon-blue  .icon-edit " class="icon icon-blue icon-edit"></span> Edit 2</a></li>
+<li><a href="{$this->baseurl}/audit/edit/3/"><span title=".icon  .icon-blue  .icon-edit " class="icon icon-blue icon-edit"></span> Edit 3</a></li>
         <li class="divider"></li>
         <li><a href="{$this->baseurl}/audit/import"><span title=".icon  .icon-blue .icon-import " class="icon icon-blue icon-archive"></span> Import</a></li>
 				</ul>

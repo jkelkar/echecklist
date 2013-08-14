@@ -41,11 +41,11 @@ class StartstopController extends Application_Controller_Action
       
       logit ( "EC2: " . print_r ( $this->echecklistNamespace->user, true ) );
       $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
-      $this->_redirector->gotoUrl ( "/audit/edit/1/EN/20" ); //"/slipta/edit" );
+      $this->_redirector->gotoUrl ( "/audit/edit/1/" ); //"/slipta/edit" );
     } else {
       if ($this->usertype != '') {
         logit('redirect');
-        $this->_redirector->gotoUrl("/audit/edit/1/EN/20" ); //"/slipta/edit");
+        $this->_redirector->gotoUrl("/audit/edit/1/" ); //"/slipta/edit");
       }
       $this->view->title = 'Login';
       $this->_helper->layout->setLayout ( 'overall' );

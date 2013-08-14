@@ -1,7 +1,5 @@
 <?php
 // -*- coding: utf-8 -*-
-?>
-<?php
 
 /**
  * using the widgets and partials fill out the row
@@ -551,7 +549,13 @@ function getAffiliations($t) {
 function widget_select_labaffil($varname, $value, $t) {
   $optvals = getAffiliations ( $t );
   /*
-   * array(//"{$t['Select']} ..." => '-', "{$t['Public']}" => 'PUBLIC', "{$t['Hospital']}" => 'HOSPITAL', "{$t['Private']}" => 'PRIVATE', "{$t['Research']}" => 'RESEARCH', "{$t['Non-hospital outpatient clinic']}" => 'NONHOSPITAL', "{$t['Other - please specify']}" => 'OTHER' );
+   * array(//"{$t['Select']} ..." => '-', 
+   * "{$t['Public']}" => 'PUBLIC', 
+   * "{$t['Hospital']}" => 'HOSPITAL', 
+   * "{$t['Private']}" => 'PRIVATE', 
+   * "{$t['Research']}" => 'RESEARCH', 
+   * "{$t['Non-hospital outpatient clinic']}" => 'NONHOSPITAL', 
+   * "{$t['Other - please specify']}" => 'OTHER' );
    */
   return OPTIONS ( $varname, $optvals, $value );
 

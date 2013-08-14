@@ -271,6 +271,7 @@ textarea.small {
 	border: 0;
 }
 
+
 #cancelbutton,#savebutton,#continuebutton,#nextbutton {
 	background-color: #ffffee;
 	font-size: 18px;
@@ -280,6 +281,9 @@ textarea.small {
 	padding: 5px 10px;
 }
 
+#cancelbutton:hover,#savebutton:hover,#continuebutton:hover,#nextbutton:hover {
+    background-color: #cccc99;
+}
 #xsavebutton {
 	margin-left: 537px;
 }

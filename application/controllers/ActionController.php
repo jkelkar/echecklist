@@ -42,6 +42,8 @@ class Application_Controller_Action extends Zend_Controller_Action {
     if (!isset ( $this->echecklistNamespace->lang)) {
       $this->echecklistNamespace->lang = 'EN';
     }
+    $this->view->langtag = $this->echecklistNamespace->lang;
+    // logit('LT: '. $this->view->langtag);
     Zend_Session::start ();
     
   }
@@ -49,7 +51,6 @@ class Application_Controller_Action extends Zend_Controller_Action {
   public function setHeaderFiles() {
     /* all CSS and js files are set up here */
     $csslist = array (
-        //'/css/styles.css',
         '/css/dtree.css',
         // charisma starts below
         '/charisma/css/bootstrap-cerulean.css',
@@ -67,7 +68,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
         '/css/echecklist-styles.css'
     );
     foreach ( $csslist as $f ) {
-      $this->view->headLink ()->appendStylesheet ( "{$this->baseurl}{$f}" );
+      $this->view->headLink()->appendStylesheet ("{$this->baseurl}{$f}");
     }
     $jslist = array (
         '/js/dtree.js',
@@ -101,7 +102,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
         // '/js/helpers.js'
     );
     foreach ( $jslist as $f ) {
-      $this->view->headScript ()->appendFile ( "{$this->baseurl}{$f}" );
+      $this->view->headScript()->appendFile ("{$this->baseurl}{$f}");
     }
     /*
     logit ( "Links: {$this->view->headLink()}" );

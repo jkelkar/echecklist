@@ -82,7 +82,7 @@ td.n {
 }
 
 td.f {
-	padding: 2px 3px 10px 3px;
+	padding: 2px 3px 0px 3px; /* was 2px 3px 10px 3px;*/
 }
 
 td.s {

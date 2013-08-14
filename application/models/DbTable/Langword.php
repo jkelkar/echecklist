@@ -8,7 +8,7 @@ require_once 'modules/Checklist/logger.php';
 
 class Application_Model_DbTable_Langword extends Application_Model_DbTable_Checklist
 {
-  protected $_name = 'lang_word';
+  // protected $_name = 'lang_word';
 
   public function getWordsOrig($tag)
   {

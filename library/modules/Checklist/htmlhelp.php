@@ -2,6 +2,7 @@
 /**
  * This implements HTML Helpers
  **/
+require_once '../application/models/DbTable/Langword.php';
 require_once 'modules/Checklist/fillout.php';
 require_once 'modules/Checklist/logger.php';
 
@@ -36,11 +37,18 @@ END;
   return $out;
 }
 
-
+function field_ready($control) {
+  $w1 = $w2 = '';
+  $out = <<<"END"
+  <td class="n f right" style=width:400px;">{$lab}</td>
+  <td class="n f" style=width:400px;">{$w1}{$control}{$w2}</td>
+END;
+   return $out;
+}
 function createForm() {
   
 }
-function dumpForm($fields, $value=array('_' => '_')) {
+function dumpForm($fields, $langtag, $value=array('_' => '_')) {
   /**
    * $fields is an array
    * '_fields' => ['field1', 'field2' ...]
@@ -50,6 +58,7 @@ function dumpForm($fields, $value=array('_' => '_')) {
    * $value is an array that has all values indexed by fieldname
    **/
   //logit("TOP: {$fields} _fields");
+  $tlist = getTranslatables($langtag);
   $_fields = get_arrval($fields, '_fields', '');
   $outlines = array();
   $outlines[] = "<form method=\"post\" action=\"\" " .
@@ -72,8 +81,10 @@ function dumpForm($fields, $value=array('_' => '_')) {
 
     $l = get_arrval($b, 'length', '');
     switch ($type) {
-      //case 'labaffil':
-      //$outlines = widget_select_labaffil($name, array(), 
+    case 'labaffil':
+      $control = widget_select_labaffil($name, array(), $tlist); 
+      $outlines = field_ready($control);
+      break;
     case 'text':
       break;
     case 'date':

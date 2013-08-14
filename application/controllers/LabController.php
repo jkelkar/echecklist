@@ -1,7 +1,7 @@
 <?php
 require_once 'modules/Checklist/htmlhelp.php';
 require_once 'modules/Checklist/logger.php';
-require_once '../application/controllers/Action.php';
+require_once '../application/controllers/ActionController.php';
 
 class LabController extends Application_Controller_Action// Zend_Controller_Action
 {
@@ -44,6 +44,8 @@ class LabController extends Application_Controller_Action// Zend_Controller_Acti
     $this->_helper->layout->setLayout ( '13' );
     
     logit('Find: outer');
+    $labh = new Application_Model_DbTable_Lab();
+
     if ($this->getRequest()->isPost()) {
       logit('Find: In post');
       $formData = $this->getRequest ();
@@ -56,7 +58,6 @@ class LabController extends Application_Controller_Action// Zend_Controller_Acti
       $data = array(
             'labname' => $labname,
             'country' => $country);
-      $labh = new Application_Model_DbTable_Lab();
       $labs = $labh->getLabs($data, 0, 20);
       $this->view->lrows = $labs;
     } else {
@@ -68,18 +69,19 @@ class LabController extends Application_Controller_Action// Zend_Controller_Acti
     }
   }
   
-  public function findOldAction() {
-    logit ( "in Find" );
+  public function createAction() {
+    logit ( "lab/create" );
     $lab = new Application_Model_DbTable_Lab ();
     $urldata = $this->getRequest ()->getParams ();
-    $name = get_arrval ( $urldata, 'term', '' );
-    if ($name == '') {
-      throw new Exception ( 'Bad name in Lab search' );
+    if (!$this->getRequest ()->isPost ()) {
+      $this->view->title = 'Create Lab';
+      $this->_helper->layout->setLayout('overall');
+    } else {
+      // display the form here
+      // $this->view->langtag = $this->echecklistNamespace->lang;
+      $this->view->title = 'Create Lab';
+      $this->_helper->layout->setLayout('overall');
     }
-    $out = $lab->getLabByPartialName ( $name );
-    logit ( "Lab Match: {$out}" );
-    echo $out;
-    exit ();
   }
 
   public function searchAction() {

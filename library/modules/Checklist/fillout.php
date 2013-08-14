@@ -1962,7 +1962,9 @@ function get_lang_text($base, $default, $sp_lang) {
 /**
  * We render the rows here
  */
-function getTranslatables($tword) {
+function getTranslatables(/*$tword,*/ $langtag) {
+  $lang_word = new Application_Model_DbTable_Langword ();
+  $tword = $lang_word->getWords($langtag);
   $words = array (
       'Yes',
       'No',
@@ -2008,7 +2010,7 @@ function getTranslatables($tword) {
 
 }
 
-function calculate_page($rows, $value, $tword) {
+function calculate_page($rows, $value, $langtag) { //$tword) {
   /**
    * Result of the query to get all template rows sorted in order
    *
@@ -2028,7 +2030,7 @@ function calculate_page($rows, $value, $tword) {
                      'sec_elem_info', 'sec_elem_info_normal', 'sec_element_info',
                      'sub_sec_info', 'sec_total', 'sec_head_top', 'sec_head', 'action_plan_heading',
                      'full');
-  $tlist = getTranslatables ( $tword );
+  $tlist = getTranslatables ( $langtag); //$tword );
   $tout = array ();
   $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
   $tout [] = '<table border=0 style="width:825px;">';

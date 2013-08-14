@@ -87,7 +87,7 @@ END;
     $nrows = $nav ['rows'];
     if (! $this->getRequest ()->isPost ()) {
       // write out the page
-      $tword = $lang_word->getWords ( $langtag );
+      //$tword = $lang_word->getWords ( $langtag );
       if ($this->debug) {
         logit ( "Got showpage value: {$thispage}" );
         logit ( "Got language value: {$langtag}" );
@@ -130,7 +130,7 @@ END;
           logit ( "J: {$j}" );
         }
       }
-      $tout = calculate_page ( $rows, $value, $tword );
+      $tout = calculate_page ( $rows, $value, $langtag); //$tword );
       $next = $thispage + 1;
       $this->view->treelines = implode ( "\n", $jsrows );
       $this->view->outlines = implode ( "\n", $tout );

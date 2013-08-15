@@ -19,10 +19,10 @@ class StartstopController extends Application_Controller_Action
   
   public function loginAction() {
     logit ( 'in login' );
-    if ($this->getRequest ()->isPost ()) {
+    if ($this->getRequest()->isPost()) {
       logit ( 'in post' );
-      $formData = $this->getRequest ();
-      logit ( "EC: " . print_r ( $this->echecklistNamespace, true ) );
+      $formData = $this->getRequest();
+      logit ("EC: " . print_r ( $this->echecklistNamespace, true ) );
       // if ($form->isValid($formData)) {
       $username = $formData->getPost ( 'username', '' );
       $password = $formData->getPost ( 'password', '' );

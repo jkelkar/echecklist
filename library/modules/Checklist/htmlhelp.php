@@ -7,7 +7,7 @@ require_once 'modules/Checklist/fillout.php';
 require_once 'modules/Checklist/logger.php';
 
 function field_input($name, $value, $type, $length=0, $style='',
-                     $label_text='', $label_style = '', $label_class='', $formstyle='table',
+                     $label_text='', $label_style='', $label_class='', $formstyle='table',
 		                 $wrapper=array('', ''))
 {
 	logit("FS: {$name}, {$type}, {$length}, {$style}, {$label_text}, {$label_style}, {$formstyle}, ");
@@ -29,21 +29,24 @@ function field_input($name, $value, $type, $length=0, $style='',
     }
   
     $out = <<<"END"
-  <td class="n f right" style=width:400px;">{$lab}</td>
-  <td class="n f" style=width:400px;">{$w1}{$inp}{$w2}</td>
+<td class="n f right" style=width:400px;">{$lab}</td>
+<td class="n f" style=width:400px;">{$w1}{$inp}{$w2}</td>
 END;
   default:
   }
   return $out;
 }
 
-function field_ready($control) {
+function field_ready($name, $control,
+                     $label_text='', $label_style='', $label_class='', $formstyle='table',
+		                 $wrapper=array('', '')) {
+  $lab = LABEL($name, $label_text, $label_style, $label_class);
   $w1 = $w2 = '';
   $out = <<<"END"
-  <td class="n f right" style=width:400px;">{$lab}</td>
-  <td class="n f" style=width:400px;">{$w1}{$control}{$w2}</td>
+<td class="n f right" style=width:400px;">{$lab}</td>
+<td class="n f" style=width:400px;">{$w1}{$control}{$w2}</td>
 END;
-   return $out;
+  return $out;
 }
 function createForm() {
   
@@ -83,7 +86,15 @@ function dumpForm($fields, $langtag, $value=array('_' => '_')) {
     switch ($type) {
     case 'labaffil':
       $control = widget_select_labaffil($name, array(), $tlist); 
-      $outlines = field_ready($control);
+      logit("Control: ". $control);
+      $outlines[] = field_ready($a, $control,
+                                $b['label'], '', 'inp', 'table', $wrap);
+      break;
+    case 'lablevel':
+      $control = widget_select_lablevel($name, array(), $tlist); 
+      logit("Control: ". $control);
+      $outlines[] = field_ready($a, $control,
+                                $b['label'], '', 'inp', 'table', $wrap);
       break;
     case 'text':
       break;
@@ -125,8 +136,8 @@ function dumpForm($fields, $langtag, $value=array('_' => '_')) {
   foreach ($acomplete as $n => $v) {
   	/*
       foreach($v as $n1 => $v1) {
-  			logit("1: {$n1} => {$v1}");
-  	}
+      logit("1: {$n1} => {$v1}");
+      }
     */
   	$url = $callback = '';
   	if (array_key_exists('url', $v)) {
@@ -142,8 +153,8 @@ function dumpForm($fields, $langtag, $value=array('_' => '_')) {
   	}
   	$jslines = <<<"END"
 <script>
-var labname = '', labid = 0;
-ecAutocomplete('{$n}', '{$url}', {$callback}, '{$callback}');
+  var labname = '', labid = 0;
+  ecAutocomplete('{$n}', '{$url}', {$callback}, '{$callback}');
 </script>
 END;
   	//logit("JSL {$jslines}");
@@ -156,37 +167,37 @@ END;
 /**
  *
  * $(function() {
-//ecAutocomplete('{$n}', '{$url}', '{$callback}');
-*function log( message ) {
-      $( "<div>" ).text( message ).prependTo( "#{$n}_results" );
-      $( "#{$n}_results" ).scrollTop( 0 );
-    }
-\$('#{$n}').autocomplete({
-        minLength: 1,
-        delay: 80,
-        source: '{$url}',
-        messages: {
-          noResults: '',
-          results: function() {}
-        },
+ //ecAutocomplete('{$n}', '{$url}', '{$callback}');
+ *function log( message ) {
+ $( "<div>" ).text( message ).prependTo( "#{$n}_results" );
+ $( "#{$n}_results" ).scrollTop( 0 );
+ }
+ \$('#{$n}').autocomplete({
+ minLength: 1,
+ delay: 80,
+ source: '{$url}',
+ messages: {
+ noResults: '',
+ results: function() {}
+ },
        
-       select: function(event, ui) {
-            $('#{$n}').autocomplete('destroy');
-            //$(d_id).html('');
-            // $(d_id).dialog('destroy');
-            // act.su(ui.item.id);
-            // Set the id and name to something
-            {$callback}('test', ui.item.labname, ui.item.id);
-        },
-        //appendTo: "#{$n}_results",
+ select: function(event, ui) {
+ $('#{$n}').autocomplete('destroy');
+ //$(d_id).html('');
+ // $(d_id).dialog('destroy');
+ // act.su(ui.item.id);
+ // Set the id and name to something
+ {$callback}('test', ui.item.labname, ui.item.id);
+ },
+ //appendTo: "#{$n}_results",
         
-    })
-    .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-      return $( "<li>" )
-        .append( "<a style=\"color:green;font-size:22px;\" onclick=\"\" href=\"\"> "
-        				+ item.id + ' ' + item.labname + "</a>" )
-        .appendTo( ul );
-    };
-});
+ })
+ .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+ return $( "<li>" )
+ .append( "<a style=\"color:green;font-size:22px;\" onclick=\"\" href=\"\"> "
+ + item.id + ' ' + item.labname + "</a>" )
+ .appendTo( ul );
+ };
+ });
  *
  */

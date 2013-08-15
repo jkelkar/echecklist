@@ -11,10 +11,12 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
   private $format = 'm/d/Y';
   private $ISOformat = 'Y-m-d';
 
-  public function getData($did) {
+  public function getData($did, $page_id) {
     // $db = $this->getDb ();
     $did = ( int ) $did;
-    $sql = "select * from audit_data where audit_id = {$did}";
+    $page_id = (int) $page_id;
+    $sql = "select * from audit_data where audit_id = {$did} and ".
+      " page_id = {$page_id}";
     //$stmt = $db->query ( $sql );
     //$rows = $stmt->fetchAll ();
     $rows = $this->queryRows($sql);
@@ -75,7 +77,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     $audit_id = (int) $audit_id;
     $sql = "select * from audit_data where audit_id = {$audit_id} " .
     " and field_name = '{$field_name}' ";
-    logit("getAuditItem: {$audit_id} {$field_name} -- {$sql}");
+    //logit("getAuditItem: {$audit_id} {$field_name} -- {$sql}");
     $rows = $this->queryRows($sql);
     if (! $rows) {
       throw new Exception ("There is no data" );
@@ -83,21 +85,22 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     return $rows[0];
   }
 
-  public function updateData($data, $did) {
+  public function updateData($data, $did, $page_id) {
     /**
      * Update user at $id with this data
      * $data is an array with name value pairs
      */
     $did = ( int ) $did;
+    $page_id = (int) $page_id;
     foreach ( $data as $n => $v ) {
       //logit ( "BEFORE: {$n} ==> {$v}" );
-      $this->updateAuditData ( $did, $n, $v );
-      $this->updateFinalScore($did);
+      $this->updateAuditData ( $did, $n, $v, $page_id );
     }
+    $this->updateFinalScore($did, 0);
   
   }
 
-  public function updateAuditData($did, $name, $value) {
+  public function updateAuditData($did, $name, $value, $page_id) {
     $suff = end ( preg_split ( "/_/", $name ) );
     //logit ( "END: {$name} --> {$suff}" );
     $format = 'm/d/Y';
@@ -165,22 +168,26 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
         $ftype = 'string';
         $sval = $value;
     }
-    logit ( "AD: {$did}, '{$name}', {$ival}, '{$tval}', '{$sval}', '{$dval->format($ISOformat)}', '{$bval}', {$ftype}'" );
+    //logit ( "AD: {$did}, '{$name}', {$ival}, '{$tval}', '{$sval}', 
+    //'{$dval->format($ISOformat)}', '{$bval}', {$ftype}', {$page_id}" );
     $sql = <<<"END"
- INSERT INTO audit_data (audit_id, field_name, int_val, text_val,
- string_val, date_val, bool_val, field_type) values ({$did}, '{$name}', {$ival}, '{$tval}',
- '{$sval}', '{$dval->format($ISOformat)}', '{$bval}', '{$ftype}')
- ON DUPLICATE KEY UPDATE
- audit_id={$did}, field_name='{$name}', int_val={$ival}, text_val='{$tval}',
- string_val='{$sval}', date_val='{$dval->format($ISOformat)}', bool_val='{$bval}',
- field_type='{$ftype}'
+INSERT INTO audit_data (audit_id, field_name, int_val, text_val,
+string_val, date_val, bool_val, field_type, page_id) 
+values 
+({$did}, '{$name}', {$ival}, '{$tval}', '{$sval}', '{$dval->format($ISOformat)}', 
+'{$bval}', '{$ftype}', {$page_id})
+ON DUPLICATE KEY UPDATE
+audit_id={$did}, field_name='{$name}', int_val={$ival}, text_val='{$tval}',
+string_val='{$sval}', date_val='{$dval->format($ISOformat)}', bool_val='{$bval}',
+field_type='{$ftype}', page_id={$page_id} 
 END;
+
     $ct = $this->queryRowcount ( $sql );
     return $ct;
   
   }
 
-  public function updateFinalScore($did) {
+  public function updateFinalScore($did, $page_id) {
     /*
      * Each time the data is saved, we need to compute the 
      * current final score - at the end it will be up to date!
@@ -199,7 +206,7 @@ END;
         }
       }
       // calculate if it is a minimum of 55% or 143 points
-      $this->updateAuditData($did, 'final_score', $final_score);
+      $this->updateAuditData($did, 'final_score', $final_score, $page_id);
       $final_y = '';
       $final_n = '';
       if ($final_score > 142) {
@@ -207,8 +214,8 @@ END;
       } else {
         $final_n = 'N';
       }
-      $this->updateAuditData($did, 'final_y', $final_y);
-      $this->updateAuditData($did, 'final_n', $final_n);
+      $this->updateAuditData($did, 'final_y', $final_y, $page_id);
+      $this->updateAuditData($did, 'final_n', $final_n, $page_id);
     }
     // update the totals for BAT & TB
     $sql = "select * from audit_data where audit_id = {$did} ".
@@ -233,9 +240,9 @@ END;
         }
       }
       // calculate if it is a minimum of 55% or 143 points
-      $this->updateAuditData($did, 'final_y_ct', $final_y_ct);
-      $this->updateAuditData($did, 'final_n_ct', $final_n_ct);
-      $this->updateAuditData($did, 'final_na_ct', $final_na_ct);
+      $this->updateAuditData($did, 'final_y_ct', $final_y_ct, $page_id);
+      $this->updateAuditData($did, 'final_n_ct', $final_n_ct, $page_id);
+      $this->updateAuditData($did, 'final_na_ct', $final_na_ct, $page_id);
     }
     
   }

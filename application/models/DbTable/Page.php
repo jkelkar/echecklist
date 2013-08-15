@@ -33,7 +33,7 @@ class Application_Model_DbTable_Page extends Application_Model_DbTable_Checklist
     $db = $this->getDb();
     $template_id = (int)$template_id;
     $page_num = (int)$page_num;
-    logit("PAGE: {$template_id} {$page_num}");
+    //logit("PAGE: {$template_id} {$page_num}");
     /**$row = $this->fetchAll
       (
        $this->select()
@@ -42,7 +42,8 @@ class Application_Model_DbTable_Page extends Application_Model_DbTable_Checklist
     **/
     
     $sql = "select * from page where template_id = ". $template_id .
-      " and page_num = " . $page_num ;
+      " and page_num = {$page_num}" ;
+    //logit("getPage: ". $sql);
     $stmt =  $db->query($sql);
     $rows = $stmt->fetchAll();
     
@@ -55,7 +56,7 @@ class Application_Model_DbTable_Page extends Application_Model_DbTable_Checklist
 public function getStartPage($template_id) {
     $db = $this->getDb();
     $template_id = (int)$template_id;
-    logit("PAGE: {$template_id} ");
+    //logit("PAGE: {$template_id} ");
     $sql = "select * from page where template_id = ". $template_id .
       " and start = 't'" ;
     $stmt =  $db->query($sql);
@@ -64,7 +65,7 @@ public function getStartPage($template_id) {
     if (!$rows) {
       throw new Exception("Could not find page.");
     }
-    logit('Start page: ' . print_r($rows[0], true));
+    //logit('Start page: ' . print_r($rows[0], true));
     return $rows[0]['page_num'];
   }
 

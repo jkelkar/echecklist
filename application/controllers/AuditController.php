@@ -60,7 +60,10 @@ END;
     $lang_default= 'EN';
     $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
     $mainpage = "/";
-    
+    /*
+      $mt = microtime(true);
+      logit("Start: {$mt}");
+    */
     $audit = new Application_Model_DbTable_AuditRows ();
     $data = new Application_Model_DbTable_AuditData ();
     $page = new Application_Model_DbTable_Page ();
@@ -81,9 +84,10 @@ END;
       } else {
         $thispage = ( int ) $thispage;
       }
-    logit ( 'In slipta beginning' );
+    //logit ( 'In slipta beginning' );
     $nav = $page->getNav ( $template_id, $thispage ); // 1 is the template_id
     $page_row = $nav ['row'];
+    $pageid = $page_row['page_id'];
     $nrows = $nav ['rows'];
     if (! $this->getRequest ()->isPost ()) {
       // write out the page
@@ -94,7 +98,7 @@ END;
       }
       
       $rows = $audit->getrows ( $template_id, $thispage, $langtag ); // 1 is the template_id
-      $value = $data->getData ( $audit_id ); // 1 is the audit_id
+      $value = $data->getData ( $audit_id, $pageid ); // 1 is the audit_id
       
       
       if ($this->debug) {
@@ -106,6 +110,12 @@ END;
       // Generate the entries to make a tree - using dtree
       $jsrows = array ();
       $page_url = "{$baseurl}/audit/edit/{$audit_id}"; 
+      /*
+        $mt2 = microtime(true);
+        $mtx = $mt2 - $mt;
+        logit("D1: {$mtx}");
+        $mt = $mt2;
+      */
       foreach ( $nrows as $r ) {
         if ($this->debug) {          
           foreach ( $r as $x => $y ) {
@@ -124,6 +134,12 @@ END;
           logit ( "Line: {$line}" );
         }
       }
+      /*
+        $mt2 = microtime(true);
+        $mtx = $mt2 - $mt;
+        logit("D2: {$mtx}");
+        $mt = $mt2;
+      */
       if ($this->debug) {
         logit ( 'Dumping J' );
         foreach ( $jsrows as $j ) {
@@ -131,7 +147,14 @@ END;
         }
       }
       $tout = calculate_page ( $rows, $value, $langtag); //$tword );
+      /*
+        $mt2 = microtime(true);
+        $mtx = $mt2 - $mt;
+        logit("D3: {$mtx}");
+        $mt = $mt2;
+      */
       $next = $thispage + 1;
+      $this->view->thispage = $thispage;
       $this->view->treelines = implode ( "\n", $jsrows );
       $this->view->outlines = implode ( "\n", $tout );
       $this->getButtons($page_row);
@@ -141,9 +164,13 @@ END;
       ) );
       // logit("HEADER: {$this->view->header}");
       $this->_helper->layout->setLayout ( 'template' );
-    } else {
-      // Handle the POST request here
+    } else {                                        // Handle the POST request here
       logit ( 'In post for Audit' );
+      /*
+        $mt = microtime(true);
+        logit("P1: {$mt}");
+      */
+      //$mt = $mt2;
       $formData = $this->getRequest ()->getPost ();
       $dvalue = array ();
       $not_include = array (
@@ -151,8 +178,10 @@ END;
           'audit_id',
           'id'
       );
+      //$thispage = 0;
       foreach ( $formData as $a => $b ) {
         //logit ( "FD: {$a} -- {$b}" );
+        //f ($a == 'thispage') {$thispage = (int)$b; continue;}
         if (in_array ( $a, $not_include )) {
           continue;
         }
@@ -171,8 +200,15 @@ END;
           logit ( "U: {$un}" );
         }
       }
+      /*
+        $mt2 = microtime(true);
+        $mtx = $mt2 - $mt;
+        logit("P2: {$mtx}");
+        $mt = $mt2;
+      */
       $newuri = implode ( '/', array_slice ( $u, 3 ) );
       $pagerow = $page->getPage ( $template_id, $thispage );
+      $pageid = $pagerow['page_id'];
       $nextpage = $pagerow['next_page_num'];
       
       $page_url = "/audit/edit/{$audit_id}/{$nextpage}"; 
@@ -189,8 +225,20 @@ END;
       case 'Save & Continue' :
         // save data and go the next logical page
         // for now just save the data
+        /*
+          $mt2 = microtime(true);
+          $mtx = $mt2 - $mt;
+          logit("P3: {$mtx}");
+          $mt = $mt2;
+        */
         $did = $formData ['audit_id'];
-        $data->updateData ( $dvalue, $did );
+        $data->updateData ( $dvalue, $did, $pageid );
+        /*
+          $mt2 = microtime(true);
+          $mtx = $mt2 - $mt;
+          logit("P4: {$mtx}");
+          $mt = $mt2;
+        */
         if ($sbname == 'Save') {
           $this->redirect ( $newuri );
         } else {

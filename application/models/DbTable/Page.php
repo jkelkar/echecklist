@@ -16,12 +16,10 @@ class Application_Model_DbTable_Page extends Application_Model_DbTable_Checklist
      * Get all the pages for this temp_head_id
      */
     $this->setMetadataCacheInClass(false);
-    $db = $this->getDb();
     $template_id = (int)$template_id;
     $sql = "select * from page where template_id = ". $template_id .
       " order by parent, page_id";
-    $stmt =  $db->query($sql);
-    $rows = $stmt->fetchAll();
+    $rows =  $this->queryRows($sql);
     
     if (!$rows) {
       throw new Exception("Could not find any pages.");
@@ -30,7 +28,6 @@ class Application_Model_DbTable_Page extends Application_Model_DbTable_Checklist
   }
 
   public function getPage($template_id, $page_num) {
-    $db = $this->getDb();
     $template_id = (int)$template_id;
     $page_num = (int)$page_num;
     //logit("PAGE: {$template_id} {$page_num}");
@@ -44,8 +41,7 @@ class Application_Model_DbTable_Page extends Application_Model_DbTable_Checklist
     $sql = "select * from page where template_id = ". $template_id .
       " and page_num = {$page_num}" ;
     //logit("getPage: ". $sql);
-    $stmt =  $db->query($sql);
-    $rows = $stmt->fetchAll();
+    $rows =  $this->queryRows($sql);
     
     if (!$rows) {
       throw new Exception("Could not find page.");
@@ -54,13 +50,11 @@ class Application_Model_DbTable_Page extends Application_Model_DbTable_Checklist
   }
 
 public function getStartPage($template_id) {
-    $db = $this->getDb();
     $template_id = (int)$template_id;
     //logit("PAGE: {$template_id} ");
     $sql = "select * from page where template_id = ". $template_id .
       " and start = 't'" ;
-    $stmt =  $db->query($sql);
-    $rows = $stmt->fetchAll();
+    $rows = $this->queryRows($sql);
     
     if (!$rows) {
       throw new Exception("Could not find page.");

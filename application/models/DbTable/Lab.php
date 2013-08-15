@@ -85,7 +85,7 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
     return $rows;
   }*/
 
-  public function newLab($data) {
+  public function insertData($data) {
     /**
      * Create a new lab
      * data is an array with name value pairs
@@ -95,12 +95,13 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
     return $newid;
   }
 
-  public function updateLab($data, $id) {
+  public function updateData($data, $id) {
     /**
      * Update lab at $id with this data
      * $data is an array with name value pairs
      */
-    $this->update($data, "id = " . (int)$id);
+    
+    $this->update($data, "id = {$id}");
   }
    
   public function deleteLab($ind) {

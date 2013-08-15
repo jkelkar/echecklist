@@ -29,11 +29,10 @@ class Application_Model_DbTable_Langword extends Application_Model_DbTable_Check
     return $tword;
   }
   
-  public function getWords($lname) {
-    $sql = "select def, {$lname} from lang_word";
+  public function getWords($langtag) {
+    $sql = "select def, {$langtag} from lang_word";
     logit("SQL: {$sql}");
     $rows = $this->queryRows($sql);
-    //$rows = $this->fetchAll ( $this->select ( "default, {$lname}" ) );
     if (! $rows) {
       throw new Exception ( "Could not find language short data" );
     }
@@ -41,8 +40,8 @@ class Application_Model_DbTable_Langword extends Application_Model_DbTable_Check
     foreach ( $rows as $row ) {
       if ($row ['def']) {
         $val = $row['def'];
-        if ($row[$lname]) {
-          $val = $row[$lname];
+        if ($row["{$langtag}"]) {
+          $val = $row["{$langtag}"];
           $out["{$row['def']}"] = $val;
         }
       }

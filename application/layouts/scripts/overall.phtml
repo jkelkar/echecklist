@@ -35,7 +35,8 @@
                     enctype="application/x-www-form-urlencoded" name="doit"
                     id="doit">
                 <?php echo $this->layout()->content; ?>
-                <?php echo $this->outlines; echo $this->hidden; ?>
+   <?php //echo $this->outlines;
+                      echo $this->hidden; ?>
                 <input type="hidden" name="action">
               </form>
             </div>
@@ -47,6 +48,13 @@
       </div><!-- outer -->
     </div><!-- content -->
     <div id="footer"></div>
-    
+    <script>
+$(function() {
+resetSize();
+$(window).resize(function(){
+    resetSize();
+  });
+});
+    </script>    
   </body>
 </html>

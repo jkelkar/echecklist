@@ -109,11 +109,19 @@ input,button,select,textarea {
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-input.integer, input.string, input.datepicker,
-input[type=text].f,input[type=submit].f,input[type=password].f {
+input.integer, 
+input.string, 
+input.datepicker,
+input[type=text].f,
+input[type=submit].f,
+input[type=password].f {
 	border: 1px solid #999;
 	padding: 3px 8px;
 	font-size: 15px;
+}
+input[type=text].d, input[type=password].d {
+    width: 220px; 
+    padding : 3px 8px;
 }
 input.integer {
     width:35px;
@@ -272,7 +280,11 @@ textarea.small {
 }
 
 
-#cancelbutton,#savebutton,#continuebutton,#nextbutton {
+#cancelbutton,
+#savebutton,
+#continuebutton,
+#nextbutton,
+.submit {
 	background-color: #ffffee;
 	font-size: 18px;
 	margin-top: 15px;
@@ -281,7 +293,11 @@ textarea.small {
 	padding: 5px 10px;
 }
 
-#cancelbutton:hover,#savebutton:hover,#continuebutton:hover,#nextbutton:hover {
+#cancelbutton:hover,
+#savebutton:hover,
+#continuebutton:hover,
+#nextbutton:hover,
+.submit:hover {
     background-color: #cccc99;
 }
 #xsavebutton {

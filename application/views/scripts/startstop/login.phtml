@@ -1,9 +1,9 @@
 
 <?php
-$this->title = "Login";
+/* $this->title = "Login";*/
 $this->headTitle($this->title);
 // setting up the dialog
-$_fields = array (
+/*$_fields = array (
     'username',
     'password',
     'submit'
@@ -26,14 +26,14 @@ $flist = array (
     )
 );
 // logit("flist: {$flist}");
-$outlines = dumpForm ( $flist, $this->langtag );
-$this->formtext = $outlines;
+$outlines = dumpForm ( $flist, $this->langtag );*/
+//$this->formtext = $this->outlines;
 ?>
 
 <div style="margin: 10px auto;width:800px;">
   <center><h1 style="margin-bottom:10px;"><?php echo $this->title; ?></h1></center>
   <div style="margin:15px 0;">
-  <?php echo $this->formtext; ?>
+  <?php echo $this->outlines; ?>
   </div>
 </div>
 <div style="margin: auto;padding:20px 30px;font-size: 1.3em;width:400px;">

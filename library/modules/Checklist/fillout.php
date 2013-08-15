@@ -8,6 +8,7 @@
 /**
  * This handles logging
  */
+
 require_once 'modules/Checklist/logger.php';
 
 /**
@@ -15,14 +16,27 @@ require_once 'modules/Checklist/logger.php';
  * returns the $default value <sed in
  */
 function get_arrval($arr, $k, $default) {
-  // logit("GA: " . gettype($arr) . " {$k}");
-  $callers = debug_backtrace ();
-  // logit("TRACE: {$callers[1]['function']}");
   /*
-   * if (gettype($arr) == 'string') { logit("Str: {$arr}"); }
-   */
-  return key_exists ( $k, $arr ) ? $arr [$k] : $default;
-
+    logit("GA: " . gettype($arr) . " ->{$k}");
+    if (gettype($k) == 'array') {
+    logit('ARR: '. print_r($k, true));
+    }
+  */
+  /*
+  $callers = debug_backtrace ();
+  logit("TRACE: {$callers[1]['function']}");
+  $trace=debug_backtrace();
+  $caller=array_shift($trace);
+  
+  echo "Called by {$caller['function']}";
+  $caller=array_shift($trace);
+  
+  echo "Called by {$caller['function']}";
+  */
+  //if (isset($caller['class']))
+  //echo " in {$caller['class']}";
+  //logit('KEY?: '. key_exists ( $k, $arr ) ? $arr[$k] : $default) . '<br />';
+  return key_exists ( $k, $arr ) ? $arr[$k] : $default;
 }
 
 function get_common_words_translated($value, $words) {
@@ -31,27 +45,28 @@ function get_common_words_translated($value, $words) {
     $trans_list [$word] = get_arrval ( $value, $word, $word );
   }
   return $trans_list;
-
 }
 
 /**
  * these implement low level html code generators
  */
-function SELECT($name, $optvals, $value) {
+function SELECT($name, $optvals, $value, $noscript=false) {
   // $log = new KLogger("/var/log/log.txt", KLogger::DEBUG);
   if (count ( $optvals ) == 0) {
     throw new Exception ( 'Optvals has no elements', 0 );
   }
   $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
   $optout = array ();
+  logit('SEL NAME: '. $name );
+  logit('SEL ARR:  ' . print_r($name, true));
   $val = get_arrval ( $value, $name, '' );
   // $log->LogInfo("{$name} - {$val}");
-  /*
-   * foreach ($value as $n => $v) { $log->LogInfo("Values {$n} - {$v}"); }
-   */
+  
+  foreach ($value as $n => $v) { logit("Values {$n} - {$v}"); }
+   
   foreach ( $optvals as $n => $v ) {
     $sel = ($v == $val) ? "selected=selected " : '';
-    // $log->LogInfo("Interiem - {$val} : {$sel}: {$n} => {$v}");
+    logit("Interiem - {$val} : {$sel}: {$n} => {$v}");
     $optout [] = "<option {$sel} value=\"{$v}\">{$n}</option>";
   }
   $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
@@ -62,13 +77,17 @@ function SELECT($name, $optvals, $value) {
 <select name="{$name}" id="{$name}" class="select">
   {$options}
 </select> {$icon}
+END;
+
+  if ($noscript == false) {
+    $out .= <<<"END"
 <script> watch_select("{$name}", "{$baseurl}" );</script>
 END;
+  }
   return $out;
-
 }
 
-function RADIO($name, $optvals, $value) {
+function RADIO($name, $optvals, $value, $noscript=false) {
   if (count ( $optvals ) == 0) {
     throw new Exception ( 'Optvals has no elements', 0 );
   }
@@ -80,20 +99,27 @@ function RADIO($name, $optvals, $value) {
    */
   foreach ( $optvals as $n => $v ) {
     $sel = ($v == $val) ? "checked=\"checked\" " : '';
+    $scr = '';
+    if ($noscript == false) {
+      $scr = <<<END
+onclick="click_sub_sec('{$name}');"
+END;
+    }
     // logit("Interiem - {$val} : {$sel}: {$n} => {$v}");
     $optout [] = "<input style=\"margin: 0 4px 0 6px;\" type=\"radio\" name=\"{$name}\" " . 
-      "id=\"{$name}_{$n}\" value=\"{$v}\" onclick='click_sub_sec(\"{$name}\");'  {$sel} >".
+      "id=\"{$name}_{$n}\" value=\"{$v}\" {$scr}  {$sel} >".
       "<label class=\"il\" for=\"{$name}_{$n}\"> {$n}</label> ";
   }
   $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
   $optout [] = ($val != '') ? '' : "<img id=\"{$name}_icon\" src=\"{$baseurl}/cancel-on.png\" />";
   $options = implode ( "\n", $optout );
-  $out = $options . "\n<script> watch_radio('{$name}');</script>";$options;
+  if ($noscript ==false) {
+    $out = $options . "\n<script> watch_radio('{$name}');</script>";$options;
+  }
   return $out;
-
 }
 
-function RADIO_CALC($name, $optvals, $value, $score) {
+function RADIO_CALC($name, $optvals, $value, $score, $noscript=false) {
   if (count ( $optvals ) == 0) {
     throw new Exception ( 'Optvals has no elements', 0 );
   }
@@ -106,20 +132,25 @@ function RADIO_CALC($name, $optvals, $value, $score) {
   foreach ( $optvals as $n => $v ) {
     $sel = ($v == $val) ? "checked=\"checked\" " : '';
     $sendid = substr($name, 0, 3);
+    $scr = '';
+    if ($noscript ==false) {
+      $scr = "onclick=\"set_total('{$sendid}');\"";
+    }
     // logit("Interiem - {$val} : {$sel}: {$n} => {$v}");
     $optout [] = "<input style=\"margin: 0 4px 0 6px;\" type=\"radio\" name=\"{$name}\" " . 
-      "id=\"{$name}_{$n}\" value=\"{$v}\" {$sel} onclick=\"set_total('{$sendid}');\">".
+      "id=\"{$name}_{$n}\" value=\"{$v}\" {$sel} {$scr}>".
       " <label class=\"il\" for=\"{$name}_{$n}\">{$n}</label> ";
   }
   $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
   $optout [] = ($val != '') ? '' : "<img id=\"{$name}_icon\" src=\"{$baseurl}/cancel-on.png\" />";
   $options = implode ( "\n", $optout );
-  $out = $options . "\n<script> watch_ynp('{$name}', {$score});</script>";
+  if ($noscript == false) {
+    $out = $options . "\n<script> watch_ynp('{$name}', {$score});</script>";
+  }
   return $out;
-
 }
 
-function RADIO_ADD($name, $optvals, $value) {
+function RADIO_ADD($name, $optvals, $value, $noscript=false) {
   /* 
    * Adds up the count of y, n and na
    */
@@ -136,8 +167,12 @@ function RADIO_ADD($name, $optvals, $value) {
     $sel = ($v == $val) ? "checked=\"checked\" " : '';
     $sendid = substr($name, 0, 3);
     // logit("Interiem - {$val} : {$sel}: {$n} => {$v}");
+    $scr = '';
+    if ($noscript == false) {
+      $scr = "onclick=\"count_ynaa_add('{$sendid}');\"";
+    }
     $optout [] = "<input style=\"margin: 0 4px 0 6px;\" type=\"radio\" name=\"{$name}\" " . 
-      "id=\"{$name}_{$n}\" value=\"{$v}\" {$sel} onclick=\"count_ynaa_add('{$sendid}');\">".
+      "id=\"{$name}_{$n}\" value=\"{$v}\" {$sel} {$scr}>".
       " <label class=\"il\" for=\"{$name}_{$n}\">{$n}</label> ";
   }
   $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
@@ -145,7 +180,6 @@ function RADIO_ADD($name, $optvals, $value) {
   $out = implode ( "\n", $optout );
   //$out = $options; // . "\n<script> count_yna_add('{$name}');</script>";
   return $out;
-
 }
 
 function TEXTAREA($name, $value, $style = '', $class = '') {
@@ -156,13 +190,11 @@ function TEXTAREA($name, $value, $style = '', $class = '') {
 END;
   //logit("TA: {$name} {$out}");
   return $out;
-
 }
 
 function LABEL($name, $label_text = '', $label_style = "", $label_class="") {
   $out = "<label for=\"{$name}\" style=\"{$label_style}\" class=\"{$label_class}\">{$label_text}</label>";
   return $out;
-
 }
 
 function INPUT($name, $value, $type = "string", $length = 0, $style = "", $class = '') {
@@ -208,7 +240,6 @@ type="{$itype}" class="{$dtype} {$class}" style="{$style}" value="{$val}" {$size
 END;
   
   return $out;
-
 }
 
 function INPUT_AC($name, $value, $type = "string", $length = 0, $style = "", $class = '') {
@@ -254,32 +285,26 @@ type="{$itype}" class="{$dtype} {$class}" value="" autocomplete="off" {$size} >
 END;
   
   return $out;
-
 }
 
 function BUTTON($name, $rtnval, $text, $type, $style = "", $class = "") {
   return "<button name=\"{$name}\" type=\"$type\" value=\"{$rtnval}\">{$text}</button>";
-
 }
 
 function TR($strx, $class = '') {
   return "<tr class=\"{$class}\" >" . implode ( "\n", $strx ) . "</tr>";
-
 }
 
 function TD($str, $class = '') {
   return "<td class=\"{$class}\" >{$str}</td>";
-
 }
 
 function TH($str, $class = '') {
   return "<th class=\"{$class}\" >{$str}</th>";
-
 }
 
 function IMG($src, $class = '') {
   return "<img src=\"{$src}\" class=\"{$class}\" /> ";
-
 }
 
 function SELECT_LIVE($arr, $name, $value, $class = '') {
@@ -289,10 +314,9 @@ function SELECT_LIVE($arr, $name, $value, $class = '') {
     $opts [$a] = $a;
   }
   return OPTIONS ( $name, $opts, $value );
-
 }
 
-function OPTIONS($varname, $optvals, $value) {
+function OPTIONS($varname, $optvals, $value, $noscript=false) {
   /**
    * Depending on the number of optvals we choose select or Radio buttons
    *
@@ -300,14 +324,14 @@ function OPTIONS($varname, $optvals, $value) {
    */
   $ct = count ( $optvals );
   if (count ( $optvals ) <= 3) {
-    return RADIO ( $varname, $optvals, $value );
+    return RADIO ( $varname, $optvals, $value, $noscript );
   } else {
-    return SELECT ( $varname, $optvals, $value );
+    return SELECT ( $varname, $optvals, $value, $noscript );
   }
-
+  
 }
 
-function OPTIONS_CALC($varname, $optvals, $value, $score) {
+function OPTIONS_CALC($varname, $optvals, $value, $score, $noscript=false) {
   /**
    * Depending on the number of optvals we choose select or Radio buttons
    *
@@ -315,11 +339,11 @@ function OPTIONS_CALC($varname, $optvals, $value, $score) {
    */
   $ct = count ( $optvals );
   if (count ( $optvals ) <= 3) {
-    return RADIO_CALC ( $varname, $optvals, $value, $score );
+    return RADIO_CALC ( $varname, $optvals, $value, $score, $noscript );
   } else {
-    return SELECT ( $varname, $optvals, $value );
+    return SELECT ( $varname, $optvals, $value, $noscript );
   }
-
+  
 }
 
 
@@ -331,11 +355,11 @@ function OPTIONS_ADD($varname, $optvals, $value) {
    */
   $ct = count ( $optvals );
   if (count ( $optvals ) <= 3) {
-    return RADIO_ADD ( $varname, $optvals, $value );
+    return RADIO_ADD ( $varname, $optvals, $value, $noscript );
   } else {
-    return SELECT ( $varname, $optvals, $value );
+    return SELECT ( $varname, $optvals, $value, $noscript );
   }
-
+  
 }
 /**
  * These implement widgets each of which is responsible for an instance
@@ -346,37 +370,24 @@ function getYN($t) {
       "{$t['Yes']}" => 'YES',
       "{$t['No']}" => 'NO'
   );
-
 }
 
 function widget_select_yn($varname, $value, $t) {
   $optvals = getYN ( $t );
-  /*
-   * array(//"{$t['Select']} ..." => '-', "{$t['Yes']}" => 'YES', "{$t['No']}" => 'NO');
-   */
   return OPTIONS ( $varname, $optvals, $value );
-
 }
 
-/*
- * function widget_radio_yn($varname, $value, $t) { $optvals = array(//"{$t['Select']} ..." => '-', "{$t['Yes']}" => 'Y', "{$t['No']}" => 'N'); return OPTIONS($varname, $optvals, $value); }
- */
 function getYNP($t) {
   return array ( // "{$t['Select']} ..." => '-',
       "{$t['Yes']}" => 'YES',
       "{$t['Partial']}" => 'PARTIAL',
       "{$t['No']}" => 'NO'
   );
-
 }
 
 function widget_select_ynp($varname, $value, $t) {
   $optvals = getYNP ( $t );
-  /*
-   * array(//"{$t['Select']} ..." => '-', "{$t['Yes']}" => 'YES', "{$t['Partial']}" => 'PARTIAL', "{$t['No']}" => 'NO');
-   */
   return OPTIONS ( $varname, $optvals, $value );
-
 }
 
 function widget_select_ynp_ro($varname, $value, $t) {
@@ -385,31 +396,21 @@ function widget_select_ynp_ro($varname, $value, $t) {
    */
   $ro_char = "{$varname}_ynp";
   $v_ro_char = get_arrval ( $value, $ro_char, 'N' );
-  /*
-    $ro_num = "{$varname}_num";
-    $v_ro_num = get_arrval ( $value, $ro_num, 0 );
-  */
   $out = <<<"END"
 <input class="ro" name="{$ro_char}" id="{$ro_char}"
        type="text" readonly="readonly" value="{$v_ro_char}" size=3>
 END;
   return $out;
-
 }
 
 function widget_select_ynp_calc($varname, $value, $t, $score) {
   $optvals = getYNP ( $t );
-  /*
-   * array(//"{$t['Select']} ..." => '-', "{$t['Yes']}" => 'YES', "{$t['Partial']}" => 'PARTIAL', "{$t['No']}" => 'NO');
-   */
   return OPTIONS_CALC ( $varname, $optvals, $value, $score );
-
 }
 
 function widget_select_yna_add($varname, $value, $t) {
   $optvals = getYNA ( $t );
   return OPTIONS_ADD ( $varname, $optvals, $value );
-
 }
 
 function widget_select_wp($varname, $value, $t) {
@@ -417,8 +418,7 @@ function widget_select_wp($varname, $value, $t) {
       "{$t['Personal']}" => 'PERSONAL',
       "{$t['Work']}" => 'WORK'
   );
-  return OPTIONS ( $varname, $optvals, $value );
-
+  return OPTIONS ( $varname, $optvals, $value ); 
 }
 
 function getYNI($t) {
@@ -427,16 +427,11 @@ function getYNI($t) {
       "{$t['No']}" => 'NO',
       "{$t['Insufficient Data']}" => 'I'
   );
-
 }
 
 function widget_select_yni($varname, $value, $t) {
   $optvals = getYNI ( $t );
-  /*
-   * array(//"{$t['Select']} ..." => '-', "{$t['Yes']}" => 'YES', "{$t['No']}" => 'NO', "{$t['Insufficient Data']}" => 'I');
-   */
   return OPTIONS ( $varname, $optvals, $value );
-
 }
 
 function getPW($t) {
@@ -444,16 +439,11 @@ function getPW($t) {
       "{$t['Personal']}" => 'P',
       "{$t['Work']}" => 'W'
   );
-
 }
 
 function widget_select_pw($varname, $value, $t) {
   $optvals = getPW ( $t );
-  /*
-   * array ( // "{$t['Select']} ..." => '-', "{$t['Personal']}" => 'P', "{$t['Work']}" => 'W' );
-   */
   return OPTIONS ( $varname, $optvals, $value );
-
 }
 
 function getYNA($t) {
@@ -462,20 +452,12 @@ function getYNA($t) {
       "{$t['No']}" => 'NO',
       "{$t['N/A']}" => 'N/A'
   );
-
 }
 
 function widget_select_yna($varname, $value, $t) {
   $optvals = getYNA ( $t );
-  /*
-   * array ( // "{$t['Select']} ..." => '-', 
-   * "{$t['Yes']}" => 'Y', 
-   * "{$t['No']}" => 'N', 
-   * "{$t['N/A']}" => 'A' );
-   */
   //logit ( "YNA: " . print_r ( $optvals, true ) );
   return OPTIONS ( $varname, $optvals, $value );
-
 }
 
 function getStars($t) {
@@ -492,23 +474,11 @@ function getStars($t) {
 }
 
 function getStarsRev($t) {
-
 }
 
 function widget_select_stars($varname, $value, $t) {
   $optvals = getStars ( $t );
-  /*
-   * array(//"{$t['Select']}" => '-',
-   * "{$t['Not Audited']}" => 'N',
-   * "0 {$t['Stars']}" => '0',
-   * "1 {$t['Star']}" => '1',
-   * "2 {$t['Stars']}" => '2',
-   * "3 {$t['Stars']}" => '3',
-   * "4 {$t['Stars']}" => '4',
-   * "5 {$t['Stars']}" => '5');
-   */
   return OPTIONS ( $varname, $optvals, $value );
-
 }
 
 function getLevels($t) {
@@ -516,21 +486,16 @@ function getLevels($t) {
       "{$t['Select']} ..." => '-',
       "{$t['National']}" => 'NATIONAL',
       "{$t['Reference']}" => 'REFERENCE',
-      "{$t['Regional']}" => 'REGIONAL',
+      "{$t['Regional/Provincial']}" => 'REGIONAL',
       "{$t['District']}" => 'DISTRICT',
       "{$t['Zonal']}" => 'ZONAL',
       "{$t['Field']}" => 'FIELD'
   );
-
 }
 
-function widget_select_lablevel($varname, $value, $t) {
+function widget_select_lablevel($varname, $value, $t, $noscript=false) {
   $optvals = getLevels ( $t );
-  /*
-   * array(//"{$t['Select']} ..." => '-', "{$t['National']}" => 'NATIONAL', "{$t['Reference']}" => 'REFERENCE', "{$t['Regional']}" => 'REGIONAL', "{$t['District']}" => 'DISTRICT', "{$t['Zonal']}" => 'ZONAL', "{$t['Field']}" => 'FIELD' );
-   */
-  return OPTIONS ( $varname, $optvals, $value );
-
+  return OPTIONS ( $varname, $optvals, $value, $noscript );
 }
 
 function getAffiliations($t) {
@@ -543,22 +508,11 @@ function getAffiliations($t) {
       "{$t['Non-hospital outpatient clinic']}" => 'NONHOSPITAL',
       "{$t['Other - please specify']}" => 'OTHER'
   );
-
 }
 
-function widget_select_labaffil($varname, $value, $t) {
+function widget_select_labaffil($varname, $value, $t, $noscript=false) {
   $optvals = getAffiliations ( $t );
-  /*
-   * array(//"{$t['Select']} ..." => '-', 
-   * "{$t['Public']}" => 'PUBLIC', 
-   * "{$t['Hospital']}" => 'HOSPITAL', 
-   * "{$t['Private']}" => 'PRIVATE', 
-   * "{$t['Research']}" => 'RESEARCH', 
-   * "{$t['Non-hospital outpatient clinic']}" => 'NONHOSPITAL', 
-   * "{$t['Other - please specify']}" => 'OTHER' );
-   */
-  return OPTIONS ( $varname, $optvals, $value );
-
+  return OPTIONS ( $varname, $optvals, $value, $noscript );
 }
 
 function getSLMTAStatus($t) {
@@ -569,7 +523,16 @@ function getSLMTAStatus($t) {
       "{$t['Base Line Assessment']}" => 'BASELINE',
       "{$t['Non SLMTA Audit']}" => 'NONSLMTA'
   );
+}
 
+function dialog_lablevel($row, $value, $t) {
+  $varname = $row['varname'];
+  return widget_select_lablevel($varname, $value, $t, true);
+}
+
+function dialog_labaffil($row, $value, $t) {
+  $varname = $row['varname'];
+  return widget_select_labaffil($varname, $value, $t, true);
 }
 
 function widget_select_slmtastatus($varname, $value, $t) {
@@ -582,27 +545,22 @@ function widget_select_slmtastatus($varname, $value, $t) {
    * "{$t['Non SLMTA Audit']}" => 'NONSLMTA' );
    */
   return OPTIONS ( $varname, $optvals, $value );
-
 }
 
 function widget_dt($name, $value, $length = 14) {
   return INPUT ( $name, $value, 'date', $length );
-
 }
 
 function widget_text100($name, $value) {
   return INPUT ( $name, $value, 'string', 100 );
-
 }
 
 function widget_text255($name, $value) {
   return INPUT ( $name, $value, 'string', 255 );
-
 }
 
 function widget_integer($name, $value, $length = 0) {
   return INPUT ( $name, $value, 'integer', $length );
-
 }
 
 function partial_main_heading($row) {
@@ -618,7 +576,6 @@ $out = <<<"END"
 </div>
 END;
   return $out;
-
 }
 
 function partial_main2($row) {
@@ -634,7 +591,6 @@ $out = <<<"END"
 </div>
 END;
   return $out;
-
 }
 
 function partial_normal($row) {
@@ -648,7 +604,6 @@ $out = <<<"END"
 </div>
 END;
   return $out;
-
 }
 
 function partial_full($row) {
@@ -662,7 +617,6 @@ $out = <<<"END"
 </div>
 END;
   return $out;
-
 }
 
 function partial_banner_rev($row) {
@@ -679,7 +633,6 @@ $out = <<<"END"
 </div>
 END;
   return $out;
-
 }
 
 function partial_banner_rev_border($row) {
@@ -696,7 +649,6 @@ $out = <<<"END"
 </div>
 END;
   return $out;
-
 }
 /**
  * These are the representations of a row on the screen
@@ -718,7 +670,6 @@ function partial_stars($row, $value, $t) {
     </div>
 END;
   return $out;
-
 }
 
 function partial_string_field($row, $value, $t) {
@@ -738,7 +689,32 @@ function partial_string_field($row, $value, $t) {
 </div>
 END;
   return $out;
+}
 
+function dialog_string_field($row, $value, $t) {
+  $name = $row ['varname'];
+  $flength = $row['field_length'];
+  $out = INPUT($name, $value, 'string', '', '', 'text d');
+  return $out;
+}
+
+function dialog_password_field($row, $value, $t) {
+  $name = $row ['varname'];
+  $flength = $row['field_length'];
+  $out = INPUT ($name, $value, 'password', '', '', 'password d');
+  return $out;
+}
+
+function dialog_submit_button($row, $value, $t) {
+  $name = $row ['varname'];
+  $flength = $row['field_length'];
+  $val = $row['field_label'];
+  $names = preg_split('/,/',$val);
+  $out = '';
+  foreach($names as $text) {
+    $out .= INPUT ($name, $text, 'submit', '', '', 'submit');
+  }
+  return $out;
 }
 
 function partial_prof_info($row, $value, $t) {
@@ -759,7 +735,6 @@ function partial_prof_info($row, $value, $t) {
 </div>
 END;
   return $out;
-
 }
 
 function partial_prof_info_yn($row, $value, $t) {
@@ -779,7 +754,6 @@ function partial_prof_info_yn($row, $value, $t) {
 </div>
 END;
   return $out;
-
 }
 
 function partial_integer_field($row, $value, $t) {
@@ -799,7 +773,6 @@ function partial_integer_field($row, $value, $t) {
 </div>
 END;
   return $out;
-
 }
 
 function partial_text_field($row, $value, $t) {
@@ -819,7 +792,6 @@ function partial_text_field($row, $value, $t) {
 </div>
 END;
   return $out;
-
 }
 
 function partial_date_field($row, $value, $t) {
@@ -840,7 +812,6 @@ function partial_date_field($row, $value, $t) {
 </div>
 END;
   return $out;
-
 }
 
 function partial_tel_type($row, $value, $t) {
@@ -860,7 +831,6 @@ function partial_tel_type($row, $value, $t) {
 </div>
 END;
   return $out;
-
 }
 
 function partial_sec_head($row, $value, $t) {
@@ -878,7 +848,6 @@ function partial_sec_head($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_sec_head_lab($row, $value, $t) {
@@ -909,7 +878,6 @@ function partial_sec_head_lab($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_sec_head_top($row, $value, $t) {
@@ -923,7 +891,6 @@ function partial_sec_head_top($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_sec_head_small($row, $value, $t) {
@@ -941,7 +908,6 @@ function partial_sec_head_small($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_info_i($row, $value, $t) {
@@ -957,7 +923,6 @@ function partial_info_i($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_info_bn($row, $value, $t) {
@@ -979,7 +944,6 @@ function partial_info_bn($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_sub_sec_head($row, $value, $t) {
@@ -1043,7 +1007,6 @@ function partial_sub_sec_head($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_sub_sec_head_ro($row, $value, $t) {
@@ -1087,7 +1050,6 @@ function partial_sub_sec_head_ro($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_sec_element_yn($row, $value, $t) {
@@ -1125,7 +1087,6 @@ function partial_sec_element_yn($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_sec_element_yna($row, $value, $t) {
@@ -1180,7 +1141,6 @@ function partial_sec_element_yna($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_sec_element($row, $value, $t) {
@@ -1236,7 +1196,6 @@ function partial_sec_element($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_lablevel($row, $value, $t) {
@@ -1257,7 +1216,6 @@ function partial_lablevel($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_slmta_status($row, $value, $t) {
@@ -1278,7 +1236,6 @@ function partial_slmta_status($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_labaffil($row, $value, $t) {
@@ -1300,7 +1257,6 @@ function partial_labaffil($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_date($row, $value, $t) {
@@ -1322,7 +1278,6 @@ function partial_date($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_text($row, $value, $t) {
@@ -1343,7 +1298,6 @@ function partial_text($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_tab_head3($row, $value, $t) {
@@ -1366,7 +1320,6 @@ function partial_tab_head3($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_pinfo($row, $value, $t) {
@@ -1390,7 +1343,6 @@ function partial_pinfo($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_pinfo2_i($row, $value, $t) {
@@ -1413,7 +1365,6 @@ function partial_pinfo2_i($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_pinfo2($row, $value, $t) {
@@ -1434,7 +1385,6 @@ function partial_pinfo2($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_criteria_1_heading($row, $value, $t) {
@@ -1460,7 +1410,6 @@ function partial_criteria_1_heading($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_criteria_1_values($row, $value, $t) {
@@ -1505,7 +1454,6 @@ function partial_criteria_1_values($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_com_and_rec($row, $value, $t) {
@@ -1526,7 +1474,6 @@ function partial_com_and_rec($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_criteria_2_heading($row, $value, $t) {
@@ -1549,7 +1496,6 @@ function partial_criteria_2_heading($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_panel_heading($row, $value, $t) {
@@ -1570,7 +1516,6 @@ function partial_panel_heading($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_panel_heading2($row, $value, $t) {
@@ -1592,7 +1537,6 @@ function partial_panel_heading2($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_panel_result($row, $value, $t) {
@@ -1627,7 +1571,6 @@ function partial_panel_result($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_info($row, $value, $t) {
@@ -1637,17 +1580,15 @@ function partial_info($row, $value, $t) {
   $name = $row ['varname'];
   $tarea = TEXTAREA ( $name, $value, $style = "width:100%;height:250px;" );
   $out = <<<"END"
-  <table style="width:100%;">
+<table style="width:100%;">
   <tr>
      <td>
        {$tarea}
      </td>
   </tr>
   </table>
-END;
-  
+END;  
   return $out;
-
 }
 
 function partial_action_plan_heading($row, $value, $t) {
@@ -1668,7 +1609,6 @@ function partial_action_plan_heading($row, $value, $t) {
   </table>
 END;
   return $out;
-
 }
 
 function partial_action_plan_data($row, $value, $t) {
@@ -1693,7 +1633,6 @@ function partial_action_plan_data($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_sec_total($row, $value, $t) {
@@ -1726,7 +1665,6 @@ function partial_sec_total($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_sec_element_info($row, $value, $t) {
@@ -1739,7 +1677,6 @@ function partial_sec_element_info($row, $value, $t) {
 END;
   
   return $out;
-
 }
 function partial_sec_elem_info($row, $value, $t) {
   $prefix = $row ['prefix'];
@@ -1751,7 +1688,6 @@ function partial_sec_elem_info($row, $value, $t) {
 END;
   
   return $out;
-
 }
 
 function partial_sec_elem_info_normal($row, $value, $t) {
@@ -1765,7 +1701,6 @@ function partial_sec_elem_info_normal($row, $value, $t) {
 </div>
 END;
   return $out;
-
 }
 
 function partial_sub_sec_info($row, $value, $t) {
@@ -1779,7 +1714,6 @@ function partial_sub_sec_info($row, $value, $t) {
 </div>
 END;
   return $out;
-
 }
 
 function partial_sec_sec_head($row, $value, $t) {
@@ -1787,7 +1721,6 @@ function partial_sec_sec_head($row, $value, $t) {
   $heading = $row ['heading'];
   $text = $row ['text'];
   return '';
-
 }
 
 function partial_part_head($row, $value, $t) {
@@ -1804,7 +1737,6 @@ function partial_part_head($row, $value, $t) {
 </tr></table>
 END;
   return $out;
-
 }
 
 function partial_img($row) {
@@ -1817,7 +1749,6 @@ function partial_img($row) {
 </div>
 END;
   return $out;
-
 }
 
 function partial_bat_sec_head($row) {
@@ -1935,7 +1866,6 @@ Yes<input class="ro" name="{$name}_y_ct" id="{$name}_y_ct" value="{$v_y_ct}"
 END;
   
   return $out;
-
 }
 /* 
  * the bottom line 
@@ -1950,20 +1880,19 @@ function get_lang_text($base, $default, $sp_lang) {
   $out = '';
   $out = $base;
   if ($default) {
-    $out = $default;
+  $out = $default;
   }
   if ($sp_lang) {
     $out = $sp_lang;
   }
   return $out;
-
 }
 
 /**
  * We render the rows here
  */
 function getTranslatables(/*$tword,*/ $langtag) {
-  $lang_word = new Application_Model_DbTable_Langword ();
+  $lang_word = new Application_Model_DbTable_Langword();
   $tword = $lang_word->getWords($langtag);
   $words = array (
       'Yes',
@@ -1980,7 +1909,7 @@ function getTranslatables(/*$tword,*/ $langtag) {
       'Stars',
       'National',
       'Reference',
-      'Regional',
+      'Regional/Provincial',
       'District',
       'Zonal',
       'Field',
@@ -2006,8 +1935,9 @@ function getTranslatables(/*$tword,*/ $langtag) {
       'Non SLMTA Audit'
   );
   $tlist = get_common_words_translated ( $tword, $words );
+  //logit('TLIST: '. print_r($tlist, true));
+  //logit('WORDS: '. print_r($words, true));
   return $tlist;
-
 }
 
 function calculate_page($rows, $value, $langtag) { //$tword) {
@@ -2022,9 +1952,6 @@ function calculate_page($rows, $value, $langtag) { //$tword) {
    */
   // This is a list of words used often - get it translated only once
   // $rows contains translated list of text
-  /*
-   * $words = array('Yes', 'No', 'Partial', 'Select', 'Insufficient Data', 'Personal', 'Work', 'Insufficient data', 'Not Audited', 'Star', 'Stars', 'National', 'Reference', 'Regional', 'District', 'Zonal', 'Field', 'Public', 'Hospital', 'Private', 'Research', 'Non-hospital outpatient clinic', 'Other - please specify', 'FREQUENCY', 'Daily', 'Weekly', 'With Every Run', 'Quantitative tests', 'Semi-quantitative tests', 'Qualitative tests', 'Date of panel receipt', 'Were results reported within 15 days?', 'Results & % Correct', 'Official ASLM Audit', 'SLMTA Audit', 'Base Line Assessment', 'Non SLMTA Audit'); $tlist = get_common_words_translated($tword, $words);
-   */
   $show_only = array('main_heading', 'main2', 'banner_rev', 'banner_rev_border', 
                      'part_head', 'sec_head_lab', 'tab_head3', 'info_i', 'img', 'normal',
                      'sec_elem_info', 'sec_elem_info_normal', 'sec_element_info',
@@ -2058,5 +1985,96 @@ function calculate_page($rows, $value, $langtag) { //$tword) {
   }
   $tout [] = '</table>';
   return $tout;
+}
 
+function calculate_dialog($drows, $value, $langtag, $formtype='table') { 
+  /**
+   * Given the dialog rows, create the dialog
+   * - using field templates to create individual rows
+   */
+
+  $tlist = getTranslatables ( $langtag); 
+  
+  $tout = array ();
+  $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
+
+  $tout [] = '<table border=0 style="width:900px;">';
+  foreach ( $drows as $row ) {
+    $type = $row ['field_type'];
+    $arow = array ();
+    
+    $field_label = get_lang_text($row['field_label'], '', '') ; //, $row ['ltdefault'], $row ['ltlang'] );
+    $arow['field_label'] = $field_label . ':';
+    $arow['varname'] = $row ['field_name'];
+    $varname = $arow['varname'];
+    $arow['baseurl'] = $baseurl;
+    $arow['field_length'] = $row['field_length'];
+    $bpad = 'class="bpad"';
+    
+    if ($type == '') {
+      logit("ROW: ".print_r($row, true));
+    } else if ($type == 'submit_button') {
+      $arow['field_label'] = $field_label;
+      $field_label = '';
+    }// else if ($type == 'submit_buttonx') continue;
+    
+    $inp = call_user_func("dialog_{$type}", $arow, $value, $tlist);
+    //$tout[] = "<tr ><td {$bpad}>" .call_user_func ("dialog_{$type}", $arow, $value, $tlist) . '</td></tr>';
+    $tout[] = <<<"END"
+<tr>
+<td class="n f right" style=width:400px;">
+<label for="{$varname}" style="" class="inp">{$field_label}</label>
+</td><td class="n f" style=width:400px;">{$inp}</td>
+</tr>
+END;
+  }
+  $tout[] = '</table>';
+  logit('dialog: '. print_r($tout, true));
+  return implode("\n", $tout);
+}
+
+function generate_dialog_processing($drows) { 
+  /**
+   * Given the dialog rows, generate the code for
+   * processing the post variables
+   */
+  /*
+    $formData = $this->getRequest();
+    $userid = $formData->getPost ('userid','');
+    $password = $formData->getPost ('password','');
+   */
+  //$tlist = getTranslatables ( $langtag); 
+  
+  $tout = array ();
+  $tout[] = '$formData = $this->getRequest();';
+  $tout[] = '$data = array();';
+  $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
+  $ignore_list = array('', 'submit_button', 'submit_buttonx');
+  $vlist = array();
+  foreach ( $drows as $row ) {
+    $type = $row ['field_type'];
+    $arow = array ();
+    
+    $field_label = get_lang_text($row['field_label'], '', '') ; //, $row ['ltdefault'], $row ['ltlang'] );
+    $arow['field_label'] = $field_label . ':';
+    $arow['varname'] = $row ['field_name'];
+    $varname = $arow['varname'];
+    $arow['baseurl'] = $baseurl;
+    $arow['field_length'] = $row['field_length'];
+    $bpad = 'class="bpad"';
+    
+    if (in_array($type, $ignore_list)) {
+      continue;
+    }
+    //$tout[] = "\${$varname} = \$formData->getPost('{$varname}','');";
+    $tout[] = "\$data['{$varname}'] = \$formData->getPost('{$varname}','');";
+    $vlist[] = "logit(\"POST VAR: {$varname} -> \$data['{$varname}']\");";
+  }
+  $tout[] = "// Use next line for inserting data.";
+  $tout[] = "\$xxxxx->insertData(\$data);";
+  $tout[] = "// Use next 2 lines - suitably changed -  to update data.";
+  $tout[] = "\$xxx_id = \$formData->getPost('{\$xxx_id}','');";
+  $tout[] = "\$xxxxx->updateData(\$data, \$xxx_id);";
+  logit("CODE:\n".  implode("\n", $tout));
+  logit("SHOW:\nlogit('DATA: '. print_r(\$data, true));");
 }

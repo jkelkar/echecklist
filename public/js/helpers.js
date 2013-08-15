@@ -121,14 +121,20 @@ function toggleNCBox(here) {
     $(divname).hide(1000);
   }
 }
-// for template only - with id=rightpane
+
 function resetSize() {
+  var ht = $(window).height();
+  var wt = $(window).width();
+  var rht = ht - 69;
+  $('#pane').css('height', rht+'px');
+}
+// for template only - with id=rightpane
+function resetSize2() {
   var ht = $(window).height();
   var wt = $(window).width();
   var rht = ht - 69;
   $('#rightpane').css('height', rht+'px');
 }
-
 function getRadioClicked(name) {
   $("input:radio[name="+name+"]").click(function() {
     var value = $this.val();

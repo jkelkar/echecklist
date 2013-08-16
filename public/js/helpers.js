@@ -125,7 +125,7 @@ function toggleNCBox(here) {
 function calcShowSize() {
     var ht = $(window).height();
     var wt = $(window).width();
-    var rht = ht - 98;
+    var rht = ht - 86;
     return rht;
 }
 function resetSize() {

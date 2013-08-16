@@ -74,7 +74,7 @@ function SELECT($name, $optvals, $value, $noscript=false) {
   
   $options = implode ( "\n", $optout );
   $out = <<<"END"
-<select name="{$name}" id="{$name}" class="select">
+<select name="{$name}" id="{$name}" data-rel="chosen" class="select">
   {$options}
 </select> {$icon}
 END;
@@ -236,7 +236,7 @@ function INPUT($name, $value, $type = "string", $length = 0, $style = "", $class
   $val = ($type != 'submit') ? get_arrval ( $value, $name, '' ) : $value;
   $out = <<<"END"
 <input name="{$name}" id="{$name}" onchange="noteChange();"
-type="{$itype}" class="{$dtype} {$class}" style="{$style}" value="{$val}" {$size} >
+type="{$itype}" class="input-xlarge {$dtype} {$class}" style="{$style}" value="{$val}" {$size} >
 END;
   
   return $out;

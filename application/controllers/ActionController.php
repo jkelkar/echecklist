@@ -24,6 +24,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
   public $data;
   public $drows;
   public $mainpage = '/audit/edit/1/';
+  public $loginpage = '/user/login';
 
   public function init() {
     /* initialize here */
@@ -32,6 +33,12 @@ class Application_Controller_Action extends Zend_Controller_Action {
     $this->_redirector = $this->_helper->getHelper ( 'Redirector' );
     $this->setHeader();
     $this->setHeaderFiles();
+    $vars = $this->_request->getPathInfo();
+    $pinfo = explode("/", $vars);
+    logit('PINFO: '. print_r($pinfo, true));
+    if (!isset($this->echecklistNamespace->user) && !($pinfo[1] == 'user' && $pinfo[2] == 'login')) {
+      $this->_redirector->gotoUrl($this->loginpage);
+      }
   }
   
   public function setupSession() {
@@ -233,6 +240,13 @@ END;
 				</ul>
 </div>
 END;
+
+      $this->header .= <<<"END"
+<div style="display:inline-block;">
+  <div style="margin:6px 0 6px 20px;"><b>Audit:</b> type/id/date</div>
+  <div style="margin:6px 0px 6px 20px;padding-right:5px;"><b>Lab:</b> Fastfix</div>
+  <div style="clear:both;"></div></div>
+END;
     } else {
       $this->header = $this->header . <<<"END"
   <div class="btn-group pull-left" style="margin-left:200px;">
@@ -258,13 +272,13 @@ END;
 				</ul>
 			</div>
 			<!-- user dropdown ends -->
-                                                        <div class="btn-group pull-right" style="top:6px;font-size:16px;">
+      <!--div class="btn-group pull-right" style="top:6px;font-size:16px;">
       {$dt}
-      </div> 
+      </div--> 
    </div>
-<div class="container-fluid"><div style="float:right;margin:6px 0 6px 29px;padding-right:5px;"><b>Lab:</b> Fastfix</div>
-     <div style="float:right;margin:6px 0 6px 29px;"><b>Audit:</b> User/date/type</div>
-       <div style="clear:both;"></div></div>
+<!--div class="container-fluid"><div style="float:right;margin:6px 0 6px 29px;padding-right:5px;"><b>Lab:</b> Fastfix</div>
+     <div style="float:right;margin:6px 0 6px 29px;"><b>Audit:</b> type/id/date</div>
+       <div style="clear:both;"></div></div-->
   </div> <!-- style="clear:both;"></div -->
 </div>
 END;

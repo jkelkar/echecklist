@@ -36,14 +36,14 @@
       <?php echo $this->layout()->content; ?>
 
       <div id="outer" style="margin-left: 10px;">
-        <div id="wrapper" style="overflow:auto;">
+        <div id="wrapper" >
           <div id="leftpane"
                style="width: 200px; min-height: 500px; border-right: none; background-color: #fffff0; float: left;">
             <script type="text/javascript">d = new dTree('d'); <?php echo $this->treelines; ?> document.write(d);</script>
           </div>
           <div id="rightpane"
-             style="height: 600px; overflow: auto; float: left; width: 975px;">
-            <div style="margin: 0 10px; margin-bottom: 15px;width:820px;">
+             style="height: 600px; float:left;" >
+            <div style="margin: 0 10px; margin-bottom: 15px;" >
               <form method="post" action=""
                     enctype="application/x-www-form-urlencoded" name="slipta"
                     id="slipta">

@@ -93,6 +93,7 @@ class UserController extends Application_Controller_Action
         unset($this->data['password2']);
         try {
           $user->insertData($this->data); 
+          $this->_redirector->gotoUrl($this->mainpage);
         } catch (Exception $e) {
           $this->data['password'] = '';
           $this->data['password2'] = '';
@@ -108,14 +109,14 @@ class UserController extends Application_Controller_Action
   public function editAction() {
     $this->dialog_name = 'user/edit';
     logit ("{$this->dialog_name}" );
-    $user = new Application_Model_DbTable_Lab();
+    $user = new Application_Model_DbTable_User();
     $vars = $this->_request->getPathInfo();
     $pinfo = explode("/", $vars);
     $id = (int)  $pinfo[3];
     $langtag = $this->echecklistNamespace->lang;
     // $urldata = $this->getRequest()->getParams();
     if (!$this->getRequest()->isPost()) {
-      $row = $lab->getLab($id);
+      $row = $user->getUser($id);
       // logit('LAB: '. print_r($row, true));
       $this->makeDialog($row);
     } else {
@@ -123,6 +124,76 @@ class UserController extends Application_Controller_Action
       $this->collectData();
       // logit('Data: ' . print_r($this->data));
       $user->updateData($data, $id); 
+      $this->_redirector->gotoUrl($this->mainpage);
+    }
+  }
+
+  public function profileAction() {
+    $this->dialog_name = 'user/profile';
+    logit ("{$this->dialog_name}" );
+    $user = new Application_Model_DbTable_User();
+    //$vars = $this->_request->getPathInfo();
+    //$pinfo = explode("/", $vars);
+    $id = (int)$this->echecklistNamespace->user['id'];
+    $langtag = $this->echecklistNamespace->lang;
+    // $urldata = $this->getRequest()->getParams();
+    if (!$this->getRequest()->isPost()) {
+      $row = $user->getUser($id);
+      // logit('LAB: '. print_r($row, true));
+      $this->makeDialog($row);
+    } else {
+      // display the form here
+      $this->collectData();
+      // logit('Data: ' . print_r($this->data));
+      $user->updateData($data, $id); 
+      $this->_redirector->gotoUrl($this->mainpage);
+    }
+  }
+
+  public function resetpwAction() {
+    $this->dialog_name = 'user/resetpw';
+    logit ("{$this->dialog_name}" );
+    $user = new Application_Model_DbTable_User();
+    $id = (int)$this->echecklistNamespace->user['id'];
+    $langtag = $this->echecklistNamespace->lang;
+    // $urldata = $this->getRequest()->getParams();
+    if (!$this->getRequest()->isPost()) {
+      
+      // logit('LAB: '. print_r($row, true));
+      $this->makeDialog();
+    } else {
+      // display the form here
+      $this->collectData();
+      logit("USERID: {$id}");
+      $row = $user->getUser($id);
+      if ($this->data['old_pw'] != $row['password']) {
+        $this->echecklistNamespace->flash = "Incorrent Password";
+        $this->makeDialog();
+        return;
+      }
+      if ($this->data['password'] ==  $this->data['password2']) {
+        
+        unset($this->data['password2']);
+        unset($this->data['old_pw']);
+      // logit('Data: ' . print_r($this->data));
+        try {
+          $user->updateData($this->data, $id); 
+          $this->echecklistNamespace->flash = "Password updated";
+          $this->_redirector->gotoUrl($this->mainpage);
+        } catch (Exception $e) {
+          $this->data['password'] = '';
+          $this->data['password2'] = '';
+          $this->echecklistNamespace->flash = "An unexpected error occurred";
+          $this->makeDialog();
+          return;
+        }
+      } else {
+        $this->data['password'] = '';
+        $this->data['password2'] = '';
+        $this->echecklistNamespace->flash = "Passwords do not match";
+        $this->makeDialog();
+        return;
+      }
     }
   }
 

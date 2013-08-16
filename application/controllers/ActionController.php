@@ -23,6 +23,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
   public $title;
   public $data;
   public $drows;
+  public $mainpage = '/audit/edit/1/';
 
   public function init() {
     /* initialize here */
@@ -251,6 +252,7 @@ END;
 				</a>
 				<ul class="dropdown-menu">
 					<li><a href="{$this->baseurl}/user/profile"><span title=".icon  .icon-blue  .icon-contacts " class="icon icon-blue icon-contacts"></span> Profile</a></li>
+          <li><a href="{$this->baseurl}/user/resetpw"><span title=".icon  .icon-blue  .icon-contacts " class="icon icon-blue icon-contacts"></span> Reset Password</a></li>
 					<li class="divider"></li>
 					<li><a href="{$this->baseurl}/user/logout">Logout</a></li>
 				</ul>

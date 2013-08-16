@@ -186,7 +186,7 @@ function TEXTAREA($name, $value, $style = '', $class = '') {
   $val = get_arrval ( $value, $name, '' );
   $use_style = ($style == '') ? "style=\"height:50px;\"" : "style=\"{$style}\"";
   $out = <<<"END"
-    <textarea {$use_style} onchange="noteChange();" name="{$name}" id="{$name}" class="tarea {$class}">{$val}</textarea>
+    <textarea {$use_style} onchange="noteChange();" name="{$name}" id="{$name}" class="autogrow tarea {$class}">{$val}</textarea>
 END;
   //logit("TA: {$name} {$out}");
   return $out;
@@ -2022,7 +2022,10 @@ function calculate_dialog($drows, $value, $langtag, $formtype='table') {
   $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
 
   $tout [] = '<table border=0 style="width:900px;">';
+  $thid = array();
   foreach ( $drows as $row ) {
+    $pos = $row['position'];
+    if ($pos ==0) continue;
     $type = $row ['field_type'];
     $arow = array ();
     
@@ -2032,72 +2035,33 @@ function calculate_dialog($drows, $value, $langtag, $formtype='table') {
     $varname = $arow['varname'];
     $arow['baseurl'] = $baseurl;
     $arow['field_length'] = $row['field_length'];
-    $bpad = 'class="bpad"';
     
-    if ($type == '') {
+    
+    switch ($type) {
+    case '':
       logit("ROW: ".print_r($row, true));
-    } else if ($type == 'submit_button') {
+      break;
+    case 'hidden':
+      $val = get_arrval($value, $varname, '');
+      $thid[] = "<input type=\"hidden\" name=\"{$varname}\" value=\"{$val}\">";
+      break;
+    case 'submit_button':
       $arow['field_label'] = $field_label;
       $field_label = '';
-    }// else if ($type == 'submit_buttonx') continue;
-    
-    $inp = call_user_func("dialog_{$type}", $arow, $value, $tlist);
-    //$tout[] = "<tr ><td {$bpad}>" .call_user_func ("dialog_{$type}", $arow, $value, $tlist) . '</td></tr>';
-    $tout[] = <<<"END"
+    default:
+      $inp = call_user_func("dialog_{$type}", $arow, $value, $tlist);
+      $tout[] = <<<"END"
 <tr>
 <td class="n f right" style=width:400px;">
 <label for="{$varname}" style="" class="inp">{$field_label}</label>
 </td><td class="n f" style=width:400px;">{$inp}</td>
 </tr>
 END;
+    }
   }
   $tout[] = '</table>';
+  $tout[] = implode("\n", $thid);
   //logit('dialog: '. print_r($tout, true));
   return implode("\n", $tout);
 }
 
-function xgenerate_dialog_processing($drows) { 
-  /**
-   * Given the dialog rows, generate the code for
-   * processing the post variables
-   */
-  /*
-    $formData = $this->getRequest();
-    $userid = $formData-> getPost ('userid','');
-    $password = $formData->getPost ('password','');
-   */
-  //$tlist = getTranslatables ( $langtag); 
-  
-  $tout = array ();
-  $tout[] = '$formData = $this->getRequest();';
-  $tout[] = '$data = array();';
-  $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
-  $ignore_list = array('', 'submit_button', 'submit_buttonx');
-  $vlist = array();
-  foreach ( $drows as $row ) {
-    $type = $row ['field_type'];
-    $arow = array ();
-    
-    $field_label = get_lang_text($row['field_label'], '', '') ; //, $row ['ltdefault'], $row ['ltlang'] );
-    $arow['field_label'] = $field_label . ':';
-    $arow['varname'] = $row ['field_name'];
-    $varname = $arow['varname'];
-    $arow['baseurl'] = $baseurl;
-    $arow['field_length'] = $row['field_length'];
-    $bpad = 'class="bpad"';
-    
-    if (in_array($type, $ignore_list)) {
-      continue;
-    }
-    //$tout[] = "\${$varname} = \$formData->getPost('{$varname}','');";
-    $tout[] = "\$data['{$varname}'] = \$formData->getPost('{$varname}','');";
-    $vlist[] = "logit(\"POST VAR: {$varname} -> \$data['{$varname}']\");";
-  }
-  $tout[] = "// Use next line for inserting data.";
-  $tout[] = "\$xxxxx->insertData(\$data);";
-  $tout[] = "// Use next 2 lines - suitably changed -  to update data.";
-  $tout[] = "\$xxx_id = \$formData->getPost('{\$xxx_id}','');";
-  $tout[] = "\$xxxxx->updateData(\$data, \$xxx_id);";
-  logit("CODE:\n".  implode("\n", $tout));
-  logit("SHOW:\nlogit('DATA: '. print_r(\$data, true));");
-}

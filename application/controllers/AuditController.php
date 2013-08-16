@@ -87,6 +87,7 @@ END;
     //logit ( 'In slipta beginning' );
     $nav = $page->getNav ( $template_id, $thispage ); // 1 is the template_id
     $page_row = $nav ['row'];
+    $display_only =$page_row['display_only'];
     $pageid = $page_row['page_id'];
     $nrows = $nav ['rows'];
     if (! $this->getRequest ()->isPost ()) {
@@ -98,8 +99,13 @@ END;
       }
       
       $rows = $audit->getrows ( $template_id, $thispage, $langtag ); // 1 is the template_id
-      $value = $data->getData ( $audit_id, $pageid ); // 1 is the audit_id
-      
+      // if this page is display only we load values for page 0
+      // page 0 has global data on it
+      if ($display_only == 't') {
+        $value = $data->getData ( $audit_id, 0 );
+      } else {
+        $value = $data->getData ( $audit_id, $pageid ); // 1 is the audit_id
+      }
       
       if ($this->debug) {
         foreach ( $page_row as $a => $p ) {
@@ -147,6 +153,8 @@ END;
         }
       }
       $tout = calculate_page ( $rows, $value, $langtag); //$tword );
+      logit('VALUE: '. print_r($value, true));
+
       /*
         $mt2 = microtime(true);
         $mtx = $mt2 - $mt;
@@ -156,7 +164,14 @@ END;
       $next = $thispage + 1;
       $this->view->thispage = $thispage;
       $this->view->treelines = implode ( "\n", $jsrows );
-      $this->view->outlines = implode ( "\n", $tout );
+      $olines = implode ( "\n", $tout );
+      if ($display_only == 't') {
+        //logit("OUT:\n$olines");
+        $olines = str_replace('"', '\"', $olines);
+        eval("\$olines = \"$olines\"; ");
+      }
+      $this->view->outlines = $olines;
+
       $this->getButtons($page_row);
      
       $this->view->hidden = implode ( "\n", array (

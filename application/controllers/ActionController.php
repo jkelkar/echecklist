@@ -262,6 +262,9 @@ END;
       {$dt}
       </div> 
    </div>
+<div class="container-fluid"><div style="float:right;margin:6px 0 6px 29px;padding-right:5px;"><b>Lab:</b> Fastfix</div>
+     <div style="float:right;margin:6px 0 6px 29px;"><b>Audit:</b> User/date/type</div>
+       <div style="clear:both;"></div></div>
   </div> <!-- style="clear:both;"></div -->
 </div>
 END;

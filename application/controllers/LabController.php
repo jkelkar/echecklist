@@ -77,7 +77,7 @@ class LabController extends Application_Controller_Action// Zend_Controller_Acti
     $langtag = $this->echecklistNamespace->lang;
     if (!$this->getRequest()->isPost()) {
       // logit('LAB: '. print_r($row, true));
-      $this->makeDialog($row);
+      $this->makeDialog();
     } else {
       $this-> collectData();
       //logit('Data: ' . print_r($this->data, true));

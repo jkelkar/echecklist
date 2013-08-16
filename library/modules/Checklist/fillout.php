@@ -347,7 +347,7 @@ function OPTIONS_CALC($varname, $optvals, $value, $score, $noscript=false) {
 }
 
 
-function OPTIONS_ADD($varname, $optvals, $value) {
+function OPTIONS_ADD($varname, $optvals, $value, $noscript=false) {
   /**
    * Depending on the number of optvals we choose select or Radio buttons
    *
@@ -1568,7 +1568,7 @@ function partial_panel_result($row, $value, $t) {
   $dt = widget_dt ( "{$name}_dt", $value, 10 );
   $script = '<script> $(function() {$( "' . "#{$name}_dt" . '" ).datepicker();});</script>';
   $out = <<<"END"
-  <table style="width:100%;">
+<table style="width:100%;">
   <tr>
     <td width="7%" class="title">
       {$prefix}
@@ -1586,9 +1586,8 @@ function partial_panel_result($row, $value, $t) {
       {$smallint}
     </td>
   </tr>
-  </table>
+</table>
 END;
-  
   return $out;
 }
 
@@ -1606,7 +1605,7 @@ function partial_info($row, $value, $t) {
      </td>
   </tr>
   </table>
-END;  
+END;
   return $out;
 }
 
@@ -1616,16 +1615,14 @@ function partial_action_plan_heading($row, $value, $t) {
   $text = $row ['text'];
   $name = $row ['varname'];
   $out = <<<"END"
-  <table style="width:100%;">
-  <tr>
+<table style="width:100%;"><tr>
     <td width="45%" class="centertopbold">
       {$heading}
     </td>
     <td width="20%" class="centertopbold">Responsible Persons</td>
     <td width="10%" class="centertopbold">Timeline</td>
     <td class="centertopbold">Signature</td>
-  </tr>
-  </table>
+</tr></table>
 END;
   return $out;
 }
@@ -1984,13 +1981,10 @@ function calculate_page($rows, $value, $langtag) { //$tword) {
   $tout = array ();
   $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
   $tout [] = '<table border=0 style="width:825px;">';
-  // $tout[] = '<tr><td style="width:359px;"></td><td style="width:164px;"></td><
-  // td style="width:309px;"></td><tr>';
   foreach ( $rows as $row ) {
     $type = $row ['row_type'];
     $arow = array ();
     $arow ['prefix'] = get_lang_text ( $row ['prefix'], $row ['lpdefault'], $row ['lplang'] );
-    // $row['prefix'];
     $arow ['heading'] = get_lang_text ( $row ['heading'], $row ['lhdefault'], $row ['lhlang'] );
     $arow ['text'] = get_lang_text ( $row ['text'], $row ['ltdefault'], $row ['ltlang'] );
     $arow ['varname'] = $row ['varname'];

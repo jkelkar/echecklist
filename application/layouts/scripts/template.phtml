@@ -26,6 +26,12 @@
     </script>
     <?php echo $this->header; ?>
     <div id="content" style="margin-left: 10px;">
+      <div id="content" style="margin: 20px 0 0 10px;">
+         <?php if ($this->flash != '') { ?>
+           <div id="flash"
+            style="float:right;font-size:16px;border:1px solid #c00;background:#ffe;padding: 6px 10px;">
+         <?php echo $this->flash; ?></div>
+         <?php } ?>
       <h1><?php echo $this->escape($this->title); ?></h1>
       <?php echo $this->layout()->content; ?>
 

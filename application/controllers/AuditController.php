@@ -178,9 +178,11 @@ END;
           "<input type=\"hidden\" name=\"audit_id\" value=\"{$audit_id}\">"
       ) );
       // logit("HEADER: {$this->view->header}");
-      $this->_helper->layout->setLayout ( 'template' );
+      $this->view->flash = $this->echecklistNamespace->flash;
+      $this->echecklistNamespace->flash = '';
+      $this->_helper->layout->setLayout ('template');
     } else {                                        // Handle the POST request here
-      logit ( 'In post for Audit' );
+      logit ('In post for Audit');
       /*
         $mt = microtime(true);
         logit("P1: {$mt}");
@@ -297,6 +299,31 @@ END;
    * echo "Rendered: " .
    * $data ."\n";
    */
+  }
+
+  public function findAction() {
+    /*
+     * either show open audits OR show select audit type + lab
+     */
+    $this->dialog_name = 'audit/find';
+    logit ("{$this->dialog_name}" );
+    $audit = new Application_Model_DbTable_User();
+    $vars = $this->_request->getPathInfo();
+    $pinfo = explode("/", $vars);
+    $id = (int)  $pinfo[3];
+    $langtag = $this->echecklistNamespace->lang;
+    // $urldata = $this->getRequest()->getParams();
+    if (!$this->getRequest()->isPost()) {
+      $row = $user->getUser($id);
+      // logit('LAB: '. print_r($row, true));
+      $this->makeDialog($row);
+    } else {
+      // display the form here
+      $this->collectData();
+      // logit('Data: ' . print_r($this->data));
+      $user->updateData($data, $id); 
+      $this->_redirector->gotoUrl($this->mainpage);
+    }
   }
 
   public function html2pdfdomAction() {

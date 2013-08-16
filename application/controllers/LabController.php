@@ -70,101 +70,40 @@ class LabController extends Application_Controller_Action// Zend_Controller_Acti
   }
   
   public function createAction() {
-    $dialog_name = 'lab/create';
-    logit ( "{$dialog_name}" );
-    $lab = new Application_Model_DbTable_Lab ();
-    $urldata = $this->getRequest ()->getParams ();
-    if (!$this->getRequest ()->isPost ()) {
-      $dialog = new Application_Model_DbTable_DialogRow();
-      $allrows = $dialog->getFullDialog($dialog_name);
-      $title = $allrows['dialog']['title'];
-      $drows = $allrows['dialog_rows'];
-      $this->view->outlines = calculate_dialog($drows, array(''=>''), $this->view->langtag);
-      //generate_dialog_processing($drows);
-      $this->view->title = $title;
-      $this->_helper->layout->setLayout('overall');
+    $this->dialog_name = 'lab/create';
+    logit ( "{$this->dialog_name}" );
+    $lab = new Application_Model_DbTable_Lab();
+    $urldata = $this->getRequest()->getParams();
+    $langtag = $this->echecklistNamespace->lang;
+    if (!$this->getRequest()->isPost()) {
+      // logit('LAB: '. print_r($row, true));
+      $this->makeDialog($row);
     } else {
-      // display the form here
-      // $this->view->langtag = $this->echecklistNamespace->lang;
-      $formData = $this->getRequest();
-      $data = array();
-      $data['labname'] = $formData->getPost('labname','');
-      $data['labnum'] = $formData->getPost('labnum','');
-      $data['street'] = $formData->getPost('street','');
-      $data['street2'] = $formData->getPost('street2','');
-      $data['street3'] = $formData->getPost('street3','');
-      $data['city'] = $formData->getPost('city','');
-      $data['state'] = $formData->getPost('state','');
-      $data['country'] = $formData->getPost('country','');
-      $data['postcode'] = $formData->getPost('postcode','');
-      $data['labtel'] = $formData->getPost('labtel','');
-      $data['labfax'] = $formData->getPost('labfax','');
-      $data['labemail'] = $formData->getPost('labemail','');
-      $data['lablevel'] = $formData->getPost('lablevel','');
-      $data['labaffil'] = $formData->getPost('labaffil','');
-
-
-      logit('DATA: '. print_r($data, true));
-      $lab->insertData($data);
-      $this->view->title = 'Create Lab';
-      $this->_helper->layout->setLayout('overall');
+      $this-> collectData();
+      //logit('Data: ' . print_r($this->data, true));
+      $lab->insertData($this->data); 
     }
   }
 
   public function editAction() {
-    $dialog_name = 'lab/edit';
-    logit ( "{$dialog_name}" );
-    $lab = new Application_Model_DbTable_Lab ();
+    $this->dialog_name = 'lab/edit';
+    logit ( "{$this->dialog_name}" );
+    $lab = new Application_Model_DbTable_Lab();
     $vars = $this->_request->getPathInfo();
     $pinfo = explode("/", $vars);
     $id = (int)  $pinfo[3];
     $langtag = $this->echecklistNamespace->lang;
-    $urldata = $this->getRequest ()->getParams ();
-    if (!$this->getRequest ()->isPost ()) {
-      $dialog = new Application_Model_DbTable_DialogRow();
+    $urldata = $this->getRequest()->getParams();
+
+    if (!$this->getRequest()->isPost()) {
       $row = $lab->getLab($id);
-      
-      logit('LAB: '. print_r($row, true));
-      $allrows = $dialog->getFullDialog($dialog_name);
-      $title = $allrows['dialog']['title'];
-      $drows = $allrows['dialog_rows'];
-      $this->view->outlines = calculate_dialog($drows, $row, $this->view->langtag);
-      //generate_dialog_processing($drows);
-      $this->view->title = $title;
-      $this->_helper->layout->setLayout('overall');
+      //logit('LAB: '. print_r($row, true));
+      $this->makeDialog($row);
     } else {
       // display the form here
-      $formData = $this->getRequest();
-      $data = array();
-      $data['labname'] = $formData->getPost('labname','');
-      $data['labnum'] = $formData->getPost('labnum','');
-      $data['street'] = $formData->getPost('street','');
-      $data['street2'] = $formData->getPost('street2','');
-      $data['street3'] = $formData->getPost('street3','');
-      $data['city'] = $formData->getPost('city','');
-      $data['state'] = $formData->getPost('state','');
-      $data['country'] = $formData->getPost('country','');
-      $data['postcode'] = $formData->getPost('postcode','');
-      $data['labtel'] = $formData->getPost('labtel','');
-      $data['labfax'] = $formData->getPost('labfax','');
-      $data['labemail'] = $formData->getPost('labemail','');
-      $data['lablevel'] = $formData->getPost('lablevel','');
-      $data['labaffil'] = $formData->getPost('labaffil','');
-
-
-      logit('DATA: '. print_r($data, true));
-      $labnum = $formData->getPost('labnum','');
-      $lab->updateData($data, $id); 
-
-      /*
-      // Use next line for inserting data.
-      $xxxxx->insertData($data);
-      // Use next 2 lines - suitably changed -  to update data.
-      */
-   
-  
-      $this->view->title = 'Create Lab';
-      $this->_helper->layout->setLayout('overall');
+      $this-> collectData();
+      //logit('Data: ' . print_r($this->data, true));
+      $lab->updateData($this->data, $id); 
     }
   }
 
@@ -196,29 +135,7 @@ class LabController extends Application_Controller_Action// Zend_Controller_Acti
       $this->view->title = 'Search';
       $this->_helper->layout->setLayout ( 'overall' );
     } else {
-      /*
-       * // $formData = $this->getRequest(); $lab = new Application_Model_DbTable_Lab(); $urldata = $this->getRequest()->getParams(); $labname = get_arrval($urldata, 'labname', ''); if ($labname == '') { throw new Exception('Bad name in Lab search'); } $out = $lab->getLabByPartialName($labname); logit("Lab Match: {$out}"); return $out;
-       */
-      // if ($form->isValid($formData)) {
-    /**
-     * $labname = $formData->getPost('username', '');
-     * $password = $formData->getPost('password', '');
-     * $user = new Application_Model_DbTable_User();
-     * $row = $user->getUserByUsername($username);
-     * // $u = array();
-     * $eNamespace = parent::getHandle();
-     * logit("eChecklist {$eNamespace->userct}");
-     * foreach($row as $a => $b) {
-     * // logit("User: {$a} -- {$b}");
-     * if ($a != 'password') {
-     * $eNamespace->$a = $b;
-     * logit("Added {$a} => {$b}");
-     * }
-     *
-     * }
-     */
-      // $echecklistNamespace->user = $u;
-      /* $this->_helper->redirector('index'); */
+      
     }
   
   }

@@ -17,7 +17,8 @@ class Application_Model_DbTable_DialogRow extends Application_Model_DbTable_Chec
      */
     $this->setMetadataCacheInClass(false);
     $dialog_id = (int)$dialog_id;
-    $sql = "select * from dialog_row where dialog_id = ". $dialog_id ;;
+    $sql = "select * from dialog_row where dialog_id = ". $dialog_id .
+      " order by position";
     $rows = $this->queryRows($sql);
     
     if (!$rows) {

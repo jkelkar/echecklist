@@ -100,7 +100,7 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
      * Update lab at $id with this data
      * $data is an array with name value pairs
      */
-    
+    logit('LABDATA: '. print_r($data, true));
     $this->update($data, "id = {$id}");
   }
    

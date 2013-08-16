@@ -1,9 +1,9 @@
 <?php
 require_once 'modules/Checklist/htmlhelp.php';
 require_once 'modules/Checklist/logger.php';
-require_once '../application/controllers/Action.php';
+require_once '../application/controllers/ActionController.php';
 
-class StartstopController extends Application_Controller_Action 
+class UserController extends Application_Controller_Action 
 // Zend_Controller_Action
 {
 
@@ -16,74 +16,114 @@ class StartstopController extends Application_Controller_Action
     parent::init();
   }
 
-  
-  public function loginAction()
-  {
-    if ($this->getRequest()->isPost()) {
-      $formData = $this->getRequest();
-      //if ($form->isValid($formData)) {
-      $username = $formData->getPost('username', '');
-      $password = $formData->getPost('password', '');
-      $user = new Application_Model_DbTable_User();
-      $row = $user->getUserByUsername($username);
-      // $u = array();
-      $eNamespace = parent::getHandle();
-      logit("eChecklist {$eNamespace->userct}");
-      foreach($row as $a => $b) {
-        // logit("User: {$a} -- {$b}");
-        if ($a != 'password') {
-          $eNamespace->$a = $b; 
-          logit("Added {$a} => {$b}");
-        }
-                             
-      }
-      //$echecklistNamespace->user = $u;
-      /* $this->_helper->redirector('index'); */
-    } else {
+  public function mainAction() {
+    /*
+     * 
+     */
+  }
 
-      $_fields = array('username', 'password', 'submit');
-      $flist = array('_fields' => $_fields,
-                     'username' =>
-                     array('type'=>'string',
-                           'length' => 32,
-                           'label' => 'Userid:'),
-                     'password' =>
-                     array('type'=>'password',
-                           'length' => 32,
-                           'label' => 'Password:'),
-                     'submit' =>
-                     array('type' => 'submit',
-                           'value' => 'Login')
-                     );
-      // logit("flist: {$flist}");
-      $outlines = dumpForm($flist);
-      $this->view->formtext = $outlines;
-      $this->view->title = 'Login';
-      $this->_helper->layout->setLayout('overall');
+  public function loginAction() {
+    $this->dialog_name = 'user/login';
+    logit ( "{$this->dialog_name}" );
+    $user = new Application_Model_DbTable_User();
+    $langtag = $this->echecklistNamespace->lang;
+    if (!$this->getRequest()->isPost()) {
+      if ($this->usertype != '') {
+        // logit('redirect');
+        $this->_redirector->gotoUrl("/audit/edit/1/" ); 
+      }
+      // logit('LAB: '. print_r($row, true));
+      $this->makeDialog();
+    } else {
+      $this->collectData();
+      $row = $user->getUserByUsername($this->data['userid']);
+      if ($this->data['password'] == $row['password']) { // FIXME - goto BCRYPT
+        $xuser = array();
+        foreach($row as $a => $b) {
+          if ($a != 'password') { 
+            $xuser [$a] = $b;
+            logit ("Added {$a} => {$b}");
+          }
+        }
+        $this->echecklistNamespace->user = $xuser;
+        // $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
+        $this->_redirector->gotoUrl("/audit/edit/1/");
+      } else {
+        $this->makeDialog();
+        $this->echecklistNamespace->flash = "UserId or password incorrect";
+        $this->data['password'] = '';
+        $this->makeDialog($this->data);
+      } /*else {
+          $row = $user->getUserByUsername($userid);
+          $xuser = array();
+          foreach($row as $a => $b) {
+          if ($a != 'password') { // FIXME - goto BCRYPT
+          $xuser [$a] = $b;
+          logit ("Added {$a} => {$b}");
+          }
+          }*/
     }
-    //}
+  }
+
+
+  public function logoutAction() {
+    /* logout and clear the user entry from the session */
+    unset($this->echecklistNamespace->user);
+    $this->_redirector->gotoUrl("/user/login");
   }
   
-  /**public function addAction()
-  {
-    $form = new Application_Form_Album();
-    $form->submit->setLabel('Add');
-    $this->view->form = $form;
-
-    if ($this->getRequest()->isPost()) {
-      $formData = $this->getRequest()->getPost();
-      if ($form->isValid($formData)) {
-        $artist = $form->getValue('artist');
-        $title = $form->getValue('title');
-        $albums = new Application_Model_DbTable_Albums();
-        $albums->addAlbum($artist, $title);
-
-        $this->_helper->redirector('index');
+  public function createAction() {
+    $this->dialog_name = 'user/create';
+    logit ( "{$this->dialog_name}" );
+    $user = new Application_Model_DbTable_User();
+    // $urldata = $this->getRequest()->getParams();
+    $langtag = $this->echecklistNamespace->lang;
+    if (!$this->getRequest()->isPost()) {
+      // logit('LAB: '. print_r($row, true));
+      $this->makeDialog();
+    } else {
+      $this->collectData();
+      if ($this->data['password'] != $this->data['password2']) {
+        $this->data['password'] = '';
+        $this->data['password2'] = '';
+        $this->echecklistNamespace->flash = "Passwords do not match";
+        $this->makeDialog($this->data);
       } else {
-        $form->populate($formData);
+        //logit('Data: ' . print_r($this->data, true));
+        unset($this->data['password2']);
+        try {
+          $user->insertData($this->data); 
+        } catch (Exception $e) {
+          $this->data['password'] = '';
+          $this->data['password2'] = '';
+          $this->echecklistNamespace->flash = "User Id is already in use";
+          $this->makeDialog($this->data);
+          return;
+        }
+        // Redirect it from here
       }
-      }
-      }**/
+    }
+  }
 
+  public function editAction() {
+    $this->dialog_name = 'user/edit';
+    logit ("{$this->dialog_name}" );
+    $user = new Application_Model_DbTable_Lab();
+    $vars = $this->_request->getPathInfo();
+    $pinfo = explode("/", $vars);
+    $id = (int)  $pinfo[3];
+    $langtag = $this->echecklistNamespace->lang;
+    // $urldata = $this->getRequest()->getParams();
+    if (!$this->getRequest()->isPost()) {
+      $row = $lab->getLab($id);
+      // logit('LAB: '. print_r($row, true));
+      $this->makeDialog($row);
+    } else {
+      // display the form here
+      $this->collectData();
+      // logit('Data: ' . print_r($this->data));
+      $user->updateData($data, $id); 
+    }
+  }
 
 }

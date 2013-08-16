@@ -30,7 +30,7 @@ class Application_Model_DbTable_User extends Application_Model_DbTable_Checklist
     /**
      * get a user from userid
      */
-    $sql = "select * from user where username = '{$username}'";
+    $sql = "select * from user where userid = '{$username}'";
     //$row = $this->fetchRow("username = '{$username}'" );
     $rows = $this->queryRows($sql);
     if (!$rows) {
@@ -51,16 +51,16 @@ class Application_Model_DbTable_User extends Application_Model_DbTable_Checklist
     }
     return $rows;
   }
-  public function newUser($data) {
+  public function insertData($data) {
     /**
      * data is an array with name value pairs
      */
-    $this->insert(data);
+    $this->insert($data);
     $newid = $this->getAdapter()->lastInsertId();
     return $newid;
   }
 
-  public function updateUser($data, $id) {
+  public function updateData($data, $id) {
     /**
      * Update user at $id with this data
      * $data is an array with name value pairs

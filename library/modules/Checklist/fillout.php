@@ -57,16 +57,16 @@ function SELECT($name, $optvals, $value, $noscript=false) {
   }
   $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
   $optout = array ();
-  logit('SEL NAME: '. $name );
-  logit('SEL ARR:  ' . print_r($name, true));
+  //logit('SEL NAME: '. $name );
+  //logit('SEL ARR:  ' . print_r($name, true));
   $val = get_arrval ( $value, $name, '' );
   // $log->LogInfo("{$name} - {$val}");
   
-  foreach ($value as $n => $v) { logit("Values {$n} - {$v}"); }
+  // foreach ($value as $n => $v) { logit("Values {$n} - {$v}"); }
    
   foreach ( $optvals as $n => $v ) {
     $sel = ($v == $val) ? "selected=selected " : '';
-    logit("Interiem - {$val} : {$sel}: {$n} => {$v}");
+    //logit("Interiem - {$val} : {$sel}: {$n} => {$v}");
     $optout [] = "<option {$sel} value=\"{$v}\">{$n}</option>";
   }
   $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
@@ -432,6 +432,25 @@ function getYNI($t) {
 function widget_select_yni($varname, $value, $t) {
   $optvals = getYNI ( $t );
   return OPTIONS ( $varname, $optvals, $value );
+}
+
+function getUserTypes($t) {
+  return array("{$t['Select']} ..." => '-',
+               "{$t['Admin']}" => 'ADMIN',
+               "{$t['User']}" => 'USER',
+               "{$t['Analyst']}" => 'ANALYST',
+               "{$t['Approver']}" => 'APPROVER'
+  );
+}
+
+function widget_select_usertype($varname, $value, $t, $noscript=true) {
+  $optvals = getUserTypes ( $t );
+  return OPTIONS ( $varname, $optvals, $value, $noscript );
+}
+
+function dialog_usertype($row, $value, $t) {
+  $varname = $row['varname'];
+  return widget_select_usertype($varname, $value, $t, true);
 }
 
 function getPW($t) {
@@ -1900,6 +1919,10 @@ function getTranslatables(/*$tword,*/ $langtag) {
       'N/A',
       'Partial',
       'Select',
+      'Admin',
+      'User',
+      'Analyst',
+      'Approver',
       'Insufficient Data',
       'Personal',
       'Work',
@@ -2029,18 +2052,18 @@ function calculate_dialog($drows, $value, $langtag, $formtype='table') {
 END;
   }
   $tout[] = '</table>';
-  logit('dialog: '. print_r($tout, true));
+  //logit('dialog: '. print_r($tout, true));
   return implode("\n", $tout);
 }
 
-function generate_dialog_processing($drows) { 
+function xgenerate_dialog_processing($drows) { 
   /**
    * Given the dialog rows, generate the code for
    * processing the post variables
    */
   /*
     $formData = $this->getRequest();
-    $userid = $formData->getPost ('userid','');
+    $userid = $formData-> getPost ('userid','');
     $password = $formData->getPost ('password','');
    */
   //$tlist = getTranslatables ( $langtag); 

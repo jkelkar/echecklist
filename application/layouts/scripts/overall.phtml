@@ -26,6 +26,11 @@
     </script>
     <?php echo $this->header; ?>
     <div id="content" style="margin: 20px 0 0 10px;">
+   <?php if ($this->flash != '') { ?>
+     <div id="flash"
+          style="float:right;font-size:16px;border:1px solid #c00;background:#ffe;padding: 6px 10px;">
+      <?php echo $this->flash; ?></div>
+        <?php } ?>
       <div id="outer" style="margin-left: 10px;">
         <div id="wrapper" style="overflow:auto;">
           <div id="pane"
@@ -50,8 +55,9 @@
     <div id="footer"></div>
     <script>
 $(function() {
-resetSize();
-$(window).resize(function(){
+  resetSize();
+  $('#flash').delay(4000).fadeOut(1000);
+  $(window).resize(function(){
     resetSize();
   });
 });

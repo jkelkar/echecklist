@@ -14,10 +14,15 @@ class Application_Controller_Action extends Zend_Controller_Action {
   public $debug = 1;
   public $baseurl = '';
   // user
+  public $langtag;
   public $usertype = '';
   public $username = '';
   public $userfullname = '';
   public $userid = '';
+  public $dialog_name;
+  public $title;
+  public $data;
+  public $drows;
 
   public function init() {
     /* initialize here */
@@ -33,16 +38,17 @@ class Application_Controller_Action extends Zend_Controller_Action {
     $this->echecklistNamespace = new Zend_Session_Namespace ( 'eChecklist' );
     if (isset ( $this->echecklistNamespace->user )) {
       $u = $this->echecklistNamespace->user;
-      $this->usertype = $u ['user_type'];
-      $this->username = $u ['username'];
-      $this->userfullname = $u ['name'];
-      $this->userid = $u ['id'];
+      $this->usertype = $u['usertype'];
+      $this->username = $u['userid'];
+      $this->userfullname = $u['name'];
+      $this->userid = $u['id'];
       logit ( "{$this->username}, {$this->usertype}, {$this->userfullname}, {$this->userid}" );
     }
     if (!isset ( $this->echecklistNamespace->lang)) {
       $this->echecklistNamespace->lang = 'EN';
     }
     $this->view->langtag = $this->echecklistNamespace->lang;
+    $this->langtag = $this->echecklistNamespace->lang;
     // logit('LT: '. $this->view->langtag);
     Zend_Session::start ();
     
@@ -229,7 +235,7 @@ END;
     } else {
       $this->header = $this->header . <<<"END"
   <div class="btn-group pull-left" style="margin-left:200px;">
-<a class="btn" href="{$this->baseurl}/startstop/login"><span title=".icon  .icon-blue  .icon-contacts " class="icon icon-blue icon-contacts"></span> Login</a></div>
+<a class="btn" href="{$this->baseurl}/user/login"><span title=".icon  .icon-blue  .icon-contacts " class="icon icon-blue icon-contacts"></span> Login</a></div>
 
 END;
     }
@@ -246,7 +252,7 @@ END;
 				<ul class="dropdown-menu">
 					<li><a href="{$this->baseurl}/user/profile"><span title=".icon  .icon-blue  .icon-contacts " class="icon icon-blue icon-contacts"></span> Profile</a></li>
 					<li class="divider"></li>
-					<li><a href="{$this->baseurl}/startstop/logout">Logout</a></li>
+					<li><a href="{$this->baseurl}/user/logout">Logout</a></li>
 				</ul>
 			</div>
 			<!-- user dropdown ends -->
@@ -310,11 +316,59 @@ END;
     logit('MENU: '. $this->makeMenu($menu)); */
   }
 
-  public function convert2PDF($html)
-  {
+  public function getDialogLines() {
+    /*
+     * Get the DialogRow data
+     */
+    $dialog = new Application_Model_DbTable_DialogRow();
+    $allrows = $dialog->getFullDialog($this->dialog_name);
+    // logit('DialogRows: '. print_r($allrows, true));
+    $this->title = $allrows['dialog']['title'];
+    $this->drows = $allrows['dialog_rows'];
+  }
+
+  public function makeDialog($row=array(''=>'')) {
+    /*
+     * Create the dialog
+     */
+    $this->getDialogLines();
+    // logit('makeDialog:');
+    $this->view->outlines = calculate_dialog($this->drows, $row, $this->view->langtag);
+    //generate_dialog_processing($drows);
+    //$this->view->title = $title;
+    $this->_helper->layout->setLayout('overall');
+    $this->view->flash = $this->echecklistNamespace->flash;
+    $this->echecklistNamespace->flash = '';
+  }
+
+  public function collectData() {
+    /*
+     * Collect all the post data
+     */
+    $dialog = new Application_Model_DbTable_DialogRow();
+
+    $this->getDialogLines();
+    $ignore_list = array('', 'submit_button');
+    $this->data = array();
+    $formData = $this->getRequest();
+    foreach ($this->drows as $row) {
+      $type = $row ['field_type'];
+      $varname = $row ['field_name'];
+      
+      if (in_array($type, $ignore_list)) {
+        continue;
+      }
+      $this->data[$varname] = $formData->getPost($varname,'');
+    }
+  }
+
+  /*
+    public function convert2PDF($html)
+    {
     require_once 'modules/mpdf56/examples/testmpdf.php';
     html2pdf($html);
     
-  }
+    }
+  */
 
 }

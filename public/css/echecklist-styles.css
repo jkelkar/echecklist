@@ -61,7 +61,9 @@ table {
 
 td {
 	border: 0px solid #999;
+  padding:0 5px;
 }
+th.border,
 td.border {
     border: 1px solid #333;
 }
@@ -412,4 +414,3 @@ b.plus {
 }
 .brand {
 width: 120px;
-}

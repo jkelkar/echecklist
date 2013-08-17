@@ -27,7 +27,7 @@ class AuditController extends Application_Controller_Action {
     $nextpage = $page['next_page_num'];
     if ($display) {
     $buttons = <<<"END"
-<div style="width:100%;">
+<div style="width:825px;">
   <input type="hidden" name="nextpage" value="{$nextpage}" />
   <div style="float:right;">
     <input type="submit" value="Next" id="nextbutton" name="sbname">
@@ -35,7 +35,7 @@ class AuditController extends Application_Controller_Action {
 END;
     } else {
     $buttons = <<<"END"
-<div style="width:100%;">
+<div style="width:825px;">
   <input type="hidden" name="nextpage" value="{$nextpage}" />
   <div style="float:right;">
     <input type="submit" value="Cancel" id="cancelbutton" name="sbname">
@@ -64,11 +64,12 @@ END;
       $mt = microtime(true);
       logit("Start: {$mt}");
     */
-    $audit = new Application_Model_DbTable_AuditRows ();
-    $data = new Application_Model_DbTable_AuditData ();
-    $page = new Application_Model_DbTable_Page ();
-    $lang = new Application_Model_DbTable_Language ();
-    $lang_word = new Application_Model_DbTable_langword ();
+    $audit = new Application_Model_DbTable_AuditRows();
+    $data = new Application_Model_DbTable_AuditData();
+    $aud = new Application_Model_DbTable_Audit();
+    $page = new Application_Model_DbTable_Page();
+    $lang = new Application_Model_DbTable_Language();
+    $lang_word = new Application_Model_DbTable_langword();
     $vars = $this->_request->getPathInfo();
     //logit("VARS: {$vars}");
     $pinfo = explode("/", $vars);
@@ -250,6 +251,7 @@ END;
         */
         $did = $formData ['audit_id'];
         $data->updateData ( $dvalue, $did, $pageid );
+        $aud->updateTS($did);
         /*
           $mt2 = microtime(true);
           $mtx = $mt2 - $mt;
@@ -277,28 +279,55 @@ END;
   
   }
 
-  public function inpdf2Action() {
-    // echo 'Create HTML & then convert it to PDF!';
-    /* $data = $this->renderPhpToString(); */
-      /*$albums = new Application_Model_DbTable_Albums();
-      $sql = "order by artist name";
-      $this->view->albums = $albums->getAlbums();
-      $html = $this->view->render('index/index.phtml');
-      */
+  public function mainAction() {
+    /*
+     * This is the first main page presented to a user
+     * - we may have to adjust for other users
+     */
+    $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
+    $this->dialog_name = 'audit/main';
+    $format = 'Y-m-d H:i:s';
+    logit ("{$this->dialog_name}" );
+    $audit = new Application_Model_DbTable_Audit();
+    $vars = $this->_request->getPathInfo();
+    $pinfo = explode("/", $vars);
+    $id = (int)$this->echecklistNamespace->user['id'];
+    $langtag = $this->echecklistNamespace->lang;
+    if (!$this->getRequest()->isPost()) {
+      $rows = $audit->getAudits($id);
+      logit('AROWS: '. print_r($rows, true));
+      $this->makeDialog();
+      $tout = array();
+      $tout[] = '<table style="width:870px;margin-left:200px;">';
+      $tout[] = "<tr><td style='width:50px;font-weight:bold;'>Id</td><td style='width:80px;font-weight:bold;'>Type</td>" .
+        "<td style='width:120px;font-weight:bold;'>Updated</td><td style='width:100px;font-weight:bold;'>Labnum</td>" .
+        "<td style='width:150px;font-weight:bold;'>Labname</td><td style='width:300px;font-weight:bold;'></td></tr>";
+      foreach($rows as $row) {
+        $edit = "<a href=\"{$baseurl}/audit/edit/{$row['audit_id']}/\" class=\"btn btn-mini btn-inverse\">Edit</a>";
+        $view = "<a href=\"#\" class=\"btn btn-mini btn-success\">View</a>";
+        $delete = "<a href=\"#\" class=\"btn btn-mini btn-danger\">Delete</a>";
+        $export = "<a href=\"#\" class=\"btn btn-mini btn-warning\">Data Export</a>";
+        $dfmt = $row['updated_at'];
+        $line = "<tr><td>{$row['audit_id']}</td><td>{$row['tag']}</td>" . 
+          "<td>{$dfmt}</td><td>{$row['labnum']}</td>" .
+          "<td>{$row['labname']}</td><td>{$view} {$edit} {$delete} {$export}</td></tr>";
+        $tout[] = $line;
+      }
+      $tout[] = '</table>';
       
-      $html = file_get_contents ( './slipta_1_saved.html' );
-    // logit("Data: {strlen($html)}");
-    // echo strlen($html);
-    // exit();
-    
-    require_once 'modules/mpdf56/examples/testmpdf.php';
-    html2pdf ( $html );
-  
-  /**
-   * $data = $this->renderZendToString();
-   * echo "Rendered: " .
-   * $data ."\n";
-   */
+      logit('AUDITS: ' .print_r($tout, true));
+      $this->view->outlines .= implode("\n", $tout);
+    } 
+    /*
+      else {
+      // display the form here
+      $this->collectData();
+      // logit('Data: ' . print_r($this->data));
+      $user->updateData($data, $id); 
+      $this->_redirector->gotoUrl($this->mainpage);
+    }
+    */
+
   }
 
   public function findAction() {
@@ -348,5 +377,30 @@ END;
     }
   
   }
+
+  public function inpdf2Action() {
+    // echo 'Create HTML & then convert it to PDF!';
+    /* $data = $this->renderPhpToString(); */
+      /*$albums = new Application_Model_DbTable_Albums();
+      $sql = "order by artist name";
+      $this->view->albums = $albums->getAlbums();
+      $html = $this->view->render('index/index.phtml');
+      */
+      
+      $html = file_get_contents ( './slipta_1_saved.html' );
+    // logit("Data: {strlen($html)}");
+    // echo strlen($html);
+    // exit();
+    
+    require_once 'modules/mpdf56/examples/testmpdf.php';
+    html2pdf ( $html );
+  
+  /**
+   * $data = $this->renderZendToString();
+   * echo "Rendered: " .
+   * $data ."\n";
+   */
+  }
+
 }
  

@@ -37,4 +37,14 @@ SQL;
     return $rows;
   
   }
+
+  public function getAudits($uid, $atype) {
+    /* 
+     * Return all matching audits
+     * - user $uid and Type $atype
+     */
+
+
+  }
+  
 }

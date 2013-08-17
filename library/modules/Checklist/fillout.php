@@ -50,7 +50,7 @@ function get_common_words_translated($value, $words) {
 /**
  * these implement low level html code generators
  */
-function SELECT($name, $optvals, $value, $noscript=false) {
+function SELECT($name, $optvals, $value, $scr='') {
   // $log = new KLogger("/var/log/log.txt", KLogger::DEBUG);
   if (count ( $optvals ) == 0) {
     throw new Exception ( 'Optvals has no elements', 0 );
@@ -79,15 +79,13 @@ function SELECT($name, $optvals, $value, $noscript=false) {
 </select> {$icon}
 END;
 
-  if ($noscript == false) {
-    $out .= <<<"END"
-<script> watch_select("{$name}", "{$baseurl}" );</script>
-END;
+  if ($scr != '') {
+    $out .= "<script>{$scr} </script>";
   }
   return $out;
 }
 
-function RADIO($name, $optvals, $value, $noscript=false) {
+function RADIO($name, $optvals, $value, $scr='') {
   if (count ( $optvals ) == 0) {
     throw new Exception ( 'Optvals has no elements', 0 );
   }
@@ -99,12 +97,12 @@ function RADIO($name, $optvals, $value, $noscript=false) {
    */
   foreach ( $optvals as $n => $v ) {
     $sel = ($v == $val) ? "checked=\"checked\" " : '';
-    $scr = '';
+    /*$scr = '';
     if ($noscript == false) {
       $scr = <<<END
 onclick="click_sub_sec('{$name}');"
 END;
-    }
+}*/
     // logit("Interiem - {$val} : {$sel}: {$n} => {$v}");
     $optout [] = "<input style=\"margin: 0 4px 0 6px;\" type=\"radio\" name=\"{$name}\" " . 
       "id=\"{$name}_{$n}\" value=\"{$v}\" {$scr}  {$sel} >".
@@ -113,13 +111,13 @@ END;
   $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
   $optout [] = ($val != '') ? '' : "<img id=\"{$name}_icon\" src=\"{$baseurl}/cancel-on.png\" />";
   $options = implode ( "\n", $optout );
-  if ($noscript ==false) {
+  if ($scr != '') {
     $out = $options . "\n<script> watch_radio('{$name}');</script>";$options;
   }
   return $out;
 }
 
-function RADIO_CALC($name, $optvals, $value, $score, $noscript=false) {
+function RADIO_CALC($name, $optvals, $value, $score, $scr='') {
   if (count ( $optvals ) == 0) {
     throw new Exception ( 'Optvals has no elements', 0 );
   }
@@ -132,10 +130,10 @@ function RADIO_CALC($name, $optvals, $value, $score, $noscript=false) {
   foreach ( $optvals as $n => $v ) {
     $sel = ($v == $val) ? "checked=\"checked\" " : '';
     $sendid = substr($name, 0, 3);
-    $scr = '';
+    /*$scr = '';
     if ($noscript ==false) {
       $scr = "onclick=\"set_total('{$sendid}');\"";
-    }
+      }*/
     // logit("Interiem - {$val} : {$sel}: {$n} => {$v}");
     $optout [] = "<input style=\"margin: 0 4px 0 6px;\" type=\"radio\" name=\"{$name}\" " . 
       "id=\"{$name}_{$n}\" value=\"{$v}\" {$sel} {$scr}>".
@@ -144,13 +142,13 @@ function RADIO_CALC($name, $optvals, $value, $score, $noscript=false) {
   $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
   $optout [] = ($val != '') ? '' : "<img id=\"{$name}_icon\" src=\"{$baseurl}/cancel-on.png\" />";
   $options = implode ( "\n", $optout );
-  if ($noscript == false) {
+  if ($scr != '') {
     $out = $options . "\n<script> watch_ynp('{$name}', {$score});</script>";
   }
   return $out;
 }
 
-function RADIO_ADD($name, $optvals, $value, $noscript=false) {
+function RADIO_ADD($name, $optvals, $value, $scr='') {
   /* 
    * Adds up the count of y, n and na
    */
@@ -167,10 +165,10 @@ function RADIO_ADD($name, $optvals, $value, $noscript=false) {
     $sel = ($v == $val) ? "checked=\"checked\" " : '';
     $sendid = substr($name, 0, 3);
     // logit("Interiem - {$val} : {$sel}: {$n} => {$v}");
-    $scr = '';
+    /*$scr = '';
     if ($noscript == false) {
       $scr = "onclick=\"count_ynaa_add('{$sendid}');\"";
-    }
+      }*/
     $optout [] = "<input style=\"margin: 0 4px 0 6px;\" type=\"radio\" name=\"{$name}\" " . 
       "id=\"{$name}_{$n}\" value=\"{$v}\" {$sel} {$scr}>".
       " <label class=\"il\" for=\"{$name}_{$n}\">{$n}</label> ";
@@ -316,38 +314,41 @@ function SELECT_LIVE($arr, $name, $value, $class = '') {
   return OPTIONS ( $name, $opts, $value );
 }
 
-function OPTIONS($varname, $optvals, $value, $noscript=false) {
+function OPTIONS($varname, $optvals, $value, $scr='') {
   /**
    * Depending on the number of optvals we choose select or Radio buttons
    *
    * 3 or less gets Radio
    */
+  $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
   $ct = count ( $optvals );
   if (count ( $optvals ) <= 3) {
-    return RADIO ( $varname, $optvals, $value, $noscript );
+    return RADIO ( $varname, $optvals, $value, "onclick=\"click_sub_sec('{$varname}');\"");
   } else {
-    return SELECT ( $varname, $optvals, $value, $noscript );
+    return SELECT ( $varname, $optvals, $value, "watch_select('{$varname}', '{$baseurl}');");
   }
   
 }
 
-function OPTIONS_CALC($varname, $optvals, $value, $score, $noscript=false) {
+function OPTIONS_CALC($varname, $optvals, $value, $score, $scr='') {
   /**
    * Depending on the number of optvals we choose select or Radio buttons
    *
    * 3 or less gets Radio
    */
-  $ct = count ( $optvals );
-  if (count ( $optvals ) <= 3) {
-    return RADIO_CALC ( $varname, $optvals, $value, $score, $noscript );
+  $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
+  $ct = count ($optvals);
+  $sendid = substr($varname, 0, 3);
+  if (count ($optvals) <= 3) {
+    return RADIO_CALC($varname, $optvals, $value, $score, "onclick=\"set_total('{$sendid}');\"");
   } else {
-    return SELECT ( $varname, $optvals, $value, $noscript );
+    return SELECT($varname, $optvals, $value, "watch_select('{$varname}', '{$baseurl}');");
   }
   
 }
 
 
-function OPTIONS_ADD($varname, $optvals, $value, $noscript=false) {
+function OPTIONS_ADD($varname, $optvals, $value, $scr='') {
   /**
    * Depending on the number of optvals we choose select or Radio buttons
    *
@@ -355,9 +356,9 @@ function OPTIONS_ADD($varname, $optvals, $value, $noscript=false) {
    */
   $ct = count ( $optvals );
   if (count ( $optvals ) <= 3) {
-    return RADIO_ADD ( $varname, $optvals, $value, $noscript );
+    return RADIO_ADD ( $varname, $optvals, $value, $scr);
   } else {
-    return SELECT ( $varname, $optvals, $value, $noscript );
+    return SELECT ( $varname, $optvals, $value, $scr);
   }
   
 }
@@ -408,9 +409,16 @@ function widget_select_ynp_calc($varname, $value, $t, $score) {
   return OPTIONS_CALC ( $varname, $optvals, $value, $score );
 }
 
+function widget_select_ynp_add($varname, $value, $t) {
+  $optvals = getYNP ( $t );
+  $sendid = substr($varname, 0, 3);
+  return OPTIONS_ADD ( $varname, $optvals, $value, "onclick=\"count_ynp_add('{$sendid}');\"" );
+}
+
 function widget_select_yna_add($varname, $value, $t) {
   $optvals = getYNA ( $t );
-  return OPTIONS_ADD ( $varname, $optvals, $value );
+  $sendod = substr($varname, 0, 3);
+  return OPTIONS_ADD ( $varname, $optvals, $value, "onclick=\"count_ynaa_add('{$sendid}');\"" );
 }
 
 function widget_select_wp($varname, $value, $t) {
@@ -1016,6 +1024,65 @@ function partial_sub_sec_head($row, $value, $t) {
         <input class="ro" name="{$name}_score" id="{$name}_score" value="{$scoreval}" rel="{$ec}"
                type="text"  size="2">
         / <b>{$max_score}</b></div>
+      <div>{$tarea}</div>
+      <div id="div{$name}_nc" style="{$vis}" >
+        Notes:<br />
+        {$tareanc}
+      </div>
+    </td>
+</tr></table>
+END;
+  
+  return $out;
+}
+
+function partial_sub_sec_head_ynp($row, $value, $t) {
+  $prefix = $row ['prefix'];
+  $heading = $row ['heading'];
+  $text = $row ['text'];
+  $info = $row ['info'];
+  $name = $row ['varname'];
+  $ec = $row['element_count'];
+  //$max_score = $row ['score'];
+  $widget_nyp = widget_select_ynp_add ( "{$name}_ynp", $value, $t );
+  $head = ($heading) ? "{$heading}<br />" : "";
+  $tarea = TEXTAREA ( "{$name}_comment", $value, "width:100%;height:50px;margin-top:5px;" );
+  $tareanc = TEXTAREA ( "{$name}_note", $value, "width:100%;height:50px;margin-top:6px;", 'nc' );
+  $ncval = get_arrval ( $value, $name . '_nc', 'F' );
+  $checked = '';
+  $nscore = "{$name}_score";
+  //logit("NSCORE: ". $nscore);
+  $scoreval = get_arrval ( $value, $nscore, 0 );
+  if ($ncval == 'T') {
+    $checked = 'checked';
+    $vis = '';
+  } else {
+    $ncval = 'F';
+    $vis = "display:none;";
+  }
+  $out = <<<"END"
+<table style="width:810px;">
+  <tr>
+    <td style="padding: 2px 4px;vertical-align:top;">
+      <div style="display:inline-block;width:440px;vertical-align:top;">
+        <div style="width:438px;display:inline;">
+          <div style="display:inline;font-weight:bold;width:25px;vertical-align:top;">{$prefix}</div>
+          <div style="display:inline-block;width:405px;">
+            <div style="text-decoration:underline;font-weight:bold;display:inline;">{$head}</div>
+            <div style="vertical-align:top;display:inline;">{$text}<br />
+              <div style="width:100%;text-align:right;margin-top:5px;">
+                <label><input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
+                              onclick="toggleNCBox(this);">Non-Compliant</label>
+                <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
+            </div></div>
+          </div>
+          <div
+             style="font-style:italic;font-weight:bold;font-size:10px;margin-top:5px;">{$info}</div>
+        </div>
+      </div>
+    </td>
+    <td style="vertical-align:top;padding: 2px 4px;width:350px;">
+      <div style="margin-right:5px;display:inline;">{$widget_nyp}</div>
       <div>{$tarea}</div>
       <div id="div{$name}_nc" style="{$vis}" >
         Notes:<br />
@@ -1883,6 +1950,39 @@ END;
   
   return $out;
 }
+
+function partial_ynp_ct($row, $value, $t) {
+  /*
+   * Yes, No and Partial count for the section
+   */
+  // $prefix = $row ['prefix'];
+  $name = $row ['varname'];
+  $heading = $row ['heading'];
+  $v_y_ct = get_arrval($value, "{$name}_y_ct", 0);
+  $v_n_ct = get_arrval($value, "{$name}_n_ct", 0);
+  $v_p_ct = get_arrval($value, "{$name}_p_ct", 0);
+  //$text = $row ['text'];
+  //$info = $row ['info'];
+  $name = $row ['varname'];
+  $ec = $row['element_count'];
+  $out = <<<"END"
+<div style="padding: 2px; 4px;width:810px;background:#ccccff;">
+  <div style="font-size:14px;padding: 4px;font-weight:bold;background:#ccccff;width:570px;float:left;">{$heading}</div>     
+  <div style="display:inline;float:right;margin-left:5px;background:#ccccff;">
+No<input class="ro" name="{$name}_n_ct" id="{$name}_n_ct" value="{$v_n_ct}" 
+         type="text"  size="2"> </div>
+  <div style="display:inline;float:right;margin-left:5px;background:#ccccff;">
+Partial<input class="ro" name="{$name}_p_ct" id="{$name}_p_ct" value="{$v_p_ct}" 
+              type="text"  size="2"> </div>
+ <div style="display:inline;float:right;margin-left:5px;background:#ccccff;">
+Yes<input class="ro" name="{$name}_y_ct" id="{$name}_y_ct" value="{$v_y_ct}"  
+          type="text"  size="2"> </div>
+<div style="clear:both;"></div>
+</div>
+END;
+  
+  return $out;
+}
 /* 
  * the bottom line 
  */
@@ -2004,22 +2104,27 @@ function calculate_page($rows, $value, $langtag) { //$tword) {
   return $tout;
 }
 
-function calculate_dialog($drows, $value, $langtag, $formtype='table') { 
-  /**
-   * Given the dialog rows, create the dialog
-   * - using field templates to create individual rows
-   */
+/*
+function calculate_dialog($drows, $value, $title, $langtag, $formtype='table') { 
+  
+  // * Given the dialog rows, create the dialog
+  // * - using field templates to create individual rows
+  //  
 
   $tlist = getTranslatables ( $langtag); 
   
   $tout = array ();
   $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
-
+  $tout[] = <<<"END"
+<div style="margin-left:200px;"><h1 style="margin-bottom:10px;">{$title}</h1></div>
+<div style="margin:15px 0;">
+END;
   $tout [] = '<table border=0 style="width:900px;">';
+
   $thid = array();
   foreach ( $drows as $row ) {
     $pos = $row['position'];
-    if ($pos ==0) continue;
+    //if ($pos ==0) continue;
     $type = $row ['field_type'];
     $arow = array ();
     
@@ -2029,7 +2134,7 @@ function calculate_dialog($drows, $value, $langtag, $formtype='table') {
     $varname = $arow['varname'];
     $arow['baseurl'] = $baseurl;
     $arow['field_length'] = $row['field_length'];
-    
+    $info = $row['info'];
     
     switch ($type) {
     case '':
@@ -2039,6 +2144,15 @@ function calculate_dialog($drows, $value, $langtag, $formtype='table') {
       $val = get_arrval($value, $varname, '');
       $thid[] = "<input type=\"hidden\" name=\"{$varname}\" value=\"{$val}\">";
       break;
+    case 'info':
+      
+      $tout[] = <<<"END"
+<tr>
+<td class="n f right" style=width:200px;">
+<td class="n f" style=width:600px;">{$info}</td>
+</tr>
+END;
+      break;
     case 'submit_button':
       $arow['field_label'] = $field_label;
       $field_label = '';
@@ -2046,16 +2160,16 @@ function calculate_dialog($drows, $value, $langtag, $formtype='table') {
       $inp = call_user_func("dialog_{$type}", $arow, $value, $tlist);
       $tout[] = <<<"END"
 <tr>
-<td class="n f right" style=width:400px;">
+<td class="n f right" style=width:300px;">
 <label for="{$varname}" style="" class="inp">{$field_label}</label>
-</td><td class="n f" style=width:400px;">{$inp}</td>
+</td><td class="n f" style=width:500px;">{$inp}</td>
 </tr>
 END;
     }
   }
-  $tout[] = '</table>';
+  $tout[] = '</table></div></div>';
   $tout[] = implode("\n", $thid);
   //logit('dialog: '. print_r($tout, true));
   return implode("\n", $tout);
 }
-
+*/

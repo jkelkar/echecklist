@@ -139,19 +139,29 @@ class UserController extends Application_Controller_Action
     // $urldata = $this->getRequest()->getParams();
     if (!$this->getRequest()->isPost()) {
       $row = $user->getUser($id);
-      // logit('LAB: '. print_r($row, true));
+      unset($row['password']);
       $this->makeDialog($row);
     } else {
       // display the form here
       $this->collectData();
       // logit('Data: ' . print_r($this->data));
-      $user->updateData($data, $id); 
-      $this->_redirector->gotoUrl($this->mainpage);
+      $row = $user->getUser($id);
+      if ($this->data['password'] == $row['password']) { // FIXME -use bcrypt
+        unset($this->data['password']);
+        unset($this->data['id']);
+        logit('USER DATA: '. print_r($this->data, true));
+        $user->updateData($this->data, $id); 
+        $this->_redirector->gotoUrl($this->mainpage);
+      } else {
+        unset($this->data['password']);
+        $this->echecklistNamespace->flash = "Incorrect password";
+        $this->makeDialog($row);
+      }
     }
   }
-
-  public function resetpwAction() {
-    $this->dialog_name = 'user/resetpw';
+    
+  public function changepwAction() {
+    $this->dialog_name = 'user/changepw';
     logit ("{$this->dialog_name}" );
     $user = new Application_Model_DbTable_User();
     $id = (int)$this->echecklistNamespace->user['id'];

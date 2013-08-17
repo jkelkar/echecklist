@@ -192,6 +192,24 @@ function count_ynaa_add(name) {
     var na;
 }
 
+function count_ynp_add(name) {
+    var yesct = 0,
+        noct = 0, 
+        pct= 0;
+    var i, val;
+    $('input[name$="_ynp"]:checked').each( function(i) {
+        switch($(this).val()) {
+        case 'YES': yesct++; break;
+        case 'NO':  noct++; break;
+        case 'PARTIAL': pct++; break;
+        default: 
+        }
+        $('#'+name+'_y_ct').val(yesct);
+        $('#'+name+'_n_ct').val(noct);
+        $('#'+name+'_p_ct').val(pct);
+    });
+    var na;
+}
 function track_yn(name) {
     var topname = name.substr(0,5);
     

@@ -26,7 +26,7 @@
     </script>
     <?php echo $this->header; ?>
     <div id="content" style="margin-left: 10px;">
-      <div id="content" style="margin: 20px 0 0 10px;">
+      <div id="content2" style="margin: 20px 0 0 10px;">
          <?php if ($this->flash != '') { ?>
            <div id="flash"
             style="float:right;font-size:16px;border:1px solid #c00;background:#ffe;padding: 6px 10px;">
@@ -36,13 +36,15 @@
       <?php echo $this->layout()->content; ?>
 
       <div id="outer" style="margin-left: 10px;">
-        <div id="wrapper" >
+        <div id="wrapper" style="overflow:auto;">
           <div id="leftpane"
-               style="width: 200px; min-height: 500px; border-right: none; background-color: #fffff0; float: left;">
-            <script type="text/javascript">d = new dTree('d'); <?php echo $this->treelines; ?> document.write(d);</script>
+               style="width: 200px; min-height: 600px; border-right: none;float:left;">
+            <div style="width: 200px; min-height: 500px; background-color: #fffff0;position:fixed;">
+              <script type="text/javascript">d = new dTree('d'); <?php echo $this->treelines; ?> document.write(d);</script>
+            </div>
           </div>
           <div id="rightpane"
-             style="height: 600px; float:left;" >
+             style="height: 600px;float:left;overflow:auto;width:960px;" >
             <div style="margin: 0 10px; margin-bottom: 15px;" >
               <form method="post" action=""
                     enctype="application/x-www-form-urlencoded" name="slipta"

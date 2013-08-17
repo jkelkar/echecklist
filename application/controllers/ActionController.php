@@ -6,6 +6,7 @@
  * <!--&nbsp;&nbsp;&nbsp;<a class="header" href="/help">Help</a-->
  */
 require_once 'modules/Checklist/logger.php';
+require_once 'modules/Checklist/fillout.php';
 
 class Application_Controller_Action extends Zend_Controller_Action {
   
@@ -239,6 +240,22 @@ END;
 					<li><a href="{$this->baseurl}/language/switch/VI"><span title=".icon  .icon-green  .icon-flag " class="icon icon-green icon-flag"></span> Vietnamese</a></li>
 				</ul>
 </div>
+
+<!-- user dropdown starts -->
+			<div class="btn-group pull-right">
+				<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+          <span title=".icon  .icon-orange  .icon-user " class="icon icon-orange icon-user"></span>
+          <span class="hidden-phone"> {$name_header}</span>
+					<span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu">
+					<li><a href="{$this->baseurl}/user/profile"><span title=".icon  .icon-blue  .icon-contacts " class="icon icon-blue icon-contacts"></span> Profile</a></li>
+          <li><a href="{$this->baseurl}/user/changepw"><span title=".icon  .icon-blue  .icon-contacts " class="icon icon-blue icon-contacts"></span> Change Password</a></li>
+					<li class="divider"></li>
+					<li><a href="{$this->baseurl}/user/logout">Logout</a></li>
+				</ul>
+			</div>
+			<!-- user dropdown ends -->
 END;
 
       $this->header .= <<<"END"
@@ -249,36 +266,13 @@ END;
 END;
     } else {
       $this->header = $this->header . <<<"END"
-  <div class="btn-group pull-left" style="margin-left:200px;">
+  <div class="btn-group pull-left" style="margin-left:100px;">
 <a class="btn" href="{$this->baseurl}/user/login"><span title=".icon  .icon-blue  .icon-contacts " class="icon icon-blue icon-contacts"></span> Login</a></div>
 
 END;
     }
     $this->header = $this->header . <<<"END"
-
-     
-    <!-- user dropdown starts -->
-			<div class="btn-group pull-right">
-				<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-          <span title=".icon  .icon-orange  .icon-user " class="icon icon-orange icon-user"></span>
-          <span class="hidden-phone"> {$name_header}</span>
-					<span class="caret"></span>
-				</a>
-				<ul class="dropdown-menu">
-					<li><a href="{$this->baseurl}/user/profile"><span title=".icon  .icon-blue  .icon-contacts " class="icon icon-blue icon-contacts"></span> Profile</a></li>
-          <li><a href="{$this->baseurl}/user/resetpw"><span title=".icon  .icon-blue  .icon-contacts " class="icon icon-blue icon-contacts"></span> Reset Password</a></li>
-					<li class="divider"></li>
-					<li><a href="{$this->baseurl}/user/logout">Logout</a></li>
-				</ul>
-			</div>
-			<!-- user dropdown ends -->
-      <!--div class="btn-group pull-right" style="top:6px;font-size:16px;">
-      {$dt}
-      </div--> 
    </div>
-<!--div class="container-fluid"><div style="float:right;margin:6px 0 6px 29px;padding-right:5px;"><b>Lab:</b> Fastfix</div>
-     <div style="float:right;margin:6px 0 6px 29px;"><b>Audit:</b> type/id/date</div>
-       <div style="clear:both;"></div></div-->
   </div> <!-- style="clear:both;"></div -->
 </div>
 END;
@@ -335,26 +329,92 @@ END;
     logit('MENU: '. $this->makeMenu($menu)); */
   }
 
+  function calculate_dialog($drows, $value, $title, $langtag, $formtype='table') { 
+    /**
+     * Given the dialog rows, create the dialog
+     * - using field templates to create individual rows
+     */
+    
+    $tlist = getTranslatables ( $langtag); 
+    
+    $tout = array ();
+    $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
+    $title = $drows[0]['title'];
+    $tout[] = <<<"END"
+<div style="margin-left:200px;"><h1 style="margin-bottom:10px;">{$title}</h1></div>
+<div style="margin:15px 0;">
+END;
+    $tout [] = '<table border=0 style="width:900px;">';
+    
+    $thid = array();
+    foreach ( $drows as $row ) {
+      $pos = $row['position'];
+      //if ($pos ==0) continue;
+      $type = $row ['field_type'];
+      $arow = array ();
+      
+      $field_label = get_lang_text($row['field_label'], '', '') ; //, $row ['ltdefault'], $row ['ltlang'] );
+      $arow['field_label'] = $field_label . ':';
+      $arow['varname'] = $row ['field_name'];
+      $varname = $arow['varname'];
+      $arow['baseurl'] = $baseurl;
+      $arow['field_length'] = $row['field_length'];
+      $info = $row['info'];
+      
+      switch ($type) {
+      case '':
+        logit("ROW: ".print_r($row, true));
+        break;
+      case 'hidden':
+        $val = get_arrval($value, $varname, '');
+        $thid[] = "<input type=\"hidden\" name=\"{$varname}\" value=\"{$val}\">";
+        break;
+      case 'info':
+        
+        $tout[] = <<<"END"
+<tr>
+<td class="n f right" style=width:200px;">
+<td class="n f" style=width:600px;">{$info}</td>
+</tr>
+END;
+        break;
+      case 'submit_button':
+        $arow['field_label'] = $field_label;
+        $field_label = '';
+      default:
+        $inp = call_user_func("dialog_{$type}", $arow, $value, $tlist);
+        $tout[] = <<<"END"
+<tr>
+<td class="n f right" style=width:300px;">
+<label for="{$varname}" style="" class="inp">{$field_label}</label>
+</td><td class="n f" style=width:500px;">{$inp}</td>
+</tr>
+END;
+      }
+    }
+    $tout[] = '</table></div></div>';
+    $tout[] = implode("\n", $thid);
+    //logit('dialog: '. print_r($tout, true));
+    return implode("\n", $tout);
+  }
+
+
   public function getDialogLines() {
     /*
      * Get the DialogRow data
      */
     $dialog = new Application_Model_DbTable_DialogRow();
-    $allrows = $dialog->getFullDialog($this->dialog_name);
-    // logit('DialogRows: '. print_r($allrows, true));
-    $this->title = $allrows['dialog']['title'];
-    $this->drows = $allrows['dialog_rows'];
+    $this->drows = $dialog->getDialogRows($this->dialog_name);
   }
 
-  public function makeDialog($row=array(''=>'')) {
+  public function makeDialog($value=array(''=>'')) {
     /*
      * Create the dialog
      */
     $this->getDialogLines();
     // logit('makeDialog:');
-    $this->view->outlines = calculate_dialog($this->drows, $row, $this->view->langtag);
-    //generate_dialog_processing($drows);
-    //$this->view->title = $title;
+    $this->view->outlines = $this->calculate_dialog($this->drows, $value, $this->title, $this->view->langtag);
+    $this->view->title = $this->title;
     $this->_helper->layout->setLayout('overall');
     $this->view->flash = $this->echecklistNamespace->flash;
     $this->echecklistNamespace->flash = '';
@@ -371,6 +431,7 @@ END;
     $this->data = array();
     $formData = $this->getRequest();
     foreach ($this->drows as $row) {
+      if ($row['position'] == 0) continue;
       $type = $row ['field_type'];
       $varname = $row ['field_name'];
       

@@ -97,7 +97,6 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
       $this->updateAuditData ( $did, $n, $v, $page_id );
     }
     $this->updateFinalScore($did, 0);
-  
   }
 
   public function updateAuditData($did, $name, $value, $page_id) {

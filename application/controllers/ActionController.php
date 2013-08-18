@@ -229,6 +229,7 @@ END;
 <li><a href="{$this->baseurl}/audit/edit/2/"><span title=".icon  .icon-blue  .icon-edit " class="icon icon-blue icon-edit"></span> Edit 2</a></li>
 <li><a href="{$this->baseurl}/audit/edit/3/"><span title=".icon  .icon-blue  .icon-edit " class="icon icon-blue icon-edit"></span> Edit 3</a></li-->
         <li class="divider"></li>
+        <li><a href="{$this->baseurl}/audit/select"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Export to Excel</a></li>
         <li><a href="{$this->baseurl}/audit/import"><span title=".icon  .icon-blue .icon-import " class="icon icon-blue icon-archive"></span> Import</a></li>
 				</ul>
 </div>
@@ -241,7 +242,6 @@ END;
 <ul class="dropdown-menu">
 					<li><a href="{$this->baseurl}/lab/create"><span title=".icon  .icon-green  .icon-tag " class="icon icon-green icon-tag"></span> New Lab</a></li>
 					<li><a href="{$this->baseurl}/lab/find"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Find Lab</a></li>
-        <li><a href="{$this->baseurl}/lab/select"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Select Labs</a></li>
 				</ul>
 </div>
 
@@ -367,12 +367,13 @@ END;
     $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
     $title = $drows[0]['title'];
     $tout[] = <<<"END"
-<div style="margin-left:200px;"><h1 style="margin-bottom:10px;">{$title}</h1></div>
+<div style="margin-left:200px;"><h1 style="margin-bottom:10px;">{$title}
+<button onclick="return toggleHelp();">Help</button> </h1> </div>
 <div style="margin:15px 0;">
 END;
     $tout [] = '<table border=0 style="width:900px;">';
     
-    $thid = array();
+    $hid = array();
     foreach ( $drows as $row ) {
       $pos = $row['position'];
       //if ($pos ==0) continue;
@@ -393,14 +394,21 @@ END;
         break;
       case 'hidden':
         $val = get_arrval($value, $varname, '');
-        $thid[] = "<input type=\"hidden\" name=\"{$varname}\" value=\"{$val}\">";
+        $hid[] = "<input type=\"hidden\" name=\"{$varname}\" value=\"{$val}\">";
         break;
       case 'info':
-        
         $tout[] = <<<"END"
 <tr>
 <td class="n f right" style=width:200px;">
-<td class="n f" style=width:600px;">{$info}</td>
+<td class="n f" style=width:600px;"><div id="help">{$info}</div></td>
+</tr>
+END;
+        break;
+      case 'heading':
+        $tout[] = <<<"END"
+<tr>
+<td class="n f right" style=width:50px;">
+<td class="n f" style=width:750px;"><h3>{$field_label}</h3></td>
 </tr>
 END;
         break;
@@ -419,7 +427,7 @@ END;
       }
     }
     $tout[] = '</table></div></div>';
-    $tout[] = implode("\n", $thid);
+    $tout[] = implode("\n", $hid);
     //logit('dialog: '. print_r($tout, true));
     return implode("\n", $tout);
   }
@@ -456,15 +464,34 @@ END;
     $ignore_list = array('', 'submit_button');
     $this->data = array();
     $formData = $this->getRequest();
+    //logit('POST: '. print_r($formData->getPost(), true));
+    //logit('GET : '. print_r($formData->getQuery(), true));
+    //logit('PARA: '. print_r($formData->getParam('country'), true));
+    //logit('FORM: '. print_r($this->getRequest()->getPost(), true));
     foreach ($this->drows as $row) {
       if ($row['position'] == 0) continue;
-      $type = $row ['field_type'];
-      $varname = $row ['field_name'];
+      $type = $row['field_type'];
+      $varname = $row['field_name'];
       
       if (in_array($type, $ignore_list)) {
         continue;
       }
+      //logit('IN: '. $formData->getPost($varname,''));
       $this->data[$varname] = $formData->getPost($varname,'');
+      /*
+        if (key_exists($varname, $this->data)) {
+        logit('Keyexists: '. $varname . ' ' . print_r($this->data, true));
+          if (!is_array($this->data[$varname])) {
+            $this->data[$varname] = array($this->data[$varname]);
+            logit('arr: '.print_r($this->data[$varname], true));
+          }
+          $this->data[$varname][] = $formData->getPost($varname,'');
+          logit('arr: '.print_r($this->data[$varname], true));
+        } else {
+          $this->data[$varname] = $formData->getPost($varname,'');
+          logit('one: '. $formData->getPost($varname,''));
+        }
+      */
     }
   }
 

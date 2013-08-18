@@ -16,13 +16,12 @@ require_once '../application/models/DbTable/Lab.php';
  * returns the $default value <sed in
  */
 function get_arrval($arr, $k, $default) {
-  /*
+    /* // Uncomment the large block to see the call stack  
     logit("GA: " . gettype($arr) . " ->{$k}");
     if (gettype($k) == 'array') {
     logit('ARR: '. print_r($k, true));
     }
-  */
-  /*
+
   $callers = debug_backtrace ();
   logit("TRACE: {$callers[1]['function']}");
   $trace=debug_backtrace();
@@ -32,10 +31,11 @@ function get_arrval($arr, $k, $default) {
   $caller=array_shift($trace);
   
   echo "Called by {$caller['function']}";
-  */
+  
   //if (isset($caller['class']))
   //echo " in {$caller['class']}";
   //logit('KEY?: '. key_exists ( $k, $arr ) ? $arr[$k] : $default) . '<br />';
+  */
   return key_exists ( $k, $arr ) ? $arr[$k] : $default;
 }
 
@@ -60,12 +60,15 @@ function SELECT($name, $optvals, $value, $scr='', $multiple=false) {
   //logit('SEL NAME: '. $name );
   //logit('SEL ARR:  ' . print_r($name, true));
   $val = get_arrval ( $value, $name, '' );
-  // $log->LogInfo("{$name} - {$val}");
+  logit("SELECT: {$name} - {$val} ". print_r($val, true));
   
   // foreach ($value as $n => $v) { logit("Values {$n} - {$v}"); }
    
   foreach ( $optvals as $n => $v ) {
-    $sel = ($v == $val) ? "selected=selected " : '';
+    if ($multiple && is_array($val)) 
+      $sel = (in_array($v, $val)) ? "selected=selected " : '';
+    else
+      $sel = ($v == $val) ? "selected=selected " : '';
     //logit("Interiem - {$val} : {$sel}: {$n} => {$v}");
     $optout [] = "<option {$sel} value=\"{$v}\">{$n}</option>";
   }
@@ -74,8 +77,9 @@ function SELECT($name, $optvals, $value, $scr='', $multiple=false) {
   
   $options = implode ( "\n", $optout );
   $mult = ($multiple) ? 'multiple' : '';
+  $namemul = ($multiple)? "{$name}[]" : $name;
   $out = <<<"END"
-   <div style="diaplay:inline;float:left;"> <select name="{$name}" id="{$name}" data-rel="chosen" {$mult} class="select">
+   <div style="diaplay:inline;float:left;"> <select name="{$namemul}" id="{$name}" data-rel="chosen" {$mult} class="select">
   {$options}
 </select></div><div style="display:inline;float:left;">{$icon}</div> 
 END;
@@ -208,6 +212,7 @@ function INPUT($name, $value, $type = "string", $length = 0, $style = "", $class
       }
       break;
     case 'integer' :
+  case 'integersmall':
     case 'datetime' :
     case 'string' :
       $dtype = $type;
@@ -608,25 +613,18 @@ function dialog_labaffil_m($row, $value, $t) {
 
 function widget_select_slmtastatus($varname, $value, $t) {
   $optvals = getSLMTAStatus ( $t );
-  /*
-   * array(//"{$t['Select']} ..." => '-',
-   * "{$t['Official ASLM Audit']}" => 'ASLM',
-   * "{$t['SLMTA Audit']}" => 'SLMTA',
-   * "{$t['Base Line Assessment']}" => 'BASELINE',
-   * "{$t['Non SLMTA Audit']}" => 'NONSLMTA' );
-   */
   return OPTIONS ( $varname, $optvals, $value, '' );
+}
+
+function dialog_slmtastatus_m($row, $value, $t) {
+  $varname = $row['varname'];
+  $optvals = getSLMTAStatus ( $t );
+  $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
+  return SELECT($varname, $optvals, $value, "watch_select('{$varname}', '{$baseurl}');", true);
 }
 
 function widget_select_slmtatype($varname, $value, $t) {
   $optvals = getSLMTAType ( $t );
-  /*
-   * array(//"{$t['Select']} ..." => '-',
-   * "{$t['Official ASLM Audit']}" => 'ASLM',
-   * "{$t['SLMTA Audit']}" => 'SLMTA',
-   * "{$t['Base Line Assessment']}" => 'BASELINE',
-   * "{$t['Non SLMTA Audit']}" => 'NONSLMTA' );
-   */
   $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
   return SELECT($varname, $optvals, $value, "watch_select('{$varname}', '{$baseurl}');" );
 }
@@ -650,6 +648,10 @@ function widget_text255($name, $value) {
 
 function widget_integer($name, $value, $length = 0) {
   return INPUT ( $name, $value, 'integer', $length );
+}
+
+function widget_integersmall($name, $value, $length = 0) {
+  return INPUT ( $name, $value, 'integersmall', $length );
 }
 
 function partial_main_heading($row) {
@@ -900,6 +902,17 @@ function partial_date_field($row, $value, $t) {
 </div>
 </div>
 END;
+  return $out;
+}
+
+function dialog_date_field($row, $value, $t) {
+  $name = $row ['varname'];
+  //$prefix = $row ['prefix'];
+  //$heading = $row ['heading'];
+  //$text = $row ['text'];
+  $datef = INPUT ( $name, $value, 'date', 0, '', '' );
+  // $script = '<script> $(function() {$( "' . "#{$name}" . '" ).datepicker();});</script>';
+  $out = $datef;
   return $out;
 }
 
@@ -1565,15 +1578,15 @@ function partial_criteria_1_values($row, $value, $t) {
   $heading = $row ['heading'];
   $text = $row ['text'];
   $name = $row ['varname'];
-  $i11 = widget_integer ( "{$name}_qnt_d", $value, 4 );
-  $i12 = widget_integer ( "{$name}_qnt_w", $value, 4 );
-  $i13 = widget_integer ( "{$name}_qnt_er", $value, 4 );
-  $i21 = widget_integer ( "{$name}_sqt_d", $value, 4 );
-  $i22 = widget_integer ( "{$name}_sqt_w", $value, 4 );
-  $i23 = widget_integer ( "{$name}_sqt_er", $value, 4 );
-  $i31 = widget_integer ( "{$name}_qlt_d", $value, 4 );
-  $i32 = widget_integer ( "{$name}_qlt_w", $value, 4 );
-  $i33 = widget_integer ( "{$name}_qlt_er", $value, 4 );
+  $i11 = widget_integersmall ( "{$name}_qnt_d", $value, 4 );
+  $i12 = widget_integersmall ( "{$name}_qnt_w", $value, 4 );
+  $i13 = widget_integersmall ( "{$name}_qnt_er", $value, 4 );
+  $i21 = widget_integersmall ( "{$name}_sqt_d", $value, 4 );
+  $i22 = widget_integersmall ( "{$name}_sqt_w", $value, 4 );
+  $i23 = widget_integersmall ( "{$name}_sqt_er", $value, 4 );
+  $i31 = widget_integersmall ( "{$name}_qlt_d", $value, 4 );
+  $i32 = widget_integersmall ( "{$name}_qlt_w", $value, 4 );
+  $i33 = widget_integersmall ( "{$name}_qlt_er", $value, 4 );
   $out = <<<"END"
   <table style="width:100%;">
   <tr>
@@ -2159,72 +2172,3 @@ function calculate_page($rows, $value, $langtag) { //$tword) {
   return $tout;
 }
 
-/*
-function calculate_dialog($drows, $value, $title, $langtag, $formtype='table') { 
-  
-  // * Given the dialog rows, create the dialog
-  // * - using field templates to create individual rows
-  //  
-
-  $tlist = getTranslatables ( $langtag); 
-  
-  $tout = array ();
-  $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
-  $tout[] = <<<"END"
-<div style="margin-left:200px;"><h1 style="margin-bottom:10px;">{$title}</h1></div>
-<div style="margin:15px 0;">
-END;
-  $tout [] = '<table border=0 style="width:900px;">';
-
-  $thid = array();
-  foreach ( $drows as $row ) {
-    $pos = $row['position'];
-    //if ($pos ==0) continue;
-    $type = $row ['field_type'];
-    $arow = array ();
-    
-    $field_label = get_lang_text($row['field_label'], '', '') ; //, $row ['ltdefault'], $row ['ltlang'] );
-    $arow['field_label'] = $field_label . ':';
-    $arow['varname'] = $row ['field_name'];
-    $varname = $arow['varname'];
-    $arow['baseurl'] = $baseurl;
-    $arow['field_length'] = $row['field_length'];
-    $info = $row['info'];
-    
-    switch ($type) {
-    case '':
-      logit("ROW: ".print_r($row, true));
-      break;
-    case 'hidden':
-      $val = get_arrval($value, $varname, '');
-      $thid[] = "<input type=\"hidden\" name=\"{$varname}\" value=\"{$val}\">";
-      break;
-    case 'info':
-      
-      $tout[] = <<<"END"
-<tr>
-<td class="n f right" style=width:200px;">
-<td class="n f" style=width:600px;">{$info}</td>
-</tr>
-END;
-      break;
-    case 'submit_button':
-      $arow['field_label'] = $field_label;
-      $field_label = '';
-    default:
-      $inp = call_user_func("dialog_{$type}", $arow, $value, $tlist);
-      $tout[] = <<<"END"
-<tr>
-<td class="n f right" style=width:300px;">
-<label for="{$varname}" style="" class="inp">{$field_label}</label>
-</td><td class="n f" style=width:500px;">{$inp}</td>
-</tr>
-END;
-    }
-  }
-  $tout[] = '</table></div></div>';
-  $tout[] = implode("\n", $thid);
-  //logit('dialog: '. print_r($tout, true));
-  return implode("\n", $tout);
-}
-*/

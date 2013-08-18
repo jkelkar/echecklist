@@ -10,13 +10,14 @@ class Application_Model_DbTable_Audit extends Application_Model_DbTable_Checklis
   private $debug = 0;
   private $format = 'Y-m-d H:i:s';
 
-  public function UpdateTS($id) {
-    $id - (int) $id;
+  public function UpdateTS_SLMTA($id, $sstatis) {
+    $id = (int) $id;
     $dt = new DateTime();
     logit('TS: '. $dt->getTimestamp());
     $fdt = $dt->format($this->format);
     $data = array(
-                  'updated_at' => "${fdt}"
+                  'updated_at' => $fdt,
+                  'slmta_status' => $sstatus
                   );
     logit("AUDIT_DT: {$id} " . print_r($data, true));
     $this->update($data, "id = {$id}");
@@ -54,4 +55,65 @@ END;
     return $rows;
   }
 
+  private function _mkList($data) {
+    $out = '';
+    // if (count($data) == 0) {
+    //  return
+    switch(count($data)) {
+    case 0 :
+      logit("0: {$data} --". print_r($data, true));
+      break;
+    case 1:
+      logit("A: = '{$data[0]}' ");
+      return "= '{$data[0]}' ";
+      break;
+    default:
+      foreach($data as $d) {
+        if ($out != '') $out .= ',';
+        if (is_string($d)) 
+          $out .= "'{$d}'" ;
+      }
+      logit("A: = in ({$out}) ");
+      return "in ({$out})";
+    }
+  }
+
+  public function selectAudits($data) {
+
+    $sql = "select * from audit a, lab l where l.id = a.lab_id";
+    foreach($data as $a => $b) {
+      if (!is_null($b) and $b != '') {
+        //logit("{$a} = {$b} ". print_r($b, true)); 
+        //logit("LIST: ", $this->_mkList($b));
+        switch($a) {
+        case 'country':
+          $sql .= " and l.country ". $this->_mkList($b) ; 
+          break;
+        case 'lablevel':
+          $sql .= " and l.lablevel ". $this->_mkList($b) ; 
+          break;
+        case 'labaffil':
+          $sql .= " and l.labaffil ". $this->_mkList($b)  ; 
+          break;
+        case 'slmta':
+          $sql .= " and l.slmta ". $this->_mkList($b) ; 
+          break;
+        case 'stdate':
+          if ($b != '') {
+            $sql .= " and a.update_at >= '{$stdate} 00:00:00' ";
+          }
+          break;
+        case 'enddate':
+          if ($b != '') {
+            $sql .= " and a.update_at <= '{$enddate} 23:59:59' ";
+          }
+          break;
+        default:
+        }
+      }
+    }
+    //logit("SQL: {$sql}");
+    $rows = $this->queryRows($sql);
+    return $rows;
+  }
 }

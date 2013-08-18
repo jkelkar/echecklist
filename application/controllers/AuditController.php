@@ -194,33 +194,33 @@ END;
         logit("P1: {$mt}");
       */
       //$mt = $mt2;
-      $formData = $this->getRequest ()->getPost ();
-      $dvalue = array ();
-      $not_include = array (
+      $formData = $this->getRequest()->getPost();
+      $dvalue = array();
+      $not_include = array(
           'sbname',
           'audit_id',
           'id'
       );
       //$thispage = 0;
-      foreach ( $formData as $a => $b ) {
+      foreach($formData as $a => $b) {
         //logit ( "FD: {$a} -- {$b}" );
         //f ($a == 'thispage') {$thispage = (int)$b; continue;}
-        if (in_array ( $a, $not_include )) {
+        if (in_array ($a, $not_include)) {
           continue;
         }
         if ($a == 'nextpage') {
-          $nextpage = ( int ) $b;
+          $nextpage = (int) $b;
         }
         $dvalue [$a] = $b;
       }
       $sbname = $formData ['sbname'];
-      logit ( "action: {$sbname}" );
+      logit ("action: {$sbname}");
       $uri = Zend_Controller_Front::getInstance ()->getRequest ()->getRequestUri ();
-      logit ( "URI: {$uri}" );
-      $u = preg_split ( "/\//", $uri );
-      if ($thi->debug) {
-        foreach ( $u as $un ) {
-          logit ( "U: {$un}" );
+      logit ("URI: {$uri}");
+      $u = preg_split ("/\//", $uri);
+      if ($this->debug) {
+        foreach ($u as $un) {
+          logit ("U: {$un}");
         }
       }
       /*
@@ -235,12 +235,12 @@ END;
       $nextpage = $pagerow['next_page_num'];
       
       $page_url = "/audit/edit/{$audit_id}/{$nextpage}"; 
-      logit ( "URINEW: {$newuri}" );
+      logit ("URINEW: {$newuri}");
       switch ($sbname) {
       case 'Cancel' :
-        logit ( "Sbname: {$sbname} switch" );
+        logit("Sbname: {$sbname} switch");
         // refresh the page
-        $this->redirect ( $newuri );
+        $this->redirect($newuri);
         break;
       case 'Save' :
         // save the data and goto main page
@@ -254,9 +254,15 @@ END;
           logit("P3: {$mtx}");
           $mt = $mt2;
         */
-        $did = $formData ['audit_id'];
-        $data->updateData ( $dvalue, $did, $pageid );
-        $aud->updateTS($did);
+        $did = $formData['audit_id'];
+        $data->updateData($dvalue, $did, $pageid);
+        $srows = $data->get($did, 'slmta_status');
+        logit('AData: '. print_r($srows, true));
+        /*// $aud->updateTS_SLMTA($did);
+        // Pulls latest lab data into audit
+        $this->updateFromLab($did);
+        // saves latest slmta_status to Audit
+        $this->updateToAudit($did);*/
         /*
           $mt2 = microtime(true);
           $mtx = $mt2 - $mt;
@@ -354,6 +360,23 @@ END;
   
   }
 
+  public function selectAction() {
+    $this->dialog_name = 'audit/select';
+    logit ( "In LS" );
+    if (! $this->getRequest ()->isPost ()) {
+      $this->makeDialog();
+    } else {
+      logit('Select: In post');
+      $this->collectData();
+      logit('Auditsel: '. print_r($this->data, true));
+      $aud = new Application_Model_DbTable_Audit();
+      $arows = $aud->selectAudits($this->data);
+      logit("AROWS: ". print_r($arows, true));
+      $this->makeDialog($this->data);
+      $this->makeLabLines($arows);
+    }
+  
+  }
   public function inpdf2Action() {
     // echo 'Create HTML & then convert it to PDF!';
     /* $data = $this->renderPhpToString(); */

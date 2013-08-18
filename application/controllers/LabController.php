@@ -82,6 +82,7 @@ class LabController extends Application_Controller_Action// Zend_Controller_Acti
     } 
   }
   
+  /*
   public function selectAction() {
     $this->dialog_name = 'lab/select';
     logit ( "In LS" );
@@ -94,6 +95,7 @@ class LabController extends Application_Controller_Action// Zend_Controller_Acti
     }
   
   }
+  */
 
   public function chooseAction() {
     // choose the lab id provided

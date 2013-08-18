@@ -70,6 +70,16 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     return $rows;
   }
   
+  public function get($audit_id, $field_name) {
+    // fetch data for all field_name(s) beginning with $field_name
+    $audit_id = (int) $audit_id;
+    $sql = "select * from audit_data " .
+      " where audit_id = {$audit_id} " . 
+      "   and field_name like '{$field_name}%'";
+    logit("get: {$audit_id} {$field_name} -- {$sql}");
+    $rows = $this->queryRows($sql);
+    return $rows;
+  }
   public function getAuditItem($audit_id, $field_name) {
     /*
      * Get the row from auditdata that has this field
@@ -94,12 +104,13 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     $page_id = (int) $page_id;
     foreach ( $data as $n => $v ) {
       //logit ( "BEFORE: {$n} ==> {$v}" );
-      $this->updateAuditData ( $did, $n, $v, $page_id );
+      $this->updateAuditField( $did, $n, $v, $page_id );
     }
     $this->updateFinalScore($did, 0);
+    
   }
 
-  public function updateAuditData($did, $name, $value, $page_id) {
+  public function updateAuditField($did, $name, $value, $page_id) {
     $suff = end ( preg_split ( "/_/", $name ) );
     //logit ( "END: {$name} --> {$suff}" );
     $format = 'm/d/Y';
@@ -205,7 +216,7 @@ END;
         }
       }
       // calculate if it is a minimum of 55% or 143 points
-      $this->updateAuditData($did, 'final_score', $final_score, $page_id);
+      $this->updateAuditField($did, 'final_score', $final_score, $page_id);
       $final_y = '';
       $final_n = '';
       if ($final_score > 142) {
@@ -213,8 +224,8 @@ END;
       } else {
         $final_n = 'N';
       }
-      $this->updateAuditData($did, 'final_y', $final_y, $page_id);
-      $this->updateAuditData($did, 'final_n', $final_n, $page_id);
+      $this->updateAuditField($did, 'final_y', $final_y, $page_id);
+      $this->updateAuditField($did, 'final_n', $final_n, $page_id);
     }
     // update the totals for BAT & TB
     $sql = "select * from audit_data where audit_id = {$did} ".
@@ -239,9 +250,9 @@ END;
         }
       }
       // calculate if it is a minimum of 55% or 143 points
-      $this->updateAuditData($did, 'final_y_ct', $final_y_ct, $page_id);
-      $this->updateAuditData($did, 'final_n_ct', $final_n_ct, $page_id);
-      $this->updateAuditData($did, 'final_na_ct', $final_na_ct, $page_id);
+      $this->updateAuditField($did, 'final_y_ct', $final_y_ct, $page_id);
+      $this->updateAuditField($did, 'final_n_ct', $final_n_ct, $page_id);
+      $this->updateAuditField($did, 'final_na_ct', $final_na_ct, $page_id);
     }
     
   }

@@ -126,6 +126,9 @@ input[type=text].d, input[type=password].d {
     padding : 3px 8px;
 }
 input.integer {
+    width:60px;
+}
+input.integersmall {
     width:35px;
 }
 input.datepicker {

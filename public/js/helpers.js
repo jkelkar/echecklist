@@ -122,6 +122,11 @@ function toggleNCBox(here) {
   }
 }
 
+function toggleHelp() {
+    var id = '#help';
+    $(id).slideToggle(2000);
+    return false;
+}
 function calcShowSize() {
     var ht = $(window).height();
     var wt = $(window).width();

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 18, 2013 at 01:43 AM
+-- Generation Time: Aug 18, 2013 at 04:48 PM
 -- Server version: 5.5.31
 -- PHP Version: 5.3.10-1ubuntu3.6
 
@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS `audit` (
   `updated_at` datetime NOT NULL,
   `updated_by` int(11) NOT NULL,
   `lab_id` int(11) NOT NULL,
+  `slmta_status` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
   `status` varchar(10) CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Header for data for one document' AUTO_INCREMENT=4 ;
@@ -66,10 +67,10 @@ CREATE TABLE IF NOT EXISTS `audit` (
 -- Dumping data for table `audit`
 --
 
-INSERT INTO `audit` (`id`, `template_id`, `created_at`, `updated_at`, `updated_by`, `lab_id`, `status`) VALUES
-(1, 1, '2013-07-22 11:23:36', '2013-08-17 20:03:34', 1, 1, 'INCOMPLETE'),
-(2, 2, '2013-08-10 11:24:44', '2013-08-17 21:38:09', 1, 9, 'INCOMPLETE'),
-(3, 3, '2013-08-15 13:25:29', '2013-08-17 09:47:40', 1, 10, 'INCOMPLETE');
+INSERT INTO `audit` (`id`, `template_id`, `created_at`, `updated_at`, `updated_by`, `lab_id`, `slmta_status`, `status`) VALUES
+(1, 1, '2013-07-22 11:23:36', '2013-08-17 20:03:34', 1, 1, '', 'INCOMPLETE'),
+(2, 2, '2013-08-10 11:24:44', '2013-08-17 21:38:09', 1, 9, '', 'INCOMPLETE'),
+(3, 3, '2013-08-15 13:25:29', '2013-08-17 09:47:40', 1, 10, '', 'INCOMPLETE');
 
 -- --------------------------------------------------------
 
@@ -90,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `audit_data` (
   `page_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `head_data` (`audit_id`,`field_name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='One row per field of data saved.' AUTO_INCREMENT=17221 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='One row per field of data saved.' AUTO_INCREMENT=17341 ;
 
 --
 -- Dumping data for table `audit_data`
@@ -820,11 +821,11 @@ INSERT INTO `audit_data` (`id`, `audit_id`, `field_name`, `int_val`, `text_val`,
 (14045, 3, 's13_na_ct', 0, '', '', '2013-08-17', '', 'integer', 90),
 (14046, 3, 's13_n_ct', 0, '', '', '2013-08-17', '', 'integer', 90),
 (14047, 3, 's13_y_ct', 0, '', '', '2013-08-17', '', 'integer', 90),
-(14048, 3, 'action', 0, '', '', '2013-08-17', '', 'string', 79),
-(14049, 3, 'nextpage', 0, '', '', '2013-08-17', '', 'string', 79),
-(14050, 3, 'final_y_ct', 1, '', '', '2013-08-17', '', 'integer', 0),
-(14051, 3, 'final_n_ct', 1, '', '', '2013-08-17', '', 'integer', 0),
-(14052, 3, 'final_na_ct', 0, '', '', '2013-08-17', '', 'integer', 0),
+(14048, 3, 'action', 0, '', '', '2013-08-18', '', 'string', 75),
+(14049, 3, 'nextpage', 0, '', '', '2013-08-18', '', 'string', 75),
+(14050, 3, 'final_y_ct', 1, '', '', '2013-08-18', '', 'integer', 0),
+(14051, 3, 'final_n_ct', 1, '', '', '2013-08-18', '', 'integer', 0),
+(14052, 3, 'final_na_ct', 0, '', '', '2013-08-18', '', 'integer', 0),
 (14053, 3, 's0101_nc', 0, '', '', '2013-08-17', 'F', 'bool', 79),
 (14054, 3, 's0101_comment', 0, '', '', '2013-08-17', '', 'text', 79),
 (14055, 3, 's0101_note', 0, '', '', '2013-08-17', '', 'text', 79),
@@ -2039,7 +2040,23 @@ INSERT INTO `audit_data` (`id`, `audit_id`, `field_name`, `int_val`, `text_val`,
 (17212, 2, 's1303_note', 0, '', '', '2013-08-17', '', 'text', 66),
 (17213, 2, 's13_na_ct', 0, '', '', '2013-08-17', '', 'integer', 66),
 (17214, 2, 's13_n_ct', 0, '', '', '2013-08-17', '', 'integer', 66),
-(17215, 2, 's13_y_ct', 0, '', '', '2013-08-17', '', 'integer', 66);
+(17215, 2, 's13_y_ct', 0, '', '', '2013-08-17', '', 'integer', 66),
+(17221, 3, 'slmta_status', 0, '', 'ASLM', '2013-08-18', '', 'string', 75),
+(17222, 3, 'slmta_tests', 0, '', '564556', '2013-08-18', '', 'string', 75),
+(17223, 3, 'slmta_year_tests', 0, '', '', '2013-08-18', '', 'string', 75),
+(17224, 3, 'slmta_cohort_id', 0, '', '', '2013-08-18', '', 'string', 75),
+(17225, 3, 'slmta_labtype', 0, '', '', '2013-08-18', '', 'string', 75),
+(17226, 3, 'slmta_baseline_date', 0, '', '', '0000-00-00', '', 'date', 75),
+(17227, 3, 'slmta_workshop_date', 0, '', '', '0000-00-00', '', 'date', 75),
+(17228, 3, 'slmta_exitaudit_date', 0, '', '', '0000-00-00', '', 'date', 75),
+(17229, 3, 'slmta_baseline_score', 0, '', '', '2013-08-18', '', 'integer', 75),
+(17230, 3, 'slmta_baseline_stars_stars', 0, '', '-', '2013-08-18', '', 'string', 75),
+(17231, 3, 'slmta_exit_score', 0, '', '', '2013-08-18', '', 'integer', 75),
+(17232, 3, 'slmta_exit_stars_stars', 0, '', '-', '2013-08-18', '', 'string', 75),
+(17233, 3, 'audit_date', 0, '', '', '0000-00-00', '', 'date', 75),
+(17234, 3, 'dola', 0, '', '', '2013-08-18', '', 'string', 75),
+(17235, 3, 'pas_stars', 0, '', '-', '2013-08-18', '', 'string', 75),
+(17236, 3, 'names_affil_comment', 0, '', '', '2013-08-18', '', 'text', 75);
 
 -- --------------------------------------------------------
 
@@ -2378,82 +2395,87 @@ CREATE TABLE IF NOT EXISTS `dialog_row` (
   `info` text COLLATE utf8_unicode_ci NOT NULL,
   `title` varchar(80) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Stores individual lines of a dialog' AUTO_INCREMENT=70 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Stores individual lines of a dialog' AUTO_INCREMENT=75 ;
 
 --
 -- Dumping data for table `dialog_row`
 --
 
 INSERT INTO `dialog_row` (`id`, `dialog_id`, `position`, `field_name`, `field_label`, `field_length`, `field_type`, `for_export`, `info`, `title`) VALUES
-(1, 1, 0, 'user/login', '', 0, 'info', 'f', 'Login here to access Lab Audits.<br/> Currently these Audits are available:\n<ul><li>SLIPTA</li>\n<li>BIosafety (BAT)</li>\n<li>TB</li></ul>', 'Login'),
-(2, 1, 1, 'userid', 'User Name', 40, 'string_field', 'f', '', ''),
-(3, 1, 2, 'password', 'Password', 40, 'password_field', 'f', '', ''),
-(4, 1, 3, 'submit_button', 'Login', 0, 'submit_button', 'f', '', ''),
-(5, 2, 0, 'lab/create', '', 0, 'info', 'f', 'Create a new Lab.<br />\nLabs are identified by their lab numbers, which must be unique.', 'Create a New Lab'),
-(6, 2, 1, 'labname', 'Lab Name', 40, 'string_field', 'f', '', ''),
-(7, 2, 2, 'labnum', 'Lab Number', 40, 'string_field', 'f', '', ''),
-(8, 2, 3, 'street', 'Address', 40, 'string_field', 'f', '', ''),
-(9, 2, 4, 'street2', '', 40, 'string_field', 'f', '', ''),
-(10, 2, 5, 'street3', '', 40, 'string_field', 'f', '', ''),
-(11, 2, 6, 'city', 'City', 40, 'string_field', 'f', '', ''),
-(12, 2, 7, 'state', 'State/Province', 40, 'string_field', 'f', '', ''),
-(13, 2, 8, 'country', 'Country', 40, 'string_field', 'f', '', ''),
-(14, 2, 9, 'postcode', 'Postal Code', 40, 'string_field', 'f', '', ''),
-(15, 2, 10, 'labtel', 'Lab Telephone', 40, 'string_field', 'f', '', ''),
-(16, 2, 11, 'labfax', 'Lab Fax', 40, 'string_field', 'f', '', ''),
-(17, 2, 12, 'labemail', 'Lab Email', 40, 'string_field', 'f', '', ''),
-(18, 2, 13, 'lablevel', 'Lab Level', 40, 'lablevel', 'f', '', ''),
-(19, 2, 14, 'labaffil', 'Lab Affiliation', 40, 'labaffil', 'f', '', ''),
-(20, 2, 15, 'submit_button', 'Cancel,Create', 0, 'submit_button', 'f', '', ''),
-(21, 3, 0, 'lab/edit', '', 0, 'info', 'f', 'Edit Lab details here.<br />\nChanging the Lab Number or Name will not change it in the audits automatically.<br />\nTo refresh the Lab Name and Number in the audit, you must edit the audit <i>after</i> editing Lab details and saving them.\n', 'Edit Lab'),
-(22, 3, 1, 'id', '', 0, 'hidden', 'f', '', ''),
-(23, 3, 2, 'labname', 'Lab Name', 40, 'string_field', 'f', '', ''),
-(24, 3, 3, 'labnum', 'Lab Number', 40, 'string_field', 'f', '', ''),
-(25, 3, 4, 'street', 'Address', 40, 'string_field', 'f', '', ''),
-(26, 3, 5, 'street2', '', 40, 'string_field', 'f', '', ''),
-(27, 3, 6, 'street3', '', 40, 'string_field', 'f', '', ''),
-(28, 3, 7, 'city', 'City', 40, 'string_field', 'f', '', ''),
-(29, 3, 8, 'state', 'State/Province', 40, 'string_field', 'f', '', ''),
-(30, 3, 9, 'country', 'Country', 40, 'string_field', 'f', '', ''),
-(31, 3, 10, 'postcode', 'Postal Code', 40, 'string_field', 'f', '', ''),
-(32, 3, 11, 'labtel', 'Lab Telephone', 40, 'string_field', 'f', '', ''),
-(33, 3, 12, 'labfax', 'Lab Fax', 40, 'string_field', 'f', '', ''),
-(34, 3, 13, 'labemail', 'Lab Email', 40, 'string_field', 'f', '', ''),
-(35, 3, 14, 'lablevel', 'Lab Level', 40, 'lablevel', 'f', '', ''),
-(36, 3, 15, 'labaffil', 'Lab Affiliation', 40, 'labaffil', 'f', '', ''),
-(37, 3, 16, 'save_button', 'Cancel,Save', 0, 'submit_button', 'f', '', ''),
-(38, 4, 0, 'user/create', '', 0, 'info', 'f', 'Create a New User here.<br />\nUser Ids are unique<br />\nUser types have the following function:<br />\n<ul><li><b>Admin</b> - Administrator</li>\n<li><b>User</b> - Auditor</li>\n<li><b>Analyst</b> - Can see but not change audits</li>\n<li><b>Approver</b> - Approves and Finalizes audits</li>\n</ul>', 'Create a New User'),
-(39, 4, 1, 'name', 'User Name', 40, 'string_field', 'f', '', ''),
-(40, 4, 2, 'userid', 'User Id', 40, 'string_field', 'f', '', ''),
-(41, 4, 3, 'password', 'Password', 40, 'password_field', 'f', '', ''),
-(42, 4, 4, 'password2', 'New Password Again', 40, 'password_field', 'f', '', ''),
-(43, 4, 5, 'usertype', 'User Type', 40, 'usertype', 'f', '', ''),
-(44, 4, 6, 'languages', 'Languages', 40, 'string_field', 'f', '', ''),
-(45, 4, 7, 'submit_button', 'Cancel,Create', 0, 'submit_button', 'f', '', ''),
-(46, 5, 0, 'user/profile', '', 0, 'info', 'f', 'Change your User Id here. <br />\n<b>Username</b> - the printed name<br />\n<b>Userid</b> - Id used for logging in.<br />\nProvide your password to confirm you own the account.', 'Edit a User Profile'),
-(47, 5, 1, 'id', '', 0, 'hidden', 'f', '', ''),
-(48, 5, 2, 'name', 'User Name', 40, 'string_field', 'f', '', ''),
-(49, 5, 2, 'userid', 'User Id', 40, 'string_field', 'f', '', ''),
-(50, 5, 3, 'languages', 'Languages', 40, 'string_field', 'f', '', ''),
-(51, 5, 5, 'password', 'Password', 40, 'password_field', 'f', '', ''),
-(52, 5, 7, 'submit_button', 'Cancel,Save', 0, 'submit_button', 'f', '', ''),
-(53, 6, 0, 'user/changepw', '', 0, 'info', 'f', 'Change your password here.<br />\nProvide your old password, and the new password twice to change the password to the new one.', 'Change your password'),
-(54, 6, 2, 'old_pw', 'Old Password', 40, 'password_field', 'f', '', ''),
-(55, 6, 3, 'password', 'New Password', 40, 'password_field', 'f', '', ''),
-(56, 6, 4, 'password2', 'Password Again', 40, 'password_field', 'f', '', ''),
-(57, 6, 5, 'reset_button', 'Cancel,Change', 0, 'submit_button', 'f', '', ''),
-(58, 7, 0, 'audit/main', '', 0, 'info', 'f', 'Here you will find audits which are not COMPLETE.<br /> Click:<br /><ul><li><b>Edit</b> - to edit</li><li><b>View</b> - to see full audit</li><li><b>Export</b> - to export to data file</li></ul>', 'Audits'),
-(59, 8, 0, 'lab/find', '', 0, 'info', 'f', 'Search for a lab. Use a combination of one or more of :<br /><ol><li>Country Name</li><li>First part of Lab Name</li><li>First part of the Lab Number</ol>', 'Search For a Lab'),
-(60, 8, 1, 'country', 'Country', 40, 'string_field', 'f', '', ''),
-(61, 8, 2, 'labname', 'Lab Name', 40, 'string_field', 'f', '', ''),
-(62, 8, 3, 'labnum', 'Lab Number', 40, 'string_field', 'f', '', ''),
-(63, 8, 4, 'submit_button', 'Cancel,Find', 0, 'submit_button', 'f', '', ''),
-(64, 9, 0, 'lab/select', '', 0, 'info', 'f', 'In preparatoin for exporting audits to Excel, select one or more labs. Use a combination of one or more:<br /><ol><li><b>Country</b> – select one or more</li><li><b>Lab Level</b> – one or more</li><li><b>Lab Affiliation – one or more</b></li><li><b>SMLTA</b> - choose lab typs</li></ol>', 'Select Labs'),
-(65, 9, 1, 'country', 'Country', 40, 'country_m', 'f', '', ''),
-(66, 9, 2, 'Level', 'Lab Level', 40, 'lablevel_m', 'f', '', ''),
-(67, 9, 3, 'Affiliation', 'Lab Affiliation', 40, 'labaffil_m', 'f', '', ''),
-(68, 9, 4, 'slmta', 'SLMTA Program participation', 40, 'slmta_type', 'f', '', ''),
-(69, 9, 5, 'submit_button', 'Cancel,Find', 0, 'submit_button', 'f', '', '');
+(1, 0, 0, 'field_name', 'field_label', 0, 'field_type', 'f', 'info', 'title'),
+(2, 1, 0, 'user/login', '', 0, 'info', 'f', 'Login here to access Lab Audits.<br/> Currently these Audits are available:\n<ul><li>SLIPTA</li>\n<li>BIosafety (BAT)</li>\n<li>TB</li></ul>', 'Login'),
+(3, 1, 1, 'userid', 'User Name', 40, 'string_field', 'f', '', ''),
+(4, 1, 2, 'password', 'Password', 40, 'password_field', 'f', '', ''),
+(5, 1, 3, 'submit_button', 'Login', 0, 'submit_button', 'f', '', ''),
+(6, 2, 0, 'lab/create', '', 0, 'info', 'f', 'Create a new Lab.<br />\nLabs are identified by their lab numbers, which must be unique.', 'Create a New Lab'),
+(7, 2, 1, 'labname', 'Lab Name', 40, 'string_field', 'f', '', ''),
+(8, 2, 2, 'labnum', 'Lab Number', 40, 'string_field', 'f', '', ''),
+(9, 2, 3, 'street', 'Address', 40, 'string_field', 'f', '', ''),
+(10, 2, 4, 'street2', '', 40, 'string_field', 'f', '', ''),
+(11, 2, 5, 'street3', '', 40, 'string_field', 'f', '', ''),
+(12, 2, 6, 'city', 'City', 40, 'string_field', 'f', '', ''),
+(13, 2, 7, 'state', 'State/Province', 40, 'string_field', 'f', '', ''),
+(14, 2, 8, 'country', 'Country', 40, 'string_field', 'f', '', ''),
+(15, 2, 9, 'postcode', 'Postal Code', 40, 'string_field', 'f', '', ''),
+(16, 2, 10, 'labtel', 'Lab Telephone', 40, 'string_field', 'f', '', ''),
+(17, 2, 11, 'labfax', 'Lab Fax', 40, 'string_field', 'f', '', ''),
+(18, 2, 12, 'labemail', 'Lab Email', 40, 'string_field', 'f', '', ''),
+(19, 2, 13, 'lablevel', 'Lab Level', 40, 'lablevel', 'f', '', ''),
+(20, 2, 14, 'labaffil', 'Lab Affiliation', 40, 'labaffil', 'f', '', ''),
+(21, 2, 15, 'submit_button', 'Cancel,Create', 0, 'submit_button', 'f', '', ''),
+(22, 3, 0, 'lab/edit', '', 0, 'info', 'f', 'Edit Lab details here.<br />\nChanging the Lab Number or Name will not change it in the audits automatically.<br />\nTo refresh the Lab Name and Number in the audit, you must edit the audit <i>after</i> editing Lab details and saving them.\n', 'Edit Lab'),
+(23, 3, 1, 'id', '', 0, 'hidden', 'f', '', ''),
+(24, 3, 2, 'labname', 'Lab Name', 40, 'string_field', 'f', '', ''),
+(25, 3, 3, 'labnum', 'Lab Number', 40, 'string_field', 'f', '', ''),
+(26, 3, 4, 'street', 'Address', 40, 'string_field', 'f', '', ''),
+(27, 3, 5, 'street2', '', 40, 'string_field', 'f', '', ''),
+(28, 3, 6, 'street3', '', 40, 'string_field', 'f', '', ''),
+(29, 3, 7, 'city', 'City', 40, 'string_field', 'f', '', ''),
+(30, 3, 8, 'state', 'State/Province', 40, 'string_field', 'f', '', ''),
+(31, 3, 9, 'country', 'Country', 40, 'string_field', 'f', '', ''),
+(32, 3, 10, 'postcode', 'Postal Code', 40, 'string_field', 'f', '', ''),
+(33, 3, 11, 'labtel', 'Lab Telephone', 40, 'string_field', 'f', '', ''),
+(34, 3, 12, 'labfax', 'Lab Fax', 40, 'string_field', 'f', '', ''),
+(35, 3, 13, 'labemail', 'Lab Email', 40, 'string_field', 'f', '', ''),
+(36, 3, 14, 'lablevel', 'Lab Level', 40, 'lablevel', 'f', '', ''),
+(37, 3, 15, 'labaffil', 'Lab Affiliation', 40, 'labaffil', 'f', '', ''),
+(38, 3, 16, 'save_button', 'Cancel,Save', 0, 'submit_button', 'f', '', ''),
+(39, 4, 0, 'user/create', '', 0, 'info', 'f', 'Create a New User here.<br />\nUser Ids are unique<br />\nUser types have the following function:<br />\n<ul><li><b>Admin</b> - Administrator</li>\n<li><b>User</b> - Auditor</li>\n<li><b>Analyst</b> - Can see but not change audits</li>\n<li><b>Approver</b> - Approves and Finalizes audits</li>\n</ul>', 'Create a New User'),
+(40, 4, 1, 'name', 'User Name', 40, 'string_field', 'f', '', ''),
+(41, 4, 2, 'userid', 'User Id', 40, 'string_field', 'f', '', ''),
+(42, 4, 3, 'password', 'Password', 40, 'password_field', 'f', '', ''),
+(43, 4, 4, 'password2', 'New Password Again', 40, 'password_field', 'f', '', ''),
+(44, 4, 5, 'usertype', 'User Type', 40, 'usertype', 'f', '', ''),
+(45, 4, 6, 'languages', 'Languages', 40, 'string_field', 'f', '', ''),
+(46, 4, 7, 'submit_button', 'Cancel,Create', 0, 'submit_button', 'f', '', ''),
+(47, 5, 0, 'user/profile', '', 0, 'info', 'f', 'Change your User Id here. <br />\n<b>Username</b> - the printed name<br />\n<b>Userid</b> - Id used for logging in.<br />\nProvide your password to confirm you own the account.', 'Edit a User Profile'),
+(48, 5, 1, 'id', '', 0, 'hidden', 'f', '', ''),
+(49, 5, 2, 'name', 'User Name', 40, 'string_field', 'f', '', ''),
+(50, 5, 2, 'userid', 'User Id', 40, 'string_field', 'f', '', ''),
+(51, 5, 3, 'languages', 'Languages', 40, 'string_field', 'f', '', ''),
+(52, 5, 5, 'password', 'Password', 40, 'password_field', 'f', '', ''),
+(53, 5, 7, 'submit_button', 'Cancel,Save', 0, 'submit_button', 'f', '', ''),
+(54, 6, 0, 'user/changepw', '', 0, 'info', 'f', 'Change your password here.<br />\nProvide your old password, and the new password twice to change the password to the new one.', 'Change your password'),
+(55, 6, 2, 'old_pw', 'Old Password', 40, 'password_field', 'f', '', ''),
+(56, 6, 3, 'password', 'New Password', 40, 'password_field', 'f', '', ''),
+(57, 6, 4, 'password2', 'Password Again', 40, 'password_field', 'f', '', ''),
+(58, 6, 5, 'reset_button', 'Cancel,Change', 0, 'submit_button', 'f', '', ''),
+(59, 7, 0, 'audit/main', '', 0, 'info', 'f', 'Here you will find audits which are not COMPLETE.<br /> Click:<br /><ul><li><b>Edit</b> - to edit</li><li><b>View</b> - to see full audit</li><li><b>Export</b> - to export to data file</li></ul>', 'Audits'),
+(60, 8, 0, 'lab/find', '', 0, 'info', 'f', 'Search for a lab. Use a combination of one or more of :<br /><ol><li>Country Name</li><li>First part of Lab Name</li><li>First part of the Lab Number</ol>', 'Search For a Lab'),
+(61, 8, 1, 'country', 'Country', 40, 'string_field', 'f', '', ''),
+(62, 8, 2, 'labname', 'Lab Name', 40, 'string_field', 'f', '', ''),
+(63, 8, 3, 'labnum', 'Lab Number', 40, 'string_field', 'f', '', ''),
+(64, 8, 4, 'submit_button', 'Cancel,Find', 0, 'submit_button', 'f', '', ''),
+(65, 9, 0, 'audit/select', '', 0, 'info', 'f', 'To export audits to Excel, select lab and audit criteria.<br /> Use a combination of one or more:<br /><ul><li>Select labs</li><ol><li><b>Country</b>: select one or more</li><li><b>Lab Level</b>: one or more</li><li><b>Lab Affiliation - one or more</b></li><li><b>SMLTA</b> - choose lab typs</li></ol><li>Select Audits</li><ol><li><b>SLMTA Status</b> </li> <li><b>Date Range</b> - When last updated</li> </ol></ul>', 'Select Labs'),
+(66, 9, 1, '', 'Select Labs', 0, 'heading', 'f', '', ''),
+(67, 9, 2, 'country', 'Country', 40, 'country_m', 'f', '', ''),
+(68, 9, 3, 'lablevel', 'Lab Level', 40, 'lablevel_m', 'f', '', ''),
+(69, 9, 4, 'labaffil', 'Lab Affiliation', 40, 'labaffil_m', 'f', '', ''),
+(70, 9, 5, '', 'Select Audits', 0, 'heading', 'f', '', ''),
+(71, 9, 6, 'slmta', 'SLMTA Status', 40, 'slmtastatus_m', 'f', '', ''),
+(72, 9, 7, 'stdate', 'Start Date', 40, 'date_field', 'f', '', ''),
+(73, 9, 8, 'enddate', 'End Date', 40, 'date_field', 'f', '', ''),
+(74, 9, 9, 'submit_button', 'Cancel,Find', 0, 'submit_button', 'f', '', '');
 
 -- --------------------------------------------------------
 
@@ -2493,8 +2515,8 @@ INSERT INTO `lab` (`id`, `labname`, `labnum`, `street`, `street2`, `street3`, `c
 (5, 'Akbar labs', '332gtrf', '', '', '', '', '', 'Bahamas', '', '', '', '', 'f', 'FIELD', 'OTHER'),
 (6, 'Hot sands', 'HS-223', '', '', '', '', '', 'Bahrain', '', '', '', '', 'f', 'NATIONAL', 'RESEARCH'),
 (7, 'Irrawadi Zonal', 'IZ-3409', '', '', '', '', '', 'Burma', '', '', '', '', 'f', 'FIELD', 'OTHER'),
-(9, 'Fastfix2', 'FF-1232', 'street', 'street21', 'street31', 'here1', 'GAMEX', 'USA', '65480', '123.456.7891', '345.567.9891', 'jkx@xx.com', 't', 'REFERENCE', 'NONHOSPITAL'),
-(10, 'Test lab', 'tl56', '123 row', '', '', 'Norx', 'GA', 'USA', '88888', '88888888', '8', '3', 't', 'REFERENCE', 'OTHER');
+(9, 'Fastfix2', 'FF-1232', 'street', 'street21', 'street31', 'here1', 'GAMEX', 'Borneo', '65480', '123.456.7891', '345.567.9891', 'jkx@xx.com', 't', 'REFERENCE', 'NONHOSPITAL'),
+(10, 'Test lab', 'tl56', '123 row', '', '', 'Norx', 'GA', 'USA', '88888', '88888888', '8', '3', 't', 'DISTRICT', 'OTHER');
 
 -- --------------------------------------------------------
 

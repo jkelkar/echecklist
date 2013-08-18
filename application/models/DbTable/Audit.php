@@ -21,6 +21,20 @@ class Application_Model_DbTable_Audit extends Application_Model_DbTable_Checklis
     logit("AUDIT_DT: {$id} " . print_r($data, true));
     $this->update($data, "id = {$id}");
   }
+  
+  public function getAudit($id) {
+    // get audit from this audit id
+    $id = (int) $id;
+    $sql = "select tt.tag, a.id, a.created_at, a.updated_at, l.id lab_id, l.labname ".
+      " from audit a, template_type tt, lab l " .
+      " where a.id = {$id} and a.template_id = tt.id " .
+      " and l.id = a.lab_id";
+    $rows = $this->queryRows($sql);
+    if (!$rows) {
+      throw new Exception("Could not find the audit.");
+    }
+    return $rows[0];
+  }
 
   public function getAudits($id) {
     /*

@@ -47,7 +47,7 @@ class UserController extends Application_Controller_Action
         }
         $this->echecklistNamespace->user = $xuser;
         // $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
-        $this->_redirector->gotoUrl("/audit/edit/1/");
+        $this->_redirector->gotoUrl($this->mainpage);
       } else {
         $this->makeDialog();
         $this->echecklistNamespace->flash = "UserId or password incorrect";

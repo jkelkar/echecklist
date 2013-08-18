@@ -10,7 +10,7 @@
  */
 
 require_once 'modules/Checklist/logger.php';
-
+require_once '../application/models/DbTable/Lab.php';
 /**
  * returns a value if a key exists in the dictionary else
  * returns the $default value <sed in
@@ -50,7 +50,7 @@ function get_common_words_translated($value, $words) {
 /**
  * these implement low level html code generators
  */
-function SELECT($name, $optvals, $value, $scr='') {
+function SELECT($name, $optvals, $value, $scr='', $multiple=false) {
   // $log = new KLogger("/var/log/log.txt", KLogger::DEBUG);
   if (count ( $optvals ) == 0) {
     throw new Exception ( 'Optvals has no elements', 0 );
@@ -73,10 +73,11 @@ function SELECT($name, $optvals, $value, $scr='') {
   $icon = ($val != '-') ? '' : "<img id=\"{$name}_icon\" src=\"{$baseurl}/cancel-on.png\" />";
   
   $options = implode ( "\n", $optout );
+  $mult = ($multiple) ? 'multiple' : '';
   $out = <<<"END"
-<select name="{$name}" id="{$name}" data-rel="chosen" class="select">
+   <div style="diaplay:inline;float:left;"> <select name="{$name}" id="{$name}" data-rel="chosen" {$mult} class="select">
   {$options}
-</select> {$icon}
+</select></div><div style="display:inline;float:left;">{$icon}</div> 
 END;
 
   if ($scr != '') {
@@ -314,7 +315,7 @@ function SELECT_LIVE($arr, $name, $value, $class = '') {
   return OPTIONS ( $name, $opts, $value );
 }
 
-function OPTIONS($varname, $optvals, $value, $scr='') {
+function OPTIONS($varname, $optvals, $value, $scr='', $multiple=false) {
   /**
    * Depending on the number of optvals we choose select or Radio buttons
    *
@@ -325,7 +326,7 @@ function OPTIONS($varname, $optvals, $value, $scr='') {
   if (count ( $optvals ) <= 3) {
     return RADIO ( $varname, $optvals, $value, "onclick=\"click_sub_sec('{$varname}');\"");
   } else {
-    return SELECT ( $varname, $optvals, $value, "watch_select('{$varname}', '{$baseurl}');");
+    return SELECT ( $varname, $optvals, $value, "watch_select('{$varname}', '{$baseurl}');", $multiple);
   }
   
 }
@@ -417,7 +418,7 @@ function widget_select_ynp_add($varname, $value, $t) {
 
 function widget_select_yna_add($varname, $value, $t) {
   $optvals = getYNA ( $t );
-  $sendod = substr($varname, 0, 3);
+  $sendid = substr($varname, 0, 3);
   return OPTIONS_ADD ( $varname, $optvals, $value, "onclick=\"count_ynaa_add('{$sendid}');\"" );
 }
 
@@ -520,9 +521,18 @@ function getLevels($t) {
   );
 }
 
-function widget_select_lablevel($varname, $value, $t, $noscript=false) {
+function rev($a, $t) {
+  $arr = call_user_func($a, $t);
+  $revarr = array();
+  foreach($arr as $a => $b) {
+    $revarr[$b] = $a;
+  }
+  return $revarr;
+}
+
+function widget_select_lablevel($varname, $value, $t, $scr='', $multiple=false) {
   $optvals = getLevels ( $t );
-  return OPTIONS ( $varname, $optvals, $value, $noscript );
+  return OPTIONS ( $varname, $optvals, $value, $scr, $multiple );
 }
 
 function getAffiliations($t) {
@@ -537,9 +547,9 @@ function getAffiliations($t) {
   );
 }
 
-function widget_select_labaffil($varname, $value, $t, $noscript=false) {
+function widget_select_labaffil($varname, $value, $t, $scr='', $multiple=false) {
   $optvals = getAffiliations ( $t );
-  return OPTIONS ( $varname, $optvals, $value, $noscript );
+  return OPTIONS ( $varname, $optvals, $value, $scr, $multiple );
 }
 
 function getSLMTAStatus($t) {
@@ -552,14 +562,48 @@ function getSLMTAStatus($t) {
   );
 }
 
+function getSLMTAType($t) {
+  return array (
+      "{$t['Select']} ..." => '-',
+      "{$t['SLMTA']}" => 'YES',
+      "{$t['Non SLMTA']}" => 'NO',
+      "{$t['Both']}" => 'ANY'
+  );
+}
 function dialog_lablevel($row, $value, $t) {
   $varname = $row['varname'];
-  return widget_select_lablevel($varname, $value, $t, true);
+  return widget_select_lablevel($varname, $value, $t);
+}
+
+function dialog_lablevel_m($row, $value, $t) {
+  $varname = $row['varname'];
+  return widget_select_lablevel($varname, $value, $t, '', true);
+}
+
+function dialog_country_m($row, $value, $t) {
+  $varname = $row['varname'];
+  $lab = new Application_Model_DbTable_Lab();
+  $countries = $lab->getDistinctCountries();
+  logit('COUNTRIES: '. print_r($countries, true));
+  $c = array('Select ...' => '-');
+  foreach($countries as $x) {
+    foreach ($x as $a => $country) {
+      $c[$country] = strtoupper($country);
+    }
+  }
+  logit('COUNTRIES: '. print_r($c, true));
+  $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
+  return SELECT($varname, $c, $value, "watch_select('{$varname}', '{$baseurl}');" , true);
 }
 
 function dialog_labaffil($row, $value, $t) {
   $varname = $row['varname'];
-  return widget_select_labaffil($varname, $value, $t, true);
+  return widget_select_labaffil($varname, $value, $t);
+}
+
+function dialog_labaffil_m($row, $value, $t) {
+  $varname = $row['varname'];
+  return widget_select_labaffil($varname, $value, $t, '', true);
 }
 
 function widget_select_slmtastatus($varname, $value, $t) {
@@ -571,7 +615,25 @@ function widget_select_slmtastatus($varname, $value, $t) {
    * "{$t['Base Line Assessment']}" => 'BASELINE',
    * "{$t['Non SLMTA Audit']}" => 'NONSLMTA' );
    */
-  return OPTIONS ( $varname, $optvals, $value );
+  return OPTIONS ( $varname, $optvals, $value, '' );
+}
+
+function widget_select_slmtatype($varname, $value, $t) {
+  $optvals = getSLMTAType ( $t );
+  /*
+   * array(//"{$t['Select']} ..." => '-',
+   * "{$t['Official ASLM Audit']}" => 'ASLM',
+   * "{$t['SLMTA Audit']}" => 'SLMTA',
+   * "{$t['Base Line Assessment']}" => 'BASELINE',
+   * "{$t['Non SLMTA Audit']}" => 'NONSLMTA' );
+   */
+  $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
+  return SELECT($varname, $optvals, $value, "watch_select('{$varname}', '{$baseurl}');" );
+}
+
+function dialog_slmta_type($row, $value, $t) {
+  $varname = $row['varname'];
+  return widget_select_slmtatype($varname, $value, $t, '', true);
 }
 
 function widget_dt($name, $value, $length = 14) {
@@ -704,7 +766,7 @@ function partial_string_field($row, $value, $t) {
   $prefix = $row ['prefix'];
   $heading = $row ['heading'];
   $text = $row ['text'];
-  $stringf = INPUT ( $name, $value, 'string', 55, 'width:100%;', '' );
+  $stringf = INPUT ( $name, $value, 'string', 55, '', '' );
   $out = <<<"END"
 <div style="width:100%;">
 <div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
@@ -788,7 +850,7 @@ function partial_integer_field($row, $value, $t) {
   $prefix = $row ['prefix'];
   $heading = $row ['heading'];
   $text = $row ['text'];
-  $intf = INPUT ( $name, $value, 'integer', 0, 'width:100%;', '' );
+  $intf = INPUT ( $name, $value, 'integer', 0, '', '' );
   $out = <<<"END"
 <div style="width:100%;">
 <div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
@@ -1004,7 +1066,7 @@ function partial_sub_sec_head($row, $value, $t) {
       <div style="display:inline-block;width:440px;vertical-align:top;">
         <div style="width:438px;display:inline;">
           <div style="display:inline;font-weight:bold;width:25px;vertical-align:top;">{$prefix}</div>
-          <div style="display:inline-block;width:405px;">
+          <div style="display:inline-block;width:395px;">
             <div style="text-decoration:underline;font-weight:bold;display:inline;">{$head}</div>
             <div style="vertical-align:top;display:inline;">{$text}<br />
               <div style="width:100%;text-align:right;margin-top:5px;">
@@ -1117,7 +1179,7 @@ function partial_sub_sec_head_ro($row, $value, $t) {
         <div style="display:inline-block;width:440px;vertical-align:top;">
           <div style="width:448px;display:inline;">
             <div style="display:inline;font-weight:bold;width:25px;vertical-align:top;">{$prefix}</div>
-            <div style="display:inline-block;width:405px;">
+            <div style="display:inline-block;width:395px;">
               <div style="text-decoration:underline;font-weight:bold;display:inline;">{$head}</div>
               <div style="vertical-align:top;display:inline;">{$text}
               </div>
@@ -1254,7 +1316,7 @@ function partial_sec_element($row, $value, $t) {
   <table style="width=100%;"><tr>
       <td style="vertical-align:top;padding: 2px 4px;width:440px;">
         <div style="display:inline-block;vertical-align:top;">
-          <div style="width:425px;">
+          <div style="width:395px;">
             <div style="width:100%">
               <div style="vertical-align:top;display:inline;">{$prefix}</div>
               <div style="text-decoration:underline;font-weight:bold;vertical-align:top;display:inline;">{$heading}</div>
@@ -1574,9 +1636,9 @@ function partial_criteria_2_heading($row, $value, $t) {
     <td rowspan="2" class="topbold">
       {$heading}
     </td>
-        <td width="16%" class="centertop">{$t['Date of panel receipt']}</td>
-    <td width="16%" class="centertop">{$t['Were results reported within 15 days?']}</td>
-    <td width="10%" class="centertopbold">{$t['Results & % Correct']}</td>
+    <td style="width:13%;" class="centertop">{$t['Date of panel receipt']}</td>
+    <td style="width:19%;" class="centertop">{$t['Were results reported within 15 days?']}</td>
+    <td style="width:10%;" class="centertopbold">{$t['Results & % Correct']}</td>
   </tr>
   </table>
 END;
@@ -1637,21 +1699,11 @@ function partial_panel_result($row, $value, $t) {
   $out = <<<"END"
 <table style="width:100%;">
   <tr>
-    <td width="7%" class="title">
-      {$prefix}
-    </td>
-    <td class="panel">
-      {$heading}
-    </td>
-    <td width="16%">
-      {$dt} {$script}
-    </td>
-    <td width="16%">
-      {$mc_yn}
-    </td>
-    <td width="10%">
-      {$smallint}
-    </td>
+    <td style="width:7%;" class="title">{$prefix}</td>
+    <td class="panel">{$heading}</td>
+    <td style="width:13%;">{$dt} {$script}</td>
+    <td style="width:19%;">{$mc_yn}</td>
+    <td style="width:10%;">{$smallint}</td>
   </tr>
 </table>
 END;
@@ -2052,7 +2104,10 @@ function getTranslatables(/*$tword,*/ $langtag) {
       'Official ASLM Audit',
       'SLMTA Audit',
       'Base Line Assessment',
-      'Non SLMTA Audit'
+      'Non SLMTA Audit',
+      'SLMTA',
+      'Non SLMTA',
+      'Both'
   );
   $tlist = get_common_words_translated ( $tword, $words );
   //logit('TLIST: '. print_r($tlist, true));

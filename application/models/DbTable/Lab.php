@@ -30,7 +30,14 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
     logit("Lab:getLabs: ".print_r($data, true)." {$start}, {$ct}");
     $sql = "select * from lab where 1=1 ";
     foreach ($data as $a => $b) {
-      $sql = $sql . " and {$a} like '{$b}%' ";
+      if ($b == '') continue;
+      switch($a) {
+      case 'country':
+        $sql = $sql . " and {$a} = '{$b}' ";
+        break;
+      default:
+        $sql = $sql . " and {$a} like '{$b}%' ";
+      }
     }
     $sql = $sql . " limit {$start}, {$ct}";
     logit("getLabs: {$sql}");
@@ -68,22 +75,6 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
   	 $rows = $this->queryRows($sql);
   	 return $rows;
   }
-  
-  /*public function getLabs() {
-    $rows = $this->fetchAll($this->select()
-			    ->order('labname'));
-    return $rows;
-  }*/
-
-  /*public function getLabsByCountry($ccode) {
-    / **
-     * Return all labs in this country code
-     * /
-    $rows = $this->fetchAll($this->select()
-                            ->where("country_code = ?", $ccode)
-                            ->order('labname'));
-    return $rows;
-  }*/
 
   public function insertData($data) {
     /**
@@ -108,7 +99,17 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
     /**
      * delete user at id
      */
-    $this->delete('id = ' . (int)$id);
+    //$this->delete('id = ' . (int)$id);
   }
+
+  public function getDistinctCountries() {
+    $sql = "select distinct country from lab";
+    $rows = $this->queryRows($sql);
+    if (!$rows) {
+      throw new Exception("No labs found");
+    }
+    return $rows;
+  }
+    
 }
 

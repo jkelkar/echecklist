@@ -59,7 +59,7 @@ END;
     //$template_id = 1; // FIXME
     $lang_default= 'EN';
     $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
-    $mainpage = "/";
+    // $mainpage = "/";
     /*
       $mt = microtime(true);
       logit("Start: {$mt}");
@@ -78,7 +78,12 @@ END;
     $template_id = $data->getTemplateId($audit_id);
     $langtag = $this->echecklistNamespace->lang;
     $thispage = (int) $pinfo[4];
-    
+    $auditrow = $aud->getAudit($audit_id);
+    $this->echecklistNamespace->audit = $auditrow;
+    $this->echecklistNamespace->lab = array('id' => $auditrow['lab_id'],
+                                            'labname' => $auditrow['labname']
+                                            );
+
     if ($thispage == '') {
       $fp = $page->getStartPage($template_id); //1 is the template id
         $thispage = $fp; // this is the first page of slipta template
@@ -297,37 +302,8 @@ END;
       $rows = $audit->getAudits($id);
       logit('AROWS: '. print_r($rows, true));
       $this->makeDialog();
-      $tout = array();
-      $tout[] = '<table style="width:870px;margin-left:200px;">';
-      $tout[] = "<tr><td style='width:50px;font-weight:bold;'>Id</td><td style='width:80px;font-weight:bold;'>Type</td>" .
-        "<td style='width:120px;font-weight:bold;'>Updated</td><td style='width:100px;font-weight:bold;'>Labnum</td>" .
-        "<td style='width:150px;font-weight:bold;'>Labname</td><td style='width:300px;font-weight:bold;'></td></tr>";
-      foreach($rows as $row) {
-        $edit = "<a href=\"{$baseurl}/audit/edit/{$row['audit_id']}/\" class=\"btn btn-mini btn-inverse\">Edit</a>";
-        $view = "<a href=\"#\" class=\"btn btn-mini btn-success\">View</a>";
-        $delete = "<a href=\"#\" class=\"btn btn-mini btn-danger\">Delete</a>";
-        $export = "<a href=\"#\" class=\"btn btn-mini btn-warning\">Data Export</a>";
-        $dfmt = $row['updated_at'];
-        $line = "<tr><td>{$row['audit_id']}</td><td>{$row['tag']}</td>" . 
-          "<td>{$dfmt}</td><td>{$row['labnum']}</td>" .
-          "<td>{$row['labname']}</td><td>{$view} {$edit} {$delete} {$export}</td></tr>";
-        $tout[] = $line;
-      }
-      $tout[] = '</table>';
-      
-      logit('AUDITS: ' .print_r($tout, true));
-      $this->view->outlines .= implode("\n", $tout);
+      $this->makeAuditLines($rows);
     } 
-    /*
-      else {
-      // display the form here
-      $this->collectData();
-      // logit('Data: ' . print_r($this->data));
-      $user->updateData($data, $id); 
-      $this->_redirector->gotoUrl($this->mainpage);
-    }
-    */
-
   }
 
   public function findAction() {

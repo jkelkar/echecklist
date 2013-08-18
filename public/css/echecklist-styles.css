@@ -61,7 +61,7 @@ table {
 
 td {
 	border: 0px solid #999;
-  padding:0 5px;
+  /*padding:0 5px;*/
 }
 th.border,
 td.border {
@@ -129,7 +129,7 @@ input.integer {
     width:35px;
 }
 input.datepicker {
-    width:100px;
+    width:81px;
 }
 label {
     display: block;
@@ -209,7 +209,12 @@ td.title2 {
 	font-weight: normal;
 	padding-left: 5px;
 }
-
+table tr.even th, .even {
+    background: none repeat scroll 0 0 #bbddff; /*#D5D5D5;*/
+}
+table tr.odd th, .odd {
+    background: none repeat scroll 0 0 #eaf0f3; /*#e5e5e5;*/
+}
 div.bigtitlei {
 	text-align: left;
 	padding-left: 10px;

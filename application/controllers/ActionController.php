@@ -23,9 +23,14 @@ class Application_Controller_Action extends Zend_Controller_Action {
   public $dialog_name;
   public $title;
   public $data;
+  public $lab;
+  public $labname;
+  public $audit;
+  public $showaudit;
   public $drows;
-  public $mainpage = '/audit/edit/1/';
+  public $mainpage = '/audit/main';
   public $loginpage = '/user/login';
+  public $tlist;
 
   public function init() {
     /* initialize here */
@@ -40,8 +45,14 @@ class Application_Controller_Action extends Zend_Controller_Action {
     if (!isset($this->echecklistNamespace->user) && !($pinfo[1] == 'user' && $pinfo[2] == 'login')) {
       $this->_redirector->gotoUrl($this->loginpage);
       }
+    $this->getTwords();
   }
   
+  public function getTwords() {
+    // Get the translations for common words
+    $this->tlist = getTranslatables ( $this->langtag);
+  }
+
   public function setupSession() {
     /* start the session */
     $this->echecklistNamespace = new Zend_Session_Namespace ( 'eChecklist' );
@@ -53,8 +64,23 @@ class Application_Controller_Action extends Zend_Controller_Action {
       $this->userid = $u['id'];
       logit ( "{$this->username}, {$this->usertype}, {$this->userfullname}, {$this->userid}" );
     }
-    if (!isset ( $this->echecklistNamespace->lang)) {
+    if (isset ($this->echecklistNamespace->lab)) {
+      $this->lab = $this->echecklistNamespace->lab;
+      $this->labname = $this->lab['labname'];
+    } else {
+      $this->lab = null;
+      $this->labname = '';
+    }
+    if (!isset ($this->echecklistNamespace->lang)) {
       $this->echecklistNamespace->lang = 'EN';
+    }
+    if (isset ($this->echecklistNamespace->audit)) {
+      $this->audit = $this->echecklistNamespace->audit;
+      $this->showaudit = "{$this->audit['tag']} - #{$this->audit['id']} - {$this->audit['labname']}";
+      // / {$this->audit['updated_at']}";
+    } else {
+      $this->audit = null;
+      $this->showaudit = '';
     }
     $this->view->langtag = $this->echecklistNamespace->lang;
     $this->langtag = $this->echecklistNamespace->lang;
@@ -182,7 +208,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
 <div class="navbar">
   <div class="navbar-inner">
 		<div class="container-fluid">
-			<a class="brand" href="index.html"> 
+			<a class="brand" href="{$this->baseurl}{$this->mainpage}"> 
         <span title=".icon  .icon-black  .icon-check " class="icon icon-black icon-check"></span> <span>eChecklist</span>
       </a>
     
@@ -198,10 +224,10 @@ END;
 <ul class="dropdown-menu">
         <li><a href="{$this->baseurl}/audit/start"><span title=".icon  .icon-green .icon-clipboard " class="icon icon-green icon-clipboard"></span> New Audit</a></li>
         <li><a href="{$this->baseurl}/audit/find"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Find</a></li>
-        <li class="divider"></li>
+        <!--li class="divider"></li>
 <li><a href="{$this->baseurl}/audit/edit/1/"><span title=".icon  .icon-blue  .icon-edit " class="icon icon-blue icon-edit"></span> Edit 1</a></li>
 <li><a href="{$this->baseurl}/audit/edit/2/"><span title=".icon  .icon-blue  .icon-edit " class="icon icon-blue icon-edit"></span> Edit 2</a></li>
-<li><a href="{$this->baseurl}/audit/edit/3/"><span title=".icon  .icon-blue  .icon-edit " class="icon icon-blue icon-edit"></span> Edit 3</a></li>
+<li><a href="{$this->baseurl}/audit/edit/3/"><span title=".icon  .icon-blue  .icon-edit " class="icon icon-blue icon-edit"></span> Edit 3</a></li-->
         <li class="divider"></li>
         <li><a href="{$this->baseurl}/audit/import"><span title=".icon  .icon-blue .icon-import " class="icon icon-blue icon-archive"></span> Import</a></li>
 				</ul>
@@ -215,6 +241,7 @@ END;
 <ul class="dropdown-menu">
 					<li><a href="{$this->baseurl}/lab/create"><span title=".icon  .icon-green  .icon-tag " class="icon icon-green icon-tag"></span> New Lab</a></li>
 					<li><a href="{$this->baseurl}/lab/find"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Find Lab</a></li>
+        <li><a href="{$this->baseurl}/lab/select"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Select Labs</a></li>
 				</ul>
 </div>
 
@@ -257,11 +284,10 @@ END;
 			</div>
 			<!-- user dropdown ends -->
 END;
-
       $this->header .= <<<"END"
 <div style="display:inline-block;">
-  <div style="margin:6px 0 6px 20px;"><b>Audit:</b> type/id/date</div>
-  <div style="margin:6px 0px 6px 20px;padding-right:5px;"><b>Lab:</b> Fastfix</div>
+  <div style="margin:6px 0 6px 20px;"><b>Audit:</b> {$this->showaudit}</div>
+  <div style="margin:6px 0px 6px 20px;padding-right:5px;"><b>Lab:</b> {$this->labname}</div>
   <div style="clear:both;"></div></div>
 END;
     } else {
@@ -442,6 +468,93 @@ END;
     }
   }
 
+  public function makeLabLines($rows, $cb=false) {
+    // Given lab rows - show in a table
+    $rev_level = rev('getLevels', $this->tlist);
+    $rev_affil = rev('getAffiliations', $this->tlist);
+    $ct = 0;
+    $tout = array();
+    $tout[] = '<table style="width:900px;margin-left:200px;">';
+    $tout[] = "<tr class='even'>";
+    if ($cb) {
+      $tout[] = "<td style='width:40px;'>Select</td>";
+    } else {
+      $tout[] = "<td style='width:40px;'></td>";
+    }
+    $tout[] = "<td style='width:150px;font-weight:bold;'>Labname</td>" .
+      "<td style='width:80px;font-weight:bold;'>Lab Number</td>" .
+      "<td style='width:85px;font-weight:bold;'>Country</td>" .
+      "<td style='width:45px;font-weight:bold;'>SLMTA</td>" .
+      "<td style='width:100px;font-weight:bold;'>Level</td>" .
+      "<td style='width:125px;font-weight:bold;'>Affiliation</td></tr>";
+    foreach($rows as $row) {
+      $ct++;
+      $cls = ($ct%2 == 0) ? 'even' : 'odd';
+      
+      $tout[] = "<tr class='{$cls}'>";
+      if ($cb) {
+        $name = "cb_{$row['id']}";
+        $tout[] = "<td style='width:40px;padding:2px 0;'>" .
+          "<input type='checkbox' name='{$name}' id='{$name}'></td>";
+      } else {
+        $butt = "<a href=\"{$this->baseurl}/lab/choose/{$row['id']}\"" .
+        " class=\"btn btn-mini btn-success\">Select</a>";
+        $tout[] = "<td style='width:40px;padding:2px 0;'>{$butt}</td>";
+      }
+      $sl = ($row['slmta'] == 't') ? 'Yes' : 'No';
+      $tout[] = "<td>{$row['labname']}</td><td>{$row['labnum']}</td>" . 
+        "<td>{$row['country']}</td><td>{$sl}</td>" .
+        "<td>{$rev_level[$row['lablevel']]}</td><td>{$rev_affil[$row['labaffil']]}</td></tr>";
+    }
+    $tout[] = '</table>';
+    $this->view->outlines .= implode("\n", $tout);
+  }
+
+  public function makeAuditLines($rows, $cb=false) {
+    // Given audit rows - show in a table
+    $tout = array();
+    $ct = 0;
+    $tout[] = '<table style="width:900px;margin-left:200px;">';
+    $tout[] = "<tr class='even'>";
+    
+    if ($cb) {
+      $tout[] = "<td style='width:40px;'>Select</td>";
+    } else {
+      /*$tout[] = "<td style='width:40px;'></td>";*/
+    }
+    $tout[] = "<td style='width:50px;font-weight:bold;'>Id</td>" .
+      "<td style='width:80px;font-weight:bold;'>Type</td>" .
+      "<td style='width:120px;font-weight:bold;'>Updated</td>" .
+      "<td style='width:100px;font-weight:bold;'>Labnum</td>" .
+      "<td style='width:150px;font-weight:bold;'>Labname</td>" .
+      "<td style='width:300px;font-weight:bold;'></td></tr>";
+    foreach($rows as $row) {
+      $ct++;
+      $cls = ($ct%2 == 0) ? 'even' : 'odd';
+      $edit = "<a href=\"{$this->baseurl}/audit/edit/{$row['audit_id']}/\"" .
+        " class=\"btn btn-mini btn-inverse\">Edit</a>";
+      $view = "<a href=\"#\" class=\"btn btn-mini btn-success\">View</a>";
+      $delete = "<a href=\"#\" class=\"btn btn-mini btn-danger\">Delete</a>";
+      $export = "<a href=\"#\" class=\"btn btn-mini btn-warning\">Data Export</a>";
+
+      $tout[] = "<tr class='{$cls}'>";
+      if ($cb) {
+        $name = "cb_{$row['audit_id']}";
+        $tout[] = "<td style='width:40px;padding:2px 0;'>" .
+          "<input type='checkbox' name='{$name}' id='{$name}'></td>";
+      } else {
+        /*$butt = "<a href=\"{$this->baseurl}/lab/choose/{$row['audit_id']}\"" .
+        " class=\"btn btn-mini btn-success\">Select</a>";
+        $tout[] = "<td style='width:40px;padding:2px 0;'>{$butt}</td>";
+        */
+      }
+      $tout[] = "<td>{$row['audit_id']}</td><td>{$row['tag']}</td>" . 
+        "<td>{$row['updated_at']}</td><td>{$row['labnum']}</td>" .
+        "<td>{$row['labname']}</td><td>{$view} {$edit} {$delete} {$export}</td></tr>";
+    }
+    $tout[] = '</table>';
+    $this->view->outlines .= implode("\n", $tout);
+  }
   /*
     public function convert2PDF($html)
     {

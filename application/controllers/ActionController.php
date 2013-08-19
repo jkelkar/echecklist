@@ -75,8 +75,9 @@ class Application_Controller_Action extends Zend_Controller_Action {
       $this->echecklistNamespace->lang = 'EN';
     }
     if (isset ($this->echecklistNamespace->audit)) {
+      //logit('AUEC: '. print_r($this->echecklistNamespace->audit, true));
       $this->audit = $this->echecklistNamespace->audit;
-      $this->showaudit = "{$this->audit['tag']} - #{$this->audit['id']} - {$this->audit['labname']}";
+      $this->showaudit = "{$this->audit['tag']} - #{$this->audit['audit_id']} - {$this->audit['labname']}";
       // / {$this->audit['updated_at']}";
     } else {
       $this->audit = null;
@@ -241,7 +242,7 @@ END;
   <span class="caret"></span></a>
 <ul class="dropdown-menu">
 					<li><a href="{$this->baseurl}/lab/create"><span title=".icon  .icon-green  .icon-tag " class="icon icon-green icon-tag"></span> New Lab</a></li>
-					<li><a href="{$this->baseurl}/lab/find"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Find Lab</a></li>
+					<li><a href="{$this->baseurl}/lab/select"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Select a Lab</a></li>
 				</ul>
 </div>
 
@@ -400,7 +401,7 @@ END;
         $tout[] = <<<"END"
 <tr>
 <td class="n f right" style=width:200px;">
-<td class="n f" style=width:600px;"><div id="help">{$info}</div></td>
+<td class="n f" style=width:600px;"><div id="help" style="display:none;">{$info}</div></td>
 </tr>
 END;
         break;
@@ -464,10 +465,6 @@ END;
     $ignore_list = array('', 'submit_button');
     $this->data = array();
     $formData = $this->getRequest();
-    //logit('POST: '. print_r($formData->getPost(), true));
-    //logit('GET : '. print_r($formData->getQuery(), true));
-    //logit('PARA: '. print_r($formData->getParam('country'), true));
-    //logit('FORM: '. print_r($this->getRequest()->getPost(), true));
     foreach ($this->drows as $row) {
       if ($row['position'] == 0) continue;
       $type = $row['field_type'];
@@ -478,20 +475,6 @@ END;
       }
       //logit('IN: '. $formData->getPost($varname,''));
       $this->data[$varname] = $formData->getPost($varname,'');
-      /*
-        if (key_exists($varname, $this->data)) {
-        logit('Keyexists: '. $varname . ' ' . print_r($this->data, true));
-          if (!is_array($this->data[$varname])) {
-            $this->data[$varname] = array($this->data[$varname]);
-            logit('arr: '.print_r($this->data[$varname], true));
-          }
-          $this->data[$varname][] = $formData->getPost($varname,'');
-          logit('arr: '.print_r($this->data[$varname], true));
-        } else {
-          $this->data[$varname] = $formData->getPost($varname,'');
-          logit('one: '. $formData->getPost($varname,''));
-        }
-      */
     }
   }
 
@@ -501,7 +484,7 @@ END;
     $rev_affil = rev('getAffiliations', $this->tlist);
     $ct = 0;
     $tout = array();
-    $tout[] = '<table style="width:900px;margin-left:200px;">';
+    $tout[] = '<table style="width:1050px;margin-left:50px;">';
     $tout[] = "<tr class='even'>";
     if ($cb) {
       $tout[] = "<td style='width:40px;'>Select</td>";
@@ -534,28 +517,31 @@ END;
         "<td>{$rev_level[$row['lablevel']]}</td><td>{$rev_affil[$row['labaffil']]}</td></tr>";
     }
     $tout[] = '</table>';
-    $this->view->outlines .= implode("\n", $tout);
+    $this->view->showlines = implode("\n", $tout);
   }
 
   public function makeAuditLines($rows, $cb=false) {
     // Given audit rows - show in a table
     $tout = array();
     $ct = 0;
-    $tout[] = '<table style="width:900px;margin-left:200px;">';
+    $tout[] = '<table style="width:900px;margin-left:50px;">';
     $tout[] = "<tr class='even'>";
     
     if ($cb) {
       $tout[] = "<td style='width:40px;'>Select</td>";
     } else {
-      /*$tout[] = "<td style='width:40px;'></td>";*/
+      $tout[] = "<td style='width:40px;'></td>";
     }
-    $tout[] = "<td style='width:50px;font-weight:bold;'>Id</td>" .
-      "<td style='width:80px;font-weight:bold;'>Type</td>" .
-      "<td style='width:120px;font-weight:bold;'>Updated</td>" .
-      "<td style='width:100px;font-weight:bold;'>Labnum</td>" .
-      "<td style='width:150px;font-weight:bold;'>Labname</td>" .
-      "<td style='width:300px;font-weight:bold;'></td></tr>";
+    $tout[] = "<td style='width:50px;font-weight:bold;'>AuditId</td>" .
+      "<td style='width:50px;font-weight:bold;'>Type</td>" .
+      "<td style='width:70px;font-weight:bold;'>Date</td>" .
+      "<td style='width:80px;font-weight:bold;'>Labnum</td>" .
+      "<td style='width:150px;font-weight:bold;'>Labname</td>" ;
+    if (!$cb) {
+      $tout[] = "<td style='width:300px;font-weight:bold;'></td></tr>";
+    }
     foreach($rows as $row) {
+      logit('Audit: ' . print_r($row, true));
       $ct++;
       $cls = ($ct%2 == 0) ? 'even' : 'odd';
       $edit = "<a href=\"{$this->baseurl}/audit/edit/{$row['audit_id']}/\"" .
@@ -570,17 +556,19 @@ END;
         $tout[] = "<td style='width:40px;padding:2px 0;'>" .
           "<input type='checkbox' name='{$name}' id='{$name}'></td>";
       } else {
-        /*$butt = "<a href=\"{$this->baseurl}/lab/choose/{$row['audit_id']}\"" .
+        $butt = "<a href=\"{$this->baseurl}/lab/choose/{$row['audit_id']}\"" .
         " class=\"btn btn-mini btn-success\">Select</a>";
         $tout[] = "<td style='width:40px;padding:2px 0;'>{$butt}</td>";
-        */
       }
       $tout[] = "<td>{$row['audit_id']}</td><td>{$row['tag']}</td>" . 
-        "<td>{$row['updated_at']}</td><td>{$row['labnum']}</td>" .
-        "<td>{$row['labname']}</td><td>{$view} {$edit} {$delete} {$export}</td></tr>";
+        "<td>{$row['end_date']}</td><td>{$row['labnum']}</td>".
+        "<td>{$row['labname']}</td>";
+      if (!$cb) {
+        $tout[] = "<td>{$row['labname']}</td><td>{$view} {$edit} {$delete} {$export}</td></tr>";
+      }
     }
     $tout[] = '</table>';
-    $this->view->outlines .= implode("\n", $tout);
+    $this->view->showlines = implode("\n", $tout);
   }
   /*
     public function convert2PDF($html)

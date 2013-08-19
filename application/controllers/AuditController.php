@@ -305,7 +305,7 @@ END;
     $id = (int)$this->echecklistNamespace->user['id'];
     $langtag = $this->echecklistNamespace->lang;
     if (!$this->getRequest()->isPost()) {
-      $rows = $audit->getAudits($id);
+      $rows = $audit->getIncompleteAudits($id);
       logit('AROWS: '. print_r($rows, true));
       $this->makeDialog();
       $this->makeAuditLines($rows);
@@ -363,7 +363,7 @@ END;
   public function selectAction() {
     $this->dialog_name = 'audit/select';
     logit ( "In LS" );
-    if (! $this->getRequest ()->isPost ()) {
+    if (! $this->getRequest()->isPost()) {
       $this->makeDialog();
     } else {
       logit('Select: In post');
@@ -373,7 +373,7 @@ END;
       $arows = $aud->selectAudits($this->data);
       logit("AROWS: ". print_r($arows, true));
       $this->makeDialog($this->data);
-      $this->makeLabLines($arows);
+      $this->makeAuditLines($arows, true);
     }
   
   }

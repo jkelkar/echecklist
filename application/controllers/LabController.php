@@ -63,14 +63,15 @@ class LabController extends Application_Controller_Action// Zend_Controller_Acti
     }
   }
 
-  public function findAction() {
+  public function selectAction() {
     //$this->_helper->layout->setLayout ( '13' );
-    $this->dialog_name = 'lab/find';
+    $this->dialog_name = 'lab/select';
     logit('Find: ');
     $labh = new Application_Model_DbTable_Lab();
 
     if (!$this->getRequest()->isPost()) {
       logit('Find: In display');
+      
       $this->makeDialog();
       
     } else {

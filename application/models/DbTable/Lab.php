@@ -109,7 +109,7 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
       throw new Exception("No labs found");
     }
     return $rows;
-  }
+  } 
     
 }
 

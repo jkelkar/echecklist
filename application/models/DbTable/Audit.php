@@ -26,8 +26,10 @@ class Application_Model_DbTable_Audit extends Application_Model_DbTable_Checklis
   public function getAudit($id) {
     // get audit from this audit id
     $id = (int) $id;
-    $sql = "select tt.tag, a.id, a.created_at, a.updated_at, l.id lab_id, l.labname ".
-      " from audit a, template_type tt, lab l " .
+    $sql = "select a.id audit_id, a.end_date, a.cohort_id, a.status, ".
+      " a.slmta_type, l.id lab_id, ".
+      " l.labname, l.labnum, l.country, l.lablevel, l.labaffil, " .
+      " tt.tag from audit a, template_type tt, lab l " .
       " where a.id = {$id} and a.template_id = tt.id " .
       " and l.id = a.lab_id";
     $rows = $this->queryRows($sql);
@@ -37,18 +39,17 @@ class Application_Model_DbTable_Audit extends Application_Model_DbTable_Checklis
     return $rows[0];
   }
 
-  public function getAudits($id) {
+  public function getIncompleteAudits($id) {
     /*
      * Get all incomplete audits for this user
      */
     $sql = <<<"END"
-SELECT a.id audit_id, a.updated_at, a.lab_id, a.status, tt.tag, l.labname, l.labnum 
-  FROM audit a, audit_owner ao, template_type tt, lab l 
- WHERE a.id = ao.audit_id 
-   and a.status = 'INCOMPLETE' 
-   and ao.owner = {$id}
-   and tt.id = a.template_id 
-   and l.id = a.lab_id
+select a.id audit_id, a.end_date, a.cohort_id, a.status,
+       a.slmta_type, l.id lab_id, 
+       l.labname, l.labnum, l.country, l.lablevel, l.labaffil,
+       tt.tag from audit a, template_type tt, lab l, audit_owner ao 
+      where a.template_id = tt.id and a.id = ao.audit_id and ao.owner ={$id}
+   and l.id = a.lab_id and a.status = 'INCOMPLETE' 
 END;
 
     $rows = $this->queryRows($sql);
@@ -80,7 +81,11 @@ END;
 
   public function selectAudits($data) {
 
-    $sql = "select * from audit a, lab l where l.id = a.lab_id";
+    $sql = "select a.id audit_id, a.end_date, a.cohort_id, a.status, ".
+      " a.slmta_type, l.id labid, ".
+      " l.labname, l.labnum, l.country, l.lablevel, l.labaffil, " .
+      " tt.tag from audit a, template_type tt, lab l " .
+      " where l.id = a.lab_id and tt.id = a.template_id";
     foreach($data as $a => $b) {
       if (!is_null($b) and $b != '') {
         //logit("{$a} = {$b} ". print_r($b, true)); 
@@ -96,16 +101,19 @@ END;
           $sql .= " and l.labaffil ". $this->_mkList($b)  ; 
           break;
         case 'slmta':
-          $sql .= " and l.slmta ". $this->_mkList($b) ; 
+          $sql .= " and a.slmta_type ". $this->_mkList($b) ; 
+          break;
+        case 'cohortid':
+          $sql .= " and a.cohort_id ". $this->_mkList($b) ; 
           break;
         case 'stdate':
           if ($b != '') {
-            $sql .= " and a.update_at >= '{$stdate} 00:00:00' ";
+            $sql .= " and a.end_date >= '{$stdate}' ";
           }
           break;
         case 'enddate':
           if ($b != '') {
-            $sql .= " and a.update_at <= '{$enddate} 23:59:59' ";
+            $sql .= " and a.end_date <= '{$enddate}' ";
           }
           break;
         default:
@@ -114,6 +122,15 @@ END;
     }
     //logit("SQL: {$sql}");
     $rows = $this->queryRows($sql);
+    return $rows;
+  }
+
+  public function getDistinctCohorts() {
+    $sql = "select distinct cohort_id from audit";
+    $rows = $this->queryRows($sql);
+    if (!$rows) {
+      throw new Exception("No cohortids found");
+    }
     return $rows;
   }
 }

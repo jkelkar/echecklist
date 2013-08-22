@@ -422,3 +422,8 @@ b.plus {
 }
 .brand {
 width: 120px;
+}
+p.small {
+    display: inline;
+    font-size: .8em;
+}

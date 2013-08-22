@@ -33,7 +33,9 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
       if ($b == '') continue;
       switch($a) {
       case 'country':
-        $sql = $sql . " and {$a} = '{$b}' ";
+        if ($b != '-') {
+          $sql = $sql . " and {$a} = '{$b}' ";
+        }
         break;
       default:
         $sql = $sql . " and {$a} like '{$b}%' ";

@@ -147,24 +147,6 @@ function getRadioClicked(name) {
     var value = $this.val();
   });
 }
-$(function() {
-    $('.datepicker').datepicker();
-    $('.bpad').mouseover( function() {
-        $(this).css('background-color', '#ccffcc');
-    }).mouseout(function() {
-        $(this).css('background-color', '#ffffff');
-    });
-    $('.node,.nodeSel').click(function(e){
-        if (changed==true && !confirm("Do you want to continue without saving changes?")) {
-            d.closeAll();
-            d.openTo(oldloc, true);
-            e.stopPropagation()
-            return false;
-        } else {
-            return true;
-        }
-    });
-});
 
 function fmtint(val, wid) {
     var out = '00000000';
@@ -275,3 +257,30 @@ function click_sub_sec(name) {
     var ssid = name.substr(0, 5);
     $('#'+ssid+'_score').click();
 }
+
+$(function() {
+    $('.datepicker').datepicker();
+    $('.bpad').mouseover( function() {
+        $(this).css('background-color', '#ccffcc');
+    }).mouseout(function() {
+        $(this).css('background-color', '#ffffff');
+    });
+    $('.node,.nodeSel').click(function(e){
+        if (changed==true && !confirm("Do you want to continue without saving changes?")) {
+            d.closeAll();
+            d.openTo(oldloc, true);
+            e.stopPropagation()
+            return false;
+        } else {
+            return true;
+        }
+    });
+    $('#allcb').click(function() {
+        if ($(this).is(':checked')) {
+            $('input[name^="cb_"]').prop('checked', true);
+        } else {
+            $('input[name^="cb_"]').prop('checked', false);
+        }
+        $.uniform.update();
+    });
+});

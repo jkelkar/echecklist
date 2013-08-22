@@ -116,11 +116,16 @@ END;
             $sql .= " and a.end_date <= '{$enddate}' ";
           }
           break;
+        case 'labnum':
+          if ($b != '') {
+            $sql .= " and l.labnum = '$b' "; 
+          }
         default:
         }
       }
     }
     //logit("SQL: {$sql}");
+    $sql .= " order by a.end_date desc";
     $rows = $this->queryRows($sql);
     return $rows;
   }
@@ -130,6 +135,15 @@ END;
     $rows = $this->queryRows($sql);
     if (!$rows) {
       throw new Exception("No cohortids found");
+    }
+    return $rows;
+  }
+
+  public function getAuditTypes() {
+    $sql = "select distinct tag from template_type";
+    $rows = $this->queryRows($sql);
+    if (!$rows) {
+      throw new Exception("No audit types found");
     }
     return $rows;
   }

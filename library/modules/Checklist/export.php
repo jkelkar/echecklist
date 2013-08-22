@@ -20,5 +20,9 @@ function exportData($audit_id) {
   $datarows = count($audit_data_rows);
   //logit("SERDATA:\n {$serdata}");
   logit("LEN: {$serdatal}, ROWS: {$datarows}");
-  return $serdata;
+  $fname = "{$lab_row['labnum']}_{$audit_row['tag']}_{$audit_row['end_date']}.edx";
+  return array (
+      'data' => $serdata,
+      'name' => $fname
+  );
 }

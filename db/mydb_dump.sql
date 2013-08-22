@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 22, 2013 at 03:06 AM
+-- Generation Time: Aug 22, 2013 at 09:34 PM
 -- Server version: 5.5.31
 -- PHP Version: 5.3.10-1ubuntu3.6
 
@@ -3751,7 +3751,7 @@ CREATE TABLE IF NOT EXISTS `template_row` (
   `element_count` int(11) NOT NULL,
   `page_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Stores template info of a display row.' AUTO_INCREMENT=1216 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Stores template info of a display row.' AUTO_INCREMENT=1217 ;
 
 --
 -- Dumping data for table `template_row`
@@ -3766,7 +3766,7 @@ INSERT INTO `template_row` (`id`, `template_id`, `row_name`, `varname`, `row_typ
 (6, 1, '', '', 'banner_rev', 0, 1, 3, 0, 0, '3.0', 'Parts of the Audit', 'This laboratory audit checklist consists of three parts:<br /><br /><b>Part I: Laboratory Profile</b><br /><br /><b>Part II: Laboratory Audits</b><br />Evaluation of laboratory operating procedures, practices, and tables for reporting performance <br /><br /><b>Part III: Summary of Audit Findings</b><br />Summary of findings of the SLIPTA audit and action planning worksheet', '', 0, 0, 2),
 (7, 1, 'p1_t', '', 'part_head', 1, 0, 0, 0, 0, 'AA575', '', '', '', 0, 0, 4),
 (8, 1, 'p1_t_1', '', 'sec_head_lab', 1, 1, 0, 0, 0, '1', 'Audit Information', '', '', 0, 0, 4),
-(9, 1, 'slmta_status', 'slmta_status', 'slmta_status', 1, 1, 0, 1, 0, '', '', 'SLMTA status', '', 0, 0, 4),
+(9, 1, 'slipta_official', 'slipta_official', 'slipta_official', 1, 1, 0, 1, 0, '', '', 'Official SLIPTA audit?', '', 0, 0, 4),
 (10, 1, 'slmta_tests', 'slmta_tests_int', 'integer_field', 1, 1, 0, 10, 0, '', '', 'Total # of tests before SLMTA', '', 0, 0, 4),
 (11, 1, 'slmta_year_tests', 'slmta_year_tests_int', 'integer_field', 1, 1, 0, 11, 0, '', '', 'Total # of tests this year', '', 0, 0, 4),
 (12, 1, 'slmta_cohortid', 'slmta_cohortid', 'string_field', 1, 1, 0, 12, 0, '', '', 'Cohort ID', '', 0, 0, 4),
@@ -4976,7 +4976,8 @@ INSERT INTO `template_row` (`id`, `template_id`, `row_name`, `varname`, `row_typ
 (1212, 3, 'p3_s13_07', 's1307', 'sub_sec_head_ynp', 3, 13, 7, 0, 0, '', '', 'Is there a expiration date on all media, reagents, and chemicals?', ' ', 0, 0, 91),
 (1213, 3, 'p3_s13_08', 's1308', 'sub_sec_head_ynp', 3, 13, 8, 0, 0, '', '', 'Is there a procedure to assign an expiration date to chemicals without a manufacturer''s expiration date?', ' ', 0, 0, 91),
 (1214, 3, 'p3_s13_last', 's13', 'ynp_ct', 3, 13, 100, 0, 0, '', 'M. Procurement and Inventory counts', '', '', 0, 0, 91),
-(1215, 1, '', '', 'sub_sec_info', 2, 7, 14, 100, 0, '', 'CAP Standard: ', 'All reagent and test kits in use, as well as those in stock, should be within the manufacturer-assigned expiry dates. Expired stock should not be entered into use and should be documented before disposal. <b>Chemistry and Toxicology Checklist, CHM 12660, 2010</b>', '', 0, 0, 17);
+(1215, 1, '', '', 'sub_sec_info', 2, 7, 14, 100, 0, '', 'CAP Standard: ', 'All reagent and test kits in use, as well as those in stock, should be within the manufacturer-assigned expiry dates. Expired stock should not be entered into use and should be documented before disposal. <b>Chemistry and Toxicology Checklist, CHM 12660, 2010</b>', '', 0, 0, 17),
+(1216, 1, 'slmta_type', 'slmta_type', 'slmta_type', 1, 1, 0, 1, 0, '', '', 'Type of SLMTA audit ', '', 0, 0, 4);
 
 -- --------------------------------------------------------
 

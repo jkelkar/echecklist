@@ -565,13 +565,14 @@ function widget_select_labaffil($varname, $value, $t, $scr = '', $multiple = fal
   return OPTIONS($varname, $optvals, $value, $scr, $multiple);
 }
 
-function getSLMTAStatus($t) {
+function getSLMTATypes($t) {
   return array (
       "{$t['Select']} ..." => '-',
-      "{$t['Official ASLM Audit']}" => 'ASLM',
-      "{$t['SLMTA Audit']}" => 'SLMTA',
-      "{$t['Base Line Assessment']}" => 'BASELINE',
-      "{$t['Non SLMTA Audit']}" => 'NONSLMTA'
+      "{$t['Baseline Audit']}" => 'BASE',
+      "{$t['Midterm Audit']}" => 'MIDTERM',
+      "{$t['Exit Audit']}" => 'EXIT',
+      "{$t['Surveillance Audit']}" => 'SERV',
+      "{$t['Other']}" => 'OTHER'
   );
 }
 
@@ -701,14 +702,14 @@ function dialog_labaffil_m($row, $value, $t) {
   //return widget_select_labaffil($varname, $value, $t, '', true);
 }
 
-function widget_select_slmtastatus($varname, $value, $t) {
-  $optvals = getSLMTAStatus($t);
+function widget_select_slmtatypes($varname, $value, $t) {
+  $optvals = getSLMTATypes($t);
   return OPTIONS($varname, $optvals, $value, '');
 }
 
 function dialog_slmtastatus_m($row, $value, $t) {
   $varname = $row['varname'];
-  $optvals = getSLMTAStatus($t);
+  $optvals = getSLMTASTypes($t);
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
   return SELECT($varname, $optvals, $value, '', true);
 }
@@ -1269,12 +1270,12 @@ function partial_sub_sec_head_ro($row, $value, $t) {
   $name = $row['varname'];
   $ec = $row['element_count'];
   $max_score = $row['score'];
-  $widget_nyp_ro = widget_select_ynp_ro($name, $value, $t); // 'N/Y/P FIXME';
+  $widget_nyp_ro = widget_select_ynp_ro($name, $value, $t);
   $ynp_ro = "{$name}_ynp";
   $nscore = "{$name}_score";
   //logit("NSCORE: ". $nscore);
   $scoreval = get_arrval($value, $nscore, 0);
-  $this_score = get_arrval($value, $ynp_ro, 0); // '# FIXME';
+  $this_score = get_arrval($value, $ynp_ro, 0);
   $head = ($heading) ? "{$heading}<br />" : "";
   //logit ( "SRO: " . print_r ( $row, true ) );
   $out = <<<"END"
@@ -1470,12 +1471,34 @@ END;
   return $out;
 }
 
-function partial_slmta_status($row, $value, $t) {
+function partial_slipta_official($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
   $name = $row['varname'];
-  $mc_slmta_status = widget_select_slmtastatus($name, $value, $t);
+  $val = get_arrval($value, $name, 'f');
+  $checked = ($val == 't') ? true : false;
+  $out = <<<"END"
+<table style="width:100%;"><tr>
+<td style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
+<label for="">{$text}</label>
+</td>
+<td style="vertical-align:top;width:400px;float:left;">
+<input type="checkbox" id="{$name}" name="{$name}" value="T" {$checked}
+    style="margin-right:8px;">
+</td>
+</tr></table>
+END;
+
+return $out;
+}
+
+function partial_slmta_type($row, $value, $t) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $name = $row['varname'];
+  $mc_slmta_status = widget_select_slmtatypes($name, $value, $t);
   $out = <<<"END"
 <table style="width:100%;"><tr>
 <td style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
@@ -1882,9 +1905,9 @@ function partial_sec_total($row, $value, $t) {
   $name = $row['varname'];
   $ec = $row['element_count'];
   $max_score = $row['score'];
-  $widget_nyp_ro = widget_select_ynp_ro($name, $value, $t); // 'N/Y/P FIXME';
+  $widget_nyp_ro = widget_select_ynp_ro($name, $value, $t);
   $ynp_ro = "{$name}_ynp";
-  $this_score = get_arrval($value, $ynp_ro, 0); // '# FIXME';
+  $this_score = get_arrval($value, $ynp_ro, 0);
   $head = ($heading) ? "{$heading}<br />" : "";
   //logit ( "SRO: " . print_r ( $row, true ) );
   //$scoreval = get_arrval ( $value, $name, 0 );
@@ -2212,7 +2235,12 @@ function getTranslatables(/*$tword,*/ $langtag) {
       'Non SLMTA Audit',
       'SLMTA',
       'Non SLMTA',
-      'Both'
+      'Both',
+      'Baseline Audit',
+      'Midterm Audit',
+      'Exit Audit',
+      'Surveillance Audit',
+      'Other'
   );
   $tlist = get_common_words_translated($tword, $words);
   //logit('TLIST: '. print_r($tlist, true));

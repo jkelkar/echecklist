@@ -392,13 +392,29 @@ END;
     logit("In audit/exportdata");
     $vars = $this->_request->getPathInfo();
     $pinfo = explode("/", $vars);
-    $id = (int) $pinfo [3];
+    $id = (int) $pinfo[3];
     if (! $this->getRequest()->isPost()) {
       // export includes a row of lab, audit and matching auditdata
       $out = exportData($id);
-      $outl = strlen($out);
-      logit('EXP: '. print_r($out, true));
-      exit();
+      $outl = strlen($out['data']);
+      logit('EXP: ' . print_r($out, true));
+      // The data is ready
+      // The proposed name is: <lab_num>_<audit_type>_<audit_date>.edx
+      $fname = $out['name'];
+      logit('FNAME: '. $fname);
+      // Send the file
+      //call the action helper to send the file to the browser
+      $this->_helper->layout->disableLayout();
+      $this->_helper->viewRenderer->setNoRender(true);
+
+      $this->getResponse()->setHeader('Content-type', 'application/plain'); //octet-stream');
+      $this->getResponse()->setHeader('Content-Disposition', 'attachment; filename="'. $fname . '"');
+      $this->getResponse()->setBody($out['data']);
+      // $this->echecklistNamespace->flash = "file sent";
+      //$referer = $this->getRequest()->getHeader('referer');
+      //$this->_redirector->gotoUrl($referer);
+      //$this->_redirector->gotoUrl($this->mainpage);
+
       //$this->makeDialog();
     } else {
       logit('Import: In post');

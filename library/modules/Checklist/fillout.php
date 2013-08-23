@@ -709,7 +709,7 @@ function widget_select_slmtatypes($varname, $value, $t) {
 
 function dialog_slmtastatus_m($row, $value, $t) {
   $varname = $row['varname'];
-  $optvals = getSLMTASTypes($t);
+  $optvals = getSLMTATypes($t);
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
   return SELECT($varname, $optvals, $value, '', true);
 }

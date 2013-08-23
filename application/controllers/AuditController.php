@@ -426,12 +426,24 @@ END;
     // Imports a dataexport file
     $this->dialog_name = 'audit/import';
     logit("In audit/import");
+    $path = dirname(__DIR__) . '/tmp/';
+    logit("PATH: {$path}");
+    $adapter = new Zend_File_Transfer_Adapter_Http();
+    $adapter->setDestination($path);
+
     if (! $this->getRequest()->isPost()) {
       $this->makeDialog();
     } else {
       logit('Import: In post');
+      if (! $adapter->receive()) {
+        $messages = $adapter->getMessages();
+        logit('MSGS: ' . print_r(implode("\n", $messages), true));
+      }
+      $files = $adapter->getFileInfo();
+      logit('FILE: ' . print_r($files, true));
+      $uploadedfile = $files['uploadedfile'];
       $this->collectData();
     }
   }
-}
 
+}

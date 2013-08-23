@@ -359,6 +359,16 @@ foreach($drows as $row) {
       $val = get_arrval($value, $varname, '');
       $hid [] = "<input type=\"hidden\" name=\"{$varname}\" value=\"{$val}\">";
       break;
+    case 'file':
+      $tout [] = <<<"END"
+<tr>
+<td class="n f right" style=width:200px;">
+<td class="n f" style=width:600px;">
+  <input type="hidden" name="MAX_FILE_SIZE" value="1000000" />
+  {$field_label}: <input name="uploadedfile" type="file" />
+</td>
+</tr>
+END;
     case 'info' :
       $tout [] = <<<"END"
 <tr>

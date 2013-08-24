@@ -43,9 +43,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
     $vars = $this->_request->getPathInfo();
     $pinfo = explode("/", $vars);
     logit('PINFO: ' . print_r($pinfo, true));
-    if (! isset($this->echecklistNamespace->user) &&
-         ! ($pinfo [1] == 'user' &&
-         $pinfo [2] == 'login')) {
+    if (! isset($this->echecklistNamespace->user) && ! ($pinfo[1] == 'user' && $pinfo[2] == 'login')) {
       $this->_redirector->gotoUrl($this->loginpage);
     }
     $this->getTwords();
@@ -61,16 +59,16 @@ class Application_Controller_Action extends Zend_Controller_Action {
     $this->echecklistNamespace = new Zend_Session_Namespace('eChecklist');
     if (isset($this->echecklistNamespace->user)) {
       $u = $this->echecklistNamespace->user;
-      $this->usertype = $u ['usertype'];
-      $this->username = $u ['userid'];
-      $this->userfullname = $u ['name'];
-      $this->userid = $u ['id'];
+      $this->usertype = $u['usertype'];
+      $this->username = $u['userid'];
+      $this->userfullname = $u['name'];
+      $this->userid = $u['id'];
       logit("{$this->username}, {$this->usertype}, {$this->userfullname}, {$this->userid}");
     }
     if (isset($this->echecklistNamespace->lab)) {
       logit('ECLAB: ' . print_r($this->lab, true));
       $this->lab = $this->echecklistNamespace->lab;
-      $this->labname = $this->lab ['labname'];
+      $this->labname = $this->lab['labname'];
       $this->labnum = get_arrval($this->lab, 'labnum', 'No-NUM');
     } else {
       $this->lab = null;
@@ -148,9 +146,10 @@ class Application_Controller_Action extends Zend_Controller_Action {
         '/charisma/js/jquery.history.js',
         '/charisma/js/charisma.js',
         '/js/helpers.js'
+    );
     // '/js/helpers.js'
 
-    );
+
     foreach($jslist as $f) {
       $this->view->headScript()->appendFile("{$this->baseurl}{$f}");
     }
@@ -168,7 +167,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
      * The input is an array of arrays array(top, array(array(icon, item),))+ The top level creates buttons the rest create the menu items
      */
     $out = array ();
-    $out [] = "<div class=\"btn-group pull-left\">";
+    $out[] = "<div class=\"btn-group pull-left\">";
 
     foreach($menu as $mx) {
       $i = 0;
@@ -176,25 +175,25 @@ class Application_Controller_Action extends Zend_Controller_Action {
         $i ++;
         switch ($i) {
           case 1 :
-            $icon = $m ['icon'];
-            $out [] = "<a class=\"btn dropdown-toggle\" data-toggle=\"dropdown\" href=\"{$m['url']}\">";
-            $out [] = $this->makeIcon($icon [0], $icon [1]);
-            $out [] = "<span class=\"hidden-phone\">{$m['text']}</span><span class=\"caret\"></span></a>";
-            $out [] = "<ul class=\"dropdown-menu\">";
+            $icon = $m['icon'];
+            $out[] = "<a class=\"btn dropdown-toggle\" data-toggle=\"dropdown\" href=\"{$m['url']}\">";
+            $out[] = $this->makeIcon($icon[0], $icon[1]);
+            $out[] = "<span class=\"hidden-phone\">{$m['text']}</span><span class=\"caret\"></span></a>";
+            $out[] = "<ul class=\"dropdown-menu\">";
             break;
           default :
             foreach($m as $mi) {
               if (in_array('divider', $mi)) {
-                $out [] = '<li class="divider"></li>';
+                $out[] = '<li class="divider"></li>';
                 continue;
               }
-              $icon = $mi ['icon'];
-              $out [] = "<li><a href=\"{$this->baseurl}{$mi['url']}\">" .
-                   $this->makeIcon($icon [0], $icon [1]) .
+              $icon = $mi['icon'];
+              $out[] = "<li><a href=\"{$this->baseurl}{$mi['url']}\">" .
+                   $this->makeIcon($icon[0], $icon[1]) .
                    " {$mi['text']}</a></li>";
             }
         }
-        $out [] = "</ul></div>";
+        $out[] = "</ul></div>";
       }
     }
     return implode("\n", $out);
@@ -214,9 +213,8 @@ class Application_Controller_Action extends Zend_Controller_Action {
 			<a class="brand" href="{$this->baseurl}{$this->mainpage}">
         <span title=".icon  .icon-black  .icon-check " class="icon icon-black icon-check"></span> <span>eChecklist</span>
       </a>
-
-
 END;
+
     if ($this->usertype != '') {
       $this->header = $this->header . <<<"END"
   <div class="btn-group pull-left" style="margin-left:100px;">
@@ -325,29 +323,29 @@ $tlist = getTranslatables($langtag);
 
 $tout = array ();
 $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
-$title = $drows [0] ['title'];
-$tout [] = <<<"END"
+$title = $drows[0]['title'];
+$tout[] = <<<"END"
 <div style="margin-left:200px;"><h1 style="margin-bottom:10px;">{$title}
 <button onclick="return toggleHelp();">Help</button> </h1> </div>
 <div style="margin:15px 0;">
 END;
-$tout [] = '<table border=0 style="width:900px;">';
+$tout[] = '<table border=0 style="width:900px;">';
 
 $hid = array ();
 foreach($drows as $row) {
-  $pos = $row ['position'];
+  $pos = $row['position'];
   // if ($pos ==0) continue;
-  $type = $row ['field_type'];
+  $type = $row['field_type'];
   $arow = array ();
 
-  $field_label = get_lang_text($row ['field_label'], '', ''); // , $row ['ltdefault'], $row ['ltlang'] );
-  $arow ['field_label'] = $field_label .
+  $field_label = get_lang_text($row['field_label'], '', ''); // , $row ['ltdefault'], $row ['ltlang'] );
+  $arow['field_label'] = $field_label .
        ':';
-  $arow ['varname'] = $row ['field_name'];
-  $varname = $arow ['varname'];
-  $arow ['baseurl'] = $baseurl;
-  $arow ['field_length'] = $row ['field_length'];
-  $info = $row ['info'];
+  $arow['varname'] = $row['field_name'];
+  $varname = $arow['varname'];
+  $arow['baseurl'] = $baseurl;
+  $arow['field_length'] = $row['field_length'];
+  $info = $row['info'];
 
   switch ($type) {
     case '' :
@@ -355,10 +353,10 @@ foreach($drows as $row) {
       break;
     case 'hidden' :
       $val = get_arrval($value, $varname, '');
-      $hid [] = "<input type=\"hidden\" name=\"{$varname}\" value=\"{$val}\">";
+      $hid[] = "<input type=\"hidden\" name=\"{$varname}\" value=\"{$val}\">";
       break;
-    case 'file':
-      $tout [] = <<<"END"
+    case 'file' :
+      $tout[] = <<<"END"
 <tr>
 <td class="n f right" style=width:200px;">
 <td class="n f" style=width:600px;">
@@ -367,8 +365,20 @@ foreach($drows as $row) {
 </td>
 </tr>
 END;
+      break;
+  case 'text' :
+    logit("TEXT: {$info}");
+      $audit = $this->audit;
+    eval("\$lines = \"$info\"; ");
+    $tout[] = <<<"END"
+<tr>
+<td class="n f right" style=width:200px;">
+<td class="n f" style=width:600px;"><div id="help2" style="font-size:1.4em;line-height:1.3em;">{$lines}</div></td>
+</tr>
+END;
+    break;
     case 'info' :
-      $tout [] = <<<"END"
+      $tout[] = <<<"END"
 <tr>
 <td class="n f right" style=width:200px;">
 <td class="n f" style=width:600px;"><div id="help" style="display:none;">{$info}</div></td>
@@ -376,7 +386,7 @@ END;
 END;
       break;
     case 'info2' :
-      $tout [] = <<<"END"
+      $tout[] = <<<"END"
 <tr>
 <td class="n f right" style=width:200px;">
 <td class="n f" style=width:600px;"><div id="help2" style="">{$info}</div></td>
@@ -384,7 +394,7 @@ END;
 END;
       break;
     case 'heading' :
-      $tout [] = <<<"END"
+      $tout[] = <<<"END"
 <tr>
 <td class="n f right" style=width:50px;">
 <td class="n f" style=width:750px;"><h3>{$field_label}</h3></td>
@@ -392,11 +402,11 @@ END;
 END;
       break;
     case 'submit_button' :
-      $arow ['field_label'] = $field_label;
+      $arow['field_label'] = $field_label;
       $field_label = '';
     default :
       $inp = call_user_func("dialog_{$type}", $arow, $value, $tlist);
-      $tout [] = <<<"END"
+      $tout[] = <<<"END"
 <tr>
 <td class="n f right" style=width:300px;">
 <label for="{$varname}" style="" class="inp">{$field_label}</label>
@@ -405,8 +415,8 @@ END;
 END;
   }
 }
-$tout [] = '</table></div></div>';
-$tout [] = implode("\n", $hid);
+$tout[] = '</table></div></div>';
+$tout[] = implode("\n", $hid);
 // logit('dialog: '. print_r($tout, true));
 return implode("\n", $tout);
 }
@@ -417,6 +427,7 @@ public function getDialogLines() {
      */
 $dialog = new Application_Model_DbTable_DialogRow();
 $this->drows = $dialog->getDialogRows($this->dialog_name);
+  //logit('DROWS: ' . print_r($this->drows, true));
 }
 
 public function makeDialog($value = array(''=>'')) {
@@ -447,16 +458,16 @@ $ignore_list = array (
 $this->data = array ();
 $formData = $this->getRequest();
 foreach($this->drows as $row) {
-  if ($row ['position'] == 0)
+  if ($row['position'] == 0)
     continue;
-  $type = $row ['field_type'];
-  $varname = $row ['field_name'];
+  $type = $row['field_type'];
+  $varname = $row['field_name'];
 
   if (in_array($type, $ignore_list)) {
     continue;
   }
   // logit('IN: '. $formData->getPost($varname,''));
-  $this->data [$varname] = $formData->getPost($varname, '');
+  $this->data[$varname] = $formData->getPost($varname, '');
 }
 }
 
@@ -471,7 +482,7 @@ $out = array ();
 foreach($vars as $n => $v) {
   if (substr($n, 0, $lprefix) == $prefix) {
     // logit("MATCH: {$n} => {$v}");
-    $out [$n] = $v;
+    $out[$n] = $v;
   }
 }
 $this->extra = $out;
@@ -483,14 +494,14 @@ $rev_level = rev('getLevels', $this->tlist);
 $rev_affil = rev('getAffiliations', $this->tlist);
 $ct = 0;
 $tout = array ();
-$tout [] = '<table style="margin-left:50px;color:black;">';
-$tout [] = "<tr class='even'>";
+$tout[] = '<table style="margin-left:50px;color:black;">';
+$tout[] = "<tr class='even'>";
 if ($cb) {
-  $tout [] = "<td style='width:50px;'>Select/<br />Deselect All</td>";
+  $tout[] = "<td style='width:50px;'>Select/<br />Deselect All</td>";
 } else {
-  $tout [] = "<td style='width:50px;'></td>";
+  $tout[] = "<td style='width:50px;'></td>";
 }
-$tout [] = <<<"END"
+$tout[] = <<<"END"
 <td style='width:100px;font-weight:bold;'>Lab Number</td>
 <td style='width:200px;font-weight:bold;'>Labname</td>
 <td style='width:85px;font-weight:bold;'>Country</td>
@@ -501,18 +512,18 @@ foreach($rows as $row) {
   $ct ++;
   $cls = ($ct % 2 == 0) ? 'even' : 'odd';
 
-  $tout [] = "<tr class='{$cls}'>";
+  $tout[] = "<tr class='{$cls}'>";
   if ($cb) {
     $name = "cb_{$row['id']}";
-    $tout [] = "<td style='width:40px;padding:2px 0;'>" .
+    $tout[] = "<td style='width:40px;padding:2px 0;'>" .
          "<input type='checkbox' name='{$name}' id='{$name}'></td>";
   } else {
     $butt = "<a href=\"{$this->baseurl}/lab/choose/{$row['id']}\"" .
          " class=\"btn btn-mini btn-success\">Select</a>";
-    $tout [] = "<td style='width:40px;padding:2px 0;'>{$butt}</td>";
+    $tout[] = "<td style='width:40px;padding:2px 0;'>{$butt}</td>";
   }
   // $sl = ($row['slmta'] == 't') ? 'Yes' : 'No';
-  $tout [] = <<<"END"
+  $tout[] = <<<"END"
 <td>{$row['labnum']}</td>
 <td>{$row['labname']}</td>
 <td>{$row['country']}</td>
@@ -522,7 +533,7 @@ END;
   // "<td style='width:45px;font-weight:bold;'>SLMTA</td>" .
   // <td>{$sl}</td>
 }
-$tout [] = '</table>';
+$tout[] = '</table>';
 $this->view->showlines = implode("\n", $tout);
 }
 
@@ -538,21 +549,21 @@ $tout = array ();
 
 $ct = 0;
 if ($cb) {
-  $tout [] = <<<"END"
+  $tout[] = <<<"END"
 <form method="post" action="{$this->baseurl}/audit/exportxls"
       enctype="multipart/form-data" name="export"
       id="export">
 END;
 }
-$tout [] = '<table style="margin-left:50px;color:black;">';
-$tout [] = "<tr class='even'>";
+$tout[] = '<table style="margin-left:50px;color:black;">';
+$tout[] = "<tr class='even'>";
 
 if ($cb) {
-  $tout [] = "<td style='width:55px;'><center>Select/<br />Deselect<br />All<br /><input type='checkbox' name='allcb' id='allcb'></center></td>";
+  $tout[] = "<td style='width:55px;'><center>Select/<br />Deselect<br />All<br /><input type='checkbox' name='allcb' id='allcb'></center></td>";
 } else {
-  $tout [] = "<td style='width:55px;'></td>";
+  $tout[] = "<td style='width:55px;'></td>";
 }
-$tout [] = <<<"END"
+$tout[] = <<<"END"
 <td style='width:55px;font-weight:bold;'>AuditId</td>
 <td style='width:70px;font-weight:bold;'>Type</td>
 <td style='width:90px;font-weight:bold;'>Date</td>
@@ -562,9 +573,9 @@ $tout [] = <<<"END"
 <td style='width:145px;font-weight:bold;'>Affil.</td>
 END;
 if (! $cb) {
-  $tout [] = "<td style='width:300px;font-weight:bold;'></td><td></td></tr>";
+  $tout[] = "<td style='width:300px;font-weight:bold;'></td><td></td></tr>";
 } else {
-  $tout [] = "<td></td></tr>";
+  $tout[] = "<td></td></tr>";
 }
 foreach($rows as $row) {
   logit('Audit: ' . print_r($row, true));
@@ -577,19 +588,19 @@ foreach($rows as $row) {
   $export = "<a href=\"{$this->baseurl}/audit/exportdata/{$row['audit_id']}\"" .
        " class=\"btn btn-mini btn-warning\">Data Export</a>";
 
-  $tout [] = "<tr class='{$cls}'>";
+  $tout[] = "<tr class='{$cls}'>";
   if ($cb) {
     $name = "cb_{$row['audit_id']}";
-    $tout [] = "<td style='width:40px;padding:2px 0;'>" .
+    $tout[] = "<td style='width:40px;padding:2px 0;'>" .
          "<center><input type='checkbox' name='{$name}' id='{$name}'></center></td>";
   } else if ($addsel) {
     $butt = "<a href=\"{$this->baseurl}/lab/choose/{$row['audit_id']}\"" .
          " class=\"btn btn-mini btn-success\">Select</a>";
-    $tout [] = "<td style='width:40px;padding:2px 0;'>{$butt}</td>";
+    $tout[] = "<td style='width:40px;padding:2px 0;'>{$butt}</td>";
   } else {
-    $tout [] = "<td style='width:40px;padding:2px 0;'></td>";
+    $tout[] = "<td style='width:40px;padding:2px 0;'></td>";
   }
-  $tout [] = <<<"END"
+  $tout[] = <<<"END"
 <td>{$row['audit_id']}</td>
 <td>{$row['tag']}</td>
 <td>{$row['end_date']}</td>
@@ -599,17 +610,17 @@ foreach($rows as $row) {
 <td><p class="small">{$rev_affil[$row['labaffil']]}</p></td>
 END;
   if (! $cb) {
-    $tout [] = "<td>{$view} {$edit} {$export} {$delete}</td><td></td></tr>";
+    $tout[] = "<td>{$view} {$edit} {$export} {$delete}</td><td></td></tr>";
   } else {
-    $tout [] = "<td></td></tr>";
+    $tout[] = "<td></td></tr>";
   }
 }
 if ($cb) {
-  $tout [] = '<tr><td colspan=9 style="text-align:right;" ><input class="input-xlarge submit" type="submit" name="export" value="Export to Excel">';
+  $tout[] = '<tr><td colspan=9 style="text-align:right;" ><input class="input-xlarge submit" type="submit" name="export" value="Export to Excel">';
 }
-$tout [] = '</table><div style="height: 65px;">&nbsp;</div>' . '<div style="clear: both;"></div>';
+$tout[] = '</table><div style="height: 65px;">&nbsp;</div>' . '<div style="clear: both;"></div>';
 if ($cb) {
-  $tour [] = '</form>';
+  $tour[] = '</form>';
 }
 $this->view->showlines = implode("\n", $tout);
 }

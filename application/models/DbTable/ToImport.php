@@ -39,7 +39,7 @@ class Application_Model_DbTable_ToImport extends Application_Model_DbTable_Check
       if ($ct == 0) {
           return null;
       }
-      $row = $this->fetchRow("owner_id = {$owner_id}");
-      return $row;
+      $rows = $this->queryRows($sql);
+      return $rows[0];
     }
 }

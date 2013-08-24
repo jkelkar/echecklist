@@ -124,7 +124,7 @@ function toggleNCBox(here) {
 
 function toggleHelp() {
     var id = '#help';
-    $(id).slideToggle(2000);
+    $(id).slideToggle(500);
     return false;
 }
 function calcShowSize() {
@@ -258,29 +258,30 @@ function click_sub_sec(name) {
     $('#'+ssid+'_score').click();
 }
 
+
 $(function() {
-    $('.datepicker').datepicker();
-    $('.bpad').mouseover( function() {
-        $(this).css('background-color', '#ccffcc');
-    }).mouseout(function() {
-        $(this).css('background-color', '#ffffff');
-    });
-    $('.node,.nodeSel').click(function(e){
-        if (changed==true && !confirm("Do you want to continue without saving changes?")) {
-            d.closeAll();
-            d.openTo(oldloc, true);
-            e.stopPropagation()
-            return false;
-        } else {
-            return true;
-        }
-    });
-    $('#allcb').click(function() {
-        if ($(this).is(':checked')) {
-            $('input[name^="cb_"]').prop('checked', true);
-        } else {
-            $('input[name^="cb_"]').prop('checked', false);
-        }
-        $.uniform.update();
-    });
+	$('.datepicker').datepicker();
+	$('.bpad').mouseover( function() {
+		$(this).css('background-color', '#ccffcc');
+	}).mouseout(function() {
+		$(this).css('background-color', '#ffffff');
+	});
+	$('.node,.nodeSel').click(function(e){
+		if (changed==true && !confirm("Do you want to continue without saving changes?")) {
+			d.closeAll();
+			d.openTo(oldloc, true);
+			e.stopPropagation();
+			return false;
+		} else {
+			return true;
+		}
+	});
+	$('#allcb').click(function() {
+		if ($(this).is(':checked')) {
+			$('input[name^="cb_"]').prop('checked', true);
+		} else {
+			$('input[name^="cb_"]').prop('checked', false);
+		}
+		$.uniform.update();
+	});
 });

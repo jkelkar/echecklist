@@ -1481,7 +1481,7 @@ function partial_slipta_official($row, $value, $t) {
   $out = <<<"END"
 <table style="width:100%;"><tr>
 <td style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
-<label for="">{$text}</label>
+<label for="{$name}">{$text}</label>
 </td>
 <td style="vertical-align:top;width:400px;float:left;">
 <input type="checkbox" id="{$name}" name="{$name}" value="T" {$checked}
@@ -2285,7 +2285,10 @@ function calculate_page($rows, $value, $langtag) { //$tword) {
   $tout = array ();
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
   $tout[] = '<table border=0 style="width:825px;">';
+  $ctr = 0;
+  $slmta = false;
   foreach($rows as $row) {
+    $ctr++;
     $type = $row['row_type'];
     $arow = array ();
     $arow['prefix'] = get_lang_text($row['prefix'], $row['lpdefault'], $row['lplang']);
@@ -2304,9 +2307,18 @@ function calculate_page($rows, $value, $langtag) { //$tword) {
     if ($type == '') {
       logit("ROW: " . print_r($row, true));
     }
-    $tout[] = "<tr ><td {$bpad}>" .
+    if (!$slmta && substr($row['varname'], 0, 5) == 'slmta') {
+        $tout[] = "<div id=\"onlyslmta\">";
+        $slmta = true;
+    }
+
+    $tout[] = "<tr id=\"tr_{$ctr}\"><td {$bpad}>" .
          call_user_func("partial_{$type}", $arow, $value, $tlist) .
          '</td></tr>';
+    if ($slmta && substr($row['varname'], 0, 5) != 'slmta') {
+        $tout[] = "</div>";
+        $slmta = false;
+    }
   }
   $tout[] = '</table>';
   return $tout;

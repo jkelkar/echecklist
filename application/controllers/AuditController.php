@@ -19,11 +19,11 @@ class AuditController extends Application_Controller_Action {
     /*
      * Given the page to paint, get buttons markup
      */
-    $display = ($page ['display_only'] == 't');
+    $display = ($page['display_only'] == 't');
     $buttons = '';
-    $thispage = $page ['page_num'];
+    $thispage = $page['page_num'];
     $this->view->thispage = $thispage;
-    $nextpage = $page ['next_page_num'];
+    $nextpage = $page['next_page_num'];
     if ($display) {
       $buttons = <<<"END"
 <div style="width:825px;">
@@ -73,16 +73,16 @@ END;
     //logit("VARS: {$vars}");
     $pinfo = explode("/", $vars);
     //logit('PARTS: '. print_r($pinfo, true));
-    $audit_id = (int) $pinfo [3];
+    $audit_id = (int) $pinfo[3];
     $template_id = $data->getTemplateId($audit_id);
     $langtag = $this->echecklistNamespace->lang;
-    $thispage = (int) $pinfo [4];
+    $thispage = (int) $pinfo[4];
     $auditrow = $aud->getAudit($audit_id);
     $this->echecklistNamespace->audit = $auditrow;
     $this->echecklistNamespace->lab = array (
-        'id' => $auditrow ['lab_id'],
-        'labname' => $auditrow ['labname'],
-        'labnum' => $auditrow ['labnum']
+        'id' => $auditrow['lab_id'],
+        'labname' => $auditrow['labname'],
+        'labnum' => $auditrow['labnum']
     );
     $this->setupSession();
     $this->setHeader();
@@ -95,10 +95,10 @@ END;
     }
     //logit ( 'In slipta beginning' );
     $nav = $page->getNav($template_id, $thispage); // 1 is the template_id
-    $page_row = $nav ['row'];
-    $display_only = $page_row ['display_only'];
-    $pageid = $page_row ['page_id'];
-    $nrows = $nav ['rows'];
+    $page_row = $nav['row'];
+    $display_only = $page_row['display_only'];
+    $pageid = $page_row['page_id'];
+    $nrows = $nav['rows'];
     if (! $this->getRequest()->isPost()) {
       // write out the page
       //$tword = $lang_word->getWords ( $langtag );
@@ -140,11 +140,11 @@ END;
         }
         $purl = "{$page_url}/{$r['page_num']}";
         $line = "d.add({$r['page_num']},{$r['parent']}, '{$r['tag']}'";
-        if ($r ['leaf'] == 't') { // draw a URL for a leaf node not otherwise
+        if ($r['leaf'] == 't') { // draw a URL for a leaf node not otherwise
           $line = $line . ", '{$purl}'";
         }
         $line = $line . ");";
-        $jsrows [] = $line;
+        $jsrows[] = $line;
         if ($this->debug) {
           logit("Line: {$line}");
         }
@@ -162,7 +162,8 @@ END;
         }
       }
       $tout = calculate_page($rows, $value, $langtag); //$tword );
-      logit('VALUE: ' . print_r($value, true));
+      logit(
+          'VALUE: ' . print_r($value, true));
 
       if ($prof) {
         $mt2 = microtime(true);
@@ -183,9 +184,10 @@ END;
 
       $this->getButtons($page_row);
 
-      $this->view->hidden = implode("\n", array (
-          "<input type=\"hidden\" name=\"audit_id\" value=\"{$audit_id}\">"
-      ));
+      $this->view->hidden = implode("\n",
+          array (
+              "<input type=\"hidden\" name=\"audit_id\" value=\"{$audit_id}\">"
+          ));
       // logit("HEADER: {$this->view->header}");
       $this->view->flash = $this->echecklistNamespace->flash;
       $this->echecklistNamespace->flash = '';
@@ -214,9 +216,9 @@ END;
         if ($a == 'nextpage') {
           $nextpage = (int) $b;
         }
-        $dvalue [$a] = $b;
+        $dvalue[$a] = $b;
       }
-      $sbname = $formData ['sbname'];
+      $sbname = $formData['sbname'];
       logit("action: {$sbname}");
       $uri = Zend_Controller_Front::getInstance()->getRequest()->getRequestUri();
       logit("URI: {$uri}");
@@ -234,8 +236,8 @@ END;
       }
       $newuri = implode('/', array_slice($u, 3));
       $pagerow = $page->getPage($template_id, $thispage);
-      $pageid = $pagerow ['page_id'];
-      $nextpage = $pagerow ['next_page_num'];
+      $pageid = $pagerow['page_id'];
+      $nextpage = $pagerow['next_page_num'];
 
       $page_url = "/audit/edit/{$audit_id}/{$nextpage}";
       logit("URINEW: {$newuri}");
@@ -257,7 +259,7 @@ END;
             logit("P3: {$mtx}");
             $mt = $mt2;
           }
-          $did = $formData ['audit_id'];
+          $did = $formData['audit_id'];
           $data->updateData($dvalue, $did, $pageid);
           $srows = $data->get($did, 'slmta_status');
           logit('AData: ' . print_r($srows, true));
@@ -268,13 +270,13 @@ END;
            *  // saves latest slmta_status to Audit
            * $this->updateToAudit($did);
            */
-        if ($prof) {
-          $mt2 = microtime(true);
-          $mtx = $mt2 - $mt;
-          logit("P4: {$mtx}");
-          $mt = $mt2;
-        }
-        if ($sbname == 'Save') {
+          if ($prof) {
+            $mt2 = microtime(true);
+            $mtx = $mt2 - $mt;
+            logit("P4: {$mtx}");
+            $mt = $mt2;
+          }
+          if ($sbname == 'Save') {
             $this->redirect($newuri);
           } else {
             if ($nextpage == 999) {
@@ -306,7 +308,7 @@ END;
     $audit = new Application_Model_DbTable_Audit();
     $vars = $this->_request->getPathInfo();
     $pinfo = explode("/", $vars);
-    $id = (int) $this->echecklistNamespace->user ['id'];
+    $id = (int) $this->echecklistNamespace->user['id'];
     $langtag = $this->echecklistNamespace->lang;
     if (! $this->getRequest()->isPost()) {
       $rows = $audit->getIncompleteAudits($id);
@@ -373,7 +375,7 @@ END;
       logit('Exportxls+: ' . print_r($this->extra, true));
       $alist = array ();
       foreach($this->extra as $n => $v) {
-        $alist [] = (int) substr($n, $lprefix);
+        $alist[] = (int) substr($n, $lprefix);
       }
       logit('collected data: ' . print_r($alist, true));
       exit();
@@ -401,19 +403,21 @@ END;
       // The data is ready
       // The proposed name is: <lab_num>_<audit_type>_<audit_date>.edx
       $fname = $out['name'];
-      logit('FNAME: '. $fname);
+      logit('FNAME: ' . $fname);
       // Send the file
       //call the action helper to send the file to the browser
       $this->_helper->layout->disableLayout();
       $this->_helper->viewRenderer->setNoRender(true);
 
       $this->getResponse()->setHeader('Content-type', 'application/plain'); //octet-stream');
-      $this->getResponse()->setHeader('Content-Disposition', 'attachment; filename="'. $fname . '"');
+      $this->getResponse()->setHeader(
+          'Content-Disposition', 'attachment; filename="' . $fname . '"');
       $this->getResponse()->setBody($out['data']);
       // $this->echecklistNamespace->flash = "file sent";
-      //$referer = $this->getRequest()->getHeader('referer');
-      //$this->_redirector->gotoUrl($referer);
-      //$this->_redirector->gotoUrl($this->mainpage);
+        //$referer = $this->getRequest()->getHeader('referer');
+        //$this->_redirector->gotoUrl($referer);
+        //$this->_redirector->gotoUrl($this->mainpage);
+
 
       //$this->makeDialog();
     } else {
@@ -433,7 +437,7 @@ END;
     $toimport = new Application_Model_DbTable_ToImport();
     if (! $this->getRequest()->isPost()) {
       if ($toimport->getByOwner($this->userid)) {
-        $this->_redirector->gotoUrl('audit/import2');
+        $this->_redirector->gotoUrl('audit/fileparse');
       }
       $this->makeDialog();
     } else {
@@ -450,10 +454,13 @@ END;
       //$sdata = file_get_contents($uploadedfile['tmp_name']);
       //logit('SLEN: '. strlen($sdata));
 
+
       $data = array ();
       $data['owner_id'] = $this->userid;
       $data['path'] = $uploadedfile['tmp_name'];
       $id = $toimport->insertData($data);
+      $this->_redirector->gotoUrl('audit/fileparse');
+
       /*
       $iaudit = new Application_Model_DbTable_IAudit();
       $ilab = new Application_Model_DbTable_ILab();
@@ -487,9 +494,30 @@ END;
     }
   }
 
-  public function import2Action() {
-
-
+  public function fileparseAction() {
+    // audit import file has been seen - now process it.
+    $this->dialog_name = 'audit/fileparse';
+    logit("In audit/fileparse");
+    if (! $this->getRequest()->isPost()) {
+      // read the imported file and extract the
+      // lab info and audit into
+      $toimport = new Application_Model_DbTable_ToImport();
+      $thisfile = $toimport->getByOwner($this->userid);
+      $sdata = file_get_contents($thisfile['path']);
+      logit('SLEN: '. strlen($sdata) . ' '.print_r($thisfile, true));
+      $data = unserialize($sdata);
+      $labinfo = $data['lab'];
+      logit('LAB: '. print_r($labinfo, true));
+      $auditinfo = $data['audit'];
+      $this->audit = $auditinfo;
+      logit('AUDIT: '. print_r($auditinfo, true));
+      //$tmpl = new Application_Model_DbTable_Template();
+      //$tmpl_row = $tmpl->get($auditinfo['template_id']);
+      //$this->tag = $auditinfo['tag'];
+      //$end_date = $audit_row['end_date'];
+      $this->makeDialog();
+    } else {
+      logit('Import: In post');
+    }
   }
-
 }

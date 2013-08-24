@@ -13,7 +13,7 @@ function exportData($audit_id) {
   $alldata = array (
       'lab' => $lab_row,
       'audit' => $audit_row,
-      'data' => $audit_data_rows
+      'audit_data' => $audit_data_rows
   );
   $serdata = serialize($alldata);
   $serdatal = strlen($serdata);

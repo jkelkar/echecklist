@@ -430,20 +430,66 @@ END;
     logit("PATH: {$path}");
     $adapter = new Zend_File_Transfer_Adapter_Http();
     $adapter->setDestination($path);
-
+    $toimport = new Application_Model_DbTable_ToImport();
     if (! $this->getRequest()->isPost()) {
+      if ($toimport->getByOwner($this->userid)) {
+        $this->_redirector->gotoUrl('audit/import2');
+      }
       $this->makeDialog();
     } else {
       logit('Import: In post');
       if (! $adapter->receive()) {
         $messages = $adapter->getMessages();
         logit('MSGS: ' . print_r(implode("\n", $messages), true));
+        $this->echecklistNamespace->flash = 'File not loaded - Already Loaded?';
+        $this->makeDialog();
       }
       $files = $adapter->getFileInfo();
       logit('FILE: ' . print_r($files, true));
       $uploadedfile = $files['uploadedfile'];
-      $this->collectData();
+      //$sdata = file_get_contents($uploadedfile['tmp_name']);
+      //logit('SLEN: '. strlen($sdata));
+
+      $data = array ();
+      $data['owner_id'] = $this->userid;
+      $data['path'] = $uploadedfile['tmp_name'];
+      $id = $toimport->insertData($data);
+      /*
+      $iaudit = new Application_Model_DbTable_IAudit();
+      $ilab = new Application_Model_DbTable_ILab();
+      $iaudit_data = new Application_Model_DbTable_IAuditData();
+
+      $data = unserialize($sdata);
+      logit('CT: ' . count($data));
+      $ownerid = $this->userid;
+      $data['audit']['owner_id'] = $ownerid;
+      $auditr = $data['audit'];
+      $labr = $data['lab'];
+      // insert into ilab with unique id
+      $rint = rand(1000, 9999);
+      while ($iaudit->count($rint) != 0) {
+        $rint = rand(1000, 9999);
+      }
+      // insert into iaudit with unique id
+      $rint = rand(1000, 9999);
+      $auditr['id'] = $rint;
+      while ($iaudit->count($rint) != 0) {
+        $rint = rand(1000, 9999);
+      }
+      $auditr['id'] = $rint;
+      $iaudit->insertData($auditr);
+
+
+      //unset($auditr['id']);
+      //$this->collectData();
+       *
+       */
     }
+  }
+
+  public function import2Action() {
+
+
   }
 
 }

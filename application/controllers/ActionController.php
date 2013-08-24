@@ -44,10 +44,8 @@ class Application_Controller_Action extends Zend_Controller_Action {
     $pinfo = explode("/", $vars);
     logit('PINFO: ' . print_r($pinfo, true));
     if (! isset($this->echecklistNamespace->user) &&
-         ! ($pinfo [1] ==
-         'user' &&
-         $pinfo [2] ==
-         'login')) {
+         ! ($pinfo [1] == 'user' &&
+         $pinfo [2] == 'login')) {
       $this->_redirector->gotoUrl($this->loginpage);
     }
     $this->getTwords();

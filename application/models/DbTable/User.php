@@ -67,8 +67,8 @@ class Application_Model_DbTable_User extends Application_Model_DbTable_Checklist
      */
     $this->update($data, "id = " . (int)$id);
   }
-   
-  public function delete($ind) {
+
+  public function delete($id) {
     /**
      * delete user at id
      */

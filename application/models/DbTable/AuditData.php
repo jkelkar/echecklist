@@ -92,18 +92,75 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     return $rows[0];
   }
 
-  public function updateData($data, $did, $page_id) {
+  public function updateData($data, $did, $page_id, $labrow = array()) {
     /**
      * Update user at $id with this data
      * $data is an array with name value pairs
      */
     $did = (int) $did;
     $page_id = (int) $page_id;
+    // update lab info
+    // do all this only if labhead is a variable on this page
+    $key = 'labhead';
+    if (array_key_exists($key, $data)) {
+      $labfields = array (
+          'labname',
+          'labnum',
+          'labtel',
+          'labfax',
+          'labemail',
+          'lablevel',
+          'labaffil',
+          'labaddr'
+      );
+
+      foreach($labfields as $n) {
+        $v = '';
+        switch ($n) {
+          case 'labname' :
+          case 'labnum' :
+          case 'labtel' :
+          case 'labfax' :
+          case 'labemail' :
+          case 'lablevel' :
+          case 'labaffil' :
+            if (array_key_exists($n, $labrow)) {
+              //$data[$n]
+              $v = $labrow[$n];
+            }
+            logit("ch data {$n}: $v");
+            break;
+          case 'labaddr' :
+            $labaddr = '';
+            if (count($labrow) > 5) {
+              if ($labrow['street'] > '')
+                $labaddr = "{$labrow['street']}\n";
+              if ($labrow['street2'] > '')
+                $labaddr .= "{$labrow['street2']}\n";
+              if ($labrow['street3'] > '')
+                $labaddr .= "{$labrow['street3']}\n";
+              if ($labrow['city'] > '')
+                $labaddr .= "{$labrow['city']}";
+              if ($labrow['state'] > '')
+                $labaddr .= ", {$labrow['state']}\n";
+              if ($labrow['country'] > '')
+                $labaddr .= "{$labrow['country']}";
+              if ($labrow['postcode'] > '')
+                $labaddr .= " {$labrow['postcode']}";
+            }
+            //$data['labaddr']
+            $v = $labaddr;
+            break;
+          default :
+          // we should never reach here!
+        }
+        $this->updateAuditField($did, $n, $v, $page_id);
+      }
+    }
     foreach($data as $n => $v) {
       //logit ( "BEFORE: {$n} ==> {$v}" );
       $this->updateAuditField($did, $n, $v, $page_id);
     }
-    //$this->copyEssentials($did);
     $this->updateFinalScore($did, 0);
   }
 

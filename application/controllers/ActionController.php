@@ -24,6 +24,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
   public $data;
   public $extra;
   public $lab;
+  public $labid;
   public $labnum;
   public $labname;
   public $audit;
@@ -50,6 +51,14 @@ class Application_Controller_Action extends Zend_Controller_Action {
       $this->_redirector->gotoUrl($this->loginpage);
     }
     $this->getTwords();
+  }
+
+  public function handleCancel() {
+    // cancel action take user to main screen
+    logit('HC: '. print_r($this->data, true));
+    if ($this->data['submit_button'] == 'Cancel' ) {
+      $this->_redirector->gotoUrl($this->mainpage);
+    }
   }
 
   public function getTwords() {
@@ -413,6 +422,9 @@ END;
           break;
         case 'submit_button' :
           $arow['field_label'] = $field_label;
+          //$arow['baseurl'] = $baseurl;
+          $arow['homeurl'] = "{$this->baseurl}/audit/main";
+          logit("HURL: {$arow['homeurl']}");
           $field_label = '';
         default :
           $inp = call_user_func("dialog_{$type}", $arow, $value, $tlist);
@@ -467,8 +479,9 @@ END;
 
     $this->getDialogLines();
     $ignore_list = array (
-        '',
-        'submit_button'
+        '', ''
+        /*,
+        'submit_button'*/
     );
     $this->data = array ();
     $formData = $this->getRequest();
@@ -484,6 +497,7 @@ END;
       // logit('IN: '. $formData->getPost($varname,''));
       $this->data[$varname] = $formData->getPost($varname, '');
     }
+    $this->handleCancel();
   }
 
   public function collectExtraData($prefix = '') {
@@ -593,7 +607,7 @@ END;
       $tout[] = "<td></td></tr>";
     }
     foreach($rows as $row) {
-      logit('Audit: ' . print_r($row, true));
+      //logit('Audit: ' . print_r($row, true));
       $ct ++;
       $cls = ($ct % 2 == 0) ? 'even' : 'odd';
       $edit = "<a href=\"{$this->baseurl}/audit/edit/{$row['audit_id']}/\"" .

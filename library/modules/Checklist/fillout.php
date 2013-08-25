@@ -209,7 +209,7 @@ function LABEL($name, $label_text = '', $label_style = "", $label_class = "") {
   return $out;
 }
 
-function INPUT($name, $value, $type = "string", $length = 0, $style = "", $class = '') {
+function INPUT($name, $value, $type="string", $length=0, $style="", $class='') {
   $size = $dtype = '';
   switch ($type) {
     case 'date' :
@@ -874,6 +874,26 @@ END;
   return $out;
 }
 
+function partial_string_ro($row, $value, $t) {
+  $name = $row['varname'];
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  //$stringf = INPUT($name, $value, 'string', 55, '', '');
+  $val = get_arrval($value, $name, '');
+  $out = <<<"END"
+<div style="width:100%;">
+<div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
+  {$text}
+</div>
+<div style="vertical-align:top;width:400px;float:left;">
+  {$val}
+</div>
+</div>
+END;
+  return $out;
+}
+
 function dialog_string_field($row, $value, $t) {
   $name = $row['varname'];
   $flength = $row['field_length'];
@@ -895,7 +915,10 @@ function dialog_submit_button($row, $value, $t) {
   $names = preg_split('/,/', $val);
   $out = '';
   foreach($names as $text) {
-    $out .= INPUT($name, $text, 'submit', '', '', 'submit');
+    /*  INPUT($name, $text, 'submit', '', '', 'submit', "");
+    } else { */
+      $out .= INPUT($name, $text, 'submit', '', '', 'submit');
+    //}
   }
   return $out;
 }
@@ -975,6 +998,27 @@ function partial_text_field($row, $value, $t) {
 </div>
 END;
   return $out;
+}
+
+function partial_text_ro($row, $value, $t) {
+  $name = $row['varname'];
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  // $tarea = TEXTAREA("{$name}_comment", $value, "width:395px;height:50px;margin-top:5px;");
+  $val = get_arrval($value, $name, '');
+  $val = str_replace("\n", '<br />', $val);
+  $out = <<<"END"
+<div style="width:100%;">
+<div style="display:inline-block;vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left">
+  {$text}
+</div>
+<div style="display:inline-block;vertical-align:top;width:400px;float:left;">
+  {$val}
+</div>
+</div>
+END;
+      return $out;
 }
 
 function partial_date_field($row, $value, $t) {
@@ -2298,6 +2342,7 @@ function calculate_page($rows, $value, $langtag) { //$tword) {
     $arow['info'] = $row['info'];
     $arow['score'] = $row['score'];
     $arow['baseurl'] = $baseurl;
+    //$arow['homeurl'] = "{$baseurl}/audit/main";
     $arow['element_count'] = $row['element_count'];
     $bpad = 'class="bpad"';
 

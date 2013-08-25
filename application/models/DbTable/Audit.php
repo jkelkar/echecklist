@@ -73,10 +73,10 @@ END;
     //  return
     switch(count($data)) {
     case 0 :
-      logit("0: {$data} --". print_r($data, true));
+      //logit("0: {$data} --". print_r($data, true));
       break;
     case 1:
-      logit("A: = '{$data[0]}' ");
+      //logit("A: = '{$data[0]}' ");
       return "= '{$data[0]}' ";
       break;
     default:
@@ -85,7 +85,7 @@ END;
         if (is_string($d))
           $out .= "'{$d}'" ;
       }
-      logit("A: = in ({$out}) ");
+      //logit("A: = in ({$out}) ");
       return "in ({$out})";
     }
   }

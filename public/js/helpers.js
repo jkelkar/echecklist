@@ -258,6 +258,9 @@ function click_sub_sec(name) {
     $('#'+ssid+'_score').click();
 }
 
+function goHome(url) {
+	window.location = url;
+}
 
 $(function() {
 	$('.datepicker').datepicker();

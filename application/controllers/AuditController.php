@@ -63,9 +63,11 @@ END;
       $mt = microtime(true);
       logit("Start: {$mt}");
     }
+    $this->init();
     $tmplr = new Application_Model_DbTable_TemplateRows();
     $data = new Application_Model_DbTable_AuditData();
     $aud = new Application_Model_DbTable_Audit();
+    $lab = new Application_Model_DbTable_Lab();
     $page = new Application_Model_DbTable_Page();
     $lang = new Application_Model_DbTable_Language();
     $lang_word = new Application_Model_DbTable_langword();
@@ -112,7 +114,7 @@ END;
       // if this page is display only we load values for page 0
       // page 0 has global data on it
       if ($display_only == 't') {
-        $value = $data->getData($audit_id, 0);
+        $value = $data->getData($audit_id, 0); // page 0 has all global items for this audit
       } else {
         $value = $data->getData($audit_id, $pageid); // 1 is the audit_id
       }
@@ -182,16 +184,14 @@ END;
         eval("\$olines = \"$olines\"; ");
       }
       $this->view->outlines = $olines;
-
       $this->getButtons($page_row);
-
       $this->view->hidden = implode("\n",
           array (
               "<input type=\"hidden\" name=\"audit_id\" value=\"{$audit_id}\">"
           ));
       // logit("HEADER: {$this->view->header}");
       $this->view->flash = $this->echecklistNamespace->flash;
-      unst($this->echecklistNamespace->flash);
+      unset($this->echecklistNamespace->flash);
       $this->_helper->layout->setLayout('template');
     } else { // Handle the POST request here
       logit('In post for Audit');
@@ -199,7 +199,7 @@ END;
         $mt = microtime(true);
         logit("P1: {$mt}");
       }
-      //$mt = $mt2;
+      if ($prof) $mt = $mt2;
       $formData = $this->getRequest()->getPost();
       $dvalue = array ();
       $not_include = array (
@@ -261,7 +261,9 @@ END;
             $mt = $mt2;
           }
           $did = $formData['audit_id'];
-          $data->updateData($dvalue, $did, $pageid);
+          $labrow = $lab->get($this->labid);
+          logit('UPLAB: ' . print_r($labrow, true));
+          $data->updateData($dvalue, $did, $pageid, $labrow);
           $srows = $data->get($did, 'slmta_status');
           logit('AData: ' . print_r($srows, true));
           /**
@@ -313,7 +315,7 @@ END;
     $langtag = $this->echecklistNamespace->lang;
     if (! $this->getRequest()->isPost()) {
       $rows = $audit->getIncompleteAudits($id);
-      logit('AROWS: ' . print_r($rows, true));
+      //logit('AROWS: ' . print_r($rows, true));
       $this->makeDialog();
       $this->makeAuditLines($rows);
     }

@@ -5,11 +5,10 @@
  */
 require_once 'modules/Checklist/logger.php';
 
-class Application_Model_DbTable_AuditRows extends Application_Model_DbTable_Checklist {
+class Application_Model_DbTable_TemplateRows extends Application_Model_DbTable_Checklist {
   protected $_name = 'template_rows';
 
   public function getrows($id, $page_num, $lang) {
-    $db = $this->getDb ();
     $id = ( int ) $id;
     $sql = <<<"SQL"
       select r.varname, r.row_type, r.score, p.page_num, p.page_id,
@@ -26,7 +25,6 @@ class Application_Model_DbTable_AuditRows extends Application_Model_DbTable_Chec
     order by r.part, r.level1, r.level2, r.level3, r.level4
 SQL;
     // logit("SQL: {$sql}");
-    // $stmt = $db->query ( $sql );
     $rows = $this->queryRows($sql); // $stmt->fetchAll ();
     if (! $rows) {
       throw new Exception ( "No rows available for this template." );
@@ -35,16 +33,16 @@ SQL;
      * foreach($rows as $row) { logit("{$row['text']}"); }
      */
     return $rows;
-  
+
   }
 
   public function getAudits($uid, $atype) {
-    /* 
+    /*
      * Return all matching audits
      * - user $uid and Type $atype
      */
 
 
   }
-  
+
 }

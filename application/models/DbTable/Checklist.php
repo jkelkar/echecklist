@@ -15,7 +15,7 @@ class Application_Model_DbTable_Checklist extends Zend_Db_Table_Abstract
     //logit("app path: {$path}");
     //logit("X: {$config->resources->db->params->dbname}");
     $db = $this->getAdapter();
-    
+
     /**new Zend_Db_Adapter_Pdo_Mysql
       (
        array(
@@ -36,7 +36,7 @@ class Application_Model_DbTable_Checklist extends Zend_Db_Table_Abstract
     $db->query($sql);
     return $db;
   }
-  
+
   public function queryRows($sql) {
     /*
      * This runs the sql against the database and returns the result
@@ -47,7 +47,7 @@ class Application_Model_DbTable_Checklist extends Zend_Db_Table_Abstract
     $rows = $stmt->fetchAll();
     return $rows;
   }
-  
+
   public function queryRowcount($sql) {
     /*
      * This runs the sql against the database and returns the count
@@ -57,7 +57,7 @@ class Application_Model_DbTable_Checklist extends Zend_Db_Table_Abstract
     $ct = $stmt->rowCount();
     return $ct;
   }
-  
+
   public function queryRowsAsJSON($sql) {
     /*
      * This runs the sql against the database and returns the result
@@ -68,6 +68,45 @@ class Application_Model_DbTable_Checklist extends Zend_Db_Table_Abstract
     $rows = $stmt->fetchAll();
     $jenc = json_encode($rows);
     return $jenc;
+  }
+
+  public function get($id)
+  {
+    /**
+     * Get a row with this id
+     */
+    $id = (int)$id;
+    $row = $this->fetchRow('id = ' . $id);
+    if (!$row) {
+      throw new Exception("Could not find row $id");
+    }
+    return $row->toArray();
+  }
+
+  public function insertData($data) {
+    /**
+     * Create a new row
+     * data is an array with name value pairs
+     */
+    $this->insert($data);
+    $newid = $this->getAdapter()->lastInsertId();
+    return $newid;
+  }
+
+  public function updateData($data, $id) {
+    /**
+     * Update row at $id with this data
+     * $data is an array with name value pairs
+     */
+    logit('DATA: '. print_r($data, true));
+    $this->update($data, "id = {$id}");
+  }
+
+  public function deleteLab($id) {
+    /**
+     * delete row at $id
+     */
+    $this->delete('id = ' . (int)$id);
   }
 }
 

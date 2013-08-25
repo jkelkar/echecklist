@@ -51,28 +51,5 @@ class Application_Model_DbTable_User extends Application_Model_DbTable_Checklist
     }
     return $rows;
   }
-  public function insertData($data) {
-    /**
-     * data is an array with name value pairs
-     */
-    $this->insert($data);
-    $newid = $this->getAdapter()->lastInsertId();
-    return $newid;
-  }
-
-  public function updateData($data, $id) {
-    /**
-     * Update user at $id with this data
-     * $data is an array with name value pairs
-     */
-    $this->update($data, "id = " . (int)$id);
-  }
-
-  public function delete($id) {
-    /**
-     * delete user at id
-     */
-    $this->delete('id = ' . (int)$id);
-  }
 }
 

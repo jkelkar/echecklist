@@ -51,9 +51,9 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
       $rows = array();
     }
     return $rows;
-  
+
   }
-  
+
   public function getAllLabs( $start, $ct) {
     logit("Labs: getalllabs");
     $sql = "select * from lab limit {$start}, {$ct}";
@@ -64,7 +64,7 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
     }
     return $rows;
   }
-  
+
   public function getLabByPartialName($name)
   {
   	/**
@@ -78,32 +78,6 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
   	 return $rows;
   }
 
-  public function insertData($data) {
-    /**
-     * Create a new lab
-     * data is an array with name value pairs
-     */
-    $this->insert($data);
-    $newid = $this->getAdapter()->lastInsertId();
-    return $newid;
-  }
-
-  public function updateData($data, $id) {
-    /**
-     * Update lab at $id with this data
-     * $data is an array with name value pairs
-     */
-    logit('LABDATA: '. print_r($data, true));
-    $this->update($data, "id = {$id}");
-  }
-   
-  public function deleteLab($ind) {
-    /**
-     * delete user at id
-     */
-    //$this->delete('id = ' . (int)$id);
-  }
-
   public function getDistinctCountries() {
     $sql = "select distinct country from lab";
     $rows = $this->queryRows($sql);
@@ -111,7 +85,7 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
       throw new Exception("No labs found");
     }
     return $rows;
-  } 
-    
+  }
+
 }
 

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 24, 2013 at 06:00 PM
+-- Generation Time: Aug 25, 2013 at 01:53 PM
 -- Server version: 5.5.31
 -- PHP Version: 5.3.10-1ubuntu3.6
 
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `audit` (
 --
 
 INSERT INTO `audit` (`id`, `template_id`, `created_at`, `updated_at`, `updated_by`, `start_date`, `end_date`, `lab_id`, `cohort_id`, `slmta_type`, `status`) VALUES
-(1, 1, '2013-07-22 11:23:36', '2013-08-17 20:03:34', 1, '0000-00-00', '0000-00-00', 1, '1', '', 'INCOMPLETE'),
+(1, 1, '2013-07-22 11:23:36', '2013-08-17 20:03:34', 1, '2013-08-01', '2013-08-14', 1, '1', '', 'INCOMPLETE'),
 (2, 2, '2013-08-10 11:24:44', '2013-08-17 21:38:09', 1, '0000-00-00', '0000-00-00', 9, '3', '', 'INCOMPLETE'),
 (3, 3, '2013-08-15 13:25:29', '2013-08-17 09:47:40', 1, '0000-00-00', '0000-00-00', 10, '5', '', 'INCOMPLETE');
 
@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS `audit_data` (
   `page_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `head_data` (`audit_id`,`field_name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='One row per field of data saved.' AUTO_INCREMENT=18710 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='One row per field of data saved.' AUTO_INCREMENT=18718 ;
 
 --
 -- Dumping data for table `audit_data`
@@ -128,7 +128,7 @@ INSERT INTO `audit_data` (`id`, `audit_id`, `field_name`, `int_val`, `text_val`,
 (473, 1, 'audit_date', 0, '', '', '0001-11-30', '', 'date', 4),
 (474, 1, 'dola', 0, '', '', '2013-08-19', '', 'string', 4),
 (481, 1, 'sufficient_infra_yn', 0, '', 'NO', '2013-08-19', '', 'string', 8),
-(482, 1, 'action', 0, '', '', '2013-08-22', '', 'string', 11),
+(482, 1, 'action', 0, '', '', '2013-08-25', '', 'string', 4),
 (489, 1, 'labname', 0, '', '', '2013-08-19', '', 'string', 5),
 (490, 1, 'labnum', 0, '', '', '2013-08-19', '', 'string', 5),
 (492, 1, 'labtel', 0, '', '', '2013-08-19', '', 'string', 5),
@@ -155,7 +155,7 @@ INSERT INTO `audit_data` (`id`, `audit_id`, `field_name`, `int_val`, `text_val`,
 (677, 1, 'cleaner', 0, '', '', '2013-08-19', '', 'string', 7),
 (681, 1, 'driver', 0, '', '', '2013-08-19', '', 'string', 7),
 (685, 1, 'other', 0, '', '', '2013-08-19', '', 'string', 7),
-(2464, 1, 'nextpage', 0, '', '', '2013-08-22', '', 'string', 11),
+(2464, 1, 'nextpage', 0, '', '', '2013-08-25', '', 'string', 4),
 (2466, 1, 's0201_nc', 0, '', '', '2013-08-16', 'F', 'bool', 12),
 (2468, 1, 's0201_score', 0, '', '', '2013-08-16', '', 'integer', 12),
 (2469, 1, 's0201_comment', 0, '', '', '2013-08-16', '', 'text', 12),
@@ -397,9 +397,9 @@ INSERT INTO `audit_data` (`id`, `audit_id`, `field_name`, `int_val`, `text_val`,
 (4246, 1, 's030811_nc', 0, '', '', '2013-08-16', 'F', 'bool', 13),
 (4248, 1, 's030811_note', 0, '', '', '2013-08-16', '', 'text', 13),
 (5019, 1, 'pas_stars', 0, '', '-', '2013-08-19', '', 'string', 4),
-(7808, 1, 'final_score', 17, '', '', '2013-08-22', '', 'integer', 0),
-(7809, 1, 'final_y', 0, '', '', '2013-08-22', '', 'string', 0),
-(7810, 1, 'final_n', 0, '', 'N', '2013-08-22', '', 'string', 0),
+(7808, 1, 'final_score', 17, '', '', '2013-08-25', '', 'integer', 0),
+(7809, 1, 'final_y', 0, '', '', '2013-08-25', '', 'string', 0),
+(7810, 1, 'final_n', 0, '', 'N', '2013-08-25', '', 'string', 0),
 (8447, 1, 's02_total', 6, '', '', '2013-08-16', '', 'integer', 12),
 (9764, 1, 's020301_yn', 0, '', 'YES', '2013-08-16', '', 'string', 12),
 (11447, 2, 'final_y_ct', 1, '', '', '2013-08-19', '', 'integer', 0),
@@ -2112,7 +2112,10 @@ INSERT INTO `audit_data` (`id`, `audit_id`, `field_name`, `int_val`, `text_val`,
 (18660, 1, 'action08_sign', 0, '', '', '2013-08-21', '', 'string', 28),
 (18664, 1, 'action09_sign', 0, '', '', '2013-08-21', '', 'string', 28),
 (18668, 1, 'action10_sign', 0, '', '', '2013-08-21', '', 'string', 28),
-(18709, 1, 's010404_yn', 0, '', 'NO', '2013-08-22', '', 'string', 11);
+(18709, 1, 's010404_yn', 0, '', 'NO', '2013-08-22', '', 'string', 11),
+(18710, 1, 'start_date', 0, '', '', '2013-08-01', '', 'date', 4),
+(18711, 1, 'end_date', 0, '', '', '2013-08-14', '', 'date', 4),
+(18712, 1, 'slipta_official', 0, '', 'T', '2013-08-25', '', 'string', 4);
 
 -- --------------------------------------------------------
 
@@ -2542,11 +2545,11 @@ INSERT INTO `dialog_row` (`id`, `dialog_id`, `position`, `field_name`, `field_la
 (82, 9, 11, 'exp', 'Data to Export', 0, 'export', 'f', '', ''),
 (83, 11, 0, 'lab/choose', '', 0, 'info', 'f', 'These are the audits associated with the selected lab.<br />', 'Lab Audits'),
 (84, 11, 1, '', '', 0, 'info2', 'f', 'These actions are possible with audits:<br />\r\n<ul>\r\n<li><b>View:</b> Show the entire filledout audit on screen</li>\r\n<li><b>Edit:</b> (only if INCOMPLETE) Edit the audit</li>\r\n<li><b>DataExport:</b> Export audit to data file</li>\r\n<li><b>Delete:</b> (only if INCOMPLETE or REJECTED) Delete this audit</li>\r\n</ul>', ''),
-(85, 12, 0, 'audit/import', '', 0, 'info', 'f', 'Import an audit into this system.', 'Import An Audit'),
+(85, 12, 0, 'audit/import', '', 0, 'info', 'f', 'Import an audit into this system.<br />\r\nOnly one import can be active at a time. Either complete importing, or delete the import.', 'Import An Audit'),
 (86, 12, 1, 'file', 'FIle to Import', 40, 'file', 'f', '', ''),
 (87, 12, 3, 'submit_button', 'Cancel,Start', 0, 'submit_button', 'f', '', ''),
 (88, 13, 0, 'audit/fileparse', '', 0, 'info', 'f', 'These are the data in the imported file.', 'Import file details'),
-(89, 13, 1, 'info', '', 0, 'text', 'f', 'Lab info for import data:<br />\r\n<ul><li><b>Lab Name:</b>  {$this->audit[''labname'']}</li>\r\n<li><b>Lab Number:</b> {$this->audit[''labnum'']}</li>\r\n<li><b>Country:</b> {$this->audit[''country'']}</li></ul><br />\r\nAudit info for import data:<br />\r\n<ul><li><b>Audit Type:</b> {$this->audit[''tag'']}</li>\r\n<li><b>Audit Date:</b> {$this->audit[''end_date'']}</li></ul><br />\r\n<br />\r\n<b>Currently selected lab is:</b> <span style=\\"color:blue;border:1px solid #eee;padding:4px;\\"> {$this->labname} [{$this->labnum}]</span><br />\r\n<b>To import Audit into current lab:</b> (see above) Click \\"Import into current lab\\"<br />\r\n<b>To change the lab:</b> Labs -->Select a Lab and then import again<br />\r\n<b>To create a new lab:</b> Labs-->New Lab, input lab info and then import again<br />\r\n<b>To import the lab and the audit:</b> Click \\"Import Lab and Audit\\"<br />', '');
+(89, 13, 1, 'info', '', 0, 'text', 'f', '<div style="font-size: 1em; line-height: 1.2em;">\r\n  <div id="help2">\r\n    <div style="float: left; padding: 5px 20px 5px 0px;">\r\n      Lab info for import data:<br>\r\n      <table>\r\n        <tr>\r\n          <td style="padding-right: 20px;"><b>Lab Name:</b></td>\r\n          <td>{$this->lab[''labname'']}</td>\r\n        </tr>\r\n        <tr>\r\n          <td style="padding-right: 20px;"><b>Lab Number:</b></td>\r\n          <td>{$this->lab[''labnum'']}</td>\r\n        </tr>\r\n        <tr>\r\n          <td><b>Country:</b></td>\r\n          <td>{$this->lab[''country'']}</td>\r\n        </tr>\r\n      </table>\r\n    </div>\r\n    <div style="float: left; padding: 5px 20px 5px 0px;">\r\n      Audit info for import data:<br>\r\n      <table>\r\n        <tr>\r\n          <td style="padding-right: 20px;"><b>Audit Type:</b></td>\r\n          <td>{$this->tmpl_row[''tag'']}</td>\r\n        </tr>\r\n        <tr>\r\n          <td style="padding-right: 20px;"><b>Audit Date:</b></td>\r\n          <td>{$this->audit[''end_date'']}</td>\r\n        </tr>\r\n\r\n      </table>\r\n    </div>\r\n    <div style="clear: both;"></div>\r\n  </div>\r\n  <div class="btn-group">\r\n    <a class="btn" href="{$this->importall}" style="color: blue;"> <span style="padding: 5px;">Import\r\n        Lab and data</span></a>\r\n  </div>\r\n  <br>\r\n  <div style="float: left; padding: 5px 20px 5px 0px;">\r\n    <table>\r\n      <tr>\r\n        <td style="padding-right: 10px;"><b>Currently selected lab is:</b>\r\n        </td>\r\n        <td><span style="color: blue; border: 1pxsolid #eee; padding: 4px;">\r\n            {$this->labname} [{$this->labnum}]</span></td>\r\n      </tr>\r\n    </table>\r\n    <div class="btn-group">\r\n      <a class="btn" href="{$this->import2lab}" style="color: blue;"> <span\r\n        style="padding: 5px;">Import only data into current lab</span></a>\r\n    </div>\r\n    <br> <br> <b>To change the lab:</b> Labs -->Select a Lab and then\r\n    import again <br> <b>To create a new lab:</b> Labs-->New Lab, input lab\r\n    info and then import again <br> \r\n  </div>\r\n</div>', '');
 
 -- --------------------------------------------------------
 
@@ -5088,14 +5091,14 @@ CREATE TABLE IF NOT EXISTS `toimport` (
   `owner_id` int(11) NOT NULL,
   `path` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Stores pointer to uploaded files' AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Stores pointer to uploaded files' AUTO_INCREMENT=6 ;
 
 --
 -- Dumping data for table `toimport`
 --
 
 INSERT INTO `toimport` (`id`, `owner_id`, `path`) VALUES
-(1, 1, '/vagrant/zftest/application/tmp/lab-007_SLIPTA_0000-00-00.edx');
+(5, 1, '/vagrant/zftest/application/tmp/lab-007_SLIPTA_2013-08-14.edx');
 
 -- --------------------------------------------------------
 

@@ -35,9 +35,12 @@ class Application_Controller_Action extends Zend_Controller_Action {
 
   public function init() {
     /* initialize here */
-    $this->setupSession();
+    logit("MT act init: ". microtime(true));
     $this->baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
     $this->_redirector = $this->_helper->getHelper('Redirector');
+
+    $this->setupSession();
+    logit("CHECK: {$this->labid}, {$this->labname}, {$this->labnum}");
     $this->setHeader();
     $this->setHeaderFiles();
     $vars = $this->_request->getPathInfo();
@@ -57,6 +60,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
   public function setupSession() {
     /* start the session */
     $this->echecklistNamespace = new Zend_Session_Namespace('eChecklist');
+    logit("test: {$this->echecklistNamespace->lab['labnum']}");
     if (isset($this->echecklistNamespace->user)) {
       $u = $this->echecklistNamespace->user;
       $this->usertype = $u['usertype'];
@@ -65,13 +69,17 @@ class Application_Controller_Action extends Zend_Controller_Action {
       $this->userid = $u['id'];
       logit("{$this->username}, {$this->usertype}, {$this->userfullname}, {$this->userid}");
     }
+    logit('TIME1: '. isset($this->echecklistNamespace->lab));
     if (isset($this->echecklistNamespace->lab)) {
-      logit('ECLAB: ' . print_r($this->lab, true));
+
       $this->lab = $this->echecklistNamespace->lab;
+      logit('ECLAB: ' . print_r($this->lab, true));
+      $this->labid = $this->lab['id'];
       $this->labname = $this->lab['labname'];
       $this->labnum = get_arrval($this->lab, 'labnum', 'No-NUM');
     } else {
       $this->lab = null;
+      $this->labid = 0;
       $this->labname = '';
       $this->labnum = '';
     }
@@ -287,283 +295,290 @@ END;
 END;
       $auditinfo = '';
       if ($this->dialog_name == 'audit/edit') {
-        $auditinfo = "<div style=\"margin:6px 0 6px 20px;padding-right:5px;\">" . "<b>Audit:</b> {$this->showaudit}</div>";
-  }
-  $this->header .= <<<"END"
+        $auditinfo = "<div style=\"margin:6px 0 6px 20px;padding-right:5px;\"><b>Audit:</b> {$this->showaudit}</div>";
+      }
+      $this->header .= <<<"END"
 <div style="display:inline-block;">
   <div style="margin:6px 0px 6px 20px;padding-right:5px;"><b>Lab:</b> {$this->labnum}/{$this->labname}</div>
                                                                                                   {$auditinfo}
   <div style="clear:both;"></div></div>
 END;
-} else {
-  $this->header = $this->header . <<<"END"
+    } else {
+      $this->header = $this->header . <<<"END"
   <div class="btn-group pull-left" style="margin-left:100px;">
 <a class="btn" href="{$this->baseurl}/user/login"><span title=".icon  .icon-blue  .icon-contacts " class="icon icon-blue icon-contacts"></span> Login</a></div>
 
 END;
-}
-$this->header = $this->header . <<<"END"
+    }
+    $this->header = $this->header . <<<"END"
    </div>
   </div> <!-- style="clear:both;"></div -->
 </div>
 END;
 
-$this->view->header = $this->header;
-  /*
+    $this->view->header = $this->header;
+    /*
      * // logit("_HEADER: {$this->view->header}"); // this is only a test! $menu = array( array( array("icon"=>array('clipboard', 'blue'), 'text'=> 'Audits', 'url'=>'#' ), array( array("icon"=>array('clipboard', 'green'), 'text'=> 'New Audit', 'url'=>'/user/create'), array("icon"=>array('search', 'blue'), 'text'=> 'Find Audit', 'url'=>'/user/find'), array('divider' => true), array("icon"=>array('edit', 'blue'), 'text'=> 'Edit Audit 1', 'url'=>'/audit/edit/1/EN/'), array("icon"=>array('edit', 'blue'), 'text'=> 'Edit Audit 2', 'url'=>'/audit/edit/2/EN/'), array("icon"=>array('edit', 'blue'), 'text'=> 'Edit Audit 3', 'url'=>'/audit/edit/3/EN/') array('divider' => true), array("icon"=>array('import', 'blue'), 'text'=> 'Import', 'url'=>'/audit/import'), ) ), array( array("icon"=>array('tag', 'blue'), 'text'=> 'Labs', 'url'=>'#' ), array( array("icon"=>array('tag', 'green'), 'text'=> 'New Lab', 'url'=>'/lab/create'), array("icon"=>array('search', 'blue'), 'text'=> 'Find Lab', 'url'=>'/lab/find') ) ), array( array("icon"=>array('user', 'blue'), 'text'=> 'Users', 'url'=>'#' ), array( array("icon"=>array('user', 'green'), 'text'=> 'New User', 'url'=>'/user/create'), array("icon"=>array('search', 'blue'), 'text'=> 'Find User', 'url'=>'/user/find') ) ) ); logit('MENU: '. $this->makeMenu($menu)); $lin = array( array( array("icon"=>array('user', 'orange'), 'text'=> 'This user', 'url'=>'#' ), array( array("icon"=>array('contacts', 'green'), 'text'=> 'Profile', 'url'=>'/user/profile'), array('divider' => true), array("icon"=>array('contacts', 'orange'), 'text'=> 'Logout', 'url'=>'/startstop/logout') ) ) ); logit('MENU: '. $this->makeMenu($menu));
      */
-}
+  }
 
-function calculate_dialog($drows, $value, $title, $langtag, $formtype = 'table') {
-/**
+  function calculate_dialog($drows, $value, $title, $langtag, $formtype = 'table') {
+    /**
      * Given the dialog rows, create the dialog
      * - using field templates to create individual rows
      */
-$tlist = getTranslatables($langtag);
+    $tlist = getTranslatables($langtag);
 
-$tout = array ();
-$baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
-$title = $drows[0]['title'];
-$tout[] = <<<"END"
+    $tout = array ();
+    $this->importall = "{$this->baseurl}/audit/importall";
+    $this->import2lab = "{$this->baseurl}/audit/import2lab";
+    $title = $drows[0]['title'];
+    $tout[] = <<<"END"
 <div style="margin-left:200px;"><h1 style="margin-bottom:10px;">{$title}
 <button onclick="return toggleHelp();">Help</button> </h1> </div>
 <div style="margin:15px 0;">
 END;
-$tout[] = '<table border=0 style="width:900px;">';
+    $tout[] = '<table border=0 style="width:900px;">';
 
-$hid = array ();
-foreach($drows as $row) {
-  $pos = $row['position'];
-  // if ($pos ==0) continue;
-  $type = $row['field_type'];
-  $arow = array ();
+    $hid = array ();
+    foreach($drows as $row) {
+      $pos = $row['position'];
+      // if ($pos ==0) continue;
+      $type = $row['field_type'];
+      $arow = array ();
 
-  $field_label = get_lang_text($row['field_label'], '', ''); // , $row ['ltdefault'], $row ['ltlang'] );
-  $arow['field_label'] = $field_label .
-       ':';
-  $arow['varname'] = $row['field_name'];
-  $varname = $arow['varname'];
-  $arow['baseurl'] = $baseurl;
-  $arow['field_length'] = $row['field_length'];
-  $info = $row['info'];
+      $field_label = get_lang_text($row['field_label'], '', ''); // , $row ['ltdefault'], $row ['ltlang'] );
+      $arow['field_label'] = $field_label .
+           ':';
+      $arow['varname'] = $row['field_name'];
+      $varname = $arow['varname'];
+      $arow['baseurl'] = $this->baseurl;
+      $arow['field_length'] = $row['field_length'];
+      $info = $row['info'];
 
-  switch ($type) {
-    case '' :
-      logit("ROW: " . print_r($row, true));
-      break;
-    case 'hidden' :
-      $val = get_arrval($value, $varname, '');
-      $hid[] = "<input type=\"hidden\" name=\"{$varname}\" value=\"{$val}\">";
-      break;
-    case 'file' :
-      $tout[] = <<<"END"
+      switch ($type) {
+        case '' :
+          logit("ROW: " . print_r($row, true));
+          break;
+        case 'hidden' :
+          $val = get_arrval($value, $varname, '');
+          $hid[] = "<input type=\"hidden\" name=\"{$varname}\" value=\"{$val}\">";
+          break;
+        case 'file' :
+          $tout[] = <<<"END"
 <tr>
 <td class="n f right" style=width:200px;">
-<td class="n f" style=width:600px;">
+<td class="n f" style="width:600px;">
   <input type="hidden" name="MAX_FILE_SIZE" value="1000000" />
   {$field_label}: <input name="uploadedfile" type="file" />
 </td>
 </tr>
 END;
-      break;
-  case 'text' :
-    logit("TEXT: {$info}");
-      $audit = $this->audit;
-    eval("\$lines = \"$info\"; ");
-    $tout[] = <<<"END"
+          break;
+        case 'text' :
+          $info = str_replace('"', '\"', $info);
+          logit("TEXT: {$info}");
+          $audit = $this->audit;
+          eval("\$lines = \"$info\"; ");
+          $tout[] = <<<"END"
 <tr>
 <td class="n f right" style=width:200px;">
-<td class="n f" style=width:600px;"><div id="help2" style="font-size:1.4em;line-height:1.3em;">{$lines}</div></td>
+<td class="n f" style="width:600px;"><div id="help2" style="font-size:1.4em;line-height:1.3em;">{$lines}</div></td>
 </tr>
 END;
-    break;
-    case 'info' :
-      $tout[] = <<<"END"
+          break;
+        case 'info' :
+          $tout[] = <<<"END"
 <tr>
 <td class="n f right" style=width:200px;">
-<td class="n f" style=width:600px;"><div id="help" style="display:none;">{$info}</div></td>
+<td class="n f" style="width:600px;"><div id="help" style="display:none;">{$info}</div></td>
 </tr>
 END;
-      break;
-    case 'info2' :
-      $tout[] = <<<"END"
+          break;
+        case 'info2' :
+          $tout[] = <<<"END"
 <tr>
 <td class="n f right" style=width:200px;">
-<td class="n f" style=width:600px;"><div id="help2" style="">{$info}</div></td>
+<td class="n f" style="width:600px;"><div id="help2" style="">{$info}</div></td>
 </tr>
 END;
-      break;
-    case 'heading' :
-      $tout[] = <<<"END"
+          break;
+        case 'heading' :
+          $tout[] = <<<"END"
 <tr>
 <td class="n f right" style=width:50px;">
-<td class="n f" style=width:750px;"><h3>{$field_label}</h3></td>
+<td class="n f" style="width:750px;"><h3>{$field_label}</h3></td>
 </tr>
 END;
-      break;
-    case 'submit_button' :
-      $arow['field_label'] = $field_label;
-      $field_label = '';
-    default :
-      $inp = call_user_func("dialog_{$type}", $arow, $value, $tlist);
-      $tout[] = <<<"END"
+          break;
+        case 'submit_button' :
+          $arow['field_label'] = $field_label;
+          $field_label = '';
+        default :
+          $inp = call_user_func("dialog_{$type}", $arow, $value, $tlist);
+          $tout[] = <<<"END"
 <tr>
-<td class="n f right" style=width:300px;">
+<td class="n f right" style="width:300px;">
 <label for="{$varname}" style="" class="inp">{$field_label}</label>
-</td><td class="n f" style=width:500px;">{$inp}</td>
+</td><td class="n f" style="width:500px;">{$inp}</td>
 </tr>
 END;
+      }
+    }
+    $tout[] = '</table></div></div>';
+    $tout[] = implode("\n", $hid);
+    // logit('dialog: '. print_r($tout, true));
+    return implode("\n", $tout);
   }
-}
-$tout[] = '</table></div></div>';
-$tout[] = implode("\n", $hid);
-// logit('dialog: '. print_r($tout, true));
-return implode("\n", $tout);
-}
 
-public function getDialogLines() {
-/*
+  public function getDialogLines() {
+    /*
      * Get the DialogRow data
      */
-$dialog = new Application_Model_DbTable_DialogRow();
-$this->drows = $dialog->getDialogRows($this->dialog_name);
-  //logit('DROWS: ' . print_r($this->drows, true));
-}
+    $dialog = new Application_Model_DbTable_DialogRow();
+    $this->drows = $dialog->getDialogRows($this->dialog_name);
+    //logit('DROWS: ' . print_r($this->drows, true));
+  }
 
-public function makeDialog($value = array(''=>'')) {
-/*
+  public function makeDialog($value = array(''=>'')) {
+    /*
      * Create the dialog
      */
-$this->getDialogLines();
-// logit('makeDialog:');
-$this->view->outlines = $this->calculate_dialog($this->drows, $value, $this->title,
-    $this->view->langtag);
-$this->view->title = $this->title;
-$this->_helper->layout->setLayout('overall');
-$this->view->flash = $this->echecklistNamespace->flash;
-$this->echecklistNamespace->flash = '';
-}
+    $this->getDialogLines();
+    // logit('makeDialog:');
+    $this->view->outlines = $this->calculate_dialog($this->drows, $value, $this->title,
+        $this->view->langtag);
+    $this->view->title = $this->title;
+    if (isset($this->echecklistNamespace->flash)) {
+      $this->view->flash = $this->echecklistNamespace->flash;
+      logit("FLASH: {$this->view->flash}");
+      $this->echecklistNamespace->flash = '';
+      logit("there?: {$this->view->flash}");
+    }
+    $this->_helper->layout->setLayout('overall');
 
-public function collectData() {
-/*
+  }
+
+  public function collectData() {
+    /*
      * Collect all the post data
      */
-$dialog = new Application_Model_DbTable_DialogRow();
+    $dialog = new Application_Model_DbTable_DialogRow();
 
-$this->getDialogLines();
-$ignore_list = array (
-    '',
-    'submit_button'
-);
-$this->data = array ();
-$formData = $this->getRequest();
-foreach($this->drows as $row) {
-  if ($row['position'] == 0)
-    continue;
-  $type = $row['field_type'];
-  $varname = $row['field_name'];
+    $this->getDialogLines();
+    $ignore_list = array (
+        '',
+        'submit_button'
+    );
+    $this->data = array ();
+    $formData = $this->getRequest();
+    foreach($this->drows as $row) {
+      if ($row['position'] == 0)
+        continue;
+      $type = $row['field_type'];
+      $varname = $row['field_name'];
 
-  if (in_array($type, $ignore_list)) {
-    continue;
+      if (in_array($type, $ignore_list)) {
+        continue;
+      }
+      // logit('IN: '. $formData->getPost($varname,''));
+      $this->data[$varname] = $formData->getPost($varname, '');
+    }
   }
-  // logit('IN: '. $formData->getPost($varname,''));
-  $this->data[$varname] = $formData->getPost($varname, '');
-}
-}
 
-public function collectExtraData($prefix = '') {
-/*
+  public function collectExtraData($prefix = '') {
+    /*
      * Collect all the post data
      */
-// logit('REST: '. print_r($this->getRequest()->getPost(), true));
-$vars = $this->getRequest()->getPost();
-$lprefix = strlen($prefix);
-$out = array ();
-foreach($vars as $n => $v) {
-  if (substr($n, 0, $lprefix) == $prefix) {
-    // logit("MATCH: {$n} => {$v}");
-    $out[$n] = $v;
+    // logit('REST: '. print_r($this->getRequest()->getPost(), true));
+    $vars = $this->getRequest()->getPost();
+    $lprefix = strlen($prefix);
+    $out = array ();
+    foreach($vars as $n => $v) {
+      if (substr($n, 0, $lprefix) == $prefix) {
+        // logit("MATCH: {$n} => {$v}");
+        $out[$n] = $v;
+      }
+    }
+    $this->extra = $out;
   }
-}
-$this->extra = $out;
-}
 
-public function makeLabLines($rows, $cb = false) {
-// Given lab rows - show in a table
-$rev_level = rev('getLevels', $this->tlist);
-$rev_affil = rev('getAffiliations', $this->tlist);
-$ct = 0;
-$tout = array ();
-$tout[] = '<table style="margin-left:50px;color:black;">';
-$tout[] = "<tr class='even'>";
-if ($cb) {
-  $tout[] = "<td style='width:50px;'>Select/<br />Deselect All</td>";
-} else {
-  $tout[] = "<td style='width:50px;'></td>";
-}
-$tout[] = <<<"END"
+  public function makeLabLines($rows, $cb = false) {
+    // Given lab rows - show in a table
+    $rev_level = rev('getLevels', $this->tlist);
+    $rev_affil = rev('getAffiliations', $this->tlist);
+    $ct = 0;
+    $tout = array ();
+    $tout[] = '<table style="margin-left:50px;color:black;">';
+    $tout[] = "<tr class='even'>";
+    if ($cb) {
+      $tout[] = "<td style='width:50px;'>Select/<br />Deselect All</td>";
+    } else {
+      $tout[] = "<td style='width:50px;'></td>";
+    }
+    $tout[] = <<<"END"
 <td style='width:100px;font-weight:bold;'>Lab Number</td>
 <td style='width:200px;font-weight:bold;'>Labname</td>
 <td style='width:85px;font-weight:bold;'>Country</td>
 <td style='width:100px;font-weight:bold;'>Level</td>
 <td style='width:145px;font-weight:bold;'>Affiliation</td></tr>
 END;
-foreach($rows as $row) {
-  $ct ++;
-  $cls = ($ct % 2 == 0) ? 'even' : 'odd';
+    foreach($rows as $row) {
+      $ct ++;
+      $cls = ($ct % 2 == 0) ? 'even' : 'odd';
 
-  $tout[] = "<tr class='{$cls}'>";
-  if ($cb) {
-    $name = "cb_{$row['id']}";
-    $tout[] = "<td style='width:40px;padding:2px 0;'>" .
-         "<input type='checkbox' name='{$name}' id='{$name}'></td>";
-  } else {
-    $butt = "<a href=\"{$this->baseurl}/lab/choose/{$row['id']}\"" .
-         " class=\"btn btn-mini btn-success\">Select</a>";
-    $tout[] = "<td style='width:40px;padding:2px 0;'>{$butt}</td>";
-  }
-  // $sl = ($row['slmta'] == 't') ? 'Yes' : 'No';
-  $tout[] = <<<"END"
+      $tout[] = "<tr class='{$cls}'>";
+      if ($cb) {
+        $name = "cb_{$row['id']}";
+        $tout[] = "<td style='width:40px;padding:2px 0;'>" .
+             "<input type='checkbox' name='{$name}' id='{$name}'></td>";
+      } else {
+        $butt = "<a href=\"{$this->baseurl}/lab/choose/{$row['id']}\"" .
+             " class=\"btn btn-mini btn-success\">Select</a>";
+        $tout[] = "<td style='width:40px;padding:2px 0;'>{$butt}</td>";
+      }
+      // $sl = ($row['slmta'] == 't') ? 'Yes' : 'No';
+      $tout[] = <<<"END"
 <td>{$row['labnum']}</td>
 <td>{$row['labname']}</td>
 <td>{$row['country']}</td>
 <td><p class="small">{$rev_level[$row['lablevel']]}</p></td>
 <td><p class="small">{$rev_affil[$row['labaffil']]}</p></td></tr>
 END;
-  // "<td style='width:45px;font-weight:bold;'>SLMTA</td>" .
-  // <td>{$sl}</td>
-}
-$tout[] = '</table>';
-$this->view->showlines = implode("\n", $tout);
-}
+      // "<td style='width:45px;font-weight:bold;'>SLMTA</td>" .
+      // <td>{$sl}</td>
+    }
+    $tout[] = '</table>';
+    $this->view->showlines = implode("\n", $tout);
+  }
 
-public function makeAuditLines($rows, $options = array()) {
-// Given audit rows - show in a table
-$cb = false;
-$addsel = false;
-$cb = (get_arrval($options, 'cb', false)) ? true : false;
-$addsel = (get_arrval($options, 'addsel', false)) ? true : false;
-$rev_level = rev('getLevels', $this->tlist);
-$rev_affil = rev('getAffiliations', $this->tlist);
-$tout = array ();
+  public function makeAuditLines($rows, $options = array()) {
+    // Given audit rows - show in a table
+    $cb = false;
+    $addsel = false;
+    $cb = (get_arrval($options, 'cb', false)) ? true : false;
+    $addsel = (get_arrval($options, 'addsel', false)) ? true : false;
+    $rev_level = rev('getLevels', $this->tlist);
+    $rev_affil = rev('getAffiliations', $this->tlist);
+    $tout = array ();
 
-$ct = 0;
-if ($cb) {
-  $tout[] = <<<"END"
+    $ct = 0;
+    if ($cb) {
+      $tout[] = <<<"END"
 <form method="post" action="{$this->baseurl}/audit/exportxls"
       enctype="multipart/form-data" name="export"
       id="export">
 END;
-}
-$tout[] = '<table style="margin-left:50px;color:black;">';
-$tout[] = "<tr class='even'>";
+    }
+    $tout[] = '<table style="margin-left:50px;color:black;">';
+    $tout[] = "<tr class='even'>";
 
-if ($cb) {
-  $tout[] = "<td style='width:55px;'><center>Select/<br />Deselect<br />All<br /><input type='checkbox' name='allcb' id='allcb'></center></td>";
-} else {
-  $tout[] = "<td style='width:55px;'></td>";
-}
-$tout[] = <<<"END"
+    if ($cb) {
+      $tout[] = "<td style='width:55px;'><center>Select/<br />Deselect<br />All<br /><input type='checkbox' name='allcb' id='allcb'></center></td>";
+    } else {
+      $tout[] = "<td style='width:55px;'></td>";
+    }
+    $tout[] = <<<"END"
 <td style='width:55px;font-weight:bold;'>AuditId</td>
 <td style='width:70px;font-weight:bold;'>Type</td>
 <td style='width:90px;font-weight:bold;'>Date</td>
@@ -572,35 +587,35 @@ $tout[] = <<<"END"
 <td style='width:100px;font-weight:bold;'>Level</td>
 <td style='width:145px;font-weight:bold;'>Affil.</td>
 END;
-if (! $cb) {
-  $tout[] = "<td style='width:300px;font-weight:bold;'></td><td></td></tr>";
-} else {
-  $tout[] = "<td></td></tr>";
-}
-foreach($rows as $row) {
-  logit('Audit: ' . print_r($row, true));
-  $ct ++;
-  $cls = ($ct % 2 == 0) ? 'even' : 'odd';
-  $edit = "<a href=\"{$this->baseurl}/audit/edit/{$row['audit_id']}/\"" .
-       " class=\"btn btn-mini btn-inverse\">Edit</a>";
-  $view = "<a href=\"#\" class=\"btn btn-mini btn-success\">View</a>";
-  $delete = "<a href=\"#\" class=\"btn btn-mini btn-danger\">Delete</a>";
-  $export = "<a href=\"{$this->baseurl}/audit/exportdata/{$row['audit_id']}\"" .
-       " class=\"btn btn-mini btn-warning\">Data Export</a>";
+    if (! $cb) {
+      $tout[] = "<td style='width:300px;font-weight:bold;'></td><td></td></tr>";
+    } else {
+      $tout[] = "<td></td></tr>";
+    }
+    foreach($rows as $row) {
+      logit('Audit: ' . print_r($row, true));
+      $ct ++;
+      $cls = ($ct % 2 == 0) ? 'even' : 'odd';
+      $edit = "<a href=\"{$this->baseurl}/audit/edit/{$row['audit_id']}/\"" .
+           " class=\"btn btn-mini btn-inverse\">Edit</a>";
+      $view = "<a href=\"#\" class=\"btn btn-mini btn-success\">View</a>";
+      $delete = "<a href=\"#\" class=\"btn btn-mini btn-danger\">Delete</a>";
+      $export = "<a href=\"{$this->baseurl}/audit/exportdata/{$row['audit_id']}\"" .
+           " class=\"btn btn-mini btn-warning\">Data Export</a>";
 
-  $tout[] = "<tr class='{$cls}'>";
-  if ($cb) {
-    $name = "cb_{$row['audit_id']}";
-    $tout[] = "<td style='width:40px;padding:2px 0;'>" .
-         "<center><input type='checkbox' name='{$name}' id='{$name}'></center></td>";
-  } else if ($addsel) {
-    $butt = "<a href=\"{$this->baseurl}/lab/choose/{$row['audit_id']}\"" .
-         " class=\"btn btn-mini btn-success\">Select</a>";
-    $tout[] = "<td style='width:40px;padding:2px 0;'>{$butt}</td>";
-  } else {
-    $tout[] = "<td style='width:40px;padding:2px 0;'></td>";
-  }
-  $tout[] = <<<"END"
+      $tout[] = "<tr class='{$cls}'>";
+      if ($cb) {
+        $name = "cb_{$row['audit_id']}";
+        $tout[] = "<td style='width:40px;padding:2px 0;'>" .
+             "<center><input type='checkbox' name='{$name}' id='{$name}'></center></td>";
+      } else if ($addsel) {
+        $butt = "<a href=\"{$this->baseurl}/lab/choose/{$row['audit_id']}\"" .
+             " class=\"btn btn-mini btn-success\">Select</a>";
+        $tout[] = "<td style='width:40px;padding:2px 0;'>{$butt}</td>";
+      } else {
+        $tout[] = "<td style='width:40px;padding:2px 0;'></td>";
+      }
+      $tout[] = <<<"END"
 <td>{$row['audit_id']}</td>
 <td>{$row['tag']}</td>
 <td>{$row['end_date']}</td>
@@ -609,19 +624,19 @@ foreach($rows as $row) {
 <td><p class="small">{$rev_level[$row['lablevel']]}</p></td>
 <td><p class="small">{$rev_affil[$row['labaffil']]}</p></td>
 END;
-  if (! $cb) {
-    $tout[] = "<td>{$view} {$edit} {$export} {$delete}</td><td></td></tr>";
-  } else {
-    $tout[] = "<td></td></tr>";
+      if (! $cb) {
+        $tout[] = "<td>{$view} {$edit} {$export} {$delete}</td><td></td></tr>";
+      } else {
+        $tout[] = "<td></td></tr>";
+      }
+    }
+    if ($cb) {
+      $tout[] = '<tr><td colspan=9 style="text-align:right;" ><input class="input-xlarge submit" type="submit" name="export" value="Export to Excel">';
+    }
+    $tout[] = '</table><div style="height: 65px;">&nbsp;</div>' . '<div style="clear: both;"></div>';
+    if ($cb) {
+      $tour[] = '</form>';
+    }
+    $this->view->showlines = implode("\n", $tout);
   }
-}
-if ($cb) {
-  $tout[] = '<tr><td colspan=9 style="text-align:right;" ><input class="input-xlarge submit" type="submit" name="export" value="Export to Excel">';
-}
-$tout[] = '</table><div style="height: 65px;">&nbsp;</div>' . '<div style="clear: both;"></div>';
-if ($cb) {
-  $tour[] = '</form>';
-}
-$this->view->showlines = implode("\n", $tout);
-}
 }

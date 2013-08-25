@@ -25,28 +25,28 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     $value = array ();
     foreach($rows as $row) {
       $val = '';
-      $field_name = $row ['field_name'];
-      switch ($row ['field_type']) {
+      $field_name = $row['field_name'];
+      switch ($row['field_type']) {
         case 'integer' :
-          $val = $row ['int_val'];
+          $val = $row['int_val'];
           break;
         case 'text' :
-          $val = $row ['text_val'];
+          $val = $row['text_val'];
           break;
         case 'date' :
-          $dt = date_parse_from_format($this->ISOformat, $row ['date_val']);
+          $dt = date_parse_from_format($this->ISOformat, $row['date_val']);
           $date = new DateTime();
-          $date->setDate($dt ['year'], $dt ['month'], $dt ['day']);
+          $date->setDate($dt['year'], $dt['month'], $dt['day']);
           $val = $date->format($this->format);
           break;
         case 'bool' :
-          $val = $row ['bool_val'];
+          $val = $row['bool_val'];
           break;
         case 'string' :
         default :
-          $val = $row ['string_val'];
+          $val = $row['string_val'];
       }
-      $value [$field_name] = $val;
+      $value[$field_name] = $val;
       // logit ( "{$field_name} ==> {$val}" );
     }
     return $value;
@@ -58,11 +58,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
      *   - no reductions
      */
     $aid = (int) $aid;
-    //$sql = "select id d, audit_id a, field_name n, int_val i, text_val t, " .
-    // " string_val s, date_val d, bool_val b, field_type e, page_id p " .
-     $sql = "select * from audit_data where audit_id = {$aid}";
-    //$stmt = $db->query ( $sql );
-    //$rows = $stmt->fetchAll ();
+    $sql = "select * from audit_data where audit_id = {$aid}";
     $rows = $this->queryRows($sql);
     if (! $rows) {
       throw new Exception("There is no data");
@@ -73,7 +69,9 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
   public function get($audit_id, $field_name) {
     // fetch data for all field_name(s) beginning with $field_name
     $audit_id = (int) $audit_id;
-    $sql = "select * from audit_data " . " where audit_id = {$audit_id} " . "   and field_name like '{$field_name}%'";
+    $sql = "select * from audit_data " .
+         " where audit_id = {$audit_id} " .
+         "   and field_name like '{$field_name}%'";
     logit("get: {$audit_id} {$field_name} -- {$sql}");
     $rows = $this->queryRows($sql);
     return $rows;
@@ -84,13 +82,14 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
      * Get the row from auditdata that has this field
      */
     $audit_id = (int) $audit_id;
-    $sql = "select * from audit_data where audit_id = {$audit_id} " . " and field_name = '{$field_name}' ";
+    $sql = "select * from audit_data where audit_id = {$audit_id} " .
+         " and field_name = '{$field_name}' ";
     //logit("getAuditItem: {$audit_id} {$field_name} -- {$sql}");
     $rows = $this->queryRows($sql);
     if (! $rows) {
       throw new Exception("There is no data");
     }
-    return $rows [0];
+    return $rows[0];
   }
 
   public function updateData($data, $did, $page_id) {
@@ -104,6 +103,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
       //logit ( "BEFORE: {$n} ==> {$v}" );
       $this->updateAuditField($did, $n, $v, $page_id);
     }
+    //$this->copyEssentials($did);
     $this->updateFinalScore($did, 0);
   }
 
@@ -141,7 +141,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
         $ftype = 'date';
         $dt = date_parse_from_format($format, $value);
         $date = new DateTime();
-        $date->setDate($dt ['year'], $dt ['month'], $dt ['day']);
+        $date->setDate($dt['year'], $dt['month'], $dt['day']);
         $dval = $date;
         break;
       // --------- TEXT - multiple lines
@@ -199,15 +199,16 @@ END;
      * current final score - at the end it will be up to date!
      */
     // get all scores in the audit
-    $sql = "select * from audit_data where audit_id = {$did} " . " and field_name like 's___total' ";
+    $sql = "select * from audit_data where audit_id = {$did} " .
+         " and field_name like 's___total' ";
     $rows = $this->queryRows($sql);
     if (count($rows) > 0) {
       $final_score = 0;
 
       foreach($rows as $row) {
-        if ($row ['field_name'] != 'final_score') {
+        if ($row['field_name'] != 'final_score') {
           // Since integer values are stored in audit_data.int_val
-          $final_score += $row ['int_val'];
+          $final_score += $row['int_val'];
         }
       }
       // calculate if it is a minimum of 55% or 143 points
@@ -231,19 +232,19 @@ END;
       $final_na_ct = 0;
 
       foreach($rows as $row) {
-        $rn = $row ['field_name'];
+        $rn = $row['field_name'];
         if (substr($rn, 0, 5) != 'final') {
           // Since integer values are stored in audit_data.int_val
           $name = substr($rn, 4);
           switch ($name) {
             case 'y_ct' :
-              $final_y_ct += $row ['int_val'];
+              $final_y_ct += $row['int_val'];
               break;
             case 'n_ct' :
-              $final_n_ct += $row ['int_val'];
+              $final_n_ct += $row['int_val'];
               break;
             case 'na_ct' :
-              $final_na_ct += $row ['int_val'];
+              $final_na_ct += $row['int_val'];
               break;
             default :
           }
@@ -266,7 +267,7 @@ END;
     if (! $rows) {
       throw new Exception("Cannot find Audit data for id: {$audit_id}");
     }
-    return $rows [0] ['template_id'];
+    return $rows[0]['template_id'];
   }
 
   public function update_scores($did) {
@@ -282,5 +283,25 @@ select * from template_row tr, audit au, audit_data ad
  where tr.template_id = au.template_id
    and au.id = ad.audit_id
 END;
+  }
+
+  public function insertData($data) {
+    /**
+     * Create a new lab
+     * data is an array with name value pairs
+     */
+    $this->insert($data);
+    $newid = $this->getAdapter()->lastInsertId();
+    return $newid;
+  }
+
+  public function insertAs($rows, $auditid) {
+    // insert all the audit data rows but with this $auditid
+    $auditid = (int) $auditid;
+    foreach($rows as $row) {
+      unset($row['id']);
+      $row['audit_id'] = $auditid;
+      $this->insertData($row);
+    }
   }
 }

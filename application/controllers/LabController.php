@@ -101,15 +101,18 @@ class LabController extends Application_Controller_Action // Zend_Controller_Act
     $this->dialog_name = 'lab/choose';
     $vars = $this->_request->getPathInfo();
     $pinfo = explode("/", $vars);
-    $id = (int) $pinfo [3];
+    $id = (int) $pinfo[3];
     $lab = new Application_Model_DbTable_Lab();
     $row = $lab->getLab($id);
+    logit('SELLAB: ' . print_r($row, true));
     $this->echecklistNamespace->lab = $row;
+    logit('AT: ' . print_r($this->echecklistNamespace->lab, true));
+    $this->init();
     // $this->redirect($this->mainpage);
     // Show all audits for this
     $audit = new Application_Model_DbTable_Audit();
     $arows = $audit->selectAudits(array (
-        'labnum' => $row ['labnum']
+        'labnum' => $row['labnum']
     ));
     logit('SELAUD: ' . print_r($arows, true));
     $this->makeDialog($this->data);

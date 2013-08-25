@@ -9,6 +9,7 @@ class AuditController extends Application_Controller_Action {
   // private $mainpage = '';
   public function init() {
     /* Initialize action controller here */
+    logit("MT aud init: ". microtime(true));
     parent::init();
   }
 
@@ -62,7 +63,7 @@ END;
       $mt = microtime(true);
       logit("Start: {$mt}");
     }
-    $audit = new Application_Model_DbTable_AuditRows();
+    $tmplr = new Application_Model_DbTable_TemplateRows();
     $data = new Application_Model_DbTable_AuditData();
     $aud = new Application_Model_DbTable_Audit();
     $page = new Application_Model_DbTable_Page();
@@ -107,7 +108,7 @@ END;
         logit("Got language value: {$langtag}");
       }
 
-      $rows = $audit->getrows($template_id, $thispage, $langtag); // 1 is the template_id
+      $rows = $tmplr->getrows($template_id, $thispage, $langtag); // 1 is the template_id
       // if this page is display only we load values for page 0
       // page 0 has global data on it
       if ($display_only == 't') {
@@ -190,7 +191,7 @@ END;
           ));
       // logit("HEADER: {$this->view->header}");
       $this->view->flash = $this->echecklistNamespace->flash;
-      $this->echecklistNamespace->flash = '';
+      unst($this->echecklistNamespace->flash);
       $this->_helper->layout->setLayout('template');
     } else { // Handle the POST request here
       logit('In post for Audit');
@@ -306,8 +307,8 @@ END;
     $format = 'Y-m-d H:i:s';
     logit("{$this->dialog_name}");
     $audit = new Application_Model_DbTable_Audit();
-    $vars = $this->_request->getPathInfo();
-    $pinfo = explode("/", $vars);
+    //$vars = $this->_request->getPathInfo();
+    //$pinfo = explode("/", $vars);
     $id = (int) $this->echecklistNamespace->user['id'];
     $langtag = $this->echecklistNamespace->lang;
     if (! $this->getRequest()->isPost()) {
@@ -399,7 +400,7 @@ END;
       // export includes a row of lab, audit and matching auditdata
       $out = exportData($id);
       $outl = strlen($out['data']);
-      logit('EXP: ' . print_r($out, true));
+      //logit('EXP: ' . print_r($out, true));
       // The data is ready
       // The proposed name is: <lab_num>_<audit_type>_<audit_date>.edx
       $fname = $out['name'];
@@ -439,58 +440,34 @@ END;
       if ($toimport->getByOwner($this->userid)) {
         $this->_redirector->gotoUrl('audit/fileparse');
       }
+      logit('now1:');
+      logit("EC: {$this->echecklistNamespace->flash}");
       $this->makeDialog();
     } else {
       logit('Import: In post');
       if (! $adapter->receive()) {
         $messages = $adapter->getMessages();
         logit('MSGS: ' . print_r(implode("\n", $messages), true));
-        $this->echecklistNamespace->flash = 'File not loaded - Already Loaded?';
-        $this->makeDialog();
+        logit('msgout1: ');
+        $this->echecklistNamespace->flash = 'File not loaded - No file chosen';
+        //$this->makeDialog();
+        $this->_redirector->gotoUrl('audit/import');
       }
       $files = $adapter->getFileInfo();
       logit('FILE: ' . print_r($files, true));
       $uploadedfile = $files['uploadedfile'];
-      //$sdata = file_get_contents($uploadedfile['tmp_name']);
-      //logit('SLEN: '. strlen($sdata));
-
 
       $data = array ();
       $data['owner_id'] = $this->userid;
       $data['path'] = $uploadedfile['tmp_name'];
+      if (strlen($data['path']) < 10) {
+        logit('msgout1: no file');
+        $this->echecklistNamespace->flash = 'File not loaded - Try again';
+        //$this->makeDialog();
+        $this->_redirector->gotoUrl('audit/import');
+      }
       $id = $toimport->insertData($data);
       $this->_redirector->gotoUrl('audit/fileparse');
-
-      /*
-      $iaudit = new Application_Model_DbTable_IAudit();
-      $ilab = new Application_Model_DbTable_ILab();
-      $iaudit_data = new Application_Model_DbTable_IAuditData();
-
-      $data = unserialize($sdata);
-      logit('CT: ' . count($data));
-      $ownerid = $this->userid;
-      $data['audit']['owner_id'] = $ownerid;
-      $auditr = $data['audit'];
-      $labr = $data['lab'];
-      // insert into ilab with unique id
-      $rint = rand(1000, 9999);
-      while ($iaudit->count($rint) != 0) {
-        $rint = rand(1000, 9999);
-      }
-      // insert into iaudit with unique id
-      $rint = rand(1000, 9999);
-      $auditr['id'] = $rint;
-      while ($iaudit->count($rint) != 0) {
-        $rint = rand(1000, 9999);
-      }
-      $auditr['id'] = $rint;
-      $iaudit->insertData($auditr);
-
-
-      //unset($auditr['id']);
-      //$this->collectData();
-       *
-       */
     }
   }
 
@@ -504,20 +481,121 @@ END;
       $toimport = new Application_Model_DbTable_ToImport();
       $thisfile = $toimport->getByOwner($this->userid);
       $sdata = file_get_contents($thisfile['path']);
-      logit('SLEN: '. strlen($sdata) . ' '.print_r($thisfile, true));
+      logit('SLEN: ' . strlen($sdata) . ' ' . print_r($thisfile, true));
       $data = unserialize($sdata);
-      $labinfo = $data['lab'];
-      logit('LAB: '. print_r($labinfo, true));
-      $auditinfo = $data['audit'];
-      $this->audit = $auditinfo;
-      logit('AUDIT: '. print_r($auditinfo, true));
-      //$tmpl = new Application_Model_DbTable_Template();
-      //$tmpl_row = $tmpl->get($auditinfo['template_id']);
-      //$this->tag = $auditinfo['tag'];
-      //$end_date = $audit_row['end_date'];
+      $this->lab = $data['lab'];
+            logit('LAB: ' . print_r($this->lab, true));
+      $this->audit = $data['audit'];
+      logit('AUDIT: ' . print_r($this->audit, true));
+      $tmpl = new Application_Model_DbTable_Template();
+      $tid = $this->audit['template_id'];
+      logit("TID: {$tid}");
+      $this->tmpl_row = $tmpl->get($tid);
+      //get($this->audit['template_id']);
       $this->makeDialog();
     } else {
       logit('Import: In post');
     }
+  }
+
+  public function importallAction() {
+    // import the entire export file as is
+    // comes here from a link click
+    $this->dialog_name = "audit/importall";
+    logit('In audit/importall');
+    $audit = new Application_Model_DbTable_Audit();
+    $lab = new Application_Model_DbTable_Lab();
+    $audit_data = new Application_Model_DbTable_AuditData();
+    /**
+     * 1. get the file
+     * 2. unserialize
+     * 3. Insert lab into system - track the labid
+     * 4. Change lab data in audit row, insert audit row
+     * 5. Insert into audit_owner
+     * 6. Update audit_id in audt_data(s) and insert all.
+     */
+    $toimport = new Application_Model_DbTable_ToImport();
+    $thisfile = $toimport->getByOwner($this->userid);
+    $sdata = file_get_contents($thisfile['path']);
+    logit('SLEN: ' . strlen($sdata) . ' ' . print_r($thisfile, true));
+    $data = unserialize($sdata);
+    $labinfo = $data['lab'];
+    logit('LAB: ' . print_r($labinfo, true));
+
+    // lab data
+    unset($labinfo['id']); // remove the id
+    $labid = $lab->insertData($labinfo);
+    logit("Lab: {$labid} " . print_r($labinfo, true));
+    // insert audit row
+    $auditinfo = $data['audit'];
+    unset($auditinfo['id']);
+    $auditinfo['lab_id'] = $labid;
+    logit("Audit: {$auditid} " . print_r($auditinfo, true));
+    $auditid = $audit->insertData($auditinfo);
+    // insert into audit_owner
+    $auditowner = new Application_Model_DbTable_AuditOwner();
+    $ao = array (
+        'audit_id' => $auditid,
+        'owner' => $this->userid
+    );
+    $aoid = $auditowner->insertData($ao);
+    logit("AOID: {$aoid}");
+    // insert the audit data rows
+    $auditdatarows = $data['audit_data'];
+    logit("Inserting data: {$auditid} - ". count($auditdatarows));
+    $audit_data->insertAs($auditdatarows, $auditid);
+    // delete the physical file
+    unlink($thisfile['path']);
+    $toimport->delete($thifile['id']); // delete entry from toimport
+    $this->echecklistNamespace->flash = 'Import complete';
+    $this->_redirector->gotoUrl($this->mainpage);
+  }
+
+  public function import2labAction() {
+    // import the export file into current lab
+    // ignore the lab info with the export
+    // comes here from a link click
+    $this->dialog_name = "audit/import2lab";
+    logit('In audit/import2lab');
+    $audit = new Application_Model_DbTable_Audit();
+    //$lab = new Application_Model_DbTable_Lab();
+    $audit_data = new Application_Model_DbTable_AuditData();
+    /**
+     * 1. get the file
+     * 2. unserialize
+     * 3. Get the lab id
+     * 4. Change lab data in audit row, insert audit row
+     * 5. Insert into audit_owner
+     * 6. Update audit_id in audt_data(s) and insert all.
+     */
+    $toimport = new Application_Model_DbTable_ToImport();
+    $thisfile = $toimport->getByOwner($this->userid);
+    $sdata = file_get_contents($thisfile['path']);
+    logit('SLEN: ' . strlen($sdata) . ' ' . print_r($thisfile, true));
+    $data = unserialize($sdata);
+
+    // insert audit row
+    $auditinfo = $data['audit'];
+    unset($auditinfo['id']);
+    $auditinfo['lab_id'] = $this->labid; // the current lab
+    $auditid = $audit->insertData($auditinfo);
+    logit("Audit: {$auditid} " . print_r($auditinfo, true));
+    // insert into audit_owner
+    $auditowner = new Application_Model_DbTable_AuditOwner();
+    $ao = array (
+        'audit_id' => $auditid,
+        'owner' => $this->userid
+    );
+    $aoid = $auditowner->insertData($ao);
+    logit("AOID: {$aoid}");
+    // insert the audit data rows
+    $auditdatarows = $data['audit_data'];
+    logit("Inserting data: {$auditid} - ". count($auditdatarows));
+    $audit_data->insertAs($auditdatarows, $auditid);
+    // delete the physical file
+    unlink($thisfile['path']);
+    $toimport->delete($thifile['id']); // delete entry from toimport
+    $this->echecklistNamespace->flash = 'Import complete';
+    $this->_redirector->gotoUrl($this->mainpage);
   }
 }

@@ -22,7 +22,18 @@ class Application_Model_DbTable_Audit extends Application_Model_DbTable_Checklis
     logit("AUDIT_DT: {$id} " . print_r($data, true));
     $this->update($data, "id = {$id}");
   }
-  
+
+  public function get($id) {
+    // get audit from this audit id
+    $id = (int) $id;
+    $sql = "select * from audit where id = {$id}";
+    $rows = $this->queryRows($sql);
+    if (!$rows) {
+      throw new Exception("Could not find the audit.");
+    }
+    return $rows[0];
+  }
+
   public function getAudit($id) {
     // get audit from this audit id
     $id = (int) $id;
@@ -45,11 +56,11 @@ class Application_Model_DbTable_Audit extends Application_Model_DbTable_Checklis
      */
     $sql = <<<"END"
 select a.id audit_id, a.end_date, a.cohort_id, a.status,
-       a.slmta_type, l.id lab_id, 
+       a.slmta_type, l.id lab_id,
        l.labname, l.labnum, l.country, l.lablevel, l.labaffil,
-       tt.tag from audit a, template_type tt, lab l, audit_owner ao 
+       tt.tag from audit a, template_type tt, lab l, audit_owner ao
       where a.template_id = tt.id and a.id = ao.audit_id and ao.owner ={$id}
-   and l.id = a.lab_id and a.status = 'INCOMPLETE' 
+   and l.id = a.lab_id and a.status = 'INCOMPLETE'
 END;
 
     $rows = $this->queryRows($sql);
@@ -71,7 +82,7 @@ END;
     default:
       foreach($data as $d) {
         if ($out != '') $out .= ',';
-        if (is_string($d)) 
+        if (is_string($d))
           $out .= "'{$d}'" ;
       }
       logit("A: = in ({$out}) ");
@@ -88,23 +99,23 @@ END;
       " where l.id = a.lab_id and tt.id = a.template_id";
     foreach($data as $a => $b) {
       if (!is_null($b) and $b != '') {
-        //logit("{$a} = {$b} ". print_r($b, true)); 
+        //logit("{$a} = {$b} ". print_r($b, true));
         //logit("LIST: ", $this->_mkList($b));
         switch($a) {
         case 'country':
-          $sql .= " and l.country ". $this->_mkList($b) ; 
+          $sql .= " and l.country ". $this->_mkList($b) ;
           break;
         case 'lablevel':
-          $sql .= " and l.lablevel ". $this->_mkList($b) ; 
+          $sql .= " and l.lablevel ". $this->_mkList($b) ;
           break;
         case 'labaffil':
-          $sql .= " and l.labaffil ". $this->_mkList($b)  ; 
+          $sql .= " and l.labaffil ". $this->_mkList($b)  ;
           break;
         case 'slmta':
-          $sql .= " and a.slmta_type ". $this->_mkList($b) ; 
+          $sql .= " and a.slmta_type ". $this->_mkList($b) ;
           break;
         case 'cohortid':
-          $sql .= " and a.cohort_id ". $this->_mkList($b) ; 
+          $sql .= " and a.cohort_id ". $this->_mkList($b) ;
           break;
         case 'stdate':
           if ($b != '') {
@@ -118,7 +129,7 @@ END;
           break;
         case 'labnum':
           if ($b != '') {
-            $sql .= " and l.labnum = '$b' "; 
+            $sql .= " and l.labnum = '$b' ";
           }
         default:
         }
@@ -147,4 +158,15 @@ END;
     }
     return $rows;
   }
+
+  public function insertData($data) {
+    /**
+     * Create a new audit
+     * data is an array with name value pairs
+     */
+    $this->insert($data);
+    $newid = $this->getAdapter()->lastInsertId();
+    return $newid;
+  }
+
 }

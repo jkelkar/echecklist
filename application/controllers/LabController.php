@@ -34,9 +34,19 @@ class LabController extends Application_Controller_Action // Zend_Controller_Act
       // logit('LAB: '. print_r($row, true));
       $this->makeDialog();
     } else {
-      $this->collectData();
+      if ($this->collectData()) return;
       // logit('Data: ' . print_r($this->data, true));
-      $lab->insertData($this->data);
+      // FIXME - check that all fields are present!
+      logit('LD: '. print_r($this->data, true));
+      unset($this->data['submit_button']);
+      $labrow = unserialize(serialize($this->data));
+      logit('LABROW: '. print_r($labrow, true));
+      $newlabid = $lab->insertData($labrow);
+      $labrow['id'] = $newlabid;
+      logit('LABROW: '. print_r($labrow, true));
+      $this->echecklistNamespace->lab = $labrow;
+      $this->init();
+      $this->_redirector->gotoUrl($this->mainpage);
     }
   }
 
@@ -56,9 +66,10 @@ class LabController extends Application_Controller_Action // Zend_Controller_Act
       $this->makeDialog($row);
     } else {
       // display the form here
-      $this->collectData();
+      if ($this->collectData()) return;
       // logit('Data: ' . print_r($this->data, true));
       $lab->updateData($this->data, $id);
+      $this->_redirector->gotoUrl($this->mainpage);
     }
   }
 
@@ -73,7 +84,7 @@ class LabController extends Application_Controller_Action // Zend_Controller_Act
 
       $this->makeDialog();
     } else {
-      $this->collectData();
+      if ($this->collectData()) return;
       logit('Find: In post');
       logit('tdlab: ' . print_r($this->data, true));
       $labs = $labh->getLabs($this->data, 0, 20);
@@ -82,18 +93,7 @@ class LabController extends Application_Controller_Action // Zend_Controller_Act
     }
   }
 
-  /*
-   * public function selectAction() {
-   * $this->dialog_name = 'lab/select';
-   * logit ( "In LS" );
-   * if (! $this->getRequest ()->isPost ()) { $
-   * this->makeDialog();
-   * } else {
-   * logit('Select: In post');
-   * $this->collectData();
-   * }
-   * }
-   */
+
   public function chooseAction() {
     // choose the lab id provided
     // save it in session, and

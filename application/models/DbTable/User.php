@@ -43,7 +43,7 @@ class Application_Model_DbTable_User extends Application_Model_DbTable_Checklist
     /**
      * get a user from userid
      */
-    $sql = "select * from user where username like '%{$username}%'";
+    $sql = "select * from user where name like '%{$username}%'";
     //$row = $this->fetchRow("username = '{$username}'" );
     $rows = $this->queryRows($sql);
     if (!$rows) {

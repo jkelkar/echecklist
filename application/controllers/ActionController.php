@@ -7,6 +7,7 @@
  */
 require_once 'modules/Checklist/logger.php';
 require_once 'modules/Checklist/fillout.php';
+require_once 'modules/Checklist/validation.php';
 
 class Application_Controller_Action extends Zend_Controller_Action {
   public $echecklistNamespace;
@@ -32,7 +33,10 @@ class Application_Controller_Action extends Zend_Controller_Action {
   public $drows;
   public $mainpage = '/audit/main';
   public $loginpage = '/user/login';
+  public $ISOdtformat = 'Y-m-d H:i:s';
+  public $ISOformat = 'Y-m-d';
   public $tlist;
+  public $error;
 
   public function init() {
     /* initialize here */
@@ -54,9 +58,11 @@ class Application_Controller_Action extends Zend_Controller_Action {
   }
 
   public function handleCancel() {
-    // cancel action take user to main screen
+    // cancel action: take user to main screen
     logit('HC: '. print_r($this->data, true));
     if ($this->data['submit_button'] == 'Cancel' ) {
+      $this->data = array();
+      $this->error = array();
       $this->_redirector->gotoUrl($this->mainpage);
     }
   }
@@ -362,7 +368,7 @@ END;
       $arow['varname'] = $row['field_name'];
       $varname = $arow['varname'];
       $arow['baseurl'] = $this->baseurl;
-      $arow['field_length'] = $row['field_length'];
+      $arow['field_length'] = 0; //$row['field_length'];
       $info = $row['info'];
 
       switch ($type) {
@@ -453,13 +459,19 @@ END;
   }
 
   public function makeDialog($value = array(''=>'')) {
-    /*
+      /*
      * Create the dialog
      */
     $this->getDialogLines();
     // logit('makeDialog:');
     $this->view->outlines = $this->calculate_dialog($this->drows, $value, $this->title,
         $this->view->langtag);
+    if (is_array($this->error)) {
+      logit('Error: ' . print_r($this->error, true));
+      $this->view->errorLines = implode("\n", $this->error);
+    } else {
+      $this->view->errorLines = '';
+    }
     $this->view->title = $this->title;
     if (isset($this->echecklistNamespace->flash)) {
       $this->view->flash = $this->echecklistNamespace->flash;
@@ -468,7 +480,6 @@ END;
       logit("there?: {$this->view->flash}");
     }
     $this->_helper->layout->setLayout('overall');
-
   }
 
   public function collectData() {
@@ -483,6 +494,9 @@ END;
         /*,
         'submit_button'*/
     );
+    $this->error = array ();
+    $this->error[] = "<table><tr><th colspan='2'>Fix the following errors and retry</td></tr>";
+    $errorct = 0;
     $this->data = array ();
     $formData = $this->getRequest();
     foreach($this->drows as $row) {
@@ -490,14 +504,35 @@ END;
         continue;
       $type = $row['field_type'];
       $varname = $row['field_name'];
-
+      $field_label = $row['field_label'];
+      $validate = $row['validate'];
       if (in_array($type, $ignore_list)) {
         continue;
       }
       // logit('IN: '. $formData->getPost($varname,''));
       $this->data[$varname] = $formData->getPost($varname, '');
+      // VALIDATION HERE
+      if ($validate) {
+        $msg = call_user_func($validate, $this->data[$varname]);
+        logit("VAL: {$varname} {$validate} {$this->data[$varname]} -- {$msg}");
+
+        if ($msg) {
+          // Enter into error array
+          $errorct ++;
+          $this->error[] = "<tr><td class=\"rpad\"><b>{$field_label}:</b></td>" .
+               "<td> <Span class=\"error\">{$msg}</span></td></tr>";
+        }
+      }
     }
+    $this->error[] = "</table>";
+    if ($errorct == 0) $this->error = array();
     $this->handleCancel();
+    logit("ECT: ". count($this->error));
+    if (count($this->error) > 0) {
+      $this->echecklistNamespace->flash = 'Correct errors and retry';
+      $this->makeDialog($this->data);
+      return true;
+    }
   }
 
   public function collectExtraData($prefix = '') {

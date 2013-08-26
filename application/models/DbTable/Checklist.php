@@ -37,6 +37,17 @@ class Application_Model_DbTable_Checklist extends Zend_Db_Table_Abstract
     return $db;
   }
 
+  public function execute($sql) {
+    /*
+     * This runs the sql against the database and returns the result
+    * as $rows
+    */
+    $db = $this->getDb();
+    $stmt = $db->query($sql);
+    // $rows = $stmt->fetchAll();
+    // return $rows;
+  }
+
   public function queryRows($sql) {
     /*
      * This runs the sql against the database and returns the result
@@ -88,6 +99,8 @@ class Application_Model_DbTable_Checklist extends Zend_Db_Table_Abstract
      * Create a new row
      * data is an array with name value pairs
      */
+    if (array_key_exists('submit_button', $data))
+      unset($data['submit_button']);
     $this->insert($data);
     $newid = $this->getAdapter()->lastInsertId();
     return $newid;

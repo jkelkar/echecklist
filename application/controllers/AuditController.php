@@ -2,6 +2,7 @@
 require_once 'modules/Checklist/fillout.php';
 require_once 'modules/Checklist/export.php';
 require_once 'modules/Checklist/logger.php';
+require_once 'modules/Checklist/datefns.php';
 require_once '../application/controllers/ActionController.php';
 
 class AuditController extends Application_Controller_Action {
@@ -328,6 +329,8 @@ END;
     $this->dialog_name = 'audit/create';
     logit("{$this->dialog_name}");
     $audit = new Application_Model_DbTable_Audit();
+    $tmpl = new Application_Model_DbTable_Template();
+    $ao = new Application_Model_DbTable_AuditOwner();
     //$vars = $this->_request->getPathInfo();
     //$pinfo = explode("/", $vars);
     // // $id = (int)  $pinfo[3];
@@ -337,10 +340,35 @@ END;
       $this->makeDialog();
     } else {
       // display the form here
-      $this->collectData();
-      // logit('Data: ' . print_r($this->data));
-      $user->updateData($data, $id);
-      $this->_redirector->gotoUrl($this->mainpage);
+      if ($this->collectData()) return;
+      if ($this->data['audit_type'] == '-') {
+        $this->echecklistNamespace->flash = 'Choose a "Type of Audit" and continue';
+        //$this->makeDialog();
+        $this->_redirector->gotoUrl('audit/create');
+      }
+      //logit('Data: ' . print_r($this->data));
+      $trow = $tmpl->getByTag($this->data['audit_type']);
+      //logit("LABID: {$this->labid} TR:" . print_r($trow, true));
+      $now = new DateTime();
+      $nowiso = $now->format($this->ISOdtformat);
+      $arow = array (
+          'template_id' => $trow['id'],
+          'created_at' => $nowiso,
+          'updated_at' => $nowiso,
+          'updated_by' => $this->userid,
+          //'start_date' => convert_ISO($this->data['start_date'])->format($this->ISOformat),
+          //'end_date' => convert_ISO($this->data['end_date'])->format($this->ISOformat),
+          'lab_id' => $this->labid,
+          'status' => 'INCOMPLETE'
+      );
+      $newauditid = $audit->insertData($arow);
+      $aorow = array (
+          'audit_id' => $newauditid,
+          'owner' => $this->userid
+      );
+      $ao->insertData($aorow);
+      $url = "/audit/edit/{$newauditid}/";
+      $this->_redirector->gotoUrl($url);
     }
   }
 
@@ -351,7 +379,7 @@ END;
       $this->makeDialog();
     } else {
       logit('Select: In post');
-      $this->collectData();
+      if ($this->collectData()) return;
       logit('Auditsel: ' . print_r($this->data, true));
       $aud = new Application_Model_DbTable_Audit();
       $arows = $aud->selectAudits($this->data);
@@ -372,7 +400,7 @@ END;
       logit('Exportxls: In post');
       $prefix = 'cb_';
       $lprefix = strlen($prefix);
-      $this->collectData();
+      if ($this->collectData()) return;
       $this->collectextraData($prefix);
       logit('Exportxls: ' . print_r($this->data, true));
       logit('Exportxls+: ' . print_r($this->extra, true));

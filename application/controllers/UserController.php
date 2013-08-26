@@ -3,7 +3,7 @@ require_once 'modules/Checklist/htmlhelp.php';
 require_once 'modules/Checklist/logger.php';
 require_once '../application/controllers/ActionController.php';
 
-class UserController extends Application_Controller_Action 
+class UserController extends Application_Controller_Action
 // Zend_Controller_Action
 {
 
@@ -18,7 +18,7 @@ class UserController extends Application_Controller_Action
 
   public function mainAction() {
     /*
-     * 
+     *
      */
   }
 
@@ -30,17 +30,17 @@ class UserController extends Application_Controller_Action
     if (!$this->getRequest()->isPost()) {
       if ($this->usertype != '') {
         // logit('redirect');
-        $this->_redirector->gotoUrl("/audit/edit/1/" ); 
+        $this->_redirector->gotoUrl("/audit/edit/1/" );
       }
       // logit('LAB: '. print_r($row, true));
       $this->makeDialog();
     } else {
-      $this->collectData();
+      if ($this->collectData()) return;
       $row = $user->getUserByUsername($this->data['userid']);
       if ($this->data['password'] == $row['password']) { // FIXME - goto BCRYPT
         $xuser = array();
         foreach($row as $a => $b) {
-          if ($a != 'password') { 
+          if ($a != 'password') {
             $xuser [$a] = $b;
             logit ("Added {$a} => {$b}");
           }
@@ -71,7 +71,7 @@ class UserController extends Application_Controller_Action
     unset($this->echecklistNamespace->user);
     $this->_redirector->gotoUrl("/user/login");
   }
-  
+
   public function createAction() {
     $this->dialog_name = 'user/create';
     logit ( "{$this->dialog_name}" );
@@ -82,7 +82,7 @@ class UserController extends Application_Controller_Action
       // logit('LAB: '. print_r($row, true));
       $this->makeDialog();
     } else {
-      $this->collectData();
+      if ($this->collectData()) return;
       if ($this->data['password'] != $this->data['password2']) {
         $this->data['password'] = '';
         $this->data['password2'] = '';
@@ -92,7 +92,7 @@ class UserController extends Application_Controller_Action
         //logit('Data: ' . print_r($this->data, true));
         unset($this->data['password2']);
         try {
-          $user->insertData($this->data); 
+          $user->insertData($this->data);
           $this->_redirector->gotoUrl($this->mainpage);
         } catch (Exception $e) {
           $this->data['password'] = '';
@@ -121,10 +121,29 @@ class UserController extends Application_Controller_Action
       $this->makeDialog($row);
     } else {
       // display the form here
-      $this->collectData();
+      if ($this->collectData()) return;
       // logit('Data: ' . print_r($this->data));
-      $user->updateData($data, $id); 
+      $user->updateData($data, $id);
       $this->_redirector->gotoUrl($this->mainpage);
+    }
+  }
+
+  public function findAction() {
+    $this->dialog_name = 'user/find';
+    logit("{$this->dialog_name}");
+    $user = new Application_Model_DbTable_User();
+    // $urldata = $this->getRequest()->getParams();
+    $langtag = $this->echecklistNamespace->lang;
+    if (! $this->getRequest()->isPost()) {
+      // logit('LAB: '. print_r($row, true));
+      $this->makeDialog();
+    } else {
+      if ($this->collectData())
+        return;
+      $rows = $user->getUsersByUsername($this->data['name']);
+      logit('Users: ' . print_r($rows, true));
+      exit();
+      // Redirect it from here
     }
   }
 
@@ -143,14 +162,14 @@ class UserController extends Application_Controller_Action
       $this->makeDialog($row);
     } else {
       // display the form here
-      $this->collectData();
+      if ($this->collectData()) return;
       // logit('Data: ' . print_r($this->data));
       $row = $user->getUser($id);
       if ($this->data['password'] == $row['password']) { // FIXME -use bcrypt
         unset($this->data['password']);
         unset($this->data['id']);
         logit('USER DATA: '. print_r($this->data, true));
-        $user->updateData($this->data, $id); 
+        $user->updateData($this->data, $id);
         $this->_redirector->gotoUrl($this->mainpage);
       } else {
         unset($this->data['password']);
@@ -159,7 +178,7 @@ class UserController extends Application_Controller_Action
       }
     }
   }
-    
+
   public function changepwAction() {
     $this->dialog_name = 'user/changepw';
     logit ("{$this->dialog_name}" );
@@ -168,12 +187,12 @@ class UserController extends Application_Controller_Action
     $langtag = $this->echecklistNamespace->lang;
     // $urldata = $this->getRequest()->getParams();
     if (!$this->getRequest()->isPost()) {
-      
+
       // logit('LAB: '. print_r($row, true));
       $this->makeDialog();
     } else {
       // display the form here
-      $this->collectData();
+      if ($this->collectData()) return;
       logit("USERID: {$id}");
       $row = $user->getUser($id);
       if ($this->data['old_pw'] != $row['password']) {
@@ -182,12 +201,12 @@ class UserController extends Application_Controller_Action
         return;
       }
       if ($this->data['password'] ==  $this->data['password2']) {
-        
+
         unset($this->data['password2']);
         unset($this->data['old_pw']);
       // logit('Data: ' . print_r($this->data));
         try {
-          $user->updateData($this->data, $id); 
+          $user->updateData($this->data, $id);
           $this->echecklistNamespace->flash = "Password updated";
           $this->_redirector->gotoUrl($this->mainpage);
         } catch (Exception $e) {

@@ -159,14 +159,14 @@ END;
     return $rows;
   }
 
-  public function insertData($data) {
-    /**
+  /*public function insertData($data) {
+    / **
      * Create a new audit
      * data is an array with name value pairs
-     */
+     * /
     $this->insert($data);
     $newid = $this->getAdapter()->lastInsertId();
     return $newid;
-  }
+  }*/
 
 }

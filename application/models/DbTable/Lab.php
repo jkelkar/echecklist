@@ -30,7 +30,7 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
     logit("Lab:getLabs: ".print_r($data, true)." {$start}, {$ct}");
     $sql = "select * from lab where 1=1 ";
     foreach ($data as $a => $b) {
-      if ($b == '') continue;
+      if ($b == '' || $a == 'submit_button') continue;
       switch($a) {
       case 'country':
         if ($b != '-') {

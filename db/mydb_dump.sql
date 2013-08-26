@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 25, 2013 at 10:38 PM
+-- Generation Time: Aug 26, 2013 at 07:16 PM
 -- Server version: 5.5.31
 -- PHP Version: 5.3.10-1ubuntu3.6
 
@@ -64,20 +64,22 @@ CREATE TABLE IF NOT EXISTS `audit` (
   `slmta_type` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
   `status` varchar(10) CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Header for data for one document' AUTO_INCREMENT=22 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Header for data for one document' AUTO_INCREMENT=28 ;
 
 --
 -- Dumping data for table `audit`
 --
 
 INSERT INTO `audit` (`id`, `template_id`, `created_at`, `updated_at`, `updated_by`, `start_date`, `end_date`, `lab_id`, `cohort_id`, `slmta_type`, `status`) VALUES
-(1, 1, '2013-07-22 11:23:36', '2013-08-17 20:03:34', 1, '2013-08-01', '2013-08-14', 1, '1', '', 'INCOMPLETE'),
+(1, 1, '2013-07-22 11:23:36', '2013-08-17 20:03:34', 1, '2013-08-02', '2013-08-13', 1, '1', '', 'INCOMPLETE'),
 (2, 2, '2013-08-10 11:24:44', '2013-08-17 21:38:09', 1, '0000-00-00', '0000-00-00', 9, '3', '', 'INCOMPLETE'),
 (3, 3, '2013-08-15 13:25:29', '2013-08-17 09:47:40', 1, '0000-00-00', '0000-00-00', 10, '5', '', 'INCOMPLETE'),
 (18, 1, '2013-07-22 11:23:36', '2013-08-17 20:03:34', 1, '2013-08-01', '2013-08-14', 27, '1', '', 'INCOMPLETE'),
 (19, 1, '2013-07-22 11:23:36', '2013-08-17 20:03:34', 1, '2013-08-01', '2013-08-14', 28, '1', '', 'INCOMPLETE'),
 (20, 1, '2013-07-22 11:23:36', '2013-08-17 20:03:34', 1, '2013-08-01', '2013-08-14', 29, '1', '', 'INCOMPLETE'),
-(21, 1, '2013-07-22 11:23:36', '2013-08-17 20:03:34', 1, '2013-08-01', '2013-08-14', 3, '1', '', 'INCOMPLETE');
+(21, 1, '2013-07-22 11:23:36', '2013-08-17 20:03:34', 1, '2013-08-01', '2013-08-14', 3, '1', '', 'INCOMPLETE'),
+(26, 2, '2013-08-26 10:09:44', '2013-08-26 10:09:44', 1, '0000-00-00', '0000-00-00', 4, '', '', 'INCOMPLETE'),
+(27, 1, '2013-08-26 14:04:09', '2013-08-26 14:04:09', 1, '2013-08-01', '2013-08-27', 63, '', '', 'INCOMPLETE');
 
 -- --------------------------------------------------------
 
@@ -99,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `audit_data` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `head_data` (`audit_id`,`field_name`),
   KEY `audit_page` (`audit_id`,`page_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='One row per field of data saved.' AUTO_INCREMENT=25016 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='One row per field of data saved.' AUTO_INCREMENT=25081 ;
 
 --
 -- Dumping data for table `audit_data`
@@ -133,7 +135,7 @@ INSERT INTO `audit_data` (`id`, `audit_id`, `field_name`, `int_val`, `text_val`,
 (473, 1, 'audit_date', 0, '', '', '0001-11-30', '', 'date', 4),
 (474, 1, 'dola', 0, '', '08/05/2013', '2013-08-25', '', 'string', 6),
 (481, 1, 'sufficient_infra_yn', 0, '', 'NO', '2013-08-19', '', 'string', 8),
-(482, 1, 'action', 0, '', '', '2013-08-25', '', 'string', 6),
+(482, 1, 'action', 0, '', '', '2013-08-26', '', 'string', 4),
 (489, 1, 'labname', 0, '', 'Best Lab, Inc', '2013-08-25', '', 'string', 6),
 (490, 1, 'labnum', 0, '', 'lab-007', '2013-08-25', '', 'string', 6),
 (492, 1, 'labtel', 0, '', '404.776.3490', '2013-08-25', '', 'string', 6),
@@ -160,7 +162,7 @@ INSERT INTO `audit_data` (`id`, `audit_id`, `field_name`, `int_val`, `text_val`,
 (677, 1, 'cleaner', 0, '', '', '2013-08-19', '', 'string', 7),
 (681, 1, 'driver', 0, '', '', '2013-08-19', '', 'string', 7),
 (685, 1, 'other', 0, '', '', '2013-08-19', '', 'string', 7),
-(2464, 1, 'nextpage', 0, '', '', '2013-08-25', '', 'string', 6),
+(2464, 1, 'nextpage', 0, '', '', '2013-08-26', '', 'string', 4),
 (2466, 1, 's0201_nc', 0, '', '', '2013-08-16', 'F', 'bool', 12),
 (2468, 1, 's0201_score', 0, '', '', '2013-08-16', '', 'integer', 12),
 (2469, 1, 's0201_comment', 0, '', '', '2013-08-16', '', 'text', 12),
@@ -402,9 +404,9 @@ INSERT INTO `audit_data` (`id`, `audit_id`, `field_name`, `int_val`, `text_val`,
 (4246, 1, 's030811_nc', 0, '', '', '2013-08-16', 'F', 'bool', 13),
 (4248, 1, 's030811_note', 0, '', '', '2013-08-16', '', 'text', 13),
 (5019, 1, 'pas_stars', 0, '', '-', '2013-08-19', '', 'string', 4),
-(7808, 1, 'final_score', 17, '', '', '2013-08-25', '', 'integer', 0),
-(7809, 1, 'final_y', 0, '', '', '2013-08-25', '', 'string', 0),
-(7810, 1, 'final_n', 0, '', 'N', '2013-08-25', '', 'string', 0),
+(7808, 1, 'final_score', 17, '', '', '2013-08-26', '', 'integer', 0),
+(7809, 1, 'final_y', 0, '', '', '2013-08-26', '', 'string', 0),
+(7810, 1, 'final_n', 0, '', 'N', '2013-08-26', '', 'string', 0),
 (8447, 1, 's02_total', 6, '', '', '2013-08-16', '', 'integer', 12),
 (9764, 1, 's020301_yn', 0, '', 'YES', '2013-08-16', '', 'string', 12),
 (11447, 2, 'final_y_ct', 1, '', '', '2013-08-25', '', 'integer', 0),
@@ -2118,8 +2120,8 @@ INSERT INTO `audit_data` (`id`, `audit_id`, `field_name`, `int_val`, `text_val`,
 (18664, 1, 'action09_sign', 0, '', '', '2013-08-21', '', 'string', 28),
 (18668, 1, 'action10_sign', 0, '', '', '2013-08-21', '', 'string', 28),
 (18709, 1, 's010404_yn', 0, '', 'NO', '2013-08-22', '', 'string', 11),
-(18710, 1, 'start_date', 0, '', '', '2013-08-01', '', 'date', 4),
-(18711, 1, 'end_date', 0, '', '', '2013-08-14', '', 'date', 4),
+(18710, 1, 'start_date', 0, '', '', '2013-08-02', '', 'date', 4),
+(18711, 1, 'end_date', 0, '', '', '2013-08-13', '', 'date', 4),
 (18712, 1, 'slipta_official', 0, '', 'T', '2013-08-25', '', 'string', 4),
 (19959, 18, 'action', 0, '', '', '2013-08-25', '', 'string', 4),
 (19960, 18, 'action01_item', 0, '', 'Mr. Smith', '2013-08-21', '', 'string', 28),
@@ -7093,7 +7095,24 @@ INSERT INTO `audit_data` (`id`, `audit_id`, `field_name`, `int_val`, `text_val`,
 (24921, 21, 'tndrugs_smr_dt', 0, '', '', '0001-11-30', '', 'date', 25),
 (24922, 21, 'tndrugs_smr_num', 0, '', '', '2013-08-19', '', 'integer', 25),
 (24957, 1, 'labaddr', 0, '', '124 Morrow Ln\nAlpharetta, GA\nUSA 30076', '2013-08-25', '', 'string', 6),
-(25008, 2, 'labaddr', 0, '', 'street\nstreet21\nstreet31\nhere1, GAMEX\nBorneo 65480', '2013-08-25', '', 'string', 51);
+(25008, 2, 'labaddr', 0, '', 'street\nstreet21\nstreet31\nhere1, GAMEX\nBorneo 65480', '2013-08-25', '', 'string', 51),
+(25062, 27, 'start_date', 0, '', '', '2013-08-01', '', 'date', 4),
+(25063, 27, 'end_date', 0, '', '', '2013-08-27', '', 'date', 4),
+(25064, 27, 'slipta_official', 0, '', 'T', '2013-08-26', '', 'string', 4),
+(25065, 27, 'action', 0, '', '', '2013-08-26', '', 'string', 6),
+(25066, 27, 'nextpage', 0, '', '', '2013-08-26', '', 'string', 6),
+(25067, 27, 'labname', 0, '', 'testing 123', '2013-08-26', '', 'string', 6),
+(25068, 27, 'labnum', 0, '', 'IND-1243', '2013-08-26', '', 'string', 6),
+(25069, 27, 'labtel', 0, '', '912345678909', '2013-08-26', '', 'string', 6),
+(25070, 27, 'labfax', 0, '', '8765432109', '2013-08-26', '', 'string', 6),
+(25071, 27, 'labemail', 0, '', 'jk@xx.com', '2013-08-26', '', 'string', 6),
+(25072, 27, 'lablevel', 0, '', 'NATIONAL', '2013-08-26', '', 'string', 6),
+(25073, 27, 'labaffil', 0, '', 'PUBLIC', '2013-08-26', '', 'string', 6),
+(25074, 27, 'labaddr', 0, '', '125 Delhi Ln\nNew Delhi, Delhi\nIndia 100076', '2013-08-26', '', 'string', 6),
+(25075, 27, 'dola', 0, '', '02/06/2013', '2013-08-26', '', 'string', 6),
+(25076, 27, 'names_affil_t_comment', 0, '', '', '2013-08-26', '', 'text', 6),
+(25077, 27, 'labhead', 0, '', '', '2013-08-26', '', 'string', 6),
+(25078, 27, 'labheadtel', 0, '', '', '2013-08-26', '', 'string', 6);
 
 -- --------------------------------------------------------
 
@@ -7106,7 +7125,7 @@ CREATE TABLE IF NOT EXISTS `audit_owner` (
   `audit_id` int(11) NOT NULL,
   `owner` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Maps audits to owners' AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Maps audits to owners' AUTO_INCREMENT=12 ;
 
 --
 -- Dumping data for table `audit_owner`
@@ -7122,7 +7141,8 @@ INSERT INTO `audit_owner` (`id`, `audit_id`, `owner`) VALUES
 (7, 18, 1),
 (8, 19, 1),
 (9, 20, 1),
-(10, 21, 1);
+(10, 21, 1),
+(11, 27, 1);
 
 -- --------------------------------------------------------
 
@@ -7429,109 +7449,114 @@ CREATE TABLE IF NOT EXISTS `dialog_row` (
   `dialog_id` int(11) NOT NULL,
   `position` int(11) NOT NULL,
   `field_name` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
-  `field_label` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
-  `field_length` int(11) NOT NULL,
+  `field_label` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `validate` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `field_type` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
   `for_export` char(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'f',
   `info` text COLLATE utf8_unicode_ci NOT NULL,
   `title` varchar(80) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Stores individual lines of a dialog' AUTO_INCREMENT=92 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Stores individual lines of a dialog' AUTO_INCREMENT=95 ;
 
 --
 -- Dumping data for table `dialog_row`
 --
 
-INSERT INTO `dialog_row` (`id`, `dialog_id`, `position`, `field_name`, `field_label`, `field_length`, `field_type`, `for_export`, `info`, `title`) VALUES
-(3, 1, 0, 'user/login', '', 0, 'info', 'f', 'Login here to access Lab Audits.<br/> Currently these Audits are available:\n<ul><li>SLIPTA</li>\n<li>BIosafety (BAT)</li>\n<li>TB</li></ul>', 'Login'),
-(4, 1, 1, 'userid', 'User Name', 40, 'string_field', 'f', '', ''),
-(5, 1, 2, 'password', 'Password', 40, 'password_field', 'f', '', ''),
-(6, 1, 3, 'submit_button', 'Login', 0, 'submit_button', 'f', '', ''),
-(7, 2, 0, 'lab/create', '', 0, 'info', 'f', 'Create a new Lab.<br />\nLabs are identified by their lab numbers, which must be unique.', 'Create a New Lab'),
-(8, 2, 1, 'labname', 'Lab Name', 40, 'string_field', 'f', '', ''),
-(9, 2, 2, 'labnum', 'Lab Number', 40, 'string_field', 'f', '', ''),
-(10, 2, 3, 'street', 'Address', 40, 'string_field', 'f', '', ''),
-(11, 2, 4, 'street2', '', 40, 'string_field', 'f', '', ''),
-(12, 2, 5, 'street3', '', 40, 'string_field', 'f', '', ''),
-(13, 2, 6, 'city', 'City', 40, 'string_field', 'f', '', ''),
-(14, 2, 7, 'state', 'State/Province', 40, 'string_field', 'f', '', ''),
-(15, 2, 8, 'country', 'Country', 40, 'string_field', 'f', '', ''),
-(16, 2, 9, 'postcode', 'Postal Code', 40, 'string_field', 'f', '', ''),
-(17, 2, 10, 'labtel', 'Lab Telephone', 40, 'string_field', 'f', '', ''),
-(18, 2, 11, 'labfax', 'Lab Fax', 40, 'string_field', 'f', '', ''),
-(19, 2, 12, 'labemail', 'Lab Email', 40, 'string_field', 'f', '', ''),
-(20, 2, 13, 'lablevel', 'Lab Level', 40, 'lablevel', 'f', '', ''),
-(21, 2, 14, 'labaffil', 'Lab Affiliation', 40, 'labaffil', 'f', '', ''),
-(22, 2, 15, 'labaffil_other', 'Lab Affiliation: Other', 0, 'string_field', 'f', '', ''),
-(23, 2, 16, 'submit_button', 'Cancel,Create', 0, 'submit_button', 'f', '', ''),
-(24, 3, 0, 'lab/edit', '', 0, 'info', 'f', 'Edit Lab details here.<br />\nChanging the Lab Number or Name will not change it in the audits automatically.<br />\nTo refresh the Lab Name and Number in the audit, you must edit the audit <i>after</i> editing Lab details and saving them.\n', 'Edit Lab'),
-(25, 3, 1, 'id', '', 0, 'hidden', 'f', '', ''),
-(26, 3, 2, 'labname', 'Lab Name', 40, 'string_field', 'f', '', ''),
-(27, 3, 3, 'labnum', 'Lab Number', 40, 'string_field', 'f', '', ''),
-(28, 3, 4, 'street', 'Address', 40, 'string_field', 'f', '', ''),
-(29, 3, 5, 'street2', '', 40, 'string_field', 'f', '', ''),
-(30, 3, 6, 'street3', '', 40, 'string_field', 'f', '', ''),
-(31, 3, 7, 'city', 'City', 40, 'string_field', 'f', '', ''),
-(32, 3, 8, 'state', 'State/Province', 40, 'string_field', 'f', '', ''),
-(33, 3, 9, 'country', 'Country', 40, 'string_field', 'f', '', ''),
-(34, 3, 10, 'postcode', 'Postal Code', 40, 'string_field', 'f', '', ''),
-(35, 3, 11, 'labtel', 'Lab Telephone', 40, 'string_field', 'f', '', ''),
-(36, 3, 12, 'labfax', 'Lab Fax', 40, 'string_field', 'f', '', ''),
-(37, 3, 13, 'labemail', 'Lab Email', 40, 'string_field', 'f', '', ''),
-(38, 3, 14, 'lablevel', 'Lab Level', 40, 'lablevel', 'f', '', ''),
-(39, 3, 15, 'labaffil', 'Lab Affiliation', 40, 'labaffil', 'f', '', ''),
-(40, 3, 16, 'save_button', 'Cancel,Save', 0, 'submit_button', 'f', '', ''),
-(41, 4, 0, 'user/create', '', 0, 'info', 'f', 'Create a New User here.<br />\nUser Ids are unique<br />\nUser types have the following function:<br />\n<ul><li><b>Admin</b> - Administrator</li>\n<li><b>User</b> - Auditor</li>\n<li><b>Analyst</b> - Can see but not change audits</li>\n<li><b>Approver</b> - Approves and Finalizes audits</li>\n</ul>', 'Create a New User'),
-(42, 4, 1, 'name', 'User Name', 40, 'string_field', 'f', '', ''),
-(43, 4, 2, 'userid', 'User Id', 40, 'string_field', 'f', '', ''),
-(44, 4, 3, 'password', 'Password', 40, 'password_field', 'f', '', ''),
-(45, 4, 4, 'password2', 'New Password Again', 40, 'password_field', 'f', '', ''),
-(46, 4, 5, 'usertype', 'User Type', 40, 'usertype', 'f', '', ''),
-(47, 4, 6, 'languages', 'Languages', 40, 'string_field', 'f', '', ''),
-(48, 4, 7, 'submit_button', 'Cancel,Create', 0, 'submit_button', 'f', '', ''),
-(49, 5, 0, 'user/profile', '', 0, 'info', 'f', 'Change your User Id here. <br />\n<b>Username</b> - the printed name<br />\n<b>Userid</b> - Id used for logging in.<br />\nProvide your password to confirm you own the account.', 'Edit a User Profile'),
-(50, 5, 1, 'id', '', 0, 'hidden', 'f', '', ''),
-(51, 5, 2, 'name', 'User Name', 40, 'string_field', 'f', '', ''),
-(52, 5, 2, 'userid', 'User Id', 40, 'string_field', 'f', '', ''),
-(53, 5, 3, 'languages', 'Languages', 40, 'string_field', 'f', '', ''),
-(54, 5, 5, 'password', 'Password', 40, 'password_field', 'f', '', ''),
-(55, 5, 7, 'submit_button', 'Cancel,Save', 0, 'submit_button', 'f', '', ''),
-(56, 6, 0, 'user/changepw', '', 0, 'info', 'f', 'Change your password here.<br />\nProvide your old password, and the new password twice to change the password to the new one.', 'Change your password'),
-(57, 6, 2, 'old_pw', 'Old Password', 40, 'password_field', 'f', '', ''),
-(58, 6, 3, 'password', 'New Password', 40, 'password_field', 'f', '', ''),
-(59, 6, 4, 'password2', 'Password Again', 40, 'password_field', 'f', '', ''),
-(60, 6, 5, 'reset_button', 'Cancel,Change', 0, 'submit_button', 'f', '', ''),
-(61, 7, 0, 'audit/main', '', 0, 'info', 'f', 'Here you will find audits which are not COMPLETE.<br /> Click:<br /><ul><li><b>Edit</b> - to edit</li><li><b>View</b> - to see full audit</li><li><b>Export</b> - to export to data file</li></ul>', 'Audits available for Editing'),
-(62, 8, 0, 'lab/select', '', 0, 'info', 'f', 'Search for a lab. Use a combination of one or more of :<br /><ol><li>Country Name</li><li>First part of Lab Name</li><li>First part of the Lab Number</ol>', 'Search For a Lab'),
-(63, 8, 1, 'country', 'Country', 40, 'country', 'f', '', ''),
-(64, 8, 2, 'labname', 'Lab Name', 40, 'string_field', 'f', '', ''),
-(65, 8, 3, 'labnum', 'Lab Number', 40, 'string_field', 'f', '', ''),
-(66, 8, 4, 'submit_button', 'Cancel,Find', 0, 'submit_button', 'f', '', ''),
-(67, 9, 0, 'audit/select', '', 0, 'info', 'f', 'To export audits to Excel, first select lab(s) and audit criteria.<br /> Use a combination of 0 or more (no choice is = choose all):<ul><li>Select labs</li><ol><li><b>Country</b>:�Â� select 0 or more</li><li><b>Lab Level</b>:�Â� 0 or more</li><li><b>Lab Affiliation</b> -�Â� 0 or more</li><li><b>SMLTA</b> - choose lab typs</li></ol><li>Select Audits</li><ol><li><b>SLMTA Status</b> </li> <li><b>Cohort Id</b> select 0 or more</li><li><b>Date Range</b> - When Audit was completed</li> </ol></ul>', 'Select Audits for Excel Export'),
-(68, 9, 1, '', 'Select Labs', 0, 'heading', 'f', '', ''),
-(69, 9, 2, 'country', 'Country', 40, 'country_m', 'f', '', ''),
-(70, 9, 3, 'lablevel', 'Lab Level', 40, 'lablevel_m', 'f', '', ''),
-(71, 9, 4, 'labaffil', 'Lab Affiliation', 40, 'labaffil_m', 'f', '', ''),
-(72, 9, 5, '', 'Audit Choices', 0, 'heading', 'f', '', ''),
-(73, 9, 6, 'slmta', 'SLMTA Type', 40, 'slmtastatus_m', 'f', '', ''),
-(74, 9, 7, 'cohortid', 'Cohort Id', 40, 'cohortid_m', 'f', '', ''),
-(75, 9, 8, 'stdate', 'Date Range - Beginning', 40, 'date_field', 'f', '', ''),
-(76, 9, 9, 'enddate', 'Date Range - Ending', 40, 'date_field', 'f', '', ''),
-(77, 9, 10, '', 'Export', 0, 'heading', 'f', '', ''),
-(78, 9, 11, 'exp', 'Data to Export', 0, 'export', 'f', '', ''),
-(79, 9, 12, 'submit_button', 'Cancel,Find', 0, 'submit_button', 'f', '', ''),
-(80, 10, 0, 'audit/create', '', 0, 'info', 'f', 'Continue to create a new audit in the currently chosen lab.<br />\nIf you want a different lab, from the menu above choose Labs-->Select a lab and find the lab, <i>or</i> Create a new lab.<br />\n<ol>\n<li><b>Choose a lab:</b> The chosen lab is shown above</li>\n<li><b>Choose Audit type:</b>  </li>\n<li>Type in the actual Audit Start and End dates</li>\n<li><b>Click Start</b> </li>\n</ol><br />\nAll required data from the currently chosen lab is automatically added to the current audit.', 'Create a New Audit'),
-(81, 10, 1, 'audit_type', 'Type of Audit', 40, 'audit_type', 'f', '', ''),
-(82, 10, 2, 'start_date', 'Start Date', 40, 'date_field', 'f', '', ''),
-(83, 10, 3, 'end_date', 'End Date', 40, 'date_field', 'f', '', ''),
-(84, 10, 10, 'submit_button', 'Cancel,Start', 0, 'submit_button', 'f', '', ''),
-(85, 11, 0, 'lab/choose', '', 0, 'info', 'f', 'These are the audits associated with the selected lab.<br />', 'Lab Audits'),
-(86, 11, 1, '', '', 0, 'info2', 'f', 'These actions are possible with audits:<br />\n<ul>\n<li><b>View:</b> Show the entire filledout audit on screen</li>\n<li><b>Edit:</b> (only if INCOMPLETE) Edit the audit</li>\n<li><b>DataExport:</b> Export audit to data file</li>\n<li><b>Delete:</b> (only if INCOMPLETE or REJECTED) Delete this audit</li>\n</ul>', ''),
-(87, 12, 0, 'audit/import', '', 0, 'info', 'f', 'Import an audit into this system.<br />\nOnly one import can be active at a time. Either complete importing, or delete the import.', 'Import An Audit'),
-(88, 12, 1, 'file', 'FIle to Import', 40, 'file', 'f', '', ''),
-(89, 12, 3, 'submit_button', 'Cancel,Start', 0, 'submit_button', 'f', '', ''),
-(90, 13, 0, 'audit/fileparse', '', 0, 'info', 'f', 'These are the data in the imported file.', 'Import file details'),
-(91, 13, 1, 'info', '', 0, 'text', 'f', '<div style="font-size: 1em; line-height: 1.2em;">\n  <div id="help2">\n    <div style="float: left; padding: 5px 20px 5px 0px;">\n      Lab info for import data:<br>\n      <table>\n        <tr>\n          <td style="padding-right: 20px;"><b>Lab Name:</b></td>\n          <td>{$this->lab[''labname'']}</td>\n        </tr>\n        <tr>\n          <td style="padding-right: 20px;"><b>Lab Number:</b></td>\n          <td>{$this->lab[''labnum'']}</td>\n        </tr>\n        <tr>\n          <td><b>Country:</b></td>\n          <td>{$this->lab[''country'']}</td>\n        </tr>\n      </table>\n    </div>\n    <div style="float: left; padding: 5px 20px 5px 0px;">\n      Audit info for import data:<br>\n      <table>\n        <tr>\n          <td style="padding-right: 20px;"><b>Audit Type:</b></td>\n          <td>{$this->tmpl_row[''tag'']}</td>\n        </tr>\n        <tr>\n          <td style="padding-right: 20px;"><b>Audit Date:</b></td>\n          <td>{$this->audit[''end_date'']}</td>\n        </tr>\n\n      </table>\n    </div>\n    <div style="clear: both;"></div>\n  </div>\n  <div>\n    <div style="display: inline-block;vertical-align:top;">Choice #1</div>\n    <div class="btn-group" style="display: inline-block;">\n      <a class="btn" href="{$this->importall}" style="color: blue;"> <span\n        style="padding: 5px;">Import Lab and data</span></a>\n    </div>\n  </div>\n  <br>\n  <div style="float: left; padding: 5px 20px 5px 0px;">\n    <table>\n      <tr>\n        <td style="padding-right: 10px;"><b>Currently selected lab is:</b>\n        </td>\n        <td><span style="color: blue; border: 1pxsolid #eee; padding: 4px;">\n            {$this->labname} [{$this->labnum}]</span></td>\n      </tr>\n    </table>\n    <div>\n      <div style="display: inline-block; vertical-align: top;">Choice #2</div>\n      <div class="btn-group" style="display: inline-block;">\n        <a class="btn" href="{$this->import2lab}" style="color: blue;"> <span\n          style="padding: 5px;">Import only data into current lab</span></a>\n      </div>\n    </div>\n    <br> <br> <b>To change the lab:</b> Labs -->Select a Lab and then\n    import again <br> <b>To create a new lab:</b> Labs-->New Lab, input lab\n    info and then import again <br> \n  </div>\n</div>', '');
+INSERT INTO `dialog_row` (`id`, `dialog_id`, `position`, `field_name`, `field_label`, `validate`, `field_type`, `for_export`, `info`, `title`) VALUES
+(1, 1, 0, 'user/login', '', '', 'info', 'f', 'Login here to access Lab Audits.<br/> Currently these Audits are available:\n<ul><li>SLIPTA</li>\n<li>BIosafety (BAT)</li>\n<li>TB</li></ul>', 'Login'),
+(2, 1, 1, 'userid', 'User Name', 'str_min_6', 'string_field', 'f', '', ''),
+(3, 1, 2, 'password', 'Password', 'str_min_6', 'password_field', 'f', '', ''),
+(4, 1, 3, 'submit_button', 'Login', '', 'submit_button', 'f', '', ''),
+(5, 2, 0, 'lab/create', '', '', 'info', 'f', 'Create a new Lab.<br />\nLabs are identified by their lab numbers, which must be unique.', 'Create a New Lab'),
+(6, 2, 1, 'labname', 'Lab Name', 'str_min_6', 'string_field', 'f', '', ''),
+(7, 2, 2, 'labnum', 'Lab Number', 'str_min_6', 'string_field', 'f', '', ''),
+(8, 2, 3, 'street', 'Address', '', 'string_field', 'f', '', ''),
+(9, 2, 4, 'street2', '', '', 'string_field', 'f', '', ''),
+(10, 2, 5, 'street3', '', '', 'string_field', 'f', '', ''),
+(11, 2, 6, 'city', 'City', '', 'string_field', 'f', '', ''),
+(12, 2, 7, 'state', 'State/Province', '', 'string_field', 'f', '', ''),
+(13, 2, 8, 'country', 'Country', 'str_nempty', 'string_field', 'f', '', ''),
+(14, 2, 9, 'postcode', 'Postal Code', '', 'string_field', 'f', '', ''),
+(15, 2, 10, 'labtel', 'Lab Telephone', '', 'string_field', 'f', '', ''),
+(16, 2, 11, 'labfax', 'Lab Fax', '', 'string_field', 'f', '', ''),
+(17, 2, 12, 'labemail', 'Lab Email', '', 'string_field', 'f', '', ''),
+(18, 2, 13, 'lablevel', 'Lab Level', 'str_not_default', 'lablevel', 'f', '', ''),
+(19, 2, 14, 'labaffil', 'Lab Affiliation', 'str_not_default', 'labaffil', 'f', '', ''),
+(20, 2, 15, 'labaffil_other', 'Lab Affiliation: Other', '', 'string_field', 'f', '', ''),
+(21, 2, 16, 'submit_button', 'Cancel,Create', '', 'submit_button', 'f', '', ''),
+(22, 3, 0, 'lab/edit', '', '', 'info', 'f', 'Edit Lab details here.<br />\nChanging the Lab Number or Name will not change it in the audits automatically.<br />\nTo refresh the Lab Name and Number in the audit, you must edit the audit <i>after</i> editing Lab details and saving them.\n', 'Edit Lab'),
+(23, 3, 1, 'id', '', '', 'hidden', 'f', '', ''),
+(24, 3, 2, 'labname', 'Lab Name', 'str_min_6', 'string_field', 'f', '', ''),
+(25, 3, 3, 'labnum', 'Lab Number', 'str_min_6', 'string_field', 'f', '', ''),
+(26, 3, 4, 'street', 'Address', '', 'string_field', 'f', '', ''),
+(27, 3, 5, 'street2', '', '', 'string_field', 'f', '', ''),
+(28, 3, 6, 'street3', '', '', 'string_field', 'f', '', ''),
+(29, 3, 7, 'city', 'City', '', 'string_field', 'f', '', ''),
+(30, 3, 8, 'state', 'State/Province', '', 'string_field', 'f', '', ''),
+(31, 3, 9, 'country', 'Country', 'str_min_6', 'string_field', 'f', '', ''),
+(32, 3, 10, 'postcode', 'Postal Code', '', 'string_field', 'f', '', ''),
+(33, 3, 11, 'labtel', 'Lab Telephone', '', 'string_field', 'f', '', ''),
+(34, 3, 12, 'labfax', 'Lab Fax', '', 'string_field', 'f', '', ''),
+(35, 3, 13, 'labemail', 'Lab Email', '', 'string_field', 'f', '', ''),
+(36, 3, 14, 'lablevel', 'Lab Level', 'str_nempty', 'lablevel', 'f', '', ''),
+(37, 3, 15, 'labaffil', 'Lab Affiliation', 'str_nempty', 'labaffil', 'f', '', ''),
+(38, 3, 16, 'save_button', 'Cancel,Save', '', 'submit_button', 'f', '', ''),
+(39, 4, 0, 'user/create', '', '', 'info', 'f', 'Create a New User here.<br />\nUser Ids are unique<br />\nUser types have the following function:<br />\n<ul><li><b>Admin</b> - Administrator</li>\n<li><b>User</b> - Auditor</li>\n<li><b>Analyst</b> - Can see but not change audits</li>\n<li><b>Approver</b> - Approves and Finalizes audits</li>\n</ul>', 'Create a New User'),
+(40, 4, 1, 'name', 'User Name', 'str_min_6', 'string_field', 'f', '', ''),
+(41, 4, 2, 'userid', 'User Id', 'str_min_6', 'string_field', 'f', '', ''),
+(42, 4, 3, 'password', 'Password', 'str_min_6', 'password_field', 'f', '', ''),
+(43, 4, 4, 'password2', 'New Password Again', 'str_min_6', 'password_field', 'f', '', ''),
+(44, 4, 5, 'usertype', 'User Type', 'str_nempty', 'usertype', 'f', '', ''),
+(45, 4, 6, 'languages', 'Languages', '', 'string_field', 'f', '', ''),
+(46, 4, 7, 'submit_button', 'Cancel,Create', '', 'submit_button', 'f', '', ''),
+(47, 5, 0, 'user/profile', '', '', 'info', 'f', 'Change your User Id here. <br />\n<b>Username</b> - the printed name<br />\n<b>Userid</b> - Id used for logging in.<br />\nProvide your password to confirm you own the account.', 'Edit a User Profile'),
+(48, 5, 1, 'id', '', '', 'hidden', 'f', '', ''),
+(49, 5, 2, 'name', 'User Name', 'str_min_6', 'string_field', 'f', '', ''),
+(50, 5, 2, 'userid', 'User Id', 'str_min_6', 'string_field', 'f', '', ''),
+(51, 5, 3, 'languages', 'Languages', '', 'string_field', 'f', '', ''),
+(52, 5, 5, 'password', 'Password', '', 'password_field', 'f', '', ''),
+(53, 5, 7, 'submit_button', 'Cancel,Save', '', 'submit_button', 'f', '', ''),
+(54, 6, 0, 'user/changepw', '', '', 'info', 'f', 'Change your password here.<br />\nProvide your old password, and the new password twice to change the password to the new one.', 'Change your password'),
+(55, 6, 2, 'old_pw', 'Old Password', '', 'password_field', 'f', '', ''),
+(56, 6, 3, 'password', 'New Password', '', 'password_field', 'f', '', ''),
+(57, 6, 4, 'password2', 'Password Again', '', 'password_field', 'f', '', ''),
+(58, 6, 5, 'reset_button', 'Cancel,Change', '', 'submit_button', 'f', '', ''),
+(59, 7, 0, 'audit/main', '', '', 'info', 'f', 'Here you will find audits which are not COMPLETE.<br /> Click:<br /><ul><li><b>Edit</b> - to edit</li><li><b>View</b> - to see full audit</li><li><b>Export</b> - to export to data file</li></ul>', 'Audits available for Editing'),
+(60, 8, 0, 'lab/select', '', '', 'info', 'f', 'Search for a lab. Use a combination of one or more of :<br /><ol><li>Country Name</li><li>First part of Lab Name</li><li>First part of the Lab Number</ol>', 'Search For a Lab'),
+(61, 8, 1, 'country', 'Country', '', 'country', 'f', '', ''),
+(62, 8, 2, 'labname', 'Lab Name', '', 'string_field', 'f', '', ''),
+(63, 8, 3, 'labnum', 'Lab Number', '', 'string_field', 'f', '', ''),
+(64, 8, 4, 'submit_button', 'Cancel,Find', '', 'submit_button', 'f', '', ''),
+(65, 9, 0, 'audit/select', '', '', 'info', 'f', 'To export audits to Excel, first select lab(s) and audit criteria.<br /> Use a combination of 0 or more (no choice is = choose all):<ul><li>Select labs</li><ol><li><b>Country</b>:�ï�¿�½�Ã��ï�¿�½�Â� select 0 or more</li><li><b>Lab Level</b>:�ï�¿�½�Ã��ï�¿�½�Â� 0 or more</li><li><b>Lab Affiliation</b> -�ï�¿�½�Ã��ï�¿�½�Â� 0 or more</li><li><b>SMLTA</b> - choose lab typs</li></ol><li>Select Audits</li><ol><li><b>SLMTA Status</b> </li> <li><b>Cohort Id</b> select 0 or more</li><li><b>Date Range</b> - When Audit was completed</li> </ol></ul>', 'Select Audits for Excel Export'),
+(66, 9, 1, '', 'Select Labs', '', 'heading', 'f', '', ''),
+(67, 9, 2, 'country', 'Country', '', 'country_m', 'f', '', ''),
+(68, 9, 3, 'lablevel', 'Lab Level', '', 'lablevel_m', 'f', '', ''),
+(69, 9, 4, 'labaffil', 'Lab Affiliation', '', 'labaffil_m', 'f', '', ''),
+(70, 9, 5, '', 'Audit Choices', '', 'heading', 'f', '', ''),
+(71, 9, 6, 'slmta', 'SLMTA Type', '', 'slmtastatus_m', 'f', '', ''),
+(72, 9, 7, 'cohortid', 'Cohort Id', '', 'cohortid_m', 'f', '', ''),
+(73, 9, 8, 'stdate', 'Date Range - Beginning', '', 'date_field', 'f', '', ''),
+(74, 9, 9, 'enddate', 'Date Range - Ending', '', 'date_field', 'f', '', ''),
+(75, 9, 10, '', 'Export', '', 'heading', 'f', '', ''),
+(76, 9, 11, 'exp', 'Data to Export', '', 'export', 'f', '', ''),
+(77, 9, 12, 'submit_button', 'Cancel,Find', '', 'submit_button', 'f', '', ''),
+(78, 10, 0, 'audit/create', '', '', 'info', 'f', 'Continue to create a new audit in the currently chosen lab.<br />\nIf you want a different lab, from the menu above choose Labs-->Select a lab and find the lab, <i>or</i> Create a new lab.<br />\n<ol>\n<li><b>Choose a lab:</b> The chosen lab is shown above</li>\n<li><b>Choose Audit type:</b>  </li>\n<li>Type in the actual Audit Start and End dates</li>\n<li><b>Click Start</b> </li>\n</ol><br />\nAll required data from the currently chosen lab is automatically added to the current audit.', 'Create a New Audit'),
+(79, 10, 1, '', '', '', 'text', 'f', 'An audit will be started in the current Lab. <span style="color:blue;">{$this->labname} [{$this->labnum}]</span>.<br />\nTo start this audit for another lab, create or select a lab and continue with creating a New Audit.\n', ''),
+(80, 10, 2, 'audit_type', 'Type of Audit', 'str_not_default', 'audit_type', 'f', '', ''),
+(81, 10, 10, 'submit_button', 'Cancel,Start', '', 'submit_button', 'f', '', ''),
+(82, 11, 0, 'lab/choose', '', '', 'info', 'f', 'These are the audits associated with the selected lab.<br />', 'Lab Audits'),
+(83, 11, 1, '', '', '', 'info2', 'f', 'These actions are possible with audits:<br />\n<ul>\n<li><b>View:</b> Show the entire filledout audit on screen</li>\n<li><b>Edit:</b> (only if INCOMPLETE) Edit the audit</li>\n<li><b>DataExport:</b> Export audit to data file</li>\n<li><b>Delete:</b> (only if INCOMPLETE or REJECTED) Delete this audit</li>\n</ul>', ''),
+(84, 12, 0, 'audit/import', '', '', 'info', 'f', 'Import an audit into this system.<br />\nOnly one import can be active at a time. Either complete importing, or delete the import.', 'Import An Audit'),
+(85, 12, 1, 'file', 'FIle to Import', 'str_nempty', 'file', 'f', '', ''),
+(86, 12, 3, 'submit_button', 'Cancel,Start', '', 'submit_button', 'f', '', ''),
+(87, 13, 0, 'audit/fileparse', '', '', 'info', 'f', 'These are the data in the imported file.', 'Import file details'),
+(88, 13, 1, 'info', '', '', 'text', 'f', '<div style="font-size: 1em; line-height: 1.2em;">\n  <div id="help2">\n    <div style="float: left; padding: 5px 20px 5px 0px;">\n      Lab info for import data:<br>\n      <table>\n        <tr>\n          <td style="padding-right: 20px;"><b>Lab Name:</b></td>\n          <td>{$this->lab[''labname'']}</td>\n        </tr>\n        <tr>\n          <td style="padding-right: 20px;"><b>Lab Number:</b></td>\n          <td>{$this->lab[''labnum'']}</td>\n        </tr>\n        <tr>\n          <td><b>Country:</b></td>\n          <td>{$this->lab[''country'']}</td>\n        </tr>\n      </table>\n    </div>\n    <div style="float: left; padding: 5px 20px 5px 0px;">\n      Audit info for import data:<br>\n      <table>\n        <tr>\n          <td style="padding-right: 20px;"><b>Audit Type:</b></td>\n          <td>{$this->tmpl_row[''tag'']}</td>\n        </tr>\n        <tr>\n          <td style="padding-right: 20px;"><b>Audit Date:</b></td>\n          <td>{$this->audit[''end_date'']}</td>\n        </tr>\n\n      </table>\n    </div>\n    <div style="clear: both;"></div>\n  </div>\n  <div>\n    <div style="display: inline-block;vertical-align:top;">Choice #1</div>\n    <div class="btn-group" style="display: inline-block;">\n      <a class="btn" href="{$this->importall}" style="color: blue;"> <span\n        style="padding: 5px;">Import Lab and data</span></a>\n    </div>\n  </div>\n  <br>\n  <div style="float: left; padding: 5px 20px 5px 0px;">\n    <table>\n      <tr>\n        <td style="padding-right: 10px;"><b>Currently selected lab is:</b>\n        </td>\n        <td><span style="color: blue; border: 1pxsolid #eee; padding: 4px;">\n            {$this->labname} [{$this->labnum}]</span></td>\n      </tr>\n    </table>\n    <div>\n      <div style="display: inline-block; vertical-align: top;">Choice #2</div>\n      <div class="btn-group" style="display: inline-block;">\n        <a class="btn" href="{$this->import2lab}" style="color: blue;"> <span\n          style="padding: 5px;">Import only data into current lab</span></a>\n      </div>\n    </div>\n    <br> <br> <b>To change the lab:</b> Labs -->Select a Lab and then\n    import again <br> <b>To create a new lab:</b> Labs-->New Lab, input lab\n    info and then import again <br> \n  </div>\n</div>', ''),
+(89, 99, 3, 'start_date', 'Start Date', '', 'date_field', 'f', 'was audit/create', ''),
+(90, 99, 4, 'end_date', 'End Date', '', 'date_field', 'f', 'was audit/create', ''),
+(91, 14, 0, 'user/find', '', '', 'info', 'f', 'Search for user(s).', 'Find user(s)'),
+(92, 14, 1, '', '', '', 'info2', 'f', 'To find user(s) type in a part of the name and click Find.', ''),
+(93, 14, 2, 'name', 'User Name', 'str_nempty', 'string_field', 'f', '', ''),
+(94, 14, 10, 'submit_button', 'FInd', '', 'submit_button', 'f', '', '');
 
 -- --------------------------------------------------------
 
@@ -7557,7 +7582,7 @@ CREATE TABLE IF NOT EXISTS `lab` (
   `labaffil` varchar(16) NOT NULL,
   `labaffil_other` varchar(64) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Lab info ' AUTO_INCREMENT=33 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Lab info ' AUTO_INCREMENT=68 ;
 
 --
 -- Dumping data for table `lab`
@@ -7576,9 +7601,7 @@ INSERT INTO `lab` (`id`, `labname`, `labnum`, `street`, `street2`, `street3`, `c
 (27, 'Best Lab, Inc', 'lab-007', '124 Morrow Ln', '', '', 'Alpharetta', 'GA', 'USA', '30076', '404.776.3490', '404.453.4532', 'user@lab.com', 'REGIONAL', 'RESEARCH', ''),
 (28, 'Best Lab, Inc', 'lab-007', '124 Morrow Ln', '', '', 'Alpharetta', 'GA', 'USA', '30076', '404.776.3490', '404.453.4532', 'user@lab.com', 'REGIONAL', 'RESEARCH', ''),
 (29, 'Best Lab, Inc', 'lab-007', '124 Morrow Ln', '', '', 'Alpharetta', 'GA', 'USA', '30076', '404.776.3490', '404.453.4532', 'user@lab.com', 'REGIONAL', 'RESEARCH', ''),
-(30, '', '', '', '', '', '', '', '', '', '', '', '', '-', '-', ''),
-(31, '', '', '', '', '', '', '', '', '', '', '', '', '-', '-', ''),
-(32, '', '', '', '', '', '', '', '', '', '', '', '', '-', '-', '');
+(63, 'testing 123', 'IND-1243', '125 Delhi Ln', '', '', 'New Delhi', 'Delhi', 'India', '100076', '912345678909', '8765432109', 'jk@xx.com', 'NATIONAL', 'PUBLIC', '');
 
 -- --------------------------------------------------------
 

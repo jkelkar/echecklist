@@ -4,6 +4,9 @@
  * This implements the model for template data
  */
 require_once 'modules/Checklist/logger.php';
+require_once 'modules/Checklist/datefns.php';
+
+
 
 class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Checklist {
   protected $_name = 'audit_data';
@@ -92,13 +95,14 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     return $rows[0];
   }
 
-  public function updateData($data, $did, $page_id, $labrow = array()) {
+  public function updateData($data, $aid, $page_id, $labrow = array()) {
     /**
      * Update user at $id with this data
      * $data is an array with name value pairs
      */
-    $did = (int) $did;
+    $aid = (int) $aid;
     $page_id = (int) $page_id;
+    logit("AD upd: {$aid} {$page_id} " . print_r($data, true));
     // update lab info
     // do all this only if labhead is a variable on this page
     $key = 'labhead';
@@ -154,19 +158,39 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
           default :
           // we should never reach here!
         }
-        $this->updateAuditField($did, $n, $v, $page_id);
+        $this->updateAuditField($aid, $n, $v, $page_id);
       }
     }
-    foreach($data as $n => $v) {
-      //logit ( "BEFORE: {$n} ==> {$v}" );
-      $this->updateAuditField($did, $n, $v, $page_id);
+    if (array_key_exists('start_date', $data)) {
+      // logit('updating dates: ' . print_r($data, true));
+      $start_date = convert_ISO(get_arrval($data, 'start_date', ''));
+      $end_date = convert_ISO(get_arrval($data, 'end_date', ''));
+      // copy the start_date and end_date into audit
+      $sql = "update audit set start_date = '{$start_date->format($this->ISOformat)}', " .
+      " end_date='{$end_date->format($this->ISOformat)}' where id = {$aid}";
+      // logit("UPD: {$sql}");
+      $this->execute($sql);
     }
-    $this->updateFinalScore($did, 0);
+    foreach($data as $n => $v) {
+      // logit ("BEFORE: {$n} ==> {$v}");
+      $this->updateAuditField($aid, $n, $v, $page_id);
+    }
+    $this->updateFinalScore($aid, 0);
   }
+
+  /*public function convert_ISO($value) {
+    //$format = 'm/d/Y';
+    //$ISOformat = 'Y-m-d';
+    $dt = date_parse_from_format($this->format, $value);
+    $date = new DateTime();
+    $date->setDate($dt['year'], $dt['month'], $dt['day']);
+    // logit('dt: '. $value);
+    return $date; //->format($ISOformat);
+  }*/
 
   public function updateAuditField($did, $name, $value, $page_id) {
     $suff = end(preg_split("/_/", $name));
-    //logit ( "END: {$name} --> {$suff}" );
+    // logit ( "END: {$name} : {$value} --> {$suff}" );
     $format = 'm/d/Y';
     $ISOformat = 'Y-m-d';
     $ival = 0;
@@ -196,10 +220,12 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
       case 'dt' :
       case 'date' :
         $ftype = 'date';
-        $dt = date_parse_from_format($format, $value);
-        $date = new DateTime();
-        $date->setDate($dt['year'], $dt['month'], $dt['day']);
-        $dval = $date;
+        //$dt = date_parse_from_format($format, $value);
+        //$date = new DateTime();
+        //$date->setDate($dt['year'], $dt['month'], $dt['day']);
+        //$dval = $date;
+        $dval = convert_ISO($value);
+        logit("Date: {$name} {$dval->format($ISOformat)}");
         break;
       // --------- TEXT - multiple lines
       case 'comment' :
@@ -245,7 +271,6 @@ audit_id={$did}, field_name='{$name}', int_val={$ival}, text_val='{$tval}',
 string_val='{$sval}', date_val='{$dval->format($ISOformat)}', bool_val='{$bval}',
 field_type='{$ftype}', page_id={$page_id}
 END;
-
     $ct = $this->queryRowcount($sql);
     return $ct;
   }

@@ -1,5 +1,6 @@
 <?php
-require_once 'modules/Checklist/fillout.php';
+
+
 require_once 'modules/Checklist/export.php';
 require_once 'modules/Checklist/logger.php';
 require_once 'modules/Checklist/datefns.php';
@@ -57,6 +58,7 @@ END;
   }
 
   public function editAction() {
+    require_once 'modules/Checklist/fillout.php';
     $lang_default = 'EN';
     $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
     $prof = false;
@@ -64,7 +66,7 @@ END;
       $mt = microtime(true);
       logit("Start: {$mt}");
     }
-    $this->init();
+    //$this->init();
     $tmplr = new Application_Model_DbTable_TemplateRows();
     $data = new Application_Model_DbTable_AuditData();
     $aud = new Application_Model_DbTable_Audit();
@@ -88,8 +90,8 @@ END;
         'labname' => $auditrow['labname'],
         'labnum' => $auditrow['labnum']
     );
-    $this->setupSession();
-    $this->setHeader();
+    //$this->setupSession();
+    //$this->setHeader();
 
     if ($thispage == '') {
       $fp = $page->getStartPage($template_id); //1 is the template id
@@ -111,7 +113,7 @@ END;
         logit("Got language value: {$langtag}");
       }
 
-      $rows = $tmplr->getrows($template_id, $thispage, $langtag); // 1 is the template_id
+      $rows = $tmplr->getRows($template_id, $thispage, $langtag); // 1 is the template_id
       // if this page is display only we load values for page 0
       // page 0 has global data on it
       if ($display_only == 't') {
@@ -300,12 +302,46 @@ END;
     }
   }
 
+  public function viewAction() {
+    // build the html that represents the completed audit
+    // and display
+    require_once 'modules/Checklist/htmlout.php';
+    $this->dialog_name = 'audit/view';
+    $tmplr = new Application_Model_DbTable_TemplateRows();
+    $data = new Application_Model_DbTable_AuditData();
+    $aud = new Application_Model_DbTable_Audit();
+    $lab = new Application_Model_DbTable_Lab();
+    $page = new Application_Model_DbTable_Page();
+    $lang = new Application_Model_DbTable_Language();
+    $lang_word = new Application_Model_DbTable_langword();
+    $vars = $this->_request->getPathInfo();
+    $pinfo = explode("/", $vars);
+    //logit('PARTS: '. print_r($pinfo, true));
+    $audit_id = (int) $pinfo[3];
+    $template_id = $data->getTemplateId($audit_id);
+    $langtag = $this->echecklistNamespace->lang;
+    $thispage = (int) $pinfo[4];
+    $auditrow = $aud->getAudit($audit_id);
+    $this->echecklistNamespace->audit = $auditrow;
+    $this->echecklistNamespace->lab = array (
+        'id' => $auditrow['lab_id'],
+        'labname' => $auditrow['labname'],
+        'labnum' => $auditrow['labnum']
+    );
+
+    $rows = $tmplr->getAllRows($template_id, $langtag);
+    $value = $data->getAllData($audit_id);
+    $tout = calculate_view($rows, $value, $langtag); //$tword );
+    $this->view->outlines = implode("\n", $tout);
+    $this->_helper->layout->setLayout('mainview');
+  }
+
   public function mainAction() {
     /*
      * This is the first main page presented to a user
      * - we may have to adjust for other users
      */
-    $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
+    //$baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
     $this->dialog_name = 'audit/main';
     $format = 'Y-m-d H:i:s';
     logit("{$this->dialog_name}");
@@ -314,12 +350,11 @@ END;
     //$pinfo = explode("/", $vars);
     $id = (int) $this->echecklistNamespace->user['id'];
     $langtag = $this->echecklistNamespace->lang;
-    if (! $this->getRequest()->isPost()) {
-      $rows = $audit->getIncompleteAudits($id);
-      //logit('AROWS: ' . print_r($rows, true));
-      $this->makeDialog();
-      $this->makeAuditLines($rows);
-    }
+    //if (! $this->getRequest()->isPost()) {
+    $rows = $audit->getIncompleteAudits($id);
+    //logit('AROWS: ' . print_r($rows, true));
+    $this->makeDialog();
+    $this->makeAuditLines($rows);
   }
 
   public function createAction() {

@@ -14,18 +14,10 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
   private $format = 'm/d/Y';
   private $ISOformat = 'Y-m-d';
 
-  public function getData($did, $page_id) {
-    // $db = $this->getDb ();
-    $did = (int) $did;
-    $page_id = (int) $page_id;
-    $sql = "select * from audit_data where audit_id = {$did} and " . " page_id = {$page_id}";
-    //$stmt = $db->query ( $sql );
-    //$rows = $stmt->fetchAll ();
-    $rows = $this->queryRows($sql);
-    /*if (! $rows) {
-      throw new Exception ( "There is no data" );
-      }*/
-    $value = array ();
+
+  public function reduceRows($rows) {
+    // convert the rows into single value each
+    $value = array();
     foreach($rows as $row) {
       $val = '';
       $field_name = $row['field_name'];
@@ -53,6 +45,55 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
       // logit ( "{$field_name} ==> {$val}" );
     }
     return $value;
+  }
+
+  public function getAllData($did) {
+    // get all the data associate with this audit
+    $sql = "select * from audit_data where audit_id = {$did}";
+    $rows = $this->queryRows($sql);
+    return $this->reduceRows($rows);
+  }
+
+  public function getData($did, $page_id) {
+    // $db = $this->getDb ();
+    $did = (int) $did;
+    $page_id = (int) $page_id;
+    $sql = "select * from audit_data where audit_id = {$did} and " . " page_id = {$page_id}";
+    //$stmt = $db->query ( $sql );
+    //$rows = $stmt->fetchAll ();
+    $rows = $this->queryRows($sql);
+    /*if (! $rows) {
+      throw new Exception ( "There is no data" );
+      }*/
+    /*$value = array ();
+    foreach($rows as $row) {
+      $val = '';
+      $field_name = $row['field_name'];
+      switch ($row['field_type']) {
+        case 'integer' :
+          $val = $row['int_val'];
+          break;
+        case 'text' :
+          $val = $row['text_val'];
+          break;
+        case 'date' :
+          $dt = date_parse_from_format($this->ISOformat, $row['date_val']);
+          $date = new DateTime();
+          $date->setDate($dt['year'], $dt['month'], $dt['day']);
+          $val = $date->format($this->format);
+          break;
+        case 'bool' :
+          $val = $row['bool_val'];
+          break;
+        case 'string' :
+        default :
+          $val = $row['string_val'];
+      }
+      $value[$field_name] = $val;
+      // logit ( "{$field_name} ==> {$val}" );
+    }*/
+    // return $value;
+    return $this->reduceRows($rows);
   }
 
   public function getAudit($aid) {

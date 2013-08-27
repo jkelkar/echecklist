@@ -10,47 +10,9 @@
  * This handles logging
  */
 require_once 'modules/Checklist/logger.php';
+require_once 'modules/Checklist/general.php';
 require_once '../application/models/DbTable/Lab.php';
 require_once '../application/models/DbTable/Audit.php';
-
-/**
- * returns a value if a key exists in the dictionary else
- * returns the $default value <sed in
- */
-function get_arrval($arr, $k, $default) {
-  $show = 0;
-  if ($show > 0) {
-    // Uncomment the large block to see the call stack
-    logit("GA: " . gettype($arr) . " ->{$k}");
-    if (gettype($k) == 'array') {
-      logit('ARR: ' . print_r($k, true));
-    }
-
-    $callers = debug_backtrace();
-    logit("TRACE: {$callers[1]['function']}");
-    $trace = debug_backtrace();
-    $caller = array_shift($trace);
-
-    echo "Called by {$caller['function']}";
-    $caller = array_shift($trace);
-
-    echo "Called by {$caller['function']}";
-  }
-  /*
-  //if (isset($caller['class']))
-  //echo " in {$caller['class']}";
-  //logit('KEY?: '. key_exists ( $k, $arr ) ? $arr[$k] : $default) . '<br />';
-  */
-  return key_exists($k, $arr) ? $arr[$k] : $default;
-}
-
-function get_common_words_translated($value, $words) {
-  $trans_list = array ();
-  foreach($words as $word) {
-    $trans_list[$word] = get_arrval($value, $word, $word);
-  }
-  return $trans_list;
-}
 
 /**
  * these implement low level html code generators
@@ -214,6 +176,10 @@ function LABEL($name, $label_text = '', $label_style = "", $label_class = "") {
   return $out;
 }
 
+function BUTTON($name, $rtnval, $text, $type, $style = "", $class = "") {
+  return "<button name=\"{$name}\" type=\"$type\" value=\"{$rtnval}\">{$text}</button>";
+}
+
 function INPUT($name, $value, $type="string", $length=0, $style="", $class='') {
   $size = $dtype = '';
   switch ($type) {
@@ -305,26 +271,6 @@ END;
   return $out;
 }
 
-function BUTTON($name, $rtnval, $text, $type, $style = "", $class = "") {
-  return "<button name=\"{$name}\" type=\"$type\" value=\"{$rtnval}\">{$text}</button>";
-}
-
-function TR($strx, $class = '') {
-  return "<tr class=\"{$class}\" >" . implode("\n", $strx) . "</tr>";
-}
-
-function TD($str, $class = '') {
-  return "<td class=\"{$class}\" >{$str}</td>";
-}
-
-function TH($str, $class = '') {
-  return "<th class=\"{$class}\" >{$str}</th>";
-}
-
-function IMG($src, $class = '') {
-  return "<img src=\"{$src}\" class=\"{$class}\" /> ";
-}
-
 function SELECT_LIVE($arr, $name, $value, $class = '') {
   $opts = array ();
   $opts['ALL'] = 'ALL';
@@ -384,24 +330,10 @@ function OPTIONS_ADD($varname, $optvals, $value, $scr = '') {
  * These implement widgets each of which is responsible for an instance
  * of an input area on the screen
  */
-function getYN($t) {
-  return array ( // "{$t['Select']} ..." => '-',
-      "{$t['Yes']}" => 'YES',
-      "{$t['No']}" => 'NO'
-  );
-}
 
 function widget_select_yn($varname, $value, $t) {
   $optvals = getYN($t);
   return OPTIONS($varname, $optvals, $value);
-}
-
-function getYNP($t) {
-  return array ( // "{$t['Select']} ..." => '-',
-      "{$t['Yes']}" => 'YES',
-      "{$t['Partial']}" => 'PARTIAL',
-      "{$t['No']}" => 'NO'
-  );
 }
 
 function widget_select_ynp($varname, $value, $t) {
@@ -416,7 +348,7 @@ function widget_select_ynp_ro($varname, $value, $t) {
   $ro_char = "{$varname}_ynp";
   $v_ro_char = get_arrval($value, $ro_char, 'N');
   $out = <<<"END"
-<input class="ro" name="{$ro_char}" id="{$ro_char}"
+<input class="ro" style="width:80px;" name="{$ro_char}" id="{$ro_char}"
        type="text" readonly="readonly" value="{$v_ro_char}" size=3>
 END;
   return $out;
@@ -443,35 +375,15 @@ function widget_select_yna_add($varname, $value, $t) {
   return OPTIONS_ADD($varname, $optvals, $value, "onclick=\"count_ynaa_add('{$sendid}');\"");
 }
 
-function widget_select_wp($varname, $value, $t) {
-  $optvals = array ( // "{$t['Select']} ..." => '-',
-      "{$t['Personal']}" => 'PERSONAL',
-      "{$t['Work']}" => 'WORK'
-  );
-  return OPTIONS($varname, $optvals, $value);
-}
 
-function getYNI($t) {
-  return array ( // "{$t['Select']} ..." => '-',
-      "{$t['Yes']}" => 'YES',
-      "{$t['No']}" => 'NO',
-      "{$t['Insufficient Data']}" => 'I'
-  );
+function widget_select_wp($varname, $value, $t) {
+  $optvals = getWP($t);
+  return OPTIONS($varname, $optvals, $value);
 }
 
 function widget_select_yni($varname, $value, $t) {
   $optvals = getYNI($t);
   return OPTIONS($varname, $optvals, $value);
-}
-
-function getUserTypes($t) {
-  return array (
-      "{$t['Select']} ..." => '-',
-      "{$t['Admin']}" => 'ADMIN',
-      "{$t['User']}" => 'USER',
-      "{$t['Analyst']}" => 'ANALYST',
-      "{$t['Approver']}" => 'APPROVER'
-  );
 }
 
 function widget_select_usertype($varname, $value, $t, $noscript = true) {
@@ -484,43 +396,15 @@ function dialog_usertype($row, $value, $t) {
   return widget_select_usertype($varname, $value, $t, true);
 }
 
-function getPW($t) {
-  return array ( // "{$t['Select']} ..." => '-',
-      "{$t['Personal']}" => 'P',
-      "{$t['Work']}" => 'W'
-  );
-}
-
 function widget_select_pw($varname, $value, $t) {
   $optvals = getPW($t);
   return OPTIONS($varname, $optvals, $value);
-}
-
-function getYNA($t) {
-  return array ( // "{$t['Select']} ..." => '-',
-      "{$t['Yes']}" => 'YES',
-      "{$t['No']}" => 'NO',
-      "{$t['N/A']}" => 'N/A'
-  );
 }
 
 function widget_select_yna($varname, $value, $t) {
   $optvals = getYNA($t);
   //logit ( "YNA: " . print_r ( $optvals, true ) );
   return OPTIONS($varname, $optvals, $value);
-}
-
-function getStars($t) {
-  return array (
-      "{$t['Select']}" => '-',
-      "{$t['Not Audited']}" => 'N',
-      "0 {$t['Stars']}" => '0',
-      "1 {$t['Star']}" => '1',
-      "2 {$t['Stars']}" => '2',
-      "3 {$t['Stars']}" => '3',
-      "4 {$t['Stars']}" => '4',
-      "5 {$t['Stars']}" => '5'
-  );
 }
 
 function getStarsRev($t) {
@@ -531,77 +415,14 @@ function widget_select_stars($varname, $value, $t) {
   return OPTIONS($varname, $optvals, $value);
 }
 
-function getLevels($t) {
-  return array (
-      "{$t['Select']} ..." => '-',
-      "{$t['National']}" => 'NATIONAL',
-      "{$t['Reference']}" => 'REFERENCE',
-      "{$t['Regional/Provincial']}" => 'REGIONAL',
-      "{$t['District']}" => 'DISTRICT',
-      "{$t['Zonal']}" => 'ZONAL',
-      "{$t['Field']}" => 'FIELD'
-  );
-}
-
-function rev($a, $t) {
-  $arr = call_user_func($a, $t);
-  $revarr = array ();
-  foreach($arr as $a => $b) {
-    $revarr[$b] = $a;
-  }
-  return $revarr;
-}
-
 function widget_select_lablevel($varname, $value, $t, $scr = '', $multiple = false) {
   $optvals = getLevels($t);
   return OPTIONS($varname, $optvals, $value, $scr, $multiple);
 }
 
-function getAffiliations($t) {
-  return array (
-      "{$t['Select']} ..." => '-',
-      "{$t['Public']}" => 'PUBLIC',
-      "{$t['Hospital']}" => 'HOSPITAL',
-      "{$t['Private']}" => 'PRIVATE',
-      "{$t['Research']}" => 'RESEARCH',
-      "{$t['Non-hospital outpatient clinic']}" => 'NONHOSPITAL',
-      "{$t['Other - please specify']}" => 'OTHER'
-  );
-}
-
 function widget_select_labaffil($varname, $value, $t, $scr = '', $multiple = false) {
   $optvals = getAffiliations($t);
   return OPTIONS($varname, $optvals, $value, $scr, $multiple);
-}
-
-function getSLMTATypes($t) {
-  return array (
-      "{$t['Select']} ..." => '-',
-      "{$t['Baseline Audit']}" => 'BASE',
-      "{$t['Midterm Audit']}" => 'MIDTERM',
-      "{$t['Exit Audit']}" => 'EXIT',
-      "{$t['Surveillance Audit']}" => 'SERV',
-      "{$t['Other']}" => 'OTHER'
-  );
-}
-
-function getSLMTAType($t) {
-  return array (
-      "{$t['Select']} ..." => '-',
-      "{$t['SLMTA']}" => 'YES',
-      "{$t['Non SLMTA']}" => 'NO',
-      "{$t['Both']}" => 'ANY'
-  );
-}
-
-function getExportTypes($t) {
-  return array (
-      "{$t['Select']} ..." => '-'
-  );
-  //,
-  //"{$t['SLMTA']}" => 'YES',
-  //"{$t['Non SLMTA']}" => 'NO',
-  //"{$t['Both']}" => 'ANY'
 }
 
 function dialog_export($row, $value, $t) {
@@ -2273,88 +2094,6 @@ END;
 /*
  * the bottom line
  */
-function get_lang_text($base, $default, $sp_lang) {
-  /**
-   * $base contains the original text
-   * $default contain default text from lang
-   * $sp_lang contains language specific text - but is not always available
-   */
-  //logit ( "{$base} -- {$default} -- {$sp_lang}" );
-  $out = '';
-  $out = $base;
-  if ($default) {
-    $out = $default;
-  }
-  if ($sp_lang) {
-    $out = $sp_lang;
-  }
-  return $out;
-}
-
-/**
- * We render the rows here
- */
-function getTranslatables(/*$tword,*/ $langtag) {
-  $lang_word = new Application_Model_DbTable_Langword();
-  $tword = $lang_word->getWords($langtag);
-  $words = array (
-      'Yes',
-      'No',
-      'N/A',
-      'Partial',
-      'Select',
-      'Admin',
-      'User',
-      'Analyst',
-      'Approver',
-      'Insufficient Data',
-      'Personal',
-      'Work',
-      'Insufficient data',
-      'Not Audited',
-      'Star',
-      'Stars',
-      'National',
-      'Reference',
-      'Regional/Provincial',
-      'District',
-      'Zonal',
-      'Field',
-      'Public',
-      'Hospital',
-      'Private',
-      'Research',
-      'Non-hospital outpatient clinic',
-      'Other - please specify',
-      'FREQUENCY',
-      'Daily',
-      'Weekly',
-      'With Every Run',
-      'Quantitative tests',
-      'Semi-quantitative tests',
-      'Qualitative tests',
-      'Date of panel receipt',
-      'Were results reported within 15 days?',
-      'Results & % Correct',
-      'Official ASLM Audit',
-      'SLMTA Audit',
-      'Base Line Assessment',
-      'Non SLMTA Audit',
-      'SLMTA',
-      'Non SLMTA',
-      'Both',
-      'Baseline Audit',
-      'Midterm Audit',
-      'Exit Audit',
-      'Surveillance Audit',
-      'Other'
-  );
-  $tlist = get_common_words_translated($tword, $words);
-  //logit('TLIST: '. print_r($tlist, true));
-  //logit('WORDS: '. print_r($words, true));
-  return $tlist;
-}
-
 function calculate_page($rows, $value, $langtag) { //$tword) {
   /**
    * Result of the query to get all template rows sorted in order

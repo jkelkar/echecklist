@@ -5,8 +5,9 @@
  *
  * <!--&nbsp;&nbsp;&nbsp;<a class="header" href="/help">Help</a-->
  */
+require_once 'modules/Checklist/general.php';
 require_once 'modules/Checklist/logger.php';
-require_once 'modules/Checklist/fillout.php';
+//require_once 'modules/Checklist/fillout.php';
 require_once 'modules/Checklist/validation.php';
 
 class Application_Controller_Action extends Zend_Controller_Action {
@@ -644,7 +645,7 @@ END;
       $cls = ($ct % 2 == 0) ? 'even' : 'odd';
       $edit = "<a href=\"{$this->baseurl}/audit/edit/{$row['audit_id']}/\"" .
            " class=\"btn btn-mini btn-inverse\">Edit</a>";
-      $view = "<a href=\"#\" class=\"btn btn-mini btn-success\">View</a>";
+      $view = "<a href=\"{$this->baseurl}/audit/view/{$row['audit_id']}\" class=\"btn btn-mini btn-success\">View</a>";
       $delete = "<a href=\"#\" class=\"btn btn-mini btn-danger\">Delete</a>";
       $export = "<a href=\"{$this->baseurl}/audit/exportdata/{$row['audit_id']}\"" .
            " class=\"btn btn-mini btn-warning\">Data Export</a>";

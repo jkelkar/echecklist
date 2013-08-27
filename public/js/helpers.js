@@ -251,14 +251,14 @@ function set_score(id, score) {
 
 			var rel = $('#'+id).attr('rel');
 			var calcval = 0;
-			var ynp = 'N';
+			var ynp = 'NO';
 			rel = parseInt(rel);
 			if (yesct == rel) {
 				calcval = score;
-				ynp = 'Y';
+				ynp = 'YES';
 			} else if (yesct <rel && yesct > 0) {
 				calcval = 1;
-				ynp = 'P';
+				ynp = 'PARTIAL';
 			} 
 			$('#'+id).val(calcval.toString());
 			$('#'+p+'_ynp').val(ynp);

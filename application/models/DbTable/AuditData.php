@@ -203,6 +203,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
       // stuff to be ignored
       case 'cb' :
       case 'nextpage' :
+        return;
         break;
       // these are considered to be integers
       case 'num' :

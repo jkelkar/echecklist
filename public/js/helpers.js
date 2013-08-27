@@ -49,29 +49,54 @@ function ecAutocomplete(name, url, callback, callbackname){
   };
 };
 
+
+function watch_yna(name, score) {
+	var selector = "input[name='"+ name +"']";
+	$(selector).change(function() {
+		var out = 0;
+		// alert($(this).val());
+		switch($(this).val()) {
+		case 'YES':
+		case 'N/A':
+			out = score;
+			break;
+
+		case 'NO':
+			out = 0;
+			break;
+		default:
+			out = 0;
+		};
+		$('#'+name+'_score').val(out.toString());
+		$('#'+name+'_icon').remove();
+		changed = true;
+		set_total(name.substr(0,3));
+	});
+}
+
 function watch_ynp(name, score) {
-  var selector = "input[name='"+ name +"']";
-  $(selector).change(function() {
-    var out = 0;
-    // alert($(this).val());
-    switch($(this).val()) {
-      case 'YES':
-        out = score;
-        break;
-      case 'PARTIAL':
-        out = 1;
-        break;
-      case 'NO':
-        out = 0;
-        break;
-      default:
-        out = 0;
-    };
-    $('#'+name+'_score').val(out.toString());
-    $('#'+name+'_icon').remove();
-    changed = true;
-      set_total(name.substr(0,3));
-  });
+	var selector = "input[name='"+ name +"']";
+	$(selector).change(function() {
+		var out = 0;
+		// alert($(this).val());
+		switch($(this).val()) {
+		case 'YES':
+			out = score;
+			break;
+		case 'PARTIAL':
+			out = 1;
+			break;
+		case 'NO':
+			out = 0;
+			break;
+		default:
+			out = 0;
+		};
+		$('#'+name+'_score').val(out.toString());
+		$('#'+name+'_icon').remove();
+		changed = true;
+		set_total(name.substr(0,3));
+	});
 }
 
 function watch_radio(name) {
@@ -203,39 +228,43 @@ function track_yn(name) {
 }
 
 function set_score(id, score) {
-    var ct = $('#'+id).attr('rel');
-    var p = id.split('_')[0];
-    var yesct = 0,
-        noct = 0, 
-        nact= 0,
-        unset = 0;
-    var val, thisid;
-    $('input^="'+p+'"]:checked').each(function(i) {
-        var thisname = $(this).attr('name');
-        var x = p;
-        if (thisname.substr(0, 5) == p && thisname.substr(-2) == 'yn') {
-            switch($(this).val()) {
-            case 'YES': yesct++; break;
-            case 'NO': noct++;break;
-            default: unset++; 
-            }
-        
-            var rel = $('#'+id).attr('rel');
-            var calcval = 0;
-            var ynp = 'N';
-            rel = parseInt(rel);
-            if (yesct == rel) {
-                calcval = score;
-                ynp = 'Y';
-            } else if (yesct <rel && yesct > 0) {
-                calcval = 1;
-                ynp = 'P';
-            } 
-            $('#'+id).val(calcval.toString());
-            $('#'+p+'_ynp').val(ynp);
-            set_total(id.substr(0,3));
-        }
-    });
+	var ct = $('#'+id).attr('rel');
+	var p = id.split('_')[0];
+	var yesct = 0,
+	noct = 0, 
+	nact= 0,
+	unset = 0;
+	var val, thisid;
+	$('input[name^="'+p+'"]:checked').each(function(i) {
+		var thisname = $(this).attr('name');
+		var x = p;
+		if (thisname.substr(0, 5) == p && (thisname.substr(-2) == 'yn'
+			|| thisname.substr(-3) == 'yna'|| thisname.substr(-3) == 'ynp')) {
+			switch($(this).val()) {
+			case 'YES':
+			case 'N/A':
+				yesct++; 
+				break;
+			case 'NO': noct++;break;
+			default: unset++; 
+			}
+
+			var rel = $('#'+id).attr('rel');
+			var calcval = 0;
+			var ynp = 'N';
+			rel = parseInt(rel);
+			if (yesct == rel) {
+				calcval = score;
+				ynp = 'Y';
+			} else if (yesct <rel && yesct > 0) {
+				calcval = 1;
+				ynp = 'P';
+			} 
+			$('#'+id).val(calcval.toString());
+			$('#'+p+'_ynp').val(ynp);
+			set_total(id.substr(0,3));
+		}
+	});
 }
 
 function set_total(id) {

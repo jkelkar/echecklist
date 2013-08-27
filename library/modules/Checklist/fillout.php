@@ -157,6 +157,11 @@ function RADIO_CALC($name, $optvals, $value, $score, $scr = '') {
   $optout[] = ($val != '') ? '' : "<img id=\"{$name}_icon\" src=\"{$baseurl}/cancel-on.png\" />";
   $options = implode("\n", $optout);
   if ($scr != '') {
+    $suff = end(preg_split("/_/", $name));
+    $suffix = '';
+    switch($stuff) {
+
+    }
     $out = $options . "\n<script> watch_ynp('{$name}', {$score});</script>";
   }
   return $out;
@@ -428,6 +433,10 @@ function widget_select_ynp_add($varname, $value, $t) {
   return OPTIONS_ADD($varname, $optvals, $value, "onclick=\"count_ynp_add('{$sendid}');\"");
 }
 
+function widget_select_yna_calc($varname, $value, $t, $score) {
+  $optvals = getYNA($t);
+  return OPTIONS_CALC($varname, $optvals, $value, $score);
+}
 function widget_select_yna_add($varname, $value, $t) {
   $optvals = getYNA($t);
   $sendid = substr($varname, 0, 3);
@@ -1349,7 +1358,7 @@ END;
   return $out;
 }
 
-function partial_sec_element_yn($row, $value, $t) {
+/*function partial_sec_element_yn($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   if ($heading) {
@@ -1385,7 +1394,7 @@ END;
 
   return $out;
 }
-
+*/
 function partial_sec_element_yna($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
@@ -1438,6 +1447,60 @@ function partial_sec_element_yna($row, $value, $t) {
 END;
 
   return $out;
+}
+
+function partial_sec_element_ynp($row, $value, $t) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  if ($heading) {
+    $heading = $heading . '<br />';
+  }
+  $text = $row['text'];
+  $info = $row['info'];
+  $name = $row['varname'];
+  $mc_ynp = widget_select_ynp("{$name}_ynp", $value, $t);
+  $tarea = TEXTAREA("{$name}_comment", $value, "width:100%;height:50px;margin-top:6px;");
+  $tareanc = TEXTAREA("{$name}_note", $value, "width:100%;height:50px;margin-top:6px;", 'nc');
+  $ncval = get_arrval($value, $name . '_nc', 'F');
+  $checked = '';
+  if ($ncval === 'T') {
+    $checked = 'checked';
+    $vis = '';
+  } else {
+    $ncval = 'F';
+    $vis = "display:none;";
+  }
+  $out = <<<"END"
+  <table style="width=100%;"><tr>
+      <td style="vertical-align:top;padding: 2px 4px;width:440px;">
+        <div style="display:inline-block;vertical-align:top;">
+          <div style="width:425px;">
+            <div style="width:100%">
+              <div style="vertical-align:top;display:inline;">{$prefix}</div>
+              <div style="text-decoration:underline;font-weight:bold;vertical-align:top;display:inline;">{$heading}</div>
+              <div style="vertical-align:top;display:inline;">{$text}<br />
+              <div style="width:100%;text-align:right;margin-top:5px;">
+            <label><input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
+              onclick="toggleNCBox(this);">Non-Compliant</label>
+                <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
+                </div></div>
+            </div>
+          </div>
+          <div style="font-style:italic;font-weight:bold;font-size:10px;margin-top:4px;">{$info}</div>
+        </div>
+      </td>
+      <td  style="vertical-align:top;padding: 2px 4px;width:350px;">
+        <div style="">{$mc_ynp} </div>
+        {$tarea}
+        <div id="div{$name}_nc" style="{$vis}" >
+        Notes:<br />
+        {$tareanc}
+        </div>
+      </td>
+</tr></table>
+END;
+
+        return $out;
 }
 
 function partial_sec_element($row, $value, $t) {

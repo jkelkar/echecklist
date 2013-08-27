@@ -26,7 +26,8 @@ body {
 h2 {
     color: black;
 }
-a,a:visited {
+/*,a:visited */
+a{
 	outline: none;
 	color: #389dc1;
 }

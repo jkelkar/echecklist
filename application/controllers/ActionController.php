@@ -625,7 +625,7 @@ END;
       $tout[] = "<td style='width:55px;'></td>";
     }
     $tout[] = <<<"END"
-<td style='width:55px;font-weight:bold;'>AuditId</td>
+<td style='width:55px;font-weight:bold;padding:2px 0;'>AuditId</td>
 <td style='width:70px;font-weight:bold;'>Type</td>
 <td style='width:90px;font-weight:bold;'>Date</td>
 <td style='width:100px;font-weight:bold;'>Labnum</td>
@@ -653,17 +653,17 @@ END;
         $adduser = "<a href=\"{$this->baseurl}/audit/choose/{$row['audit_id']}\"" .
          " class=\"btn btn-mini btn-info\">Select</a>";
       }
-      $tout[] = "<tr class='{$cls}'>";
+      $tout[] = "<tr class='{$cls}' style=\"height:24px;\">";
       if ($cb) {
         $name = "cb_{$row['audit_id']}";
-        $tout[] = "<td style='width:40px;padding:2px 0;'>" .
+        $tout[] = "<td style='width:40px;padding:4px 0;'>" .
              "<center><input type='checkbox' name='{$name}' id='{$name}'></center></td>";
       } else if ($addsel) {
         $butt = "<a href=\"{$this->baseurl}/lab/choose/{$row['audit_id']}\"" .
              " class=\"btn btn-mini btn-success\">Select</a>";
         $tout[] = "<td style='width:40px;padding:2px 0;'>{$butt}</td>";
       } else {
-        $tout[] = "<td style='width:40px;padding:2px 0;'></td>";
+        $tout[] = "<td style='width:40px;padding:2px 0;'>{$adduser}</td>";
       }
       $tout[] = <<<"END"
 <td>{$row['audit_id']}</td>
@@ -675,7 +675,7 @@ END;
 <td><p class="small">{$rev_affil[$row['labaffil']]}</p></td>
 END;
       if (! $cb) {
-        $tout[] = "<td>{$view} {$edit} {$export} {$delete} {$adduser}</td><td></td></tr>";
+        $tout[] = "<td>{$view} {$edit} {$export} {$delete}</td><td></td></tr>";
       } else {
         $tout[] = "<td></td></tr>";
       }

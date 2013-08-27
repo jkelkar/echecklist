@@ -36,7 +36,6 @@ class LabController extends Application_Controller_Action // Zend_Controller_Act
     } else {
       if ($this->collectData()) return;
       // logit('Data: ' . print_r($this->data, true));
-      // FIXME - check that all fields are present!
       logit('LD: '. print_r($this->data, true));
       unset($this->data['submit_button']);
       $labrow = unserialize(serialize($this->data));

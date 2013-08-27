@@ -83,6 +83,7 @@ class UserController extends Application_Controller_Action
       $this->makeDialog();
     } else {
       if ($this->collectData()) return;
+      unset($this->data['submit_button']);
       if ($this->data['password'] != $this->data['password2']) {
         $this->data['password'] = '';
         $this->data['password2'] = '';
@@ -95,6 +96,7 @@ class UserController extends Application_Controller_Action
           $user->insertData($this->data);
           $this->_redirector->gotoUrl($this->mainpage);
         } catch (Exception $e) {
+          logit("Excep: {$e}". print_r($e, true));
           $this->data['password'] = '';
           $this->data['password2'] = '';
           $this->echecklistNamespace->flash = "User Id is already in use";
@@ -108,6 +110,10 @@ class UserController extends Application_Controller_Action
 
   public function editAction() {
     $this->dialog_name = 'user/edit';
+    if ($this->usertype != 'ADMIN') {
+      $this->echecklistNamespace->flash = 'Unexpected Action';
+      $this->_redirector->gotoUrl("/audit/main");
+    }
     logit ("{$this->dialog_name}" );
     $user = new Application_Model_DbTable_User();
     $vars = $this->_request->getPathInfo();
@@ -118,13 +124,33 @@ class UserController extends Application_Controller_Action
     if (!$this->getRequest()->isPost()) {
       $row = $user->getUser($id);
       // logit('LAB: '. print_r($row, true));
+      unset($row['password']);
       $this->makeDialog($row);
     } else {
-      // display the form here
       if ($this->collectData()) return;
-      // logit('Data: ' . print_r($this->data));
-      $user->updateData($data, $id);
-      $this->_redirector->gotoUrl($this->mainpage);
+      unset($this->data['submit_button']);
+      if ($this->data['password'] != $this->data['password2']) {
+        $this->data['password'] = '';
+        $this->data['password2'] = '';
+        $this->echecklistNamespace->flash = "Passwords do not match";
+        $this->makeDialog($this->data);
+      } else {
+        //logit('Data: ' . print_r($this->data, true));
+        unset($this->data['password2']);
+        if ($this->data['password'] == '')
+            unset($this->data['password']);
+        try {
+          $user->updateData($this->data, $id);
+          $this->_redirector->gotoUrl($this->mainpage);
+        } catch (Exception $e) {
+          logit("Excep: {$e}". print_r($e->getMessage(), true));
+          $this->data['password'] = '';
+          $this->data['password2'] = '';
+          $this->echecklistNamespace->flash = "User Id is already in use";
+          $this->makeDialog($this->data);
+          return;
+        }
+      }
     }
   }
 
@@ -142,8 +168,35 @@ class UserController extends Application_Controller_Action
         return;
       $rows = $user->getUsersByUsername($this->data['name']);
       logit('Users: ' . print_r($rows, true));
-      exit();
-      // Redirect it from here
+      $this->makeDialog($this->data);
+      $this->makeUserLines($rows);
+    }
+  }
+
+  public function addownerAction() {
+    $this->dialog_name = 'user/addowner';
+    logit("{$this->dialog_name}");
+    $vars = $this->_request->getPathInfo();
+    $pinfo = explode("/", $vars);
+    $id = (int)  $pinfo[3];
+    $user = new Application_Model_DbTable_User();
+    $ao   = new Application_Model_DbTable_AuditOwner();
+    // $urldata = $this->getRequest()->getParams();
+    $langtag = $this->echecklistNamespace->lang;
+    if (! $this->getRequest()->isPost()) {
+      // logit('LAB: '. print_r($row, true));
+      logit('AU: '. print_r($this->audit, true));
+      $aodata = array (
+          'audit_id' => $this->audit['audit_id'],
+          'owner' => $id
+      );
+      try {
+        $ao->insertData($aodata);
+      } catch (Exception $e) {
+        // probably alreay exists
+      }
+      $this->echecklistNamespace->flash = 'User added a owner to current audit';
+      $this->_redirector->gotoUrl($this->mainpage);
     }
   }
 
@@ -225,5 +278,30 @@ class UserController extends Application_Controller_Action
       }
     }
   }
+
+  /*public function addownerAction() {
+    // choose and add ownwer(s) to this audit
+    $this->dialog_name = 'user/addowner';
+    $vars = $this->_request->getPathInfo();
+    //logit("VARS: {$vars}");
+    $pinfo = explode("/", $vars);
+    //logit('PARTS: '. print_r($pinfo, true));
+    $audit_id = (int) $pinfo[3];
+    logit("{$this->dialog_name}");
+    $user = new Application_Model_DbTable_User();
+    // $urldata = $this->getRequest()->getParams();
+    $langtag = $this->echecklistNamespace->lang;
+    if (! $this->getRequest()->isPost()) {
+      // logit('LAB: '. print_r($row, true));
+      $this->makeDialog();
+    } else {
+      if ($this->collectData())
+        return;
+      $rows = $user->getUsersByUsername($this->data['name']);
+      logit('Users: ' . print_r($rows, true));
+      $this->makeDialog($this->data);
+      $this->makeUserLines($rows);
+    }
+  }*/
 
 }

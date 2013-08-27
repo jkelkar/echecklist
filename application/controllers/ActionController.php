@@ -40,7 +40,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
 
   public function init() {
     /* initialize here */
-    logit("MT act init: ". microtime(true));
+    logit("MT act init: " . microtime(true));
     $this->baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
     $this->_redirector = $this->_helper->getHelper('Redirector');
 
@@ -59,10 +59,10 @@ class Application_Controller_Action extends Zend_Controller_Action {
 
   public function handleCancel() {
     // cancel action: take user to main screen
-    logit('HC: '. print_r($this->data, true));
-    if ($this->data['submit_button'] == 'Cancel' ) {
-      $this->data = array();
-      $this->error = array();
+    logit('HC: ' . print_r($this->data, true));
+    if ($this->data['submit_button'] == 'Cancel') {
+      $this->data = array ();
+      $this->error = array ();
       $this->_redirector->gotoUrl($this->mainpage);
     }
   }
@@ -84,7 +84,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
       $this->userid = $u['id'];
       logit("{$this->username}, {$this->usertype}, {$this->userfullname}, {$this->userid}");
     }
-    logit('TIME1: '. isset($this->echecklistNamespace->lab));
+    logit('TIME1: ' . isset($this->echecklistNamespace->lab));
     if (isset($this->echecklistNamespace->lab)) {
 
       $this->lab = $this->echecklistNamespace->lab;
@@ -232,97 +232,92 @@ class Application_Controller_Action extends Zend_Controller_Action {
     $this->header = <<<"END"
 <div class="navbar">
   <div class="navbar-inner">
-		<div class="container-fluid">
-			<a class="brand" href="{$this->baseurl}{$this->mainpage}">
+    <div class="container-fluid">
+      <a class="brand" href="{$this->baseurl}{$this->mainpage}">
         <span title=".icon  .icon-black  .icon-check " class="icon icon-black icon-check"></span> <span>eChecklist</span>
       </a>
 END;
 
     if ($this->usertype != '') {
       $this->header = $this->header . <<<"END"
-  <div class="btn-group pull-left" style="margin-left:100px;">
+<div class="btn-group pull-left" style="margin-left:100px;">
 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-<span title=".icon  .icon-blue .icon-clipboard " class="icon icon-blue icon-clipboard"></span>
-        <span class="hidden-phone">Audits</span>
-<span class="caret"></span></a>
+  <span title=".icon  .icon-blue .icon-clipboard " class="icon icon-blue icon-clipboard"></span>
+  <span class="hidden-phone">Audits</span>
+  <span class="caret"></span></a>
 <ul class="dropdown-menu">
-        <li><a href="{$this->baseurl}/audit/create"><span title=".icon  .icon-green .icon-clipboard " class="icon icon-green icon-clipboard"></span> New Audit</a></li>
-        <li><a href="{$this->baseurl}/audit/find"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Find</a></li>
-        <!--li class="divider"></li>
-<li><a href="{$this->baseurl}/audit/edit/1/"><span title=".icon  .icon-blue  .icon-edit " class="icon icon-blue icon-edit"></span> Edit 1</a></li>
-<li><a href="{$this->baseurl}/audit/edit/2/"><span title=".icon  .icon-blue  .icon-edit " class="icon icon-blue icon-edit"></span> Edit 2</a></li>
-<li><a href="{$this->baseurl}/audit/edit/3/"><span title=".icon  .icon-blue  .icon-edit " class="icon icon-blue icon-edit"></span> Edit 3</a></li-->
-        <li class="divider"></li>
-        <li><a href="{$this->baseurl}/audit/select"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Export to Excel</a></li>
-        <li><a href="{$this->baseurl}/audit/import"><span title=".icon  .icon-blue .icon-import " class="icon icon-blue icon-archive"></span> Import</a></li>
-				</ul>
+  <li><a href="{$this->baseurl}/audit/create"><span title=".icon  .icon-green .icon-clipboard " class="icon icon-green icon-clipboard"></span> New Audit</a></li>
+  <li><a href="{$this->baseurl}/audit/find"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Find</a></li>
+  <li class="divider"></li>
+  <li><a href="{$this->baseurl}/audit/select"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Export to Excel</a></li>
+  <!--li><a href="{$this->baseurl}/audit/import"><span title=".icon  .icon-blue .icon-import " class="icon icon-blue icon-archive"></span> Import</a></li-->
+</ul>
 </div>
 
-  <div class="btn-group pull-left">
+<div class="btn-group pull-left">
 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
   <span title=".icon  .icon-blue  .icon-tag " class="icon icon-blue icon-tag"></span>
   <span class="hidden-phone">Labs</span>
   <span class="caret"></span></a>
 <ul class="dropdown-menu">
-					<li><a href="{$this->baseurl}/lab/create"><span title=".icon  .icon-green  .icon-tag " class="icon icon-green icon-tag"></span> New Lab</a></li>
-					<li><a href="{$this->baseurl}/lab/select"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Select a Lab</a></li>
-				</ul>
+  <li><a href="{$this->baseurl}/lab/create"><span title=".icon  .icon-green  .icon-tag " class="icon icon-green icon-tag"></span> New Lab</a></li>
+  <li><a href="{$this->baseurl}/lab/select"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Select a Lab</a></li>
+</ul>
 </div>
 
-  <div class="btn-group pull-left">
+<div class="btn-group pull-left">
 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
 <span title=".icon  .icon-blue  .icon-user " class="icon icon-blue icon-user"></span>
 <span class="hidden-phone">Users</span>
 <span class="caret"></span></a>
 <ul class="dropdown-menu">
-					<li><a href="{$this->baseurl}/user/create"><span title=".icon  .icon-green  .icon-user " class="icon icon-green icon-user"></span> New User</a></li>
-					<li><a href="{$this->baseurl}/user/find"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span>Find User</a></li>
-				</ul>
+  <li><a href="{$this->baseurl}/user/create"><span title=".icon  .icon-green  .icon-user " class="icon icon-green icon-user"></span> New User</a></li>
+  <li><a href="{$this->baseurl}/user/find"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span>Find User</a></li>
+</ul>
 </div>
 
-<div class="btn-group pull-left">
+<!--div class="btn-group pull-left">
 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
 <span title=".icon  .icon-blue  .icon-flag " class="icon icon-blue icon-flag"></span>
 <span class="hidden-phone">Language</span>
 <span class="caret"></span></a>
 <ul class="dropdown-menu">
-					<li><a href="{$this->baseurl}/language/switch/EN"><span title=".icon  .icon-green  .icon-flag " class="icon icon-green icon-flag"></span> English</a></li>
-					<li><a href="{$this->baseurl}/language/switch/FR"><span title=".icon  .icon-green  .icon-flag " class="icon icon-green icon-flag"></span> French</a></li>
-					<li><a href="{$this->baseurl}/language/switch/VI"><span title=".icon  .icon-green  .icon-flag " class="icon icon-green icon-flag"></span> Vietnamese</a></li>
-				</ul>
-</div>
+  <li><a href="{$this->baseurl}/language/switch/EN"><span title=".icon  .icon-green  .icon-flag " class="icon icon-green icon-flag"></span> English</a></li>
+  <li><a href="{$this->baseurl}/language/switch/FR"><span title=".icon  .icon-green  .icon-flag " class="icon icon-green icon-flag"></span> French</a></li>
+  <li><a href="{$this->baseurl}/language/switch/VI"><span title=".icon  .icon-green  .icon-flag " class="icon icon-green icon-flag"></span> Vietnamese</a></li>
+</ul>
+</div-->
 
 <!-- user dropdown starts -->
-			<div class="btn-group pull-right">
-				<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-          <span title=".icon  .icon-orange  .icon-user " class="icon icon-orange icon-user"></span>
-          <span class="hidden-phone"> {$name_header}</span>
-					<span class="caret"></span>
-				</a>
-				<ul class="dropdown-menu">
-					<li><a href="{$this->baseurl}/user/profile"><span title=".icon  .icon-blue  .icon-contacts " class="icon icon-blue icon-contacts"></span> Profile</a></li>
-          <li><a href="{$this->baseurl}/user/changepw"><span title=".icon  .icon-blue  .icon-contacts " class="icon icon-blue icon-contacts"></span> Change Password</a></li>
-					<li class="divider"></li>
-					<li><a href="{$this->baseurl}/user/logout">Logout</a></li>
-				</ul>
-			</div>
-			<!-- user dropdown ends -->
+<div class="btn-group pull-right">
+  <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+    <span title=".icon  .icon-orange  .icon-user " class="icon icon-orange icon-user"></span>
+    <span class="hidden-phone"> {$name_header}</span>
+	<span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu">
+    <li><a href="{$this->baseurl}/user/profile"><span title=".icon  .icon-blue  .icon-contacts " class="icon icon-blue icon-contacts"></span> Profile</a></li>
+    <li><a href="{$this->baseurl}/user/changepw"><span title=".icon  .icon-blue  .icon-contacts " class="icon icon-blue icon-contacts"></span> Change Password</a></li>
+    <li class="divider"></li>
+	<li><a href="{$this->baseurl}/user/logout">Logout</a></li>
+  </ul>
+</div>
+<!-- user dropdown ends -->
 END;
       $auditinfo = '';
-      if ($this->dialog_name == 'audit/edit') {
+      //if ($this->dialog_name == 'audit/edit') {
         $auditinfo = "<div style=\"margin:6px 0 6px 20px;padding-right:5px;\"><b>Audit:</b> {$this->showaudit}</div>";
-      }
+      //}
       $this->header .= <<<"END"
 <div style="display:inline-block;">
   <div style="margin:6px 0px 6px 20px;padding-right:5px;"><b>Lab:</b> {$this->labnum}/{$this->labname}</div>
-                                                                                                  {$auditinfo}
+    {$auditinfo}
   <div style="clear:both;"></div></div>
 END;
     } else {
       $this->header = $this->header . <<<"END"
-  <div class="btn-group pull-left" style="margin-left:100px;">
+<div class="btn-group pull-left" style="margin-left:100px;">
 <a class="btn" href="{$this->baseurl}/user/login"><span title=".icon  .icon-blue  .icon-contacts " class="icon icon-blue icon-contacts"></span> Login</a></div>
-
 END;
     }
     $this->header = $this->header . <<<"END"
@@ -459,7 +454,7 @@ END;
   }
 
   public function makeDialog($value = array(''=>'')) {
-      /*
+    /*
      * Create the dialog
      */
     $this->getDialogLines();
@@ -490,7 +485,8 @@ END;
 
     $this->getDialogLines();
     $ignore_list = array (
-        '', ''
+        '',
+        ''
         /*,
         'submit_button'*/
     );
@@ -525,9 +521,10 @@ END;
       }
     }
     $this->error[] = "</table>";
-    if ($errorct == 0) $this->error = array();
+    if ($errorct == 0)
+      $this->error = array ();
     $this->handleCancel();
-    logit("ECT: ". count($this->error));
+    logit("ECT: " . count($this->error));
     if (count($this->error) > 0) {
       $this->echecklistNamespace->flash = 'Correct errors and retry';
       $this->makeDialog($this->data);
@@ -651,7 +648,11 @@ END;
       $delete = "<a href=\"#\" class=\"btn btn-mini btn-danger\">Delete</a>";
       $export = "<a href=\"{$this->baseurl}/audit/exportdata/{$row['audit_id']}\"" .
            " class=\"btn btn-mini btn-warning\">Data Export</a>";
-
+      $adduser = '';
+      if ($row['status'] == 'INCOMPLETE') {
+        $adduser = "<a href=\"{$this->baseurl}/audit/choose/{$row['audit_id']}\"" .
+         " class=\"btn btn-mini btn-info\">Select</a>";
+      }
       $tout[] = "<tr class='{$cls}'>";
       if ($cb) {
         $name = "cb_{$row['audit_id']}";
@@ -674,7 +675,7 @@ END;
 <td><p class="small">{$rev_affil[$row['labaffil']]}</p></td>
 END;
       if (! $cb) {
-        $tout[] = "<td>{$view} {$edit} {$export} {$delete}</td><td></td></tr>";
+        $tout[] = "<td>{$view} {$edit} {$export} {$delete} {$adduser}</td><td></td></tr>";
       } else {
         $tout[] = "<td></td></tr>";
       }
@@ -686,6 +687,61 @@ END;
     if ($cb) {
       $tour[] = '</form>';
     }
+    $this->view->showlines = implode("\n", $tout);
+  }
+
+  public function makeUserLines($rows, $cb = false) {
+    // Given User rows - show in a table
+    $rev_ut = rev('getUserTypes', $this->tlist);
+    $ct = 0;
+    $tout = array ();
+    $tout[] = '<table style="margin-left:250px;color:black;">';
+    $tout[] = "<tr class='even'>";
+    if ($cb) {
+      $tout[] = "<td style='width:80px;'>Select/<br />Deselect All</td>";
+    } else {
+      $tout[] = "<td style='width:80px;'></td>";
+    }
+    $tout[] = <<<"END"
+<td style='width:100px;font-weight:bold;'>UserId</td>
+<td style='width:200px;font-weight:bold;'>Name</td>
+<td style='width:85px;font-weight:bold;'>UserType</td>
+END;
+    foreach($rows as $row) {
+      $ct ++;
+      $cls = ($ct % 2 == 0) ? 'even' : 'odd';
+
+      $tout[] = "<tr class='{$cls}'>";
+      if ($cb) {
+        $name = "cb_{$row['id']}";
+        $tout[] = "<td style='width:40px;padding:2px 0;'>" .
+             "<input type='checkbox' name='{$name}' id='{$name}'></td>";
+      } else {
+        $sel = "<a href=\"{$this->baseurl}/user/edit/{$row['id']}\"" .
+             " class=\"btn btn-mini btn-success\">Edit</a>";
+        $addo = '';
+        if ($row['usertype'] != 'ADMIN' && $row['usertype'] != 'ANALYST') {
+          $addo = "<a href=\"{$this->baseurl}/user/addowner/{$row['id']}\"" .
+          " class=\"btn btn-mini btn-warning\">Add Owner</a>";
+        }
+        logit("UT: {$this->usertype}, {$this->audit['status']}");
+        if ($this->usertype == 'USER' && $this->audit['status'] == 'INCOMPLETE') {
+          $tout[] = "<td style='width:40px;padding:2px 0;'>{$addo}</td>";
+        }
+        if ($this->usertype == 'ADMIN') {
+          $tout[] = "<td style='width:40px;padding:2px 0;'>{$sel}</td>";
+        }
+      }
+      // $sl = ($row['slmta'] == 't') ? 'Yes' : 'No';
+      $tout[] = <<<"END"
+<td>{$row['userid']}</td>
+<td>{$row['name']}</td>
+<td>{$rev_ut[$row['usertype']]}</td>
+END;
+      // "<td style='width:45px;font-weight:bold;'>SLMTA</td>" .
+      // <td>{$sl}</td>
+    }
+    $tout[] = '</table>';
     $this->view->showlines = implode("\n", $tout);
   }
 }

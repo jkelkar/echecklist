@@ -391,6 +391,20 @@ END;
     }
   }
 
+  public function chooseAction() {
+    $this->dialog_name = 'user/addowner';
+    logit("{$this->dialog_name}");
+    $vars = $this->_request->getPathInfo();
+    $pinfo = explode("/", $vars);
+    $id = (int) $pinfo[3];
+    $audit = new Application_Model_DbTable_Audit();
+    $auditrow = $audit->getAudit($id);
+    $this->echecklistNamespace->flash = 'Chosen as current audit';
+    $this->echecklistNamespace->audit = $auditrow;
+    $this->_redirector->gotoUrl($this->mainpage);
+  }
+
+
   public function exportxlsAction() {
     $this->dialog_name = 'audit/select';
     logit("In LS");

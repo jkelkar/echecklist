@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 26, 2013 at 07:16 PM
+-- Generation Time: Aug 27, 2013 at 02:04 AM
 -- Server version: 5.5.31
 -- PHP Version: 5.3.10-1ubuntu3.6
 
@@ -7124,8 +7124,9 @@ CREATE TABLE IF NOT EXISTS `audit_owner` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `audit_id` int(11) NOT NULL,
   `owner` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Maps audits to owners' AUTO_INCREMENT=12 ;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `audit_owner` (`audit_id`,`owner`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Maps audits to owners' AUTO_INCREMENT=15 ;
 
 --
 -- Dumping data for table `audit_owner`
@@ -7134,6 +7135,7 @@ CREATE TABLE IF NOT EXISTS `audit_owner` (
 INSERT INTO `audit_owner` (`id`, `audit_id`, `owner`) VALUES
 (1, 1, 1),
 (2, 1, 17),
+(12, 1, 18),
 (3, 2, 1),
 (4, 2, 4),
 (5, 2, 18),
@@ -7456,7 +7458,7 @@ CREATE TABLE IF NOT EXISTS `dialog_row` (
   `info` text COLLATE utf8_unicode_ci NOT NULL,
   `title` varchar(80) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Stores individual lines of a dialog' AUTO_INCREMENT=95 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Stores individual lines of a dialog' AUTO_INCREMENT=110 ;
 
 --
 -- Dumping data for table `dialog_row`
@@ -7464,8 +7466,8 @@ CREATE TABLE IF NOT EXISTS `dialog_row` (
 
 INSERT INTO `dialog_row` (`id`, `dialog_id`, `position`, `field_name`, `field_label`, `validate`, `field_type`, `for_export`, `info`, `title`) VALUES
 (1, 1, 0, 'user/login', '', '', 'info', 'f', 'Login here to access Lab Audits.<br/> Currently these Audits are available:\n<ul><li>SLIPTA</li>\n<li>BIosafety (BAT)</li>\n<li>TB</li></ul>', 'Login'),
-(2, 1, 1, 'userid', 'User Name', 'str_min_6', 'string_field', 'f', '', ''),
-(3, 1, 2, 'password', 'Password', 'str_min_6', 'password_field', 'f', '', ''),
+(2, 1, 1, 'userid', 'User Name', '', 'string_field', 'f', '', ''),
+(3, 1, 2, 'password', 'Password', '', 'password_field', 'f', '', ''),
 (4, 1, 3, 'submit_button', 'Login', '', 'submit_button', 'f', '', ''),
 (5, 2, 0, 'lab/create', '', '', 'info', 'f', 'Create a new Lab.<br />\nLabs are identified by their lab numbers, which must be unique.', 'Create a New Lab'),
 (6, 2, 1, 'labname', 'Lab Name', 'str_min_6', 'string_field', 'f', '', ''),
@@ -7505,7 +7507,7 @@ INSERT INTO `dialog_row` (`id`, `dialog_id`, `position`, `field_name`, `field_la
 (40, 4, 1, 'name', 'User Name', 'str_min_6', 'string_field', 'f', '', ''),
 (41, 4, 2, 'userid', 'User Id', 'str_min_6', 'string_field', 'f', '', ''),
 (42, 4, 3, 'password', 'Password', 'str_min_6', 'password_field', 'f', '', ''),
-(43, 4, 4, 'password2', 'New Password Again', 'str_min_6', 'password_field', 'f', '', ''),
+(43, 4, 4, 'password2', 'Confirm Password', 'str_min_6', 'password_field', 'f', '', ''),
 (44, 4, 5, 'usertype', 'User Type', 'str_nempty', 'usertype', 'f', '', ''),
 (45, 4, 6, 'languages', 'Languages', '', 'string_field', 'f', '', ''),
 (46, 4, 7, 'submit_button', 'Cancel,Create', '', 'submit_button', 'f', '', ''),
@@ -7556,7 +7558,15 @@ INSERT INTO `dialog_row` (`id`, `dialog_id`, `position`, `field_name`, `field_la
 (91, 14, 0, 'user/find', '', '', 'info', 'f', 'Search for user(s).', 'Find user(s)'),
 (92, 14, 1, '', '', '', 'info2', 'f', 'To find user(s) type in a part of the name and click Find.', ''),
 (93, 14, 2, 'name', 'User Name', 'str_nempty', 'string_field', 'f', '', ''),
-(94, 14, 10, 'submit_button', 'FInd', '', 'submit_button', 'f', '', '');
+(94, 14, 10, 'submit_button', 'FInd', '', 'submit_button', 'f', '', ''),
+(95, 15, 0, 'user/edit', '', '', 'info', 'f', 'Edit a User here.<br />\r\nUser Ids are unique<br />\r\nUser types have the following function:<br />\r\n<ul><li><b>Admin</b> - Administrator</li>\r\n<li><b>User</b> - Auditor</li>\r\n<li><b>Analyst</b> - Can see but not change audits</li>\r\n<li><b>Approver</b> - Approves and Finalizes audits</li>\r\n</ul>', 'Edit a User'),
+(96, 15, 1, 'name', 'User Name', 'str_min_6', 'string_field', 'f', '', ''),
+(97, 15, 2, 'userid', 'User Id', 'str_min_6', 'string_field', 'f', '', ''),
+(98, 15, 3, 'password', 'Password', '', 'password_field', 'f', '', ''),
+(99, 15, 4, 'password2', 'Confirm Password', '', 'password_field', 'f', '', ''),
+(100, 15, 5, 'usertype', 'User Type', 'str_nempty', 'usertype', 'f', '', ''),
+(101, 99, 6, 'languages', 'Languages', '', 'string_field', 'f', 'Was user/edit', ''),
+(102, 15, 7, 'submit_button', 'Cancel,Update', '', 'submit_button', 'f', '', '');
 
 -- --------------------------------------------------------
 
@@ -10064,7 +10074,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 --
 
 INSERT INTO `user` (`id`, `userid`, `name`, `usertype`, `password`, `languages`) VALUES
-(1, 'jk', 'Jay Kelkar', 'ADMIN', 'jk', 'EN,FR,VI'),
+(1, 'jkelkar', 'Jay Kelkar', 'USER', 'jk', 'EN,FR,VI'),
 (2, 'oddeater', 'Odd Eater', 'USER', 'oddeater', 'EN,VI'),
 (3, 'analist', 'An ALIST', 'ANALYST', 'analist', 'EN'),
 (4, 'jon', 'Jon Lipsky', 'ANALYST', 'lipsky', 'EN,FR,VI'),

@@ -639,6 +639,10 @@ END;
     $audit = new Application_Model_DbTable_Audit();
     $lab = new Application_Model_DbTable_Lab();
     $audit_data = new Application_Model_DbTable_AuditData();
+    $toimport = new Application_Model_DbTable_ToImport();
+    $auditowner = new Application_Model_DbTable_AuditOwner();
+
+
     /**
      * 1. get the file
      * 2. unserialize
@@ -647,39 +651,43 @@ END;
      * 5. Insert into audit_owner
      * 6. Update audit_id in audt_data(s) and insert all.
      */
-    $toimport = new Application_Model_DbTable_ToImport();
     $thisfile = $toimport->getByOwner($this->userid);
     $sdata = file_get_contents($thisfile['path']);
     logit('SLEN: ' . strlen($sdata) . ' ' . print_r($thisfile, true));
     $data = unserialize($sdata);
     $labinfo = $data['lab'];
     logit('LAB: ' . print_r($labinfo, true));
+    $auditinfo = $data['audit'];
+    logit("Audit: {$auditid} " . print_r($auditinfo, true));
+    $auditdatarows = $data['audit_data'];
+    logit("Inserting data: {$auditid} - ". count($auditdatarows));
 
     // lab data
     unset($labinfo['id']); // remove the id
     $labid = $lab->insertData($labinfo);
     logit("Lab: {$labid} " . print_r($labinfo, true));
+
     // insert audit row
-    $auditinfo = $data['audit'];
-    unset($auditinfo['id']);
+    unset($auditinfo['id']); // remove the id
     $auditinfo['lab_id'] = $labid;
-    logit("Audit: {$auditid} " . print_r($auditinfo, true));
     $auditid = $audit->insertData($auditinfo);
+
     // insert into audit_owner
-    $auditowner = new Application_Model_DbTable_AuditOwner();
     $ao = array (
         'audit_id' => $auditid,
         'owner' => $this->userid
     );
     $aoid = $auditowner->insertData($ao);
     logit("AOID: {$aoid}");
+
     // insert the audit data rows
-    $auditdatarows = $data['audit_data'];
-    logit("Inserting data: {$auditid} - ". count($auditdatarows));
     $audit_data->insertAs($auditdatarows, $auditid);
+
     // delete the physical file
     unlink($thisfile['path']);
-    $toimport->delete($thifile['id']); // delete entry from toimport
+
+    // delete entry from toimport
+    $toimport->delete($thifile['id']);
     $this->echecklistNamespace->flash = 'Import complete';
     $this->_redirector->gotoUrl($this->mainpage);
   }
@@ -691,28 +699,32 @@ END;
     $this->dialog_name = "audit/import2lab";
     logit('In audit/import2lab');
     $audit = new Application_Model_DbTable_Audit();
-    //$lab = new Application_Model_DbTable_Lab();
+    $lab = new Application_Model_DbTable_Lab();
     $audit_data = new Application_Model_DbTable_AuditData();
+    $toimport = new Application_Model_DbTable_ToImport();
     /**
      * 1. get the file
      * 2. unserialize
      * 3. Get the lab id
-     * 4. Change lab data in audit row, insert audit row
+     * 4. Change lab data in audit row, and into audit_data rows, insert audit row
      * 5. Insert into audit_owner
      * 6. Update audit_id in audt_data(s) and insert all.
      */
-    $toimport = new Application_Model_DbTable_ToImport();
+
     $thisfile = $toimport->getByOwner($this->userid);
     $sdata = file_get_contents($thisfile['path']);
     logit('SLEN: ' . strlen($sdata) . ' ' . print_r($thisfile, true));
     $data = unserialize($sdata);
+    $auditdatarows = $data['audit_data'];
+    // we do not need the lab data as we will use the current lab
 
     // insert audit row
     $auditinfo = $data['audit'];
     unset($auditinfo['id']);
     $auditinfo['lab_id'] = $this->labid; // the current lab
-    $auditid = $audit->insertData($auditinfo);
     logit("Audit: {$auditid} " . print_r($auditinfo, true));
+    $auditid = $audit->insertData($auditinfo);
+
     // insert into audit_owner
     $auditowner = new Application_Model_DbTable_AuditOwner();
     $ao = array (
@@ -721,12 +733,19 @@ END;
     );
     $aoid = $auditowner->insertData($ao);
     logit("AOID: {$aoid}");
+
     // insert the audit data rows
-    $auditdatarows = $data['audit_data'];
     logit("Inserting data: {$auditid} - ". count($auditdatarows));
     $audit_data->insertAs($auditdatarows, $auditid);
+    // change the original audit data to that of the current lab
+    $labrow = $lab->get($this->labid);
+    logit('LABROW: '. print_r($labrow, true));
+    $defarray = array('labhead' => 'place holder');
+    $audit_data->handleLabData($defarray, $auditid, '', $labrow);
+
     // delete the physical file
     unlink($thisfile['path']);
+
     $toimport->delete($thifile['id']); // delete entry from toimport
     $this->echecklistNamespace->flash = 'Import complete';
     $this->_redirector->gotoUrl($this->mainpage);

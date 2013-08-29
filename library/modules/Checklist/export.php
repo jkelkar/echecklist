@@ -5,8 +5,10 @@ function exportData($audit_id) {
   $lab = new Application_Model_DbTable_Lab();
   $data = new Application_Model_DbTable_AuditData();
   $audit = new Application_Model_DbTable_Audit();
+  $tmpl = new Application_Model_DbTable_Template();
   $audit_row = $audit->get($audit_id);
   logit('AR: ' . print_r($audit_row, true));
+  $tmpl_row = $tmpl->get($audit_row['template_id']);
   $audit_data_rows = $data->getAudit($audit_id);
   logit('AuditData_ct: ' .  count($audit_data_rows));
   $lab_row = $lab->getLab($audit_row['lab_id']);
@@ -21,7 +23,7 @@ function exportData($audit_id) {
   $datarows = count($audit_data_rows);
   //logit("SERDATA:\n {$serdata}");
   logit("LEN: {$serdatal}");
-  $fname = "{$lab_row['labnum']}_{$audit_row['tag']}_{$audit_row['end_date']}.edx";
+  $fname = "{$lab_row['labnum']}_{$tmpl_row['tag']}_{$audit_row['end_date']}.edx";
   return array (
       'data' => $serdata,
       'name' => $fname

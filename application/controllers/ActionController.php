@@ -251,7 +251,7 @@ END;
   <li><a href="{$this->baseurl}/audit/find"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Find</a></li>
   <li class="divider"></li>
   <li><a href="{$this->baseurl}/audit/select"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Export to Excel</a></li>
-  <!--li><a href="{$this->baseurl}/audit/import"><span title=".icon  .icon-blue .icon-import " class="icon icon-blue icon-archive"></span> Import</a></li-->
+  <li><a href="{$this->baseurl}/audit/import"><span title=".icon  .icon-blue .icon-import " class="icon icon-blue icon-archive"></span> Import</a></li>
 </ul>
 </div>
 
@@ -338,6 +338,7 @@ END;
      * Given the dialog rows, create the dialog
      * - using field templates to create individual rows
      */
+    require_once 'modules/Checklist/fillout.php';
     $tlist = getTranslatables($langtag);
 
     $tout = array ();

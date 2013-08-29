@@ -10,7 +10,7 @@ require_once 'Classes/PHPExcel.php';
  * i2a converts an integer into letters
  * 1-26 -> 'A' .. 'Z'
  * 27 -> AA ... 52 -> 'AZ'
- * 104 -> 'CZ' and so on 
+ * 104 -> 'CZ' and so on
  * This function only handles up to ZZ or $v(1..26*27)
  */
 function i2a($v) {
@@ -35,6 +35,15 @@ function rc ($col, $row) {
   return i2a($col) . $row;
 }
 
+function processData($data) {
+  // Process this data
+  /*
+   data = {
+     filename -> "path and file name",
+
+   }
+   */
+}
 function doit($rows)
 {
   /** Error reporting */
@@ -42,7 +51,7 @@ function doit($rows)
   ini_set('display_errors', TRUE);
   ini_set('display_startup_errors', TRUE);
   date_default_timezone_set('America/New_York');
-  
+
   define('EOL',(PHP_SAPI == 'cli') ? PHP_EOL : '<br />');
 
   // Create new PHPExcel object
@@ -86,13 +95,13 @@ function doit($rows)
   foreach (array('id', 'title', 'artist') as $name) {
     $s0->setCellValue(rc($col, $row), $name);
     $s0->getStyle(rc($col, $row))->getAlignment()->setHorizontal
-	(PHPExcel_Style_Alignment::HORIZONTAL_CENTER); 
-    
+	(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
     $s0->getStyle(rc($col, $row))->getFont()->setBold(true);
     $col ++;
   }
   $row++;
- 
+
   $col = 1;
   foreach($rows as $drow) {
     $col = 1;
@@ -105,7 +114,7 @@ function doit($rows)
       $col ++;
     }
     $row++;
-  }    
+  }
   /**
    // $s0->setCellValue(i2a($col) + $row, //'A1'
    $s0->setCellValue(rc($col, $row), 'Hello');
@@ -139,12 +148,12 @@ function doit($rows)
    // Save Excel 2007 file
    echo date('H:i:s') , " Write to Excel2007 format" , EOL;
    $callStartTime = microtime(true);
-   
+
    $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
    $objWriter->save(str_replace('.php', '.xlsx', __FILE__));
    $callEndTime = microtime(true);
    $callTime = $callEndTime - $callStartTime;
-   
+
    echo date('H:i:s') , " File written to " , str_replace('.php', '.xlsx', pathinfo(__FILE__, PATHINFO_BASENAME)) , EOL;
    echo 'Call time to write Workbook was ' , sprintf('%.4f',$callTime) , " seconds" , EOL;
    // Echo memory usage
@@ -156,7 +165,7 @@ function doit($rows)
   $callStartTime = microtime(true);
 
   $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
-  $objWriter->save(str_replace('.php', '.xls', __FILE__));
+  $objWriter->save(str_replace('.php', '.xls', __FILE__)); // file name here
   $callEndTime = microtime(true);
   $callTime = $callEndTime - $callStartTime;
 
@@ -165,8 +174,8 @@ function doit($rows)
      echo 'Call time to write Workbook was ' , sprintf('%.4f',$callTime) , " seconds" , EOL;
      // Echo memory usage
      echo date('H:i:s') , ' Current memory usage: ' , (memory_get_usage(true) / 1024 / 1024) , " MB" , EOL;
-     
-     
+
+
      // Echo memory peak usage
      echo date('H:i:s') , " Peak memory usage: " , (memory_get_peak_usage(true) / 1024 / 1024) , " MB" , EOL;
   */

@@ -44,7 +44,7 @@ function dTree(objName) {
 
 
 	this.icon = {
-			root		: prefix +'js/img/base.gif',
+			root		: prefix + 'js/img/base.gif',
 			folder		: prefix + 'js/img/folder.gif',
 			folderOpen	: prefix + 'js/img/folderopen.gif',
 			node		: prefix + 'js/img/page.gif',

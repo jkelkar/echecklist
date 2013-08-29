@@ -1,5 +1,4 @@
 /*@CHARSET "UTF-8"; */
-
 * {
 	padding: 0 0;
 	margin: 0 0;
@@ -227,6 +226,18 @@ td.bathead {
 	color: white;
 	text-transform: uppercase;
 }
+
+td.red {
+	background-color: #f66;
+}
+
+td.yellow {
+	background-color: #ff6;
+}
+
+td.green {
+	background-color: #6f6;
+}
 /* criteria y n */
 td.cyn {
 	padding: 2px;
@@ -234,14 +245,17 @@ td.cyn {
 	text-align: center;
 	vertical-align: bottom;
 }
+
 td.comment {
-    padding:4px;
-    vertical-align: top;
+	padding: 4px;
+	vertical-align: top;
 }
-span.tiny{
-    font-size: 12px;
-    font-weight:normal;
+
+span.tiny {
+	font-size: 12px;
+	font-weight: normal;
 }
+
 textarea.ta50px {
 	width: 100%;
 	height: 50px;
@@ -264,4 +278,21 @@ textarea.signature {
 	width: 100%;
 	height: 75px;
 	border: 0;
+}
+
+div.maintitle {
+	font-family: "Times New Roman", serif;
+	width: 600px;
+	margin-top: 16px;
+	font-size: 38px;
+	line-height: 45px;
+	font-weight: bold;
+}
+
+div.maintitle2 {
+	font-family: "Times New Roman", serif;
+	width: 700px;
+	margin-top: 16px;
+	font-size: 32px;
+	line-height: 37px;
 }

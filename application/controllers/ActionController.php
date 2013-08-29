@@ -244,7 +244,7 @@ END;
 <div class="btn-group pull-left" style="margin-left:100px;">
 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
   <span title=".icon  .icon-blue .icon-clipboard " class="icon icon-blue icon-clipboard"></span>
-  <span class="hidden-phone">Audits</span>
+  <span class="hidden-phone">Audit</span>
   <span class="caret"></span></a>
 <ul class="dropdown-menu">
   <li><a href="{$this->baseurl}/audit/create"><span title=".icon  .icon-green .icon-clipboard " class="icon icon-green icon-clipboard"></span> New Audit</a></li>
@@ -258,7 +258,7 @@ END;
 <div class="btn-group pull-left">
 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
   <span title=".icon  .icon-blue  .icon-tag " class="icon icon-blue icon-tag"></span>
-  <span class="hidden-phone">Labs</span>
+  <span class="hidden-phone">Lab</span>
   <span class="caret"></span></a>
 <ul class="dropdown-menu">
   <li><a href="{$this->baseurl}/lab/create"><span title=".icon  .icon-green  .icon-tag " class="icon icon-green icon-tag"></span> New Lab</a></li>
@@ -269,7 +269,7 @@ END;
 <div class="btn-group pull-left">
 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
 <span title=".icon  .icon-blue  .icon-user " class="icon icon-blue icon-user"></span>
-<span class="hidden-phone">Users</span>
+<span class="hidden-phone">User</span>
 <span class="caret"></span></a>
 <ul class="dropdown-menu">
   <li><a href="{$this->baseurl}/user/create"><span title=".icon  .icon-green  .icon-user " class="icon icon-green icon-user"></span> New User</a></li>

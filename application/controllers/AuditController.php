@@ -4,6 +4,7 @@
 require_once 'modules/Checklist/export.php';
 require_once 'modules/Checklist/logger.php';
 require_once 'modules/Checklist/datefns.php';
+require_once 'modules/Checklist/general.php';
 require_once '../application/controllers/ActionController.php';
 
 class AuditController extends Application_Controller_Action {
@@ -68,6 +69,7 @@ END;
     }
     //$this->init();
     $tmplr = new Application_Model_DbTable_TemplateRows();
+    $tmpl = new Application_Model_DbTable_Template();
     $data = new Application_Model_DbTable_AuditData();
     $aud = new Application_Model_DbTable_Audit();
     $lab = new Application_Model_DbTable_Lab();
@@ -81,6 +83,8 @@ END;
     //logit('PARTS: '. print_r($pinfo, true));
     $audit_id = (int) $pinfo[3];
     $template_id = $data->getTemplateId($audit_id);
+    $thistmpl = $tmpl->get($template_id);
+    $tmpl_type = $thistmpl['tag'];
     $langtag = $this->echecklistNamespace->lang;
     $thispage = (int) $pinfo[4];
     $auditrow = $aud->getAudit($audit_id);
@@ -137,6 +141,15 @@ END;
         logit("D1: {$mtx}");
         $mt = $mt2;
       }
+      $secinc = array();
+      if ($tmpl_type == 'SLIPTA') {
+        // get incomplete counts
+        $secdata = $data->getSecIncCounts($audit_id);
+        foreach($secdata as $s => $v) {
+          $secno = (int) substr($s, 1, 2);
+            $secinc[$secno] = $v;
+        }
+      }
       foreach($nrows as $r) {
         if ($this->debug) {
           foreach($r as $x => $y) {
@@ -145,7 +158,20 @@ END;
           logit("{$r['parent']} -> {$r['page_num']}");
         }
         $purl = "{$page_url}/{$r['page_num']}";
-        $line = "d.add({$r['page_num']},{$r['parent']}, '{$r['tag']}'";
+        $ptag = $r['tag'];
+        logit("Tag: {$ptag}");
+        $pint = (int) substr($ptag, 7);
+        if ($tmpl_type == 'SLIPTA' && strtolower(substr($ptag, 0, 7)) == 'section') {
+          $incval = get_arrval($secinc, $pint, 1);
+        } else {
+          $incval = 0;
+        }
+        logit("Secinc: {$ptag} {$incval}");
+        $inc = '';
+        if ($incval > 0) {
+          $inc = "<img src=\"{$this->baseurl}/cancel-on.png\" />";
+        }
+        $line = "d.add({$r['page_num']},{$r['parent']}, '{$r['tag']}{$inc}'";
         if ($r['leaf'] == 't') { // draw a URL for a leaf node not otherwise
           $line = $line . ", '{$purl}'";
         }
@@ -364,6 +390,7 @@ END;
     $this->dialog_name = 'audit/create';
     logit("{$this->dialog_name}");
     $audit = new Application_Model_DbTable_Audit();
+    $adata = new Application_Model_DbTable_AuditData();
     $tmpl = new Application_Model_DbTable_Template();
     $ao = new Application_Model_DbTable_AuditOwner();
     //$vars = $this->_request->getPathInfo();
@@ -402,6 +429,33 @@ END;
           'owner' => $this->userid
       );
       $ao->insertData($aorow);
+     /**
+      * This section not needed any more as no count is same as not complete
+       // insert incomplete rows if audit is SLIPTA
+      if ($trow['tag'] == 'SLIPTA') {
+        // SLIPTA is the only audit that has to be completed fully
+        $secct = 12; // there are 12 sections mark them all as incomplete
+        $pagemap = array( // these are section#s mapped to page_ids from table 'page'
+            1=> 11,
+            2=> 12,
+            3=> 13,
+            4=> 14,
+            5=> 15,
+            6=> 16,
+            7=> 17,
+            8=> 18,
+            9=> 19,
+            10=> 20,
+            11=> 21,
+            12=> 22
+        );
+        for($i = 1; $i <= $secct; $i ++) {
+          $secval = strval($i);
+          $secno = ($i < 10) ? "0{$secval}" : $secval;
+          $adata->updateAuditField($newauditid, "s{$secno}_secinc", 1, $pagemap[$i]);
+        }
+      }
+      */
       $url = "/audit/edit/{$newauditid}/";
       $this->_redirector->gotoUrl($url);
     }

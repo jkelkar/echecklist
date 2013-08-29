@@ -148,11 +148,11 @@ function html_main_heading($row) {
   $text = $row['text'];
   $name = $row['varname'];
   $out = <<<"END"
-<div style="width:100%;">
+<td colspan=6>
   <center><div class="maintitle">
     {$heading}
   </div></center>
-</div>
+</td>
 END;
   return $out;
 }
@@ -427,12 +427,35 @@ function html_tel_type($row, $value, $t) {
 END;
   return $out;
 }
+function html_sec_elem_info_normal($row, $value, $t) {
+  /* $prefix = $row['prefix'];
+     $heading = $row['heading']; */
+  $text = $row['text'];
+  /*$name = $row['varname'];
+  $dt = widget_dt($name, $value);
+  $script = '<script> $(function() {$( "' . "#{$name}" . '" ).datepicker();});</script>'; */
+  $out = <<<"END"
+<td colspan=6 class="lg" style="padding: 2px 4px;font-style:italic;font-size:14px;">
+{$text}
+</td>
+END;
+
+  return $out;
+}
 
 function html_sec_head($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
   $out = <<<"END"
+      <td class="ctb dg"></td>
+      <td class="cb dg" style="padding: 20px;">Y</td>
+      <td class="cb dg" style="padding: 20px;">P</td>
+      <td class="cb dg" style="padding: 20px;">N</td>
+      <td class="cb dg" style="padding: 20px;">Comments</td>
+      <td class="cb dg" style="padding: 20px;">Score</td>
+    </tr>
+<tr>
 <td colspan=6 style="padding: 2px 4px;color:white;background-color:black;">
   <div style="text-transform:uppercase;padding-bottom:15px;font-family:Helvetica,Arial,sans-serif;font-size:18px;">
     <span>{$prefix}</span>
@@ -492,7 +515,8 @@ function html_sec_head_small($row, $value, $t) {
   $heading = $row['heading'];
   $text = $row['text'];
   $out = <<<"END"
-<table style="width:100%;"><tr>
+<table style="width:100%;">
+<tr>
 <td style="font-size:14px;font-weight: bold;padding: 2px 4px;">
 <div style="">
 <div style="vertical-align:top;">{$prefix} {$heading}</div>
@@ -551,7 +575,7 @@ function html_sub_sec_head($row, $value, $t) {
   $head = ($heading) ? "{$heading}<br />" : "";
   $nscore = "{$name}_score";
   $scoreval = get_arrval($value, $nscore, '');
-  $selval = get_arrval($value, "{$name}_yn", '');
+  $selval = get_arrval($value, "{$name}", '');
   $ch = getYNPA($selval);
   $comment = fixText(get_arrval($value, "{$name}_comment", ''));
   $out = <<<"END"
@@ -573,9 +597,9 @@ function html_sub_sec_head($row, $value, $t) {
     </div>
   </div>
 </td>
-<td class="cb">Y<br />{$ch['Y']}</td>
-<td class="cb">P<br />{$ch['P']}</td>
-<td class="cb">N<br />{$ch['N']}</td>
+<td class="cb {$ch['YC']}">Y<br />{$ch['Y']}</td>
+<td class="cb {$ch['PC']}">P<br />{$ch['P']}</td>
+<td class="cb {$ch['NC']}">N<br />{$ch['N']}</td>
 <td class="comment">{$comment}</td>
 <td class="cb">{$scoreval}/<span class="tiny">{$max_score}</span></td>
 END;
@@ -617,9 +641,9 @@ function html_sub_sec_head_ynp($row, $value, $t) {
     </div>
   </div>
 </td>
-<td class="cb">Y<br />{$ch['Y']}</td>
-<td class="cb">P<br />{$ch['P']}</td>
-<td class="cb">N<br />{$ch['N']}</td>
+<td class="cb {$ch['YC']}">Y<br />{$ch['Y']}</td>
+<td class="cb {$ch['PC']}">P<br />{$ch['P']}</td>
+<td class="cb {$ch['NC']}">N<br />{$ch['N']}</td>
 <td class="comment">{$comment}</td>
 <td class="cb">{$scoreval}/<span class="tiny">{$max_score}</span></td>
 END;
@@ -662,9 +686,9 @@ function html_sub_sec_head_ro($row, $value, $t) {
             </div>
           </div>
         </td>
-        <td class="cb">Y<br />{$ch['Y']}</td>
-        <td class="cb">P<br />{$ch['P']}</td>
-        <td class="cb">N<br />{$ch['N']}</td>
+        <td class="cb {$ch['YC']}">Y<br />{$ch['Y']}</td>
+        <td class="cb {$ch['PC']}">P<br />{$ch['P']}</td>
+        <td class="cb {$ch['NC']}">N<br />{$ch['N']}</td>
         <td class="comment">{$comment}</td>
         <td class="cb">{$scoreval}/<span class="tiny">{$max_score}</span>
         </td>
@@ -693,9 +717,9 @@ function html_sec_element_yna($row, $value, $t) {
           style="font-style: italic; font-weight: bold; font-size: 10px; margin-top: 5px;">
           {$info}</div>
       </td>
-      <td class="cb">{$ch['Y']}</td>
-      <td class="cb">{$ch['N']}</td>
-      <td class="cb">{$ch['NA']}</td>
+      <td class="cb {$ch['YC']}">{$ch['Y']}</td>
+      <td class="cb {$ch['NC']}">{$ch['N']}</td>
+      <td class="cb {$ch['NAC']}">{$ch['NA']}</td>
       <td class="comment">{$comment}</td>
       <td></td>
 END;
@@ -722,9 +746,9 @@ function html_sec_element_ynp($row, $value, $t) {
           style="font-style: italic; font-weight: bold; font-size: 10px; margin-top: 5px;">
           {$info}</div>
       </td>
-      <td class="cb">{$ch['Y']}</td>
-      <td class="cb">{$ch['P']}</td>
-      <td class="cb">{$ch['N']}</td>
+      <td class="cb {$ch['YC']}">{$ch['Y']}</td>
+      <td class="cb {$ch['PC']}">{$ch['P']}</td>
+      <td class="cb {$ch['NC']}">{$ch['N']}</td>
       <td class="comment">{$comment}</td>
       <td></td>
 END;
@@ -763,10 +787,10 @@ function html_sec_element($row, $value, $t) {
           style="font-style: italic; font-weight: bold; font-size: 10px; margin-top: 5px;">
           {$info}</div>
       </td>
-      <td class="cb">{$ch['Y']}</td>
-      <td class="cb">{$ch['N']}</td>
+      <td class="cb {$ch['YC']}">{$ch['Y']}</td>
+      <td class="cb {$ch['NC']}">{$ch['N']}</td>
       <td class="dg"></td>
-      <td class="comment"></td>
+      <td class="comment">{$comment}</td>
       <td></td>
 END;
 
@@ -1220,32 +1244,20 @@ END;
 }
 
 function html_sec_total($row, $value, $t) {
-  $prefix = $row['prefix'];
   $heading = $row['heading'];
-  //$text = $row ['text'];
-  //$info = $row ['info'];
   $name = $row['varname'];
   $ec = $row['element_count'];
   $max_score = $row['score'];
-  $widget_nyp_ro = widget_select_ynp_ro($name, $value, $t);
-  $ynp_ro = "{$name}_ynp";
-  $this_score = get_arrval($value, $ynp_ro, 0);
-  $head = ($heading) ? "{$heading}<br />" : "";
-  //logit ( "SRO: " . print_r ( $row, true ) );
-  //$scoreval = get_arrval ( $value, $name, 0 );
   $this_score = get_arrval($value, $name, 0);
   $out = <<<"END"
-<table style="width:100%;"><tr>
-    <td style="padding: 2px 4px;width:722px;background:#ccccff;">
-    <div style="font-size:16px;font-weight:bold;background;#ccccff;">{$heading}
-</div>
-    </td>
-    <td style="vertical-align:top;padding: 2px 4px;width:76px;background:#ccccff;">
-      <div style="display:inline;">
-        <input class="ro" name="{$name}" id="{$name}" value="{$this_score}" rel="{$ec}"
-               type="text"  size="2"> / <b>{$max_score}</b></div>
-    </td>
-</tr></table>
+<td colspan=5 style="padding: 2px 4px">
+  <div style="padding-top:15px;font-size:18px;">
+    <b>{$heading}</b>
+  </div>
+</td>
+<td class="cb">
+    {$this_score}/<span class="tiny">{$max_score}</span></td>
+</td>
 END;
 
   return $out;
@@ -1257,12 +1269,19 @@ function html_sec_element_info($row, $value, $t) {
   $text = $row['text'];
   // $name = $row['varname'];
   $out = <<<"END"
- <td style="padding-left: 10px;">{$text}</td>
-      <td class="cb">Y</td>
-      <td class="cb">N</td>
-      <td class="dg"></td>
-      <td></td>
-      <td></td>
+  <td>
+  </td>
+  <td colspan=3 style="font-size:11px; text-align:center;font-weight:bold;padding-top:2px;padding-bottom:2px;">
+    Tick for each item</td>
+  <td colspan=2>
+  </td>
+</tr>
+<tr>
+  <td style="padding-left: 10px;">{$text}</td>
+  <td class="cb">Y</td>
+  <td class="cb">N</td>
+  <td class="cb">N/A</td>
+  <td colspan=2></td>
 END;
 
   return $out;
@@ -1280,6 +1299,7 @@ END;
   return $out;
 }
 
+/* Erin commented out 8/28/13
 function html_sec_elem_info_normal($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
@@ -1291,17 +1311,16 @@ function html_sec_elem_info_normal($row, $value, $t) {
 </div>
 END;
   return $out;
-}
+  } */
 
 function html_sub_sec_info($row, $value, $t) {
-  $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
   $out = <<<"END"
-<div style="width:820px;border:1px solid #ccc;
-     background-color:#f0f0f0;padding: 4px;font-size:12px;">
-  <i><b>{$heading}</b> {$text}</i>
-</div>
+<td colspan=6 class="lg" style="padding:4px;font-size:12px;">
+  <i><b>{$heading}</b></i>
+  {$text}
+</td>
 END;
   return $out;
 }
@@ -1334,9 +1353,11 @@ function html_img($row) {
   $heading = $row['heading'];
   $baseurl = $row['baseurl'];
   $out = <<<"END"
-<div style="width:100%;">
-    <img style="width:797px;" src="{$baseurl}/images/{$heading}" />
-</div>
+<td colspan=6>
+  <center>
+    <img style="width:797px;height:260px;" src="{$baseurl}/images/{$heading}" />
+  </center>
+</td>
 END;
   return $out;
 }
@@ -1507,6 +1528,7 @@ function calculate_view($rows, $value, $langtag) { //$tword) {
 logit('VALUE: '. print_r($value, true));
   $tlist = getTranslatables($langtag); //$tword );
   $allowed_list = array(
+      'sec_elem_info_normal',
       'sec_head',
       'sub_sec_head',
       'sub_sec_head_ynp',
@@ -1516,20 +1538,26 @@ logit('VALUE: '. print_r($value, true));
       'sec_elem_ynp',
       'sec_element',
       'sec_element_yna',
-      'sec_element_ynp'
+      'sec_element_ynp',
+      'sec_element_info',
+      'sub_sec_info',
+      'sec_total',
+      'img',
+      'main_heading'
   );
   $tout = array ();
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
-  $tout[] = '<table border=0  class="display">';
+  $tout[] = '<table class="display">';
+  /*  $tout[] = '<table border=0  class="display">'; */
   $tout[] = <<<"END"
-<tr class="dg">
-      <td class="ctb" style="width: 36%;"></td>
-      <td class="cb" style="width: 5.4%; padding: 20px;">Y</td>
-      <td class="cb" style="width: 5.4%; padding: 20px;">P</td>
-      <td class="cb" style="width: 5.4%; padding: 20px;">N</td>
-      <td class="cb" style="width: 41%; padding: 20px;">Comments</td>
-      <td class="cb" style="padding: 20px;">Score</td>
-    </tr>
+<tr style="">
+  <td style="width:36%;">1</td>
+  <td style="width:5.4%;">2</td>
+  <td style="width:5.4%;">3</td>
+  <td style="width:5.4%;">4</td>
+  <td style="width:41%;">5</td>
+  <td>6</td>
+</tr>
 END;
   $ctr = 0;
   $slmta = false;

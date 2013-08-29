@@ -63,9 +63,13 @@ function getYNPA($data) {
   $sp = '&nbsp;';
   $out = array(
       'Y'=> ($data == 'YES') ? 'X' : $sp,
+      'YC'=> ($data == 'YES') ? 'green' : '',
       'N'=> ($data == 'NO') ? 'X' : $sp,
+      'NC'=> ($data == 'NO') ? 'red' : $sp,
       'P'=> ($data == 'PARTIAL') ? 'X' : $sp,
-      'NA'=> ($data == 'N/A') ? 'X' : $sp
+      'PC'=> ($data == 'PARTIAL') ? 'yellow' : $sp,
+      'NA'=> ($data == 'N/A') ? 'X' : $sp,
+      'NAC'=> ($data == 'N/A') ? 'yellow' : $sp
   );
   return $out;
 }

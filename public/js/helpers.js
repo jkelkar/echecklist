@@ -95,6 +95,11 @@ function watch_ynp(name, score) {
 		$('#'+name+'_score').val(out.toString());
 		$('#'+name+'_icon').remove();
 		changed = true;
+		if (name.length == 5) {// this is a sub section
+			$('input[name="'+ name+'"]:checked').each( function() {
+				$('#'+name+'_inc').val(0);
+			});
+		}
 		set_total(name.substr(0,3));
 	});
 }
@@ -140,10 +145,10 @@ function toggleNCBox(here) {
   var state = $('#'+id).prop('checked');
   if (!!state) {
     $(name).val('T');
-    $(divname).show(1000);
+    $(divname).slideToggle(500);
   } else {
     $(name).val('F');
-    $(divname).hide(1000);
+    $(divname).slideToggle(500);
   }
 }
 
@@ -246,9 +251,10 @@ function set_score(id, score) {
 				yesct++; 
 				break;
 			case 'NO': noct++;break;
+			// what happens for PARTIAL
 			default: unset++; 
 			}
-
+			
 			var rel = $('#'+id).attr('rel');
 			var calcval = 0;
 			var ynp = 'NO';
@@ -260,6 +266,8 @@ function set_score(id, score) {
 				calcval = 1;
 				ynp = 'PARTIAL';
 			} 
+			var incct = rel - (yesct + noct);
+			$('#'+p+'_inc').val(incct.toString());
 			$('#'+id).val(calcval.toString());
 			$('#'+p+'_ynp').val(ynp);
 			set_total(id.substr(0,3));
@@ -269,15 +277,25 @@ function set_score(id, score) {
 
 function set_total(id) {
     var myid = id+ '_total';
+    var incid = id + '_secinc';
     var total = 0;
-    var val;
+    var val, abc;
    $('input[name$="_score"]').each( function(i) {
        val = $(this).val();
        val = parseInt(val);
        val = (isNaN(val)) ? 0: val;
        total = total + val;
        $('#'+myid).val(total);
-       var abc = 0;
+       abc = 0;
+   });
+   total = 0;
+   $('input[name$="_inc"]').each( function(i) {
+       val = $(this).val();
+       val = parseInt(val);
+       val = (isNaN(val)) ? 0: val;
+       total = total + val;
+       $('#'+incid).val(total);
+       abc = 0;
    });
     var xx= 0;
 }

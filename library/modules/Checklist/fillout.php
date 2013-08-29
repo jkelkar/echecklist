@@ -86,10 +86,10 @@ END;
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
   $optout[] = ($val != '') ? '' : "<img id=\"{$name}_icon\" src=\"{$baseurl}/cancel-on.png\" />";
   $options = implode("\n", $optout);
-  if ($scr != '') {
-    $out = $options . "\n<script> watch_radio('{$name}');</script>";
-    $options;
-  }
+    //if ($scr != '') {
+  $out = $options . "\n<script> watch_radio('{$name}');</script>";
+  $options;
+  //}
   return $out;
 }
 
@@ -902,13 +902,16 @@ END;
 }
 
 function partial_sec_head($row, $value, $t) {
+  $name = $row['varname'];
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
+  $secinc = "{$name}_secinc";
+  $incval = get_arrval($value, $secinc, 1);
   $out = <<<"END"
 <table style="width:100%;"><tr>
 <td style="font-size:18px;font-weight: bold;text-transform:uppercase;padding: 2px 4px;">
-<div style="">
+<div style=""><input type="hidden" id="{$secinc}" name="{$secinc}" value="{$incval}"/>
 <div style="vertical-align:top;"> {$heading}</div>
 </div>
 </td>
@@ -1026,6 +1029,7 @@ function partial_sub_sec_head($row, $value, $t) {
   $head = ($heading) ? "{$heading}<br />" : "";
   $tarea = TEXTAREA("{$name}_comment", $value, "width:100%;height:50px;margin-top:5px;");
   $tareanc = TEXTAREA("{$name}_note", $value, "width:100%;height:50px;margin-top:6px;", 'nc');
+  $incval = get_arrval($value, "{$name}_inc", 1); // incomplete counts for this sub section
   $ncval = get_arrval($value, $name . '_nc', 'F');
   $checked = '';
   $nscore = "{$name}_score";
@@ -1047,12 +1051,8 @@ function partial_sub_sec_head($row, $value, $t) {
           <div style="display:inline;font-weight:bold;width:25px;vertical-align:top;">{$prefix}</div>
           <div style="display:inline-block;width:395px;">
             <div style="text-decoration:underline;font-weight:bold;display:inline;">{$head}</div>
-            <div style="vertical-align:top;display:inline;">{$text}<br />
-              <div style="width:100%;text-align:right;margin-top:5px;">
-                <label><input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
-                              onclick="toggleNCBox(this);">Non-Compliant</label>
-                <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
-            </div></div>
+            <div style="vertical-align:top;display:inline;">{$text}
+            </div>
           </div>
           <div
              style="font-style:italic;font-weight:bold;font-size:10px;margin-top:5px;">{$info}</div>
@@ -1063,9 +1063,14 @@ function partial_sub_sec_head($row, $value, $t) {
       <div style="margin-right:5px;display:inline;">{$widget_nyp}</div>
       <div style="display:inline;float:right;">
         <input class="ro" name="{$name}_score" id="{$name}_score" value="{$scoreval}" rel="{$ec}"
-               type="text"  size="2">
+               type="text"  size="2"><input type="hidden" id="{$name}_inc" name="{$name}_inc" value="{$incval}"/>
         / <b>{$max_score}</b></div>
       <div>{$tarea}</div>
+      <div style="width:100%;text-align:left;margin-left:13px;">
+                <label><input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
+                              onclick="toggleNCBox(this);">Non-Compliant</label>
+                <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
+            </div>
       <div id="div{$name}_nc" style="{$vis}" >
         Notes:<br />
         {$tareanc}
@@ -1150,13 +1155,25 @@ function partial_sub_sec_head_ro($row, $value, $t) {
   //logit("NSCORE: ". $nscore);
   $scoreval = get_arrval($value, $nscore, 0);
   $this_score = get_arrval($value, $ynp_ro, 0);
+  $incval = get_arrval($value, "{$name}_inc", "{$ec}"); // incomplete counts for this sub section
+  $ncval = get_arrval($value, $name . '_nc', 'F');
+  $checked = '';
   $head = ($heading) ? "{$heading}<br />" : "";
   //logit ( "SRO: " . print_r ( $row, true ) );
+  $tarea = TEXTAREA("{$name}_comment", $value, "width:100%;height:50px;margin-top:5px;");
+  $tareanc = TEXTAREA("{$name}_note", $value, "width:100%;height:50px;margin-top:6px;", 'nc');
+  if ($ncval == 'T') {
+    $checked = 'checked';
+    $vis = '';
+  } else {
+    $ncval = 'F';
+    $vis = "display:none;";
+  }
   $out = <<<"END"
-  <table style="width:100%;"><tr>
+  <table style="width:810px;"><tr>
       <td style="padding: 2px 4px;">
         <div style="display:inline-block;width:440px;vertical-align:top;">
-          <div style="width:448px;display:inline;">
+          <div style="width:438px;display:inline;">
             <div style="display:inline;font-weight:bold;width:25px;vertical-align:top;">{$prefix}</div>
             <div style="display:inline-block;width:395px;">
               <div style="text-decoration:underline;font-weight:bold;display:inline;">{$head}</div>
@@ -1169,9 +1186,20 @@ function partial_sub_sec_head_ro($row, $value, $t) {
       </td>
       <td style="vertical-align:top;padding: 2px 4px;width:350px;">
       <div style="display:inline;float:right;margin-right:21px;">
+        <input type="hidden" id="{$name}_inc" name="{$name}_inc" value="{$incval}"/>
         <input class="ro" name="{$name}_score" id="{$name}_score" value="{$scoreval}" rel="{$ec}"
                type="text"  size="2" onclick="set_score('{$name}_score', {$max_score});"> / <b>{$max_score}</b></div>
       <div style="margin-right:5px;display:inline;float:right;">{$widget_nyp_ro}</div>
+          <div>{$tarea}</div>
+          <div style="width:100%;text-align:left;margin-left:13px;">
+                <label><input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
+                              onclick="toggleNCBox(this);">Non-Compliant</label>
+                <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
+            </div>
+      <div id="div{$name}_nc" style="{$vis}" >
+        Notes:<br />
+        {$tareanc}
+      </div>
       </td>
   </tr></table>
 END;
@@ -1353,12 +1381,7 @@ function partial_sec_element($row, $value, $t) {
             <div style="width:100%">
               <div style="vertical-align:top;display:inline;">{$prefix}</div>
               <div style="text-decoration:underline;font-weight:bold;vertical-align:top;display:inline;">{$heading}</div>
-              <div style="vertical-align:top;display:inline;">{$text}<br />
-                <div style="width:100%;text-align:right;margin-top:5px;">
-                  <label><input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
-                          onclick="toggleNCBox(this);">Non-Compliant</label>
-                  <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
-                </div>
+              <div style="vertical-align:top;display:inline;">{$text}
               </div>
             </div>
           </div>
@@ -1368,6 +1391,11 @@ function partial_sec_element($row, $value, $t) {
       <td  style="vertical-align:top;padding: 2px 4px;width:350px;">
         <div style="">{$mc_yn} </div>
         {$tarea}
+        <div style="width:100%;text-align:left;margin-left:13px;">
+                  <label><input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
+                          onclick="toggleNCBox(this);">Non-Compliant</label>
+                  <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
+                </div>
         <div id="div{$name}_nc" style="{$vis}" >
         Notes:<br />
         {$tareanc}
@@ -1404,8 +1432,9 @@ function partial_slipta_official($row, $value, $t) {
   $heading = $row['heading'];
   $text = $row['text'];
   $name = $row['varname'];
-  $val = get_arrval($value, $name, 'f');
-  $checked = ($val == 't') ? true : false;
+  $val = get_arrval($value, $name, 'F');
+  logit("VAL: {$name} {$val}");
+  $checked = ($val == 'T') ? 'checked' : '';
   $out = <<<"END"
 <table style="width:100%;"><tr>
 <td style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">

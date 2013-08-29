@@ -59,39 +59,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     $did = (int) $did;
     $page_id = (int) $page_id;
     $sql = "select * from audit_data where audit_id = {$did} and " . " page_id = {$page_id}";
-    //$stmt = $db->query ( $sql );
-    //$rows = $stmt->fetchAll ();
     $rows = $this->queryRows($sql);
-    /*if (! $rows) {
-      throw new Exception ( "There is no data" );
-      }*/
-    /*$value = array ();
-    foreach($rows as $row) {
-      $val = '';
-      $field_name = $row['field_name'];
-      switch ($row['field_type']) {
-        case 'integer' :
-          $val = $row['int_val'];
-          break;
-        case 'text' :
-          $val = $row['text_val'];
-          break;
-        case 'date' :
-          $dt = date_parse_from_format($this->ISOformat, $row['date_val']);
-          $date = new DateTime();
-          $date->setDate($dt['year'], $dt['month'], $dt['day']);
-          $val = $date->format($this->format);
-          break;
-        case 'bool' :
-          $val = $row['bool_val'];
-          break;
-        case 'string' :
-        default :
-          $val = $row['string_val'];
-      }
-      $value[$field_name] = $val;
-      // logit ( "{$field_name} ==> {$val}" );
-    }*/
     // return $value;
     return $this->reduceRows($rows);
   }
@@ -134,6 +102,15 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
       throw new Exception("There is no data");
     }
     return $rows[0];
+  }
+
+  public function getSecIncCounts($did) {
+    // get the section incomplete counts for this doc (audit)
+    $did = (int) $did;
+    $sql = "select * from audit_data where audit_id = {$did} " .
+         " and field_name like '%_secinc'";
+    $rows = $this->queryRows($sql);
+    return $this->reduceRows($rows);
   }
 
   public function updateData($data, $aid, $page_id, $labrow = array()) {
@@ -219,16 +196,6 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     $this->updateFinalScore($aid, 0);
   }
 
-  /*public function convert_ISO($value) {
-    //$format = 'm/d/Y';
-    //$ISOformat = 'Y-m-d';
-    $dt = date_parse_from_format($this->format, $value);
-    $date = new DateTime();
-    $date->setDate($dt['year'], $dt['month'], $dt['day']);
-    // logit('dt: '. $value);
-    return $date; //->format($ISOformat);
-  }*/
-
   public function updateAuditField($did, $name, $value, $page_id) {
     $suff = end(preg_split("/_/", $name));
     // logit ( "END: {$name} : {$value} --> {$suff}" );
@@ -253,8 +220,11 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
       case 'w' :
       case 'er' :
       case 'int' :
+      case 'pct':
       case 'score' :
       case 'total' :
+      case 'inc':
+      case 'secinc':
         $ival = (int) $value;
         $ftype = 'integer';
         break;
@@ -337,6 +307,8 @@ END;
       }
       // calculate if it is a minimum of 55% or 143 points
       $this->updateAuditField($did, 'final_score', $final_score, $page_id);
+      $final_pct = (int)$final_score / 258 * 100;
+      $this->updateAuditField($did, 'final_pct', $final_pct, $page_id);
       $final_y = '';
       $final_n = '';
       if ($final_score > 142) {

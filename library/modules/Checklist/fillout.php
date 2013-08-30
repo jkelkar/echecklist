@@ -425,11 +425,18 @@ function widget_select_labaffil($varname, $value, $t, $scr = '', $multiple = fal
   return OPTIONS($varname, $optvals, $value, $scr, $multiple);
 }
 
-function dialog_export($row, $value, $t) {
+function dialog_report($row, $value, $t) {
   $varname = $row['varname'];
-  $optvals = getExportTypes($t);
+  $optvals = getReportTypes($t);
   return SELECT($varname, $optvals, $value, '', false);
   // return widget_select_lablevel($varname, $value, $t);
+}
+
+function dialog_audittype_m($row, $value, $t) {
+  $varname = $row['varname'];
+  $optvals = getAuditTypes($t);
+  return SELECT($varname, $optvals, $value, '', true);
+  // return widget_select_lablevel($varname, $value, $t, '', true);
 }
 
 function dialog_lablevel($row, $value, $t) {
@@ -510,6 +517,7 @@ function dialog_cohortid_m($row, $value, $t) {
   );
   foreach($cohorts as $x) {
     foreach($x as $a => $cohort) {
+      if ($cohort == '') continue;
       $c[$cohort] = strtoupper($cohort);
     }
   }

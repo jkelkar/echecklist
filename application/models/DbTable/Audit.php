@@ -55,11 +55,11 @@ class Application_Model_DbTable_Audit extends Application_Model_DbTable_Checklis
      * Get all incomplete audits for this user
      */
     $sql = <<<"END"
-select a.id audit_id, a.end_date, a.cohort_id, a.status,
-       a.slmta_type, l.id lab_id,
-       l.labname, l.labnum, l.country, l.lablevel, l.labaffil,
-       tt.tag from audit a, template_type tt, lab l, audit_owner ao
-      where a.template_id = tt.id and a.id = ao.audit_id and ao.owner ={$id}
+select a.id audit_id, a.end_date, a.cohort_id, a.status, a.audit_type,
+       a.slipta_official, a.slmta_type, l.id lab_id,
+       l.labname, l.labnum, l.country, l.lablevel, l.labaffil
+  from audit a, lab l, audit_owner ao
+ where a.id = ao.audit_id and ao.owner ={$id}
    and l.id = a.lab_id and a.status = 'INCOMPLETE'
 END;
 
@@ -91,52 +91,63 @@ END;
   }
 
   public function selectAudits($data) {
-
-    $sql = "select a.id audit_id, a.end_date, a.cohort_id, a.status, ".
-      " a.slmta_type, l.id labid, ".
-      " l.labname, l.labnum, l.country, l.lablevel, l.labaffil, " .
-      " tt.tag from audit a, template_type tt, lab l " .
-      " where l.id = a.lab_id and tt.id = a.template_id";
+  logit('IN top: '. print_r($data, true));
+    $sql = <<<"END"
+select a.id audit_id, a.end_date, a.cohort_id, a.status, a.slipta_official,
+       a.slmta_type, a.audit_type, l.id labid,
+       l.labname, l.labnum, l.country, l.lablevel, l.labaffil
+  from audit a, lab l
+ where l.id = a.lab_id
+END;
     foreach($data as $a => $b) {
-      if (!is_null($b) and $b != '') {
-        //logit("{$a} = {$b} ". print_r($b, true));
-        //logit("LIST: ", $this->_mkList($b));
-        switch($a) {
-        case 'country':
-          $sql .= " and l.country ". $this->_mkList($b) ;
-          break;
-        case 'lablevel':
-          $sql .= " and l.lablevel ". $this->_mkList($b) ;
-          break;
-        case 'labaffil':
-          $sql .= " and l.labaffil ". $this->_mkList($b)  ;
-          break;
-        case 'slmta':
-          $sql .= " and a.slmta_type ". $this->_mkList($b) ;
-          break;
-        case 'cohortid':
-          $sql .= " and a.cohort_id ". $this->_mkList($b) ;
-          break;
-        case 'stdate':
-          if ($b != '') {
-            $sql .= " and a.end_date >= '{$stdate}' ";
-          }
-          break;
-        case 'enddate':
-          if ($b != '') {
-            $sql .= " and a.end_date <= '{$enddate}' ";
-          }
-          break;
-        case 'labnum':
-          if ($b != '') {
-            $sql .= " and l.labnum = '$b' ";
-          }
-        default:
+      if (! is_null($b) and $b != '') {
+        logit("IN: {$a} = {$b} " . print_r($b, true));
+          //logit("LIST: ", $this->_mkList($b));
+        switch ($a) {
+          case 'country' :
+            $sql .= " and l.country " . $this->_mkList($b);
+            break;
+          case 'lablevel' :
+            $sql .= " and l.lablevel " . $this->_mkList($b);
+            break;
+          case 'labaffil' :
+            $sql .= " and l.labaffil " . $this->_mkList($b);
+            break;
+          case 'labnum' :
+            if ($b != '') {
+              $sql .= " and l.labnum = '$b' ";
+            }
+            break;
+          case 'labname' :
+            if ($b != '') {
+              $sql .= " and l.labname = '$b' ";
+            }
+            break;
+          case 'audit_type' :
+            $sql .= " and a.audit_type " . $this->_mkList($b);
+            break;
+          case 'slmta_type' :
+            $sql .= " and a.slmta_type " . $this->_mkList($b);
+            break;
+          case 'cohortid' :
+            $sql .= " and a.cohort_id " . $this->_mkList($b);
+            break;
+          case 'stdate' :
+            if ($b != '') {
+              $sql .= " and a.end_date >= '{$stdate}' ";
+            }
+            break;
+          case 'enddate' :
+            if ($b != '') {
+              $sql .= " and a.end_date <= '{$enddate}' ";
+            }
+            break;
+          default :
         }
       }
     }
-    //logit("SQL: {$sql}");
-    $sql .= " order by a.end_date desc";
+    logit("SQL: {$sql}");
+    $sql .= " order by a.end_date desc, a.audit_type";
     $rows = $this->queryRows($sql);
     return $rows;
   }

@@ -418,6 +418,7 @@ END;
           'created_at' => $nowiso,
           'updated_at' => $nowiso,
           'updated_by' => $this->userid,
+          'audit_type' => $data['audit_type'],
           //'start_date' => convert_ISO($this->data['start_date'])->format($this->ISOformat),
           //'end_date' => convert_ISO($this->data['end_date'])->format($this->ISOformat),
           'lab_id' => $this->labid,
@@ -464,13 +465,14 @@ END;
   public function selectAction() {
     $this->dialog_name = 'audit/select';
     logit("In LS");
+    $aud = new Application_Model_DbTable_Audit();
     if (! $this->getRequest()->isPost()) {
       $this->makeDialog();
     } else {
       logit('Select: In post');
       if ($this->collectData()) return;
       logit('Auditsel: ' . print_r($this->data, true));
-      $aud = new Application_Model_DbTable_Audit();
+
       $arows = $aud->selectAudits($this->data);
       logit("AROWS: " . print_r($arows, true));
       $this->makeDialog($this->data);

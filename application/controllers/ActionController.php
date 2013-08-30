@@ -250,7 +250,7 @@ END;
   <li><a href="{$this->baseurl}/audit/create"><span title=".icon  .icon-green .icon-clipboard " class="icon icon-green icon-clipboard"></span> New Audit</a></li>
   <li><a href="{$this->baseurl}/audit/find"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Find</a></li>
   <li class="divider"></li>
-  <li><a href="{$this->baseurl}/audit/select"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Export to Excel</a></li>
+  <li><a href="{$this->baseurl}/audit/select"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Select Audits</a></li>
   <li><a href="{$this->baseurl}/audit/import"><span title=".icon  .icon-blue .icon-import " class="icon icon-blue icon-archive"></span> Import</a></li>
 </ul>
 </div>
@@ -448,9 +448,9 @@ END;
 
   public function getDialogLines() {
     /*
-     * Get the DialogRow data
+     * Get the Dialog data
      */
-    $dialog = new Application_Model_DbTable_DialogRow();
+    $dialog = new Application_Model_DbTable_Dialog();
     $this->drows = $dialog->getDialogRows($this->dialog_name);
     //logit('DROWS: ' . print_r($this->drows, true));
   }
@@ -483,7 +483,7 @@ END;
     /*
      * Collect all the post data
      */
-    $dialog = new Application_Model_DbTable_DialogRow();
+    $dialog = new Application_Model_DbTable_Dialog();
 
     $this->getDialogLines();
     $ignore_list = array (
@@ -613,9 +613,9 @@ END;
     $ct = 0;
     if ($cb) {
       $tout[] = <<<"END"
-<form method="post" action="{$this->baseurl}/audit/exportxls"
-      enctype="multipart/form-data" name="export"
-      id="export">
+<form method="post" action="{$this->baseurl}/output/process"
+      enctype="multipart/form-data" name="action"
+      id="action">
 END;
     }
     $tout[] = '<table style="margin-left:50px;color:black;">';
@@ -627,13 +627,18 @@ END;
       $tout[] = "<td style='width:55px;'></td>";
     }
     $tout[] = <<<"END"
-<td style='width:55px;font-weight:bold;padding:2px 0;'>AuditId</td>
-<td style='width:70px;font-weight:bold;'>Type</td>
-<td style='width:90px;font-weight:bold;'>Date</td>
+<td style='width:43px;font-weight:bold;padding:2px 0;'>Audit<br />Id</td>
+<td style='width:55px;font-weight:bold;'>Type</td>
+<td style='width:55px;font-weight:bold;'>SLMTA<br />Type</td>
+<td style='width:55px;font-weight:bold;'>Slipta<br />Off.</td>
+        <td style='width:90px;font-weight:bold;'>Date</td>
 <td style='width:100px;font-weight:bold;'>Labnum</td>
-<td style='width:200px;font-weight:bold;'>Labname</td>
+<td style='width:150px;font-weight:bold;'>Labname</td>
+<td style='width:85px;font-weight:bold;'>Country</td>
 <td style='width:100px;font-weight:bold;'>Level</td>
-<td style='width:145px;font-weight:bold;'>Affil.</td>
+<td style='width:145px;font-weight:bold;'>Affiliation</td>
+<td style='width:45px;font-weight:bold;'>Co-<br />hort<br />Id</td>
+<td style='width:92px;font-weight:bold;'>Status</td>
 END;
     if (! $cb) {
       $tout[] = "<td style='width:300px;font-weight:bold;'></td><td></td></tr>";
@@ -669,12 +674,14 @@ END;
       }
       $tout[] = <<<"END"
 <td>{$row['audit_id']}</td>
-<td>{$row['tag']}</td>
+<td>{$row['audit_type']}</td><td>{$row['slmta_type']}</td><td>{$row['slipta_official']}</td>
 <td>{$row['end_date']}</td>
 <td>{$row['labnum']}</td>
-<td>{$row['labname']}</td>
+<td>{$row['labname']}</td><td>{$row['country']}</td>
 <td><p class="small">{$rev_level[$row['lablevel']]}</p></td>
 <td><p class="small">{$rev_affil[$row['labaffil']]}</p></td>
+<td>{$row['cohort_id']}</td><td>{$row['status']}</td>
+
 END;
       if (! $cb) {
         $tout[] = "<td>{$view} {$edit} {$export} {$delete}</td><td></td></tr>";
@@ -683,7 +690,7 @@ END;
       }
     }
     if ($cb) {
-      $tout[] = '<tr><td colspan=9 style="text-align:right;" ><input class="input-xlarge submit" type="submit" name="export" value="Export to Excel">';
+      $tout[] = '<tr><td colspan=9 style="text-align:right;" ><input class="input-xlarge submit" type="submit" name="doit" value="Process Request">';
     }
     $tout[] = '</table><div style="height: 65px;">&nbsp;</div>' . '<div style="clear: both;"></div>';
     if ($cb) {

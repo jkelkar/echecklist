@@ -174,7 +174,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     }
   }
 
-  public function handleAuditHeadData($data) {
+  public function handleAuditHeadData($data, $aid) {
     // update the AuditHaead (table audit) row with audit details
     // Handles:
     // start_date, end_date, slipta_official, slmta_type
@@ -182,10 +182,21 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
       // logit('updating dates: ' . print_r($data, true));
       $start_date = convert_ISO(get_arrval($data, 'start_date', ''));
       $end_date = convert_ISO(get_arrval($data, 'end_date', ''));
+      $slipt_official = '';
+      try {
+        $slipta_official = $data['slipta_official'];
+      } catch (Exception $e) {
+      }
       // copy the start_date and end_date into audit
       $sql = "update audit set start_date = '{$start_date->format($this->ISOformat)}', " .
-           " end_date='{$end_date->format($this->ISOformat)}' where id = {$aid}";
-      // logit("UPD: {$sql}");
+           " end_date='{$end_date->format($this->ISOformat)}', " .
+           " slipta_official='{$slipta_official}' where id = {$aid}";
+      logit("UPD: {$sql}");
+      $this->execute($sql);
+    }
+    if (array_key_exists('slmta_type', $data)) {
+      $slmta_type = $data['slmta_type'];
+      $sql = "update audit set slmta_type = '{$slmta_type}'where id = {$aid}";
       $this->execute($sql);
     }
   }
@@ -259,7 +270,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
         $this->updateAuditField($aid, $n, $v, $page_id);
       }
     }*/
-    handleAuditHeadData($data);
+    $this->handleAuditHeadData($data, $aid);
     /*
      if (array_key_exists('start_date', $data)) {
       // logit('updating dates: ' . print_r($data, true));

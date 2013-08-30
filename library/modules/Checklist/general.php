@@ -192,9 +192,21 @@ function getSLMTAType($t) {
   );
 }
 
-function getExportTypes($t) {
+function getReportTypes($t) {
   return array(
-      "{$t['Select']} ..."=> '-'
+      "{$t['Select']} ..."=> '-',
+      "{$t['Export Audits To Excel']}" => 'audits2excel',
+      "{$t['Compare scores in a Spider Chart']}" => 'spiderchart',
+      "{$t['Campare scores in a Bar Chart']}" => 'barchart',
+  );
+}
+
+function getAuditTypes($t) {
+  return array(
+      "{$t['Select']} ..."=> '-',
+      "{$t['BioSafety']}" => 'BAT',
+      "{$t['SLIPTA']}" => 'SLIPTA',
+      "{$t['TB']}" => 'TB',
   );
 }
 
@@ -285,7 +297,13 @@ function getTranslatables(/*$tword,*/ $langtag) {
       'Midterm Audit',
       'Exit Audit',
       'Surveillance Audit',
-      'Other'
+      'Other',
+      'Export Audits To Excel',
+      'Compare scores in a Spider Chart',
+      'Campare scores in a Bar Chart',
+      'BioSafety',
+      'SLIPTA',
+      'TB'
   );
   $tlist = get_common_words_translated($tword, $words);
   //logit('TLIST: '. print_r($tlist, true));

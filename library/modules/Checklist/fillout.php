@@ -457,7 +457,7 @@ function dialog_audit_type($row, $value, $t) {
   $varname = $row['varname'];
   $lab = new Application_Model_DbTable_Audit();
   $tags = $lab->getAuditTypes();
-  logit('TAGS: ' . print_r($tags, true));
+  //logit('TAGS: ' . print_r($tags, true));
   $c = array (
       'Select ...' => '-'
   );
@@ -466,7 +466,7 @@ function dialog_audit_type($row, $value, $t) {
       $c[$tag] = strtoupper($tag);
     }
   }
-  logit('TAGS: ' . print_r($c, true));
+  //logit('TAGS: ' . print_r($c, true));
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
   return SELECT($varname, $c, $value, '', false);
 }
@@ -475,7 +475,7 @@ function dialog_country($row, $value, $t) {
   $varname = $row['varname'];
   $lab = new Application_Model_DbTable_Lab();
   $countries = $lab->getDistinctCountries();
-  logit('COUNTRIES: ' . print_r($countries, true));
+  //logit('COUNTRIES: ' . print_r($countries, true));
   $c = array (
       'Select ...' => '-'
   );
@@ -484,7 +484,7 @@ function dialog_country($row, $value, $t) {
       $c[$country] = strtoupper($country);
     }
   }
-  logit('COUNTRIES: ' . print_r($c, true));
+  //logit('COUNTRIES: ' . print_r($c, true));
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
   return SELECT($varname, $c, $value, '', false);
 }
@@ -493,7 +493,7 @@ function dialog_country_m($row, $value, $t) {
   $varname = $row['varname'];
   $lab = new Application_Model_DbTable_Lab();
   $countries = $lab->getDistinctCountries();
-  logit('COUNTRIES: ' . print_r($countries, true));
+  //logit('COUNTRIES: ' . print_r($countries, true));
   $c = array (
       'Select ...' => '-'
   );
@@ -502,7 +502,7 @@ function dialog_country_m($row, $value, $t) {
       $c[$country] = strtoupper($country);
     }
   }
-  logit('COUNTRIES: ' . print_r($c, true));
+  //logit('COUNTRIES: ' . print_r($c, true));
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
   return SELECT($varname, $c, $value, '', true);
 }
@@ -511,7 +511,7 @@ function dialog_cohortid_m($row, $value, $t) {
   $varname = $row['varname'];
   $audit = new Application_Model_DbTable_Audit();
   $cohorts = $audit->getDistinctCohorts();
-  logit('COHORTS: ' . print_r($cohorts, true));
+  //logit('COHORTS: ' . print_r($cohorts, true));
   $c = array (
       'Select ...' => '-'
   );
@@ -521,7 +521,7 @@ function dialog_cohortid_m($row, $value, $t) {
       $c[$cohort] = strtoupper($cohort);
     }
   }
-  logit('COHORTS: ' . print_r($c, true));
+  //logit('COHORTS: ' . print_r($c, true));
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
   return SELECT($varname, $c, $value, '', true);
 }
@@ -1441,7 +1441,7 @@ function partial_slipta_official($row, $value, $t) {
   $text = $row['text'];
   $name = $row['varname'];
   $val = get_arrval($value, $name, 'F');
-  logit("VAL: {$name} {$val}");
+  //logit("VAL: {$name} {$val}");
   $checked = ($val == 'T') ? 'checked' : '';
   $out = <<<"END"
 <table style="width:100%;"><tr>

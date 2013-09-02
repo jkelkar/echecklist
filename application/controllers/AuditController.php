@@ -430,33 +430,6 @@ END;
           'owner' => $this->userid
       );
       $ao->insertData($aorow);
-     /**
-      * This section not needed any more as no count is same as not complete
-       // insert incomplete rows if audit is SLIPTA
-      if ($trow['tag'] == 'SLIPTA') {
-        // SLIPTA is the only audit that has to be completed fully
-        $secct = 12; // there are 12 sections mark them all as incomplete
-        $pagemap = array( // these are section#s mapped to page_ids from table 'page'
-            1=> 11,
-            2=> 12,
-            3=> 13,
-            4=> 14,
-            5=> 15,
-            6=> 16,
-            7=> 17,
-            8=> 18,
-            9=> 19,
-            10=> 20,
-            11=> 21,
-            12=> 22
-        );
-        for($i = 1; $i <= $secct; $i ++) {
-          $secval = strval($i);
-          $secno = ($i < 10) ? "0{$secval}" : $secval;
-          $adata->updateAuditField($newauditid, "s{$secno}_secinc", 1, $pagemap[$i]);
-        }
-      }
-      */
       $url = "/audit/edit/{$newauditid}/";
       $this->_redirector->gotoUrl($url);
     }
@@ -474,7 +447,7 @@ END;
       logit('Auditsel: ' . print_r($this->data, true));
 
       $arows = $aud->selectAudits($this->data);
-      logit("AROWS: " . print_r($arows, true));
+      //logit("AROWS: " . print_r($arows, true));
       $this->makeDialog($this->data);
       $this->makeAuditLines($arows, array (
           'cb' => true

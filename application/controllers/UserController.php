@@ -30,7 +30,7 @@ class UserController extends Application_Controller_Action
     if (!$this->getRequest()->isPost()) {
       if ($this->usertype != '') {
         // logit('redirect');
-        $this->_redirector->gotoUrl("/audit/edit/1/" );
+        $this->_redirector->gotoUrl($this->mainpage);
       }
       // logit('LAB: '. print_r($row, true));
       $this->makeDialog();

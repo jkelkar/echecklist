@@ -37,12 +37,13 @@ class Application_Model_DbTable_Audit extends Application_Model_DbTable_Checklis
   public function getAudit($id) {
     // get audit from this audit id
     $id = (int) $id;
-    $sql = "select a.id audit_id, a.end_date, a.cohort_id, a.status, ".
-      " a.slmta_type, l.id lab_id, ".
-      " l.labname, l.labnum, l.country, l.lablevel, l.labaffil, " .
-      " tt.tag from audit a, template_type tt, lab l " .
-      " where a.id = {$id} and a.template_id = tt.id " .
-      " and l.id = a.lab_id";
+    $sql = <<<"END"
+ select a.id audit_id, a.end_date, a.cohort_id, a.status,
+        a.slmta_type, l.id lab_id,
+        l.labname, l.labnum, l.country, l.lablevel, l.labaffil
+   from audit a, lab l
+  where a.id = {$id} and and l.id = a.lab_id
+END;
     $rows = $this->queryRows($sql);
     if (!$rows) {
       throw new Exception("Could not find the audit.");
@@ -101,7 +102,7 @@ select a.id audit_id, a.end_date, a.cohort_id, a.status, a.slipta_official,
 END;
     foreach($data as $a => $b) {
       if (! is_null($b) and $b != '') {
-        logit("IN: {$a} = {$b} " . print_r($b, true));
+        //logit("IN: {$a} = {$b} " . print_r($b, true));
           //logit("LIST: ", $this->_mkList($b));
         switch ($a) {
           case 'country' :

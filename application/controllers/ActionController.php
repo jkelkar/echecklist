@@ -690,7 +690,7 @@ END;
       }
     }
     if ($cb) {
-      $tout[] = '<tr><td colspan=9 style="text-align:right;" ><input class="input-xlarge submit" type="submit" name="doit" value="Process Request">';
+      $tout[] = '<tr><td colspan=13 style="text-align:right;" ><input class="input-xlarge submit" type="submit" name="doit" value="Process Request">';
     }
     $tout[] = '</table><div style="height: 65px;">&nbsp;</div>' . '<div style="clear: both;"></div>';
     if ($cb) {

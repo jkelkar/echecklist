@@ -679,7 +679,7 @@ function partial_stars($row, $value, $t) {
   $heading = $row['heading'];
   $text = $row['text'];
   $name = $row['varname'];
-  $stars = widget_select_stars("{$name}_stars", $value, $t);
+  $stars = widget_select_stars("{$name}", $value, $t);
   $out = <<<"END"
 <div style="width:100%;">
 <div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">

@@ -522,13 +522,6 @@ END;
       $this->getResponse()->setHeader(
           'Content-Disposition', 'attachment; filename="' . $fname . '"');
       $this->getResponse()->setBody($out['data']);
-      // $this->echecklistNamespace->flash = "file sent";
-        //$referer = $this->getRequest()->getHeader('referer');
-        //$this->_redirector->gotoUrl($referer);
-        //$this->_redirector->gotoUrl($this->mainpage);
-
-
-      //$this->makeDialog();
     } else {
       logit('Import: In post');
       $this->collectData();

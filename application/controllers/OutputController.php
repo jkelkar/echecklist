@@ -35,7 +35,8 @@ class OutputController extends Application_Controller_Action {
     }
     $name = 'slmta_report';
     $proc->process($list, $name);
-    exit();
+    $this->echecklistNamespace->flash = 'Excel sheet done.';
+    $this->_redirector->gotoUrl($this->mainpage);
   }
 
 

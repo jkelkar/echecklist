@@ -39,10 +39,10 @@ class Application_Model_DbTable_Audit extends Application_Model_DbTable_Checklis
     $id = (int) $id;
     $sql = <<<"END"
  select a.id audit_id, a.end_date, a.cohort_id, a.status,
-        a.slmta_type, l.id lab_id,
+        a.slmta_type, l.id lab_id, a.audit_type tag,
         l.labname, l.labnum, l.country, l.lablevel, l.labaffil
    from audit a, lab l
-  where a.id = {$id} and and l.id = a.lab_id
+  where a.id = {$id} and l.id = a.lab_id
 END;
     $rows = $this->queryRows($sql);
     if (!$rows) {
@@ -95,7 +95,7 @@ END;
   logit('IN top: '. print_r($data, true));
     $sql = <<<"END"
 select a.id audit_id, a.end_date, a.cohort_id, a.status, a.slipta_official,
-       a.slmta_type, a.audit_type, l.id labid,
+       a.slmta_type, a.audit_type, l.id labid, a.audit_type tag,
        l.labname, l.labnum, l.country, l.lablevel, l.labaffil
   from audit a, lab l
  where l.id = a.lab_id

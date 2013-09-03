@@ -84,36 +84,46 @@ function doit($rows)
      );
 
   // Add some data
-  echo date('H:i:s') , " Add some data" , EOL;
+  echo date('H:i:s'), " Add some data", EOL;
   $s0 = $objPHPExcel->setActiveSheetIndex(0);
-  $col = 1; $row = 1;
+  $col = 1;
+  $row = 1;
   // $s0->setCellValue(rc($col, $row), 'Table data: Albums');
   $s0->mergeCells('A1:E1');
   $s0->getStyle('A1')->applyFromArray($styleArray);
   $s0->setCellValue('A1', 'Table data: Albums');
-  $col = 1; $row = 3;
-  foreach (array('id', 'title', 'artist') as $name) {
+  $col = 1;
+  $row = 3;
+  foreach(array(
+      'id',
+      'title',
+      'artist'
+  ) as $name) {
     $s0->setCellValue(rc($col, $row), $name);
-    $s0->getStyle(rc($col, $row))->getAlignment()->setHorizontal
-	(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $s0->getStyle(rc($col, $row))->getAlignment()->setHorizontal(
+        PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
     $s0->getStyle(rc($col, $row))->getFont()->setBold(true);
     $col ++;
   }
-  $row++;
+  $row ++;
 
   $col = 1;
   foreach($rows as $drow) {
     $col = 1;
-    foreach (array('id', 'title', 'artist') as $name) {
+    foreach(array(
+        'id',
+        'title',
+        'artist'
+    ) as $name) {
       $s0->setCellValue(rc($col, $row), $drow[$name]);
       if ($name == 'id') {
-	$s0->getStyle(rc($col, $row))->getAlignment()->setHorizontal
-	  (PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $s0->getStyle(rc($col, $row))->getAlignment()->setHorizontal(
+            PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
       }
       $col ++;
     }
-    $row++;
+    $row ++;
   }
   /**
    // $s0->setCellValue(i2a($col) + $row, //'A1'

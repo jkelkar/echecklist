@@ -143,12 +143,9 @@ function widget_integersmall($name, $value, $length = 0) {
 }
 
 function html_main_heading($row) {
-  $prefix = $row['prefix'];
   $heading = $row['heading'];
-  $text = $row['text'];
-  $name = $row['varname'];
   $out = <<<"END"
-<td colspan=6>
+<td colspan=6 class="nb">
   <center><div class="maintitle">
     {$heading}
   </div></center>
@@ -163,11 +160,11 @@ function html_main2($row) {
   $text = $row['text'];
   $name = $row['varname'];
   $out = <<<"END"
-<div style="width:100%;">
+<td colspan=6 class="nb">
   <center><div class="maintitle2">
     {$heading}
   </div></center>
-</div>
+</td>
 END;
   return $out;
 }
@@ -204,13 +201,13 @@ function html_banner_rev($row) {
   $text = $row['text'];
   $name = $row['varname'];
   $out = <<<"END"
-<div style="width:100%;">
+<td colspan=6 class="nb">
   <div class="banner_rev">
   {$prefix} {$heading}
   </div>
-  <div class="normal">{$text}</div>
-</div>
+  <div class="normal" style="padding-left:75px;padding-right:25px;">{$text}</div>
 END;
+
   return $out;
 }
 
@@ -220,12 +217,12 @@ function html_banner_rev_border($row) {
   $text = $row['text'];
   $name = $row['varname'];
   $out = <<<"END"
-<div style="width:100%;">
-  <div class="banner_rev">
+<td colspan=6>
+  <div class="big_banner_rev">
   {$prefix} {$heading}
   </div>
   <div class="normal_border">{$text}</div>
-</div>
+</td>
 END;
   return $out;
 }
@@ -1353,7 +1350,7 @@ function html_img($row) {
   $heading = $row['heading'];
   $baseurl = $row['baseurl'];
   $out = <<<"END"
-<td colspan=6>
+<td colspan=6 class="nb">
   <center>
     <img style="width:797px;height:260px;" src="{$baseurl}/images/{$heading}" />
   </center>
@@ -1543,7 +1540,10 @@ logit('VALUE: '. print_r($value, true));
       'sub_sec_info',
       'sec_total',
       'img',
-      'main_heading'
+      'main_heading',
+      'main2',
+      'banner_rev',
+      'banner_rev_border'
   );
   $tout = array ();
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();

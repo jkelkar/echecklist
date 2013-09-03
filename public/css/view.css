@@ -6,7 +6,7 @@
 
 body {
 	font-family: arial, verdana, sans-serif;
-	font-size: 16px;
+	font-size: 21px;
 	font-weight: normal;
 	margin: 5px 5px;
 }
@@ -20,8 +20,16 @@ table {
 	width: 1000px;
 }
 
+table.table800 {
+    width: 800px;
+    border-collapse: collapse;
+}
+table.tablestars {
+    width: 800px;
+    border-collapse: collapse;
+}
 .fs17 {
-	font-size: 17px;
+	  font-size: 1.0625em; /*e17px;*/
 }
 
 .p5 {
@@ -85,8 +93,9 @@ table.criteria {
         border:1px;
     } */
 td {
-	border: 1px solid #333;
+	border: 1px solid #333; 
 }
+
 
 td.center,td.c {
 	text-align: center;
@@ -130,14 +139,14 @@ td.title {
 td.normaltitle {
 	text-align: left;
 	padding-left: 5px;
-	font-size: 17px;
+	font-size: 1.0625em; /*17px; */
 }
 
 td.bigtitle {
 	text-align: left;
 	font-weight: bold;
 	padding-left: 10px;
-	font-size: 19px;
+	font-size: 1.1875em; /*19px;*/
 	color: white;
 	background-color: black;
 }
@@ -156,7 +165,7 @@ td.subtitlec {
 td.bigtitlei,span.bigtitlei {
 	text-align: left;
 	padding-left: 10px;
-	font-size: 18px;
+	font-size: 1.125em; /*18px;*/
 	font-style: italic;
 }
 
@@ -203,8 +212,36 @@ td.bunb {
 
 td.banner_rev {
 	background-color: black;
-	font-size: 18px;
-	color: white
+	color: white;
+	font-size: 1.125em; /*18px;*/
+  font-weigth:bold;
+
+}
+div.banner_rev {
+    background-color: #000;
+    color: white;
+    font-size: 1.125em; /*18px;*/
+    font-weight: bold;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    padding: 5px 0 5px 10px ;
+}
+
+div.big_banner_rev {
+    background-color: #000;
+    color: white;
+    font-size: 1.125em; /*18px;*/
+    font-weight: bold;
+/*    margin-top: 16px;
+    margin-bottom: 16px; */
+    padding: 5px 5px 15px 10px ;
+}
+
+div.normal_border {
+/*    font-size: 1.2em;
+    line-height: 1.33em;  */
+    padding: 4px 10px;
+    border: 2px solid #333;
 }
 
 td.data {
@@ -221,7 +258,7 @@ td.star {
 	padding-bottom: 10px;
 }
 
-td.bathead {
+td.bthead {
 	font-weight: bold;
 	color: white;
 	text-transform: uppercase;
@@ -252,7 +289,7 @@ td.comment {
 }
 
 span.tiny {
-	font-size: 12px;
+	font-size: 0.75em; /*12px;*/
 	font-weight: normal;
 }
 
@@ -282,9 +319,9 @@ textarea.signature {
 
 div.maintitle {
 	font-family: "Times New Roman", serif;
-	width: 600px;
+	width: 670px;
 	margin-top: 16px;
-	font-size: 38px;
+	font-size: 2.0em; /*38px;*/
 	line-height: 45px;
 	font-weight: bold;
 }
@@ -293,6 +330,10 @@ div.maintitle2 {
 	font-family: "Times New Roman", serif;
 	width: 700px;
 	margin-top: 16px;
-	font-size: 32px;
+	font-size: 1.7em; /*32px;*/
 	line-height: 37px;
+}
+ul {
+    list-style: inside;
+    margin: 0 0 9px 25px;
 }

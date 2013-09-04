@@ -62,6 +62,9 @@ class OutputController extends Application_Controller_Action {
         case 'incomplete' :
           $this->stacked_barchart();
           break;
+        case 'compare' :
+          $this->parallel_barchart();
+          break;
         case 'auditspider' :
           $this->spider_chart();
           break;
@@ -121,10 +124,12 @@ class OutputController extends Application_Controller_Action {
     // $this->_helper->layout->disableLayout();
     // $this->_helper->viewRenderer->setNoRender(true);
     # Output the chart
-    $path = dirname(__DIR__) . '/../public/tmp/';
-    $fname = "{$path}savethis.png";
-    $this->getResponse()->setHeader("Content-type: image/png");
-    $this->getResponse()->setBody($c->makeChart2(PNG));
+    //$path = dirname(__DIR__) . '/../public/tmp/';
+    //$fname = "{$path}savethis.png";
+    //$this->getResponse()->setHeader("Content-type: image/png");
+    //$this->getResponse()->setBody($c->makeChart2(PNG));
+    header("Content-type: image/png");
+    print($c->makeChart2(PNG));
   }
 
   public function stacked_barchart() {
@@ -159,6 +164,56 @@ class OutputController extends Application_Controller_Action {
     # Add a stacked bar layer and set the layer 3D depth to 8 pixels
     $layer = $c->addBarLayer2(Stack, 0);
 
+    # Add the three data sets to the bar layer
+
+    $layer->addDataSet($data2, 0x00ff00, "Yes");
+    $layer->addDataSet($data1, 0xff0000, "No");
+    $layer->addDataSet($data0, 0xffffff, "Not Answered");
+
+    # Enable bar label for the whole bar
+    $layer->setAggregateLabelStyle();
+
+    # Enable bar label for each segment of the stacked bar
+    $layer->setDataLabelStyle();
+
+    # Output the chart
+    header("Content-type: image/png");
+    print($c->makeChart2(PNG));
+  }
+
+  public function parallel_barchart() {
+    # The data for the bar chart
+    $data0 = array(70, 22, 45, 67, 23, 13, 59, 63, 34, 12, 13, 15, 17);
+    $data1 = array(23, 13, 59, 63, 34, 12, 13, 15, 17, 70, 22, 45, 67);
+    $data2 = array(34, 12, 13, 15, 17, 70, 22, 45, 67, 23, 13, 59, 63);
+
+    # The labels for the bar chart
+    $labels = array("All","Section 1","Section 2","Section 3","Section 4","Section 5","Section 6",
+    "Section 7","Section 8","Section 9","Section 10","Section 11","Section 12",);
+
+    # Create a XYChart object of size 500 x 320 pixels
+    $c = new XYChart(700, 420);
+
+    # Set the plotarea at (100, 40) and of size 280 x 240 pixels
+    $c->setPlotArea(80, 90, 580, 240);
+
+    # Add a legend box at (400, 100)
+    $c->addLegend(80, 40)->setCols(3); //400, 100);
+
+    # Add a title to the chart using 14 points Times Bold Itatic font
+    $c->addTitle("Completeness Levels - by section", "timesbi.ttf", 14);
+
+    # Add a title to the y axis. Draw the title upright (font angle = 0)
+    $textBoxObj = $c->yAxis->setTitle("Items Counts");
+    $textBoxObj->setFontAngle(90);
+
+    # Set the labels on the x axis
+    $c->xAxis->setLabels($labels)->setFontAngle(45);
+
+    # Add a stacked bar layer and set the layer 3D depth to 8 pixels
+    $layer = $c->addBarLayer2();
+    // set the bar gap
+    $layer->setBarGap(0.4, TouchBar);
     # Add the three data sets to the bar layer
 
     $layer->addDataSet($data2, 0x00ff00, "Yes");

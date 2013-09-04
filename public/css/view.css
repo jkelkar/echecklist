@@ -12,83 +12,34 @@
 
 body {
 	font-family: "arialnarrow",arial, verdana, sans-serif;
-	font-size: 24px;
+	font-size: 13.5px;
 	/*line-height: 29px;*/
 	font-weight: normal;
 	margin: 5px 5px;
+}
+
+body.outer {
+	width: 167mm !important;
 }
 
 table {
 	border-collapse: collapse;
 }
 
-.table1000 {
-	border-collapse: collapse;
-	width: 1000px;
-}
+/* .table1000 {
+	width: 168mm; / *1000px;* /
+} */
 
 table.table800 {
-    width: 800px;
-    border-collapse: collapse;
+    width: 149mm !important; /*800px;*/
 }
 table.tablestars {
-    width: 800px;
-    border-collapse: collapse;
+    width: 143mm !important; /*800px;*/
 }
-.fs17 {
-	  font-size: 1.0625em; /*e17px;*/
-}
-
-.p5 {
-	padding: 5px;
-}
-
-.p10 {
-	padding: 10px;
-}
-
-.lg {
-	background-color: #F0F0F0;
-}
-
-.dg {
-	background-color: #B0B0B0;
-}
-
-.nb {
-	border-style: none;
-}
-
-.dhead {
-	padding: 2px;
-	font-weight: bold;
-	text-align: left;
-	vertical-align: top;
-}
-
-.ihead {
-	padding: 2px;
-	text-align: center;
-	vertical-align: top;
-	font-style: italic;
-}
-
-.data {
-	padding: 2px;
-}
-
-.cbx {
-	height: 16px;
-	width: 11px;
-	border-style: solid;
-	border-width: 1px;
-	display: inline-block;
-	text-align: center;
-}
-
 table.display {
-	width: 1050px;
+	width: 100%; /*168mm !important; /*1050px;*/
 	border: 1px;
+	table-layout: fixed;
 }
 
 table.criteria {
@@ -103,7 +54,10 @@ td {
 	border: 1px solid #333; 
 }
 
+td.normal {
+	padding: 5mm 8mm 5mm 16mm;
 
+}
 td.center,td.c {
 	text-align: center;
 }
@@ -180,7 +134,9 @@ td.tests {
 	text-align: right;
 	padding-right: 5px;
 }
-
+td.tbw { /* top border white */
+	border-top-color: white;
+}
 td.panel {
 	text-align: left;
 	padding-left: 15px;
@@ -202,10 +158,6 @@ td.nbb {
 	text-align: center;
 }
 
-td.nb {
-	border-style: none;
-}
-
 td.bnb {
 	border-style: none;
 	font-weight: bold;
@@ -217,23 +169,117 @@ td.bunb {
 	text-decoration: underline;
 }
 
-td.banner_rev {
+/* td.banner_rev {
 	background-color: black;
 	color: white;
-	font-size: 1.125em; /*18px;*/
-  font-weigth:bold;
+	font-size: 1.125em;
+  font-weigth:bold; 
 
+} */
+span.ub {
+	text-decoration: underline;
+	font-weight: bold;
 }
-div.banner_rev {
+.fs17 {
+	  font-size: 1.0625em; /*e17px;*/
+}
+
+.p5 {
+	padding: 5px;
+}
+
+.p10 {
+	padding: 10px;
+}
+
+.lg {
+	background-color: #dfdfdf;
+}
+.nsp {
+	padding: 10px 0;
+}
+.cb {
+	text-align: center;
+	font-weight: bold;
+}
+.c {
+	text-align: center;
+}
+.dg {
+	background-color: #B0B0B0;
+}
+
+.nb {
+	border: none;
+}
+
+.fullwide {
+	width: 167mm !important; 
+}
+.dhead {
+	padding: 2px;
+	font-weight: bold;
+	text-align: left;
+	vertical-align: top;
+}
+
+.ihead {
+	padding: 2px;
+	text-align: center;
+	vertical-align: top;
+	font-style: italic;
+}
+
+.data {
+	padding: 2px;
+}
+.tick {
+	font-size:0.9em; 
+	text-align:center;
+	font-weight:bold;
+	padding-top:2px;
+	padding-bottom:2px;
+}
+.cbx {
+	height: 16px;
+	width: 11px;
+	border-style: solid;
+	border-width: 1px;
+	display: inline-block;
+	text-align: center;
+}
+.pagebreak {
+	page-break-after:always
+}
+
+.banner_rev {
     background-color: #000;
     color: white;
+    width: 100%;
     font-size: 1.125em; /*18px;*/
-    font-weight: bold;
     margin-top: 16px;
     margin-bottom: 16px;
-    padding: 5px 0 5px 10px ;
+    padding: 0 0 0 4mm; /*5px 0 5px 10px ;*/
 }
-
+div.normal {
+    padding: 4px 10px;
+    font-size: 1.2em;
+    line-height: 1.33em; 
+    width: 160mm;
+}
+div.bigtitlei {
+	text-align: left;
+	padding-left: 5px;
+	font-size: 1.0625em;
+	font-style: italic;
+	min-heignt: 200px;
+}
+td.topbold {
+   padding:3px 4px;
+	 vertical-align: top;
+	 font-weight: bold;
+   font-size: 1.1em;
+}
 div.big_banner_rev {
     background-color: #000;
     color: white;
@@ -241,16 +287,26 @@ div.big_banner_rev {
     font-weight: bold;
 /*    margin-top: 16px;
     margin-bottom: 16px; */
-    padding: 5px 5px 15px 10px ;
+    padding: 0 0 0 4mm ; /*5px 5px 5px 10px ;*/
 }
-
+div.en { /* Element Normal */
+	font-style: italic;
+	font-weight: bold;
+	font-size: 0.75em;
+	margin-top: 5px;
+}
+div.is { /* Info Small */
+	font-style: italic;
+	font-weight: bold;
+	font-size: 0.65em;
+	margin-top: 5px;
+}
 div.normal_border {
 /*    font-size: 1.2em;
     line-height: 1.33em;  */
     padding: 4px 10px;
     border: 2px solid #333;
 }
-
 td.data {
 	padding: 2px;
 	font-weight: bold;
@@ -326,21 +382,20 @@ textarea.signature {
 
 div.maintitle {
 	font-family: "Times New Roman", serif;
-	width: 670px;
+	width: 125mm;
 	margin-top: 16px;
 	font-size: 1.8em; /*38px;*/
-	line-height: 45px;
+	line-height: 1.2em;
 	font-weight: bold;
 }
 
 div.maintitle2 {
 	font-family: "Times New Roman", serif;
-	width: 700px;
+	width: 135mm;
 	margin-top: 16px;
 	font-size: 1.5em; /*32px;*/
 	line-height: 37px;
 }
 ul {
-    list-style: inside;
-    margin: 0 0 9px 25px;
+	margin: 0 0 9px 25px;
 }

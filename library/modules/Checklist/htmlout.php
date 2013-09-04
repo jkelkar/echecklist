@@ -202,10 +202,14 @@ function html_banner_rev($row) {
   $name = $row['varname'];
   $out = <<<"END"
 <td colspan=6 class="nb">
-  <div class="banner_rev">
+<table class="fullwide"><tr>
+  <td class="banner_rev">
   {$prefix} {$heading}
-  </div>
-  <div class="normal" style="padding-left:75px;padding-right:25px;">{$text}</div>
+  </td></tr>
+  <tr>
+  <td class="normal nb">{$text}</td>
+      </tr>
+  </table>
 END;
 
   return $out;
@@ -432,7 +436,7 @@ function html_sec_elem_info_normal($row, $value, $t) {
   $dt = widget_dt($name, $value);
   $script = '<script> $(function() {$( "' . "#{$name}" . '" ).datepicker();});</script>'; */
   $out = <<<"END"
-<td colspan=6 class="lg" style="padding: 2px 4px;font-style:italic;font-size:14px;">
+<td colspan=6 class="lg" style="padding: 2px 4px;font-style:italic;font-size:0.9em">
 {$text}
 </td>
 END;
@@ -445,16 +449,16 @@ function html_sec_head($row, $value, $t) {
   $heading = $row['heading'];
   $text = $row['text'];
   $out = <<<"END"
-      <td class="ctb dg"></td>
-      <td class="cb dg" style="padding: 20px;">Y</td>
-      <td class="cb dg" style="padding: 20px;">P</td>
-      <td class="cb dg" style="padding: 20px;">N</td>
-      <td class="cb dg" style="padding: 20px;">Comments</td>
-      <td class="cb dg" style="padding: 20px;">Score</td>
+      <td class="ctb dg nsp"></td>
+      <td class="cb dg nsp">Y</td>
+      <td class="cb dg nsp">P</td>
+      <td class="cb dg nsp">N</td>
+      <td class="cb dg nsp">Comments</td>
+      <td class="cb dg nsp">Score</td>
     </tr>
 <tr>
 <td colspan=6 style="padding: 2px 4px;color:white;background-color:black;">
-  <div style="text-transform:uppercase;padding-bottom:15px;font-family:Helvetica,Arial,sans-serif;font-size:18px;">
+  <div style="text-transform:uppercase;padding-bottom:10px;font-size:1.0625em;">
     <span>{$prefix}</span>
     <span>{$heading}</span>
   </div>
@@ -499,9 +503,11 @@ function html_sec_head_top($row, $value, $t) {
   $heading = $row['heading'];
   $text = $row['text'];
   $out = <<<"END"
-<div style="width:100%;border:1px solid #ccc;background-color:#f0f0f0;padding: 4px;font-size:14px;">
+<td colspan="6">
+<div style="border:1px solid #ccc;padding: 4px;font-size:0.9em">
 <b>{$heading}</b> {$text}
-</div>
+</div></td>
+ </tr><tr><td colspan="6" class="nb"><div class="pagebreak" style="height:15px;">&nbsp;</div></td>
 END;
 
   return $out;
@@ -573,35 +579,32 @@ function html_sub_sec_head($row, $value, $t) {
   $nscore = "{$name}_score";
   $scoreval = get_arrval($value, $nscore, '');
   $selval = get_arrval($value, "{$name}", '');
+  logit("{$name} -> {$selval}");
   $ch = getYNPA($selval);
   $comment = fixText(get_arrval($value, "{$name}_comment", ''));
+  $br = ($heading =='') ? '' : '<br />';
   $out = <<<"END"
 <td style="padding: 2px 4px;">
-  <div style="display:inline-block;vertical-align:top;">
     <div style="display:inline;">
       <div style="font-weight:bold;vertical-align:top;float:left;">
       {$prefix}</div>
-      <div style="display:block;float:left;width:325px;margin-left:5px;">
-        <div style="text-decoration:underline;font-weight:bold;display:inline-block;">
-          {$heading}</div>
-        <div style="vertical-align:top;display:inline-block;font-weight:bold;">
-          {$text}
-        </div>
+      <div style="display:block;float:left;width:85%;margin-left:5px;">
+        <span class="ub">{$heading}</span>{$br}
+        <b>{$text}</b>
       </div>
       <div style="clear:both;"></div>
-      <div style="font-style:italic;font-weight:bold;font-size:10px;margin-top:5px;">
+      <div style="font-style:italic;font-weight:bold;font-size::0.75em;margin-top:5px;">
       {$info} </div>
     </div>
-  </div>
 </td>
 <td class="cb {$ch['YC']}">Y<br />{$ch['Y']}</td>
 <td class="cb {$ch['PC']}">P<br />{$ch['P']}</td>
 <td class="cb {$ch['NC']}">N<br />{$ch['N']}</td>
 <td class="comment">{$comment}</td>
-<td class="cb">{$scoreval}/<span class="tiny">{$max_score}</span></td>
+<td class="cb">{$scoreval} /<span class="tiny">{$max_score}</span></td>
 END;
 
-  return $out;
+      return $out;
 }
 
 function html_sub_sec_head_ynp($row, $value, $t) {
@@ -620,7 +623,7 @@ function html_sub_sec_head_ynp($row, $value, $t) {
   $nscore = "{$name}_score";
   $scoreval = get_arrval($value, $nscore, 0);
   $out = <<<"END"
-  <td style="padding: 2px 4px;width:375px;">
+  <td style="padding: 2px 4px;">
   <div style="display:inline-block;vertical-align:top;">
     <div style="display:inline;">
       <div style="font-weight:bold;vertical-align:top;float:left;">
@@ -633,7 +636,7 @@ function html_sub_sec_head_ynp($row, $value, $t) {
         </div>
       </div>
       <div style="clear:both;"></div>
-      <div style="font-style:italic;font-weight:bold;font-size:10px;margin-top:5px;">
+      <div style="font-style:italic;font-weight:bold;font-size::0.75em;margin-top:5px;">
       {$info} </div>
     </div>
   </div>
@@ -663,30 +666,26 @@ function html_sub_sec_head_ro($row, $value, $t) {
   $yna = get_arrval($value, "{$name}_ynp", '');
   $ch = getYNPA($yna);
   $comment = fixText(get_arrval($value, "{$name}_comment", ''));
+  $br = ($heading =='') ? '' : '<br />';
   $out = <<<"END"
-  <td style="padding: 2px 4px;width:375px;">
-    <div style="display:inline-block;vertical-align:top;">
+  <td style="padding: 2px 4px;">
       <div style="display:inline;">
         <div style="font-weight:bold;vertical-align:top;float:left;">
           {$prefix}</div>
         <div style="display:block;float:left;width:85%;margin-left:5px;">
-          <div style="text-decoration:underline;font-weight:bold;display:inline-block;">
-            {$heading}</div>
-          <div style="vertical-align:top;display:inline-block;font-weight:bold;">
-            {$text}
-          </div>
+          <span class="ub">{$heading}</span>{$br}
+            <b>{$text}</b>
         </div>
         <div style="clear:both;"></div>
-        <div style="font-style:italic;font-weight:bold;font-size:10px;margin-top:5px;">
+        <div style="font-style:italic;font-weight:bold;font-size:0.75em;margin-top:5px;">
           {$info} </div>
       </div>
-    </div>
   </td>
   <td class="cb {$ch['YC']}">Y<br />{$ch['Y']}</td>
   <td class="cb {$ch['PC']}">P<br />{$ch['P']}</td>
   <td class="cb {$ch['NC']}">N<br />{$ch['N']}</td>
   <td class="comment">{$comment}</td>
-  <td class="cb">{$scoreval}/<span class="tiny">{$max_score}</span>
+  <td class="cb">{$scoreval} /<span class="tiny">{$max_score}</span>
   </td>
 END;
 
@@ -707,10 +706,10 @@ function html_sec_element_yna($row, $value, $t) {
   $comment = fixText(get_arrval($value, "{$name}_comment", ''));
 
   $out = <<<"END"
-<td style="padding: 2px 4px;width:375px;">
+<td style="padding: 2px 4px;">
         <div style="padding-left: 10px;">{$text}</div>
-        <div
-          style="font-style: italic; font-weight: bold; font-size: 10px; margin-top: 5px;">
+        <div class="en"
+          <!--style="font-style: italic; font-weight: bold; font-size::0.75em; margin-top: 5px;"-->
           {$info}</div>
       </td>
       <td class="cb {$ch['YC']}">{$ch['Y']}</td>
@@ -736,10 +735,10 @@ function html_sec_element_ynp($row, $value, $t) {
   $ch = getYNPA($ynp);
   $comment = fixText(get_arrval($value, "{$name}_comment", ''));
   $out = <<<"END"
-<td style="padding: 2px 4px;width:375px;">
+<td style="padding: 2px 4px;">
         <div style="padding-left: 10px;">{$text}</div>
-        <div
-          style="font-style: italic; font-weight: bold; font-size: 10px; margin-top: 5px;">
+        <div class="en">
+          <!--style="font-style: italic; font-weight: bold; font-size::0.75em; margin-top: 5px;"-->
           {$info}</div>
       </td>
       <td class="cb {$ch['YC']}">{$ch['Y']}</td>
@@ -761,33 +760,19 @@ function html_sec_element($row, $value, $t) {
   $text = $row['text'];
   $info = $row['info'];
   $name = $row['varname'];
-  /*$mc_yn = widget_select_yn("{$name}_yn", $value, $t);
-  $tarea = TEXTAREA("{$name}_comment", $value, "width:100%;height:50px;margin-top:6px;");
-  $tareanc = TEXTAREA("{$name}_note", $value, "width:100%;height:50px;margin-top:6px;", 'nc');
-  $ncval = get_arrval($value, $name . '_nc', 'F');
-  $checked = '';
-  if ($ncval === 'T') {
-    $checked = 'checked';
-    $vis = '';
-  } else {
-    $ncval = 'F';
-    $vis = "display:none;";
-  }*/
   $yn = get_arrval($value, "{$name}_yn", '');
   $ch = getYNPA($yn);
   $comment = fixText(get_arrval($value, "{$name}_comment", ''));
   $out = <<<"END"
-  <td style="padding: 2px 4px;width:375px;">
-        <div style="padding-left: 10px;">{$text}</div>
-        <div
-          style="font-style: italic; font-weight: bold; font-size: 10px; margin-top: 5px;">
-          {$info}</div>
-      </td>
-      <td class="cb {$ch['YC']}">{$ch['Y']}</td>
-      <td class="cb {$ch['NC']}">{$ch['N']}</td>
-      <td class="dg"></td>
-      <td class="comment">{$comment}</td>
-      <td></td>
+<td style="padding: 2px 4px;">
+  <div style="padding-left: 10px;">{$text}</div>
+  <div class="en">{$info}</div>
+</td>
+<td class="cb {$ch['YC']}">{$ch['Y']}</td>
+<td class="cb {$ch['NC']}">{$ch['N']}</td>
+<td class="dg"></td>
+<td class="comment">{$comment}</td>
+<td></td>
 END;
 
   return $out;
@@ -1010,20 +995,21 @@ function html_criteria_1_heading($row, $value, $t) {
   $text = $row['text'];
   $name = $row['varname'];
   $out = <<<"END"
+ <td colspan="6" class="nb">
   <table style="width:100%;">
-  <tr>
-    <td width="7%" rowspan="2" class="centertopbold">{$prefix}</td>
+  <tr class="dg">
+    <td width="7%" rowspan="2" class="centertopbold ">{$prefix}</td>
     <td rowspan="2" class="title">
       {$heading}
     </td>
     <td width="21%" colspan=3 class="centertopbold">{$t['FREQUENCY']}</td>
   </tr>
-  <tr>
+  <tr class="dg">
     <td width="7%" class="centertopbold">{$t['Daily']}</td>
 	  <td width="7%" class="centertopbold">{$t['Weekly']}</td>
 	  <td class="centerbold">{$t['With Every Run']}</td>
   </tr>
-  </table>
+  </table></td>
 END;
 
   return $out;
@@ -1034,40 +1020,41 @@ function html_criteria_1_values($row, $value, $t) {
   $heading = $row['heading'];
   $text = $row['text'];
   $name = $row['varname'];
-  $i11 = widget_integersmall("{$name}_qnt_d", $value, 4);
-  $i12 = widget_integersmall("{$name}_qnt_w", $value, 4);
-  $i13 = widget_integersmall("{$name}_qnt_er", $value, 4);
-  $i21 = widget_integersmall("{$name}_sqt_d", $value, 4);
-  $i22 = widget_integersmall("{$name}_sqt_w", $value, 4);
-  $i23 = widget_integersmall("{$name}_sqt_er", $value, 4);
-  $i31 = widget_integersmall("{$name}_qlt_d", $value, 4);
-  $i32 = widget_integersmall("{$name}_qlt_w", $value, 4);
-  $i33 = widget_integersmall("{$name}_qlt_er", $value, 4);
+  $i11 = get_arrval($value, "{$name}_qnt_d", '');
+  $i12 = get_arrval($value, "{$name}_qnt_w", '');
+  $i13 = get_arrval($value, "{$name}_qnt_er", '');
+  $i21 = get_arrval($value, "{$name}_sqt_d", '');
+  $i22 = get_arrval($value, "{$name}_sqt_w", '');
+  $i23 = get_arrval($value, "{$name}_sqt_er", '');
+  $i31 = get_arrval($value, "{$name}_qlt_d", '');
+  $i32 = get_arrval($value, "{$name}_qlt_w", '');
+  $i33 = get_arrval($value, "{$name}_qlt_er", '');
   $out = <<<"END"
-  <table style="width:100%;">
+<td colspan="6" class="nb">
+  <table style="width:100%;border:none;">
   <tr>
-    <td width="7%" rowspan="4" class="centertopbold">{$prefix}</td>
-    <td colspan="4" class="title">{$heading}</td>
-    </tr>
-    <tr>
-      <td  class="tests">{$t['Quantitative tests']}</td>
-      <td width="7%">{$i11}</td>
-	    <td width="7%">{$i12}</td>
-	    <td width="7%">{$i13}</td>
-	  </tr>
-    <tr>
-      <td class="tests">{$t['Semi-quantitative tests']}</td>
-      <td>{$i21}</td>
-	    <td>{$i22}</td>
-	    <td>{$i23}</td>
-	  </tr>
-    <tr>
-      <td class="tests">{$t['Qualitative tests']}</td>
-      <td>{$i31}</td>
-	    <td>{$i32}</td>
-	    <td>{$i33}</td>
-	  </tr>
-  </table>
+    <td width="7%" rowspan="4" class="centertopbold tbw">{$prefix}</td>
+    <td colspan="4" class="title tbw">{$heading}</td>
+  </tr>
+  <tr>
+    <td class="tests">{$t['Quantitative tests']}</td>
+    <td width="7%" class="cb">{$i11}</td>
+    <td width="7%" class="cb">{$i12}</td>
+	<td width="7%" class="cb">{$i13}</td>
+  </tr>
+  <tr>
+    <td class="tests">{$t['Semi-quantitative tests']}</td>
+    <td class="cb">{$i21}</td>
+    <td class="cb">{$i22}</td>
+    <td class="cb">{$i23}</td>
+  </tr>
+  <tr>
+    <td class="tests">{$t['Qualitative tests']}</td>
+    <td class="cb">{$i31}</td>
+    <td class="cb">{$i32}</td>
+    <td class="cb">{$i33}</td>
+  </tr>
+</table></td>
 END;
 
   return $out;
@@ -1078,16 +1065,19 @@ function html_com_and_rec($row, $value, $t) {
   $heading = $row['heading'];
   $text = $row['text'];
   $name = $row['varname'];
-  $tarea = TEXTAREA($name, $value, $style = "width:100%;height:400px;");
+  $tval = get_arrval($value, $name, '');
+  //$tarea = TEXTAREA($name, $value, $style = "width:100%;height:400px;");
   $out = <<<"END"
+<td colspan="6" class="nb">
   <table style="width:100%;">
   <tr>
-    <td>
+    <td class="tbw">
     <div class="bigtitlei">{$heading}</div>
-    {$tarea}
+    <div style="min-height:150px;vertical-align:top;margin-left:5px;margin-top:4px;">{$tval}</div>
     </td>
   </tr>
-  </table>
+</table></td>
+</tr><tr><td colspan="6" class="nb"><div class="pagebreak" style="height:15px;">&nbsp;</div></td>
 END;
 
   return $out;
@@ -1100,13 +1090,13 @@ function html_criteria_2_heading($row, $value, $t) {
   $name = $row['varname'];
   $out = <<<"END"
   <table style="width:100%;">
-  <tr>
-    <td width="7%" rowspan="2" class="centertopbold">{$prefix}</td>
-    <td rowspan="2" class="topbold">
+  <tr class="dg">
+    <td width="7%" class="centertopbold ">{$prefix}</td>
+    <td class="topbold">
       {$heading}
     </td>
-    <td style="width:13%;" class="centertop">{$t['Date of panel receipt']}</td>
-    <td style="width:19%;" class="centertop">{$t['Were results reported within 15 days?']}</td>
+    <td style="width:14%;" class="centertop">{$t['Date of panel receipt']}</td>
+    <td style="width:18%;" class="centertop">{$t['Were results reported within 15 days?']}</td>
     <td style="width:10%;" class="centertopbold">{$t['Results & % Correct']}</td>
   </tr>
   </table>
@@ -1122,7 +1112,7 @@ function html_panel_heading($row, $value, $t) {
   $name = $row['varname'];
   $out = <<<"END"
   <table style="width:100%;">
-  <tr>
+  <tr class="lg">
     <td width="7%"></td>
     <td class="title">
       {$heading}
@@ -1161,18 +1151,24 @@ function html_panel_result($row, $value, $t) {
   $heading = $row['heading'];
   $text = $row['text'];
   $name = $row['varname'];
-  $smallint = widget_integer("{$name}_num", $value, 4);
-  $mc_yn = widget_select_yn("{$name}_yn", $value, $t);
-  $dt = widget_dt("{$name}_dt", $value, 10);
-  $script = '<script> $(function() {$( "' . "#{$name}_dt" . '" ).datepicker();});</script>';
+  ///$smallint = widget_integer("{$name}_num", $value, 4);
+  $smallint = get_arrval($value, "{$name}_num", '');
+  //$mc_yn = widget_select_yn("{$name}_yn", $value, $t);
+  $mc_yn = get_arrval($value, "{$name}_yn", '');
+  //$dt = widget_dt("{$name}_dt", $value, 10);
+  $dt = get_arrval($value, "{$name}_dt", '');
+  //$script = '<script> $(function() {$( "' . "#{$name}_dt" . '" ).datepicker();});</script>';
+  $y = ($mc_yn == 'YES') ? 'Y': '';
+  $n = ($mc_yn == 'NO') ? 'N': '';
   $out = <<<"END"
 <table style="width:100%;">
   <tr>
-    <td style="width:7%;" class="title">{$prefix}</td>
+    <td style="width:7%;" class="title c">{$prefix}</td>
     <td class="panel">{$heading}</td>
-    <td style="width:13%;">{$dt} {$script}</td>
-    <td style="width:19%;">{$mc_yn}</td>
-    <td style="width:10%;">{$smallint}</td>
+    <td style="width:14%;" class="c">{$dt}</td>
+    <td style="width:9%;" class="cb">{$y}</td>
+    <td style="width:9%;"class="cb">{$n}</td>
+    <td style="width:10%;" class="c">{$smallint}</td>
   </tr>
 </table>
 END;
@@ -1247,13 +1243,14 @@ function html_sec_total($row, $value, $t) {
   $this_score = get_arrval($value, $name, 0);
   $out = <<<"END"
 <td colspan=5 style="padding: 2px 4px">
-  <div style="padding-top:15px;font-size:18px;">
+  <div style="padding-top:15px;font-size:1.0625em;">
     <b>{$heading}</b>
   </div>
 </td>
 <td class="cb">
-    {$this_score}/<span class="tiny">{$max_score}</span></td>
+    {$this_score} /<span class="tiny">{$max_score}</span></td>
 </td>
+    </tr><tr><td colspan="6" class="nb"><div class="pagebreak" style="height:15px;">&nbsp;</div></td>
 END;
 
   return $out;
@@ -1265,19 +1262,17 @@ function html_sec_element_info($row, $value, $t) {
   $text = $row['text'];
   // $name = $row['varname'];
   $out = <<<"END"
-  <td style="width:375px;">
+  <td rowspan="2" style="padding-left: 10px;">{$text}
   </td>
-  <td colspan=3 style="font-size:11px; text-align:center;font-weight:bold;padding-top:2px;padding-bottom:2px;">
+  <td colspan=3 class="tick">
     Tick for each item</td>
-  <td colspan=2>
+  <td rowspan="2" colspan="2">
   </td>
 </tr>
 <tr>
-  <td style="padding-left: 10px;">{$text}</td>
-  <td class="cb">Y</td>
-  <td class="cb">N</td>
-  <td class="cb">N/A</td>
-  <td colspan=2></td>
+  <td class="cb" style="font-size:.85em;">Yes</td>
+  <td class="cb" style="font-size:.85em;">No</td>
+  <td class="cb" style="font-size:.85em;">N/A</td>
 END;
 
   return $out;
@@ -1315,7 +1310,7 @@ function html_sub_sec_info($row, $value, $t) {
   $heading = $row['heading'];
   $text = $row['text'];
   $out = <<<"END"
-<td colspan=6 class="lg" style="padding:4px;font-size:12px;">
+<td colspan=6 class="lg" style="padding:4px;font-size:0.75em;">
   <i><b>{$heading}</b></i>
   {$text}
 </td>
@@ -1352,9 +1347,9 @@ function html_img($row) {
   $baseurl = $row['baseurl'];
   $out = <<<"END"
 <td colspan=6 class="nb">
-  <center>
-    <img style="width:797px;height:260px;" src="{$baseurl}/images/{$heading}" />
-  </center>
+  <div style="text-align:center;">
+    <img style="width:130mm;height:42mm;" src="{$baseurl}/images/{$heading}" />
+  </div>
 </td>
 END;
   return $out;
@@ -1526,8 +1521,8 @@ function calculate_view($rows, $value, $langtag) { //$tword) {
 logit('VALUE: '. print_r($value, true));
   $tlist = getTranslatables($langtag); //$tword );
   $allowed_list = array(
-      //'sec_elem_info_normal',
-      //'sec_head',
+      'sec_elem_info_normal',
+      'sec_head',
       'sub_sec_head',
       'sub_sec_head_ynp',
       'sub_sec_head_yna',
@@ -1544,7 +1539,15 @@ logit('VALUE: '. print_r($value, true));
       'main_heading',
       'main2',
       'banner_rev',
-      'banner_rev_border'
+      'banner_rev_border',
+      'sec_head_top',
+      'criteria_1_heading',
+      'criteria_1_values',
+      'com_and_rec',
+      'criteria_2_heading',
+      'panel_heading',
+      'panel_result',
+
   );
   $tout = array ();
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
@@ -1552,11 +1555,11 @@ logit('VALUE: '. print_r($value, true));
   /*  $tout[] = '<table border=0  class="display">'; */
   $tout[] = <<<"END"
 <tr style="">
-  <td style="width:36%;">1</td>
-  <td style="width:5.4%;">2</td>
-  <td style="width:5.4%;">3</td>
-  <td style="width:5.4%;">4</td>
-  <td style="width:41%;">5</td>
+  <td style="width:36% !important;">1</td>
+  <td style="width:5.4% !important;">2</td>
+  <td style="width:5.4% !important;">3</td>
+  <td style="width:5.4% !important;">4</td>
+  <td style="width:41% !important;">5</td>
   <td>6</td>
 </tr>
 END;

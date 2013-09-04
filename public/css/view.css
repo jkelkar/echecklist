@@ -1,11 +1,17 @@
 /*@CHARSET "UTF-8"; */
+@font-face {
+    font-family: 'arialnarrow';
+    src: url('../arialn.ttd') format('truetype')
+    ,url('../arialn.eot'); /* IE9+ */
+}
+
 * {
 	padding: 0 0;
 	margin: 0 0;
 }
 
 body {
-	font-family: arial, verdana, sans-serif;
+	font-family: "arialnarrow",arial, verdana, sans-serif;
 	font-size: 16px;
 	font-weight: normal;
 	margin: 5px 5px;

@@ -238,8 +238,14 @@ class Application_Controller_Action extends Zend_Controller_Action {
         <span title=".icon  .icon-black  .icon-check " class="icon icon-black icon-check"></span> <span>eChecklist</span>
       </a>
 END;
-
+  $newuser = '';
     if ($this->usertype != '') {
+      if ($this->usertype == 'ADMIN') {
+          $newuser = <<<"END"
+<li><a href="{$this->baseurl}/user/create">
+<span title=".icon  .icon-green  .icon-user " class="icon icon-green icon-user"></span> New User</a></li>
+END;
+      }
       $this->header = $this->header . <<<"END"
 <div class="btn-group pull-left" style="margin-left:100px;">
 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
@@ -272,7 +278,7 @@ END;
 <span class="hidden-phone">User</span>
 <span class="caret"></span></a>
 <ul class="dropdown-menu">
-  <li><a href="{$this->baseurl}/user/create"><span title=".icon  .icon-green  .icon-user " class="icon icon-green icon-user"></span> New User</a></li>
+  {$newuser}
   <li><a href="{$this->baseurl}/user/find"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span>Find User</a></li>
 </ul>
 </div>
@@ -307,11 +313,11 @@ END;
 END;
       $auditinfo = '';
       //if ($this->dialog_name == 'audit/edit') {
-        $auditinfo = "<div style=\"margin:6px 0 6px 20px;padding-right:5px;\"><b>Audit:</b> {$this->showaudit}</div>";
+        $auditinfo = "<div style=\"margin:6px 0 6px 20px;padding-right:5px;\"><b>Current Audit:</b> {$this->showaudit}</div>";
       //}
       $this->header .= <<<"END"
 <div style="display:inline-block;">
-  <div style="margin:6px 0px 6px 20px;padding-right:5px;"><b>Lab:</b> {$this->labnum}/{$this->labname}</div>
+  <div style="margin:6px 0px 6px 20px;padding-right:5px;"><b>Current Lab:</b> {$this->labnum}/{$this->labname}</div>
     {$auditinfo}
   <div style="clear:both;"></div></div>
 END;
@@ -328,12 +334,10 @@ END;
 END;
 
     $this->view->header = $this->header;
-    /*
-     * // logit("_HEADER: {$this->view->header}"); // this is only a test! $menu = array( array( array("icon"=>array('clipboard', 'blue'), 'text'=> 'Audits', 'url'=>'#' ), array( array("icon"=>array('clipboard', 'green'), 'text'=> 'New Audit', 'url'=>'/user/create'), array("icon"=>array('search', 'blue'), 'text'=> 'Find Audit', 'url'=>'/user/find'), array('divider' => true), array("icon"=>array('edit', 'blue'), 'text'=> 'Edit Audit 1', 'url'=>'/audit/edit/1/EN/'), array("icon"=>array('edit', 'blue'), 'text'=> 'Edit Audit 2', 'url'=>'/audit/edit/2/EN/'), array("icon"=>array('edit', 'blue'), 'text'=> 'Edit Audit 3', 'url'=>'/audit/edit/3/EN/') array('divider' => true), array("icon"=>array('import', 'blue'), 'text'=> 'Import', 'url'=>'/audit/import'), ) ), array( array("icon"=>array('tag', 'blue'), 'text'=> 'Labs', 'url'=>'#' ), array( array("icon"=>array('tag', 'green'), 'text'=> 'New Lab', 'url'=>'/lab/create'), array("icon"=>array('search', 'blue'), 'text'=> 'Find Lab', 'url'=>'/lab/find') ) ), array( array("icon"=>array('user', 'blue'), 'text'=> 'Users', 'url'=>'#' ), array( array("icon"=>array('user', 'green'), 'text'=> 'New User', 'url'=>'/user/create'), array("icon"=>array('search', 'blue'), 'text'=> 'Find User', 'url'=>'/user/find') ) ) ); logit('MENU: '. $this->makeMenu($menu)); $lin = array( array( array("icon"=>array('user', 'orange'), 'text'=> 'This user', 'url'=>'#' ), array( array("icon"=>array('contacts', 'green'), 'text'=> 'Profile', 'url'=>'/user/profile'), array('divider' => true), array("icon"=>array('contacts', 'orange'), 'text'=> 'Logout', 'url'=>'/startstop/logout') ) ) ); logit('MENU: '. $this->makeMenu($menu));
-     */
+
   }
 
-  function calculate_dialog($drows, $value, $title, $langtag, $formtype = 'table') {
+  function calculate_dialog($drows, $value, $title, $langtag, $formtype='table') {
     /**
      * Given the dialog rows, create the dialog
      * - using field templates to create individual rows
@@ -379,7 +383,7 @@ END;
         case 'file' :
           $tout[] = <<<"END"
 <tr>
-<td class="n f right" style=width:200px;">
+<td class="n f right" style="width:200px;">
 <td class="n f" style="width:600px;">
   <input type="hidden" name="MAX_FILE_SIZE" value="1000000" />
   {$field_label}: <input name="uploadedfile" type="file" />
@@ -394,7 +398,7 @@ END;
           eval("\$lines = \"$info\"; ");
           $tout[] = <<<"END"
 <tr>
-<td class="n f right" style=width:200px;">
+<td class="n f right" style="width:200px;">
 <td class="n f" style="width:600px;"><div id="help2" style="font-size:1.4em;line-height:1.3em;">{$lines}</div></td>
 </tr>
 END;
@@ -402,7 +406,7 @@ END;
         case 'info' :
           $tout[] = <<<"END"
 <tr>
-<td class="n f right" style=width:200px;">
+<td class="n f right" style="width:200px;">
 <td class="n f" style="width:600px;"><div id="help" style="display:none;">{$info}</div></td>
 </tr>
 END;
@@ -410,7 +414,7 @@ END;
         case 'info2' :
           $tout[] = <<<"END"
 <tr>
-<td class="n f right" style=width:200px;">
+<td class="n f right" style="width:200px;">
 <td class="n f" style="width:600px;"><div id="help2" style="">{$info}</div></td>
 </tr>
 END;
@@ -418,7 +422,7 @@ END;
         case 'heading' :
           $tout[] = <<<"END"
 <tr>
-<td class="n f right" style=width:50px;">
+<td class="n f right" style="width:50px;">
 <td class="n f" style="width:750px;"><h3>{$field_label}</h3></td>
 </tr>
 END;
@@ -452,10 +456,10 @@ END;
      */
     $dialog = new Application_Model_DbTable_Dialog();
     $this->drows = $dialog->getDialogRows($this->dialog_name);
-    //logit('DROWS: ' . print_r($this->drows, true));
+    logit('DROWS: ' . print_r($this->drows, true));
   }
 
-  public function makeDialog($value = array(''=>'')) {
+  public function makeDialog($value = array(''=>''), $morelines='') {
     /*
      * Create the dialog
      */
@@ -472,10 +476,11 @@ END;
     $this->view->title = $this->title;
     if (isset($this->echecklistNamespace->flash)) {
       $this->view->flash = $this->echecklistNamespace->flash;
-      logit("FLASH: {$this->view->flash}");
+      // logit("FLASH: {$this->view->flash}");
       $this->echecklistNamespace->flash = '';
-      logit("there?: {$this->view->flash}");
+      // logit("there?: {$this->view->flash}");
     }
+    $this->view->outlines .= $morelines;
     $this->_helper->layout->setLayout('overall');
   }
 
@@ -538,7 +543,7 @@ END;
     /*
      * Collect all the post data
      */
-    // logit('REST: '. print_r($this->getRequest()->getPost(), true));
+    logit('REST: '. print_r($this->getRequest()->getPost(), true));
     $vars = $this->getRequest()->getPost();
     $lprefix = strlen($prefix);
     $out = array ();
@@ -612,11 +617,12 @@ END;
 
     $ct = 0;
     if ($cb) {
-      $tout[] = <<<"END"
+/*      $tout[] = <<<"END"
 <form method="post" action="{$this->baseurl}/output/process"
       enctype="multipart/form-data" name="action"
       id="action">
 END;
+*/
     }
     $tout[] = '<table style="margin-left:50px;color:black;">';
     $tout[] = "<tr class='even'>";
@@ -693,10 +699,11 @@ END;
       $tout[] = '<tr><td colspan=13 style="text-align:right;" ><input class="input-xlarge submit" type="submit" name="doit" value="Process Request">';
     }
     $tout[] = '</table><div style="height: 65px;">&nbsp;</div>' . '<div style="clear: both;"></div>';
-    if ($cb) {
+   /* if ($cb) {
       $tour[] = '</form>';
-    }
-    $this->view->showlines = implode("\n", $tout);
+    }*/
+    $lines = implode("\n", $tout);
+    return $lines;
   }
 
   public function makeUserLines($rows, $cb = false) {
@@ -704,6 +711,12 @@ END;
     $rev_ut = rev('getUserTypes', $this->tlist);
     $ct = 0;
     $tout = array ();
+    if (in_array($this->usertype, array('USER', 'APPROVER'))) {
+    $tout[] = "<div style=\"margin-left:200px\"><h1 style=\"margin-bottom:10px;\">Add owner to the current Audit</h1></div>";
+    }
+    if ($this->usertype == 'ADMIN') {
+      $tout[] = "<h1 style=\"margin-bottom:10px;\">Edit User</h1>";
+    }
     $tout[] = '<table style="margin-left:250px;color:black;">';
     $tout[] = "<tr class='even'>";
     if ($cb) {

@@ -1,3 +1,9 @@
+@font-face {
+    font-family: 'arialnarrow';
+    src: url('../arialn.ttd') format('truetype')
+    ,url('../arialn.eot'); /* IE9+ */
+}
+
 /*-------------------------
 	Simple reset
 --------------------------*/
@@ -18,7 +24,7 @@ body {
 	/*font: 15px "Arial", sans-serif;/*15px "Arial Narrow", sans-serif; */
 	color: #4f4f4f; */
 	padding-bottom: 40px;
-	font-family: "Ubuntu", Helvetica, Arial, sans-serif;
+	font-family: "arialnarrow", Helvetica, Arial, sans-serif;
 	font-size: 13px;
 	line-height: 18px;
 	color: #555555;
@@ -57,7 +63,7 @@ a.submita {
 	margin-left: 5px;
 	margin-right: 5px;
 	padding: 5px 10px;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-family: "arialnarrow","Helvetica Neue", Helvetica, Arial, sans-serif;
 	border: 1px solid #ccc;
 	display: inline-block;
 	color: #000;
@@ -124,7 +130,7 @@ transition: border linear 0.2s, box-shadow linear 0.2s;
 		
 }
 input,button,select,textarea {
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-family: "arialnarrow","Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 input.integer, 
@@ -278,7 +284,7 @@ img.x16
 	 width:16px
 }
 textarea {
-	font-family: Arial, sans-serif;
+	font-family: "arialnarrow",Arial, sans-serif;
 	font-size: 15px;
 	border : 1px solid #999;
 	padding: 3px 5px;

@@ -87,8 +87,9 @@ class LabController extends Application_Controller_Action // Zend_Controller_Act
       logit('Find: In post');
       logit('tdlab: ' . print_r($this->data, true));
       $labs = $labh->getLabs($this->data, 0, 20);
-      $this->makeDialog($this->data);
-      $this->makeLabLines($labs);
+      $lablines = $this->makeLabLines($labs);
+      $this->makeDialog($this->data, $lablines);
+
     }
   }
 
@@ -114,9 +115,10 @@ class LabController extends Application_Controller_Action // Zend_Controller_Act
         'labnum' => $row['labnum']
     ));
     logit('SELAUD: ' . print_r($arows, true));
-    $this->makeDialog($this->data);
-    $this->makeAuditLines($arows, array (
+
+    $auditlines = $this->makeAuditLines($arows, array (
         'addsel' => false
     ));
+    $this->makeDialog($this->data, $auditlines);
   }
 }

@@ -198,6 +198,7 @@ function getReportTypes($t) {
       "{$t['Export Audits To Excel']}" => 'audits2excel',
       "{$t['Compare scores in a Spider Chart']}" => 'spiderchart',
       "{$t['Campare scores in a Bar Chart']}" => 'barchart',
+      "{$t['Show Incomplete Audit']}" => 'incompletechart'
   );
 }
 
@@ -303,7 +304,8 @@ function getTranslatables(/*$tword,*/ $langtag) {
       'Campare scores in a Bar Chart',
       'BioSafety',
       'SLIPTA',
-      'TB'
+      'TB',
+      'Show Incomplete Audit'
   );
   $tlist = get_common_words_translated($tword, $words);
   //logit('TLIST: '. print_r($tlist, true));

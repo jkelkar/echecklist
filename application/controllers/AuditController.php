@@ -378,9 +378,10 @@ END;
     $langtag = $this->echecklistNamespace->lang;
     //if (! $this->getRequest()->isPost()) {
     $rows = $audit->getIncompleteAudits($id);
-    //logit('AROWS: ' . print_r($rows, true));
-    $this->makeDialog();
-    $this->makeAuditLines($rows);
+    logit('AROWS: ' . print_r($rows, true));
+    $auditlines = $this->makeAuditLines($rows);
+    $this->makeDialog(null, $auditlines);
+
   }
 
   public function createAction() {
@@ -442,16 +443,44 @@ END;
     if (! $this->getRequest()->isPost()) {
       $this->makeDialog();
     } else {
+      require_once 'modules/Checklist/processor.php';
       logit('Select: In post');
-      if ($this->collectData()) return;
-      logit('Auditsel: ' . print_r($this->data, true));
+      if ($this->collectData())
+        return;
+      if ($this->data['todo'] == '-' || $this->data['todo'] == '') {
+        $this->echecklistNamespace->flash = "Choose an action and retry";
+        $this->_redirector->gotoUrl('audit/select');
+      }
+      $prefix = 'cb_';
+      $this->collectExtraData($prefix);
+      $name = $this->data['todo'];
 
+      logit('OutData: ' . print_r($this->data, true));
+      logit('Going in for Extra stuff');
+      $this->collectExtraData($prefix);
+      logit('OutExtraData: ' . print_r($this->extra, true));
+      if (count($this->extra) > 0) {
+        $list = array();
+        foreach($this->extra as $n => $v) {
+          $list[] = (int) substr($n, 3);
+          logit('LIST: '. print_r($list, true));
+        }
+        logit('Auditsel: ' . print_r($this->data, true));
+
+        $out = new Processing();
+        $msg = $out->process($list, $name);
+        $this->echecklistNamespace->flash = 'Excel sheet done.';
+        $this->_redirector->gotoUrl($this->mainpage);
+        //$this->echecklistNamespace->flash = $msg;
+        //$this->_redirector->gotoUrl($this->mainpage);
+      }
       $arows = $aud->selectAudits($this->data);
+
       //logit("AROWS: " . print_r($arows, true));
-      $this->makeDialog($this->data);
-      $this->makeAuditLines($arows, array (
-          'cb' => true
+      $auditlines = $this->makeAuditLines($arows, array(
+          'cb'=> true
       ));
+      $this->makeDialog($this->data, $auditlines);
     }
   }
 

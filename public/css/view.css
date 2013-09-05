@@ -1,8 +1,8 @@
 /*@CHARSET "UTF-8"; */
 @font-face {
-    font-family: 'arialnarrow';
-    src: url('../arialn.ttd') format('truetype')
-    ,url('../arialn.eot'); /* IE9+ */
+	font-family: 'arialnarrow';
+	src: url('../arialn.ttd') format('truetype'), url('../arialn.eot');
+	/* IE9+ */
 }
 
 * {
@@ -11,9 +11,8 @@
 }
 
 body {
-	font-family: "arialnarrow",arial, verdana, sans-serif;
-	font-size: 13.5px;
-	/*line-height: 29px;*/
+	font-family: "arialnarrow", arial, verdana, sans-serif;
+	font-size: 14px;
 	font-weight: normal;
 	margin: 5px 5px;
 }
@@ -29,13 +28,14 @@ table {
 /* .table1000 {
 	width: 168mm; / *1000px;* /
 } */
-
 table.table800 {
-    width: 149mm !important; /*800px;*/
+	width: 149mm !important; /*800px;*/
 }
+
 table.tablestars {
-    width: 143mm !important; /*800px;*/
+	width: 143mm !important; /*800px;*/
 }
+
 table.display {
 	width: 100%; /*168mm !important; /*1050px;*/
 	border: 1px;
@@ -51,13 +51,13 @@ table.criteria {
         border:1px;
     } */
 td {
-	border: 1px solid #333; 
+	border: 1px solid #333;
 }
 
 td.normal {
 	padding: 5mm 8mm 5mm 16mm;
-
 }
+
 td.center,td.c {
 	text-align: center;
 }
@@ -134,9 +134,11 @@ td.tests {
 	text-align: right;
 	padding-right: 5px;
 }
+
 td.tbw { /* top border white */
 	border-top-color: white;
 }
+
 td.panel {
 	text-align: left;
 	padding-left: 15px;
@@ -176,12 +178,21 @@ td.bunb {
   font-weigth:bold; 
 
 } */
-span.ub {
+.ss { /* slightly smaller */
+	font-size: 0.90em;
+}
+
+.ub {
 	text-decoration: underline;
 	font-weight: bold;
 }
+
+.ul {
+	text-decoration: underline;
+}
+
 .fs17 {
-	  font-size: 1.0625em; /*e17px;*/
+	font-size: 1.0625em; /*e17px;*/
 }
 
 .p5 {
@@ -195,16 +206,34 @@ span.ub {
 .lg {
 	background-color: #dfdfdf;
 }
+
 .nsp {
 	padding: 10px 0;
 }
+
 .cb {
 	text-align: center;
 	font-weight: bold;
 }
+td.la { /* for the td level and affil boxes */
+	vertical-align: top;
+	padding: 2px;
+}
+td.laic { /* for the td level and affil boxes */
+	vertical-align: top;
+	text-align: center;
+	font-style : italic;
+	padding: 2px;
+}
+span.la { /* level and affil */
+	vertical-align: top;
+	font-size: 0.80em;
+}
+
 .c {
 	text-align: center;
 }
+
 .dg {
 	background-color: #B0B0B0;
 }
@@ -214,8 +243,9 @@ span.ub {
 }
 
 .fullwide {
-	width: 167mm !important; 
+	width: 167mm !important;
 }
+
 .dhead {
 	padding: 2px;
 	font-weight: bold;
@@ -233,13 +263,15 @@ span.ub {
 .data {
 	padding: 2px;
 }
+
 .tick {
-	font-size:0.9em; 
-	text-align:center;
-	font-weight:bold;
-	padding-top:2px;
-	padding-bottom:2px;
+	font-size: 0.9em;
+	text-align: center;
+	font-weight: bold;
+	padding-top: 2px;
+	padding-bottom: 2px;
 }
+
 .cbx {
 	height: 16px;
 	width: 11px;
@@ -248,25 +280,28 @@ span.ub {
 	display: inline-block;
 	text-align: center;
 }
+
 .pagebreak {
-	page-break-after:always
+	page-break-after: always
 }
 
 .banner_rev {
-    background-color: #000;
-    color: white;
-    width: 100%;
-    font-size: 1.125em; /*18px;*/
-    margin-top: 16px;
-    margin-bottom: 16px;
-    padding: 0 0 0 4mm; /*5px 0 5px 10px ;*/
+	background-color: #000;
+	color: white;
+	width: 100%;
+	font-size: 1.125em; /*18px;*/
+	margin-top: 16px;
+	margin-bottom: 16px;
+	padding: 0 0 0 4mm; /*5px 0 5px 10px ;*/
 }
+
 div.normal {
-    padding: 4px 10px;
-    font-size: 1.2em;
-    line-height: 1.33em; 
-    width: 160mm;
+	padding: 4px 10px;
+	font-size: 1.2em;
+	line-height: 1.33em;
+	width: 160mm;
 }
+
 div.bigtitlei {
 	text-align: left;
 	padding-left: 5px;
@@ -274,39 +309,45 @@ div.bigtitlei {
 	font-style: italic;
 	min-heignt: 200px;
 }
+
 td.topbold {
-   padding:3px 4px;
-	 vertical-align: top;
-	 font-weight: bold;
-   font-size: 1.1em;
+	padding: 3px 4px;
+	vertical-align: top;
+	font-weight: bold;
+	font-size: 1.1em;
 }
+
 div.big_banner_rev {
-    background-color: #000;
-    color: white;
-    font-size: 1.125em; /*18px;*/
-    font-weight: bold;
-/*    margin-top: 16px;
+	background-color: #000;
+	color: white;
+	font-size: 1.125em; /*18px;*/
+	font-weight: bold;
+	/*    margin-top: 16px;
     margin-bottom: 16px; */
-    padding: 0 0 0 4mm ; /*5px 5px 5px 10px ;*/
+	padding: 0 0 0 4mm; /*5px 5px 5px 10px ;*/
 }
+
 div.en { /* Element Normal */
 	font-style: italic;
 	font-weight: bold;
 	font-size: 0.75em;
 	margin-top: 5px;
 }
+
 div.is { /* Info Small */
 	font-style: italic;
 	font-weight: bold;
 	font-size: 0.65em;
 	margin-top: 5px;
 }
+
 div.normal_border {
-/*    font-size: 1.2em;
+	/*    font-size: 1.2em;
     line-height: 1.33em;  */
-    padding: 4px 10px;
-    border: 2px solid #333;
+	padding: 4px 10px;
+	border: 2px solid #333;
 }
+
 td.data {
 	padding: 2px;
 	font-weight: bold;
@@ -396,6 +437,7 @@ div.maintitle2 {
 	font-size: 1.5em; /*32px;*/
 	line-height: 37px;
 }
+
 ul {
 	margin: 0 0 9px 25px;
 }

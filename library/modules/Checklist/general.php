@@ -74,6 +74,7 @@ function getYNPA($data) {
   return $out;
 }
 
+
 function fixText($data) {
   return str_replace("\n", '<br />', $data);
 }
@@ -119,13 +120,22 @@ function getPW($t) {
       "{$t['Work']}"=> 'W'
   );
 }
+function getTT($data) {
+  // resolve the tel type
+  $sp = '&nbsp;';
+  $out = array(
+      'P'=> ($data == 'P') ? 'ub' : $sp,
+      'W'=> ($data == 'W') ? 'ub' : $sp
+        );
+  return $out;
+}
 
-function getWP($t) {
+/* function getWP($t) {
   return array( // "{$t['Select']} ..." => '-',
       "{$t['Personal']}"=> 'PERSONAL',
       "{$t['Work']}"=> 'WORK'
   );
-}
+} */
 
 function getYNA($t) {
   return array( // "{$t['Select']} ..." => '-',
@@ -146,8 +156,34 @@ function getStars($t) {
       "4 {$t['Stars']}"=> '4',
       "5 {$t['Stars']}"=> '5'
   );
+
 }
 
+function getST($data) {
+  // resolve the X mark for the lab levl
+  $sp = '&nbsp;';
+  $out = array(
+      'N'=> ($data == 'N') ? 'ub' : $sp,
+      '0'=> ($data == '0') ? 'ub' : $sp,
+      '1'=> ($data == '1') ? 'ub' : $sp,
+      '2'=> ($data == '2') ? 'ub' : $sp,
+      '3'=> ($data == '3') ? 'ub' : $sp,
+      '4'=> ($data == '4') ? 'ub' : $sp,
+      '5'=> ($data == '5') ? 'ub' : $sp
+  );
+  return $out;
+}
+
+function getPROF($data) {
+  // resolve the prof_*_yni
+  $sp = '&nbsp;';
+  $out = array(
+      'N'=> ($data == 'NO') ? 'ub' : $sp,
+      'Y'=> ($data == 'YES') ? 'ub' : $sp,
+      'I'=> ($data == 'I') ? 'ub' : $sp
+      );
+  return $out;
+}
 function getLevels($t) {
   return array(
       "{$t['Select']} ..."=> '-',
@@ -158,7 +194,38 @@ function getLevels($t) {
       "{$t['Zonal']}"=> 'ZONAL',
       "{$t['Field']}"=> 'FIELD'
   );
+
 }
+
+function getLL($data) {
+  // resolve the X mark for the lab levl
+  $sp = '&nbsp;';
+  $out = array(
+      'N'=> ($data == 'NATIONAL') ? 'X' : $sp,
+      'R'=> ($data == 'REFERENCE') ? 'X' : $sp,
+      'P'=> ($data == 'REGIONAL') ? 'X' : $sp,
+      'D'=> ($data == 'DISTRICT') ? 'X' : $sp,
+      'Z'=> ($data == 'ZONAL') ? 'X' : $sp,
+      'F'=> ($data == 'FIELD') ? 'X' : $sp
+  );
+  return $out;
+}
+
+function getAF($data) {
+  // resolve the X mark for the lab levl
+  logit("AF: {$data}");
+  $sp = '&nbsp;';
+  $out = array(
+      'P'=> ($data == 'PUBLIC') ? 'X' : $sp,
+      'H'=> ($data == 'HOSPITAL') ? 'X' : $sp,
+      'V'=> ($data == 'PRIVATE') ? 'X' : $sp,
+      'R'=> ($data == 'RESEARCH') ? 'X' : $sp,
+      'N'=> ($data == 'NONHOSPITAL') ? 'X' : $sp,
+      'O'=> ($data == 'OTHER') ? 'X' : $sp
+  );
+  return $out;
+}
+
 
 function getAffiliations($t) {
   return array(

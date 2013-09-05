@@ -290,6 +290,7 @@ END;
             $mt = $mt2;
           }
           $did = $formData['audit_id'];
+          logit("LABID: {$this->labid}");
           $labrow = $lab->get($this->labid);
           logit('UPLAB: ' . print_r($labrow, true));
           $data->updateData($dvalue, $did, $pageid, $labrow);

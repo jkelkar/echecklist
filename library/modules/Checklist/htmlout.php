@@ -182,15 +182,17 @@ END;
   return $out;
 }
 
-function html_full($row) {
+function html_full($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
   $name = $row['varname'];
+  $text = str_replace('"', '\"', $text);
+  eval("\$text = \"$text\"; ");
   $out = <<<"END"
-<div style="width:100%;">
-  <div class="full">{$text}</div>
-</div>
+<td colspan="6" >
+{$text}
+</td>
 END;
   return $out;
 }
@@ -200,6 +202,7 @@ function html_banner_rev($row) {
   $heading = $row['heading'];
   $text = $row['text'];
   $name = $row['varname'];
+  $iftext = ($text != '')? 'normal': '';
   $out = <<<"END"
 <td colspan=6 class="nb">
 <table class="fullwide"><tr>
@@ -207,7 +210,7 @@ function html_banner_rev($row) {
   {$prefix} {$heading}
   </td></tr>
   <tr>
-  <td class="normal nb">{$text}</td>
+  <td class="{$iftext} nb">{$text}</td>
       </tr>
   </table>
 END;
@@ -220,6 +223,7 @@ function html_banner_rev_border($row) {
   $heading = $row['heading'];
   $text = $row['text'];
   $name = $row['varname'];
+
   $out = <<<"END"
 <td colspan=6>
   <div class="big_banner_rev">
@@ -297,36 +301,44 @@ function html_prof_info($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
-  $intf = INPUT($name, $value, 'integer', 3, 'margin-right:10px;', '');
-  $mc_yni = widget_select_yni("{$name}_yni", $value, $t);
+  $num = get_arrval($value, $name, '');
+  $yni = get_arrval($value, "${name}_yni", '');
+  //$intf = INPUT($name, $value, 'integer', 3, 'margin-right:10px;', '');
+  //$mc_yni = widget_select_yni("{$name}_yni", $value, $t);
+  $prof = getPROF($yni);
   $out = <<<"END"
-<div style="width:100%;">
-<div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
-  {$text}
-</div>
-<div style="vertical-align:top;width:400px;float:left;">
-  {$intf} {$mc_yni}
-</div>
-</div>
+<td colspan="2" class="dhead">{$text}</td>
+<td colspan="2" style="text-align:center;">{$num}</td>
+<td colspan="2" style="padding:2px; vertical-align:top; text-align:center;">
+  <span class="{$prof['Y']}">Yes</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="{$prof['N']}">No</span>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="{$prof['I']}">Insufficient Data</span>
+</td>
 END;
   return $out;
 }
 
-function html_prof_info_yn($row, $value, $t) {
+function html_prof_info_yn_html($row, $value, $t) {
   $name = $row['varname'];
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
-  $mc_yn = widget_select_yn("{$name}_yn", $value, $t);
+  $info = $row['info'];
+  //$mc_yn = widget_select_yn("{$name}_yn", $value, $t);
+ $ded = getPROF(get_arrval($value, "{$name}_dedicated_yn", ''));
+ $tra = getPROF(get_arrval($value, "{$name}_trained_yn", ''));
   $out = <<<"END"
-<div style="width:100%;">
-<div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
-  {$text}
-</div>
-<div style="vertical-align:top;width:400px;float:left;">
-  {$mc_yn}
-</div>
-</div>
+<td colspan="4" class="laic">{$text}
+  <br />
+  <span style="text-align:center;font-style:normal;">
+    <span class="{$ded['Y']}">Yes</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="{$ded['N']}">No</span>
+  </span></td>
+<td colspan="2" class="laic">{$info}
+  <br />
+  <span style="text-align:center;font-style:normal;">
+    <span class="{$tra['Y']}">Yes</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="{$tra['N']}">No</span>
+  </span></td>
 END;
   return $out;
 }
@@ -410,24 +422,7 @@ END;
   return $out;
 }
 
-function html_tel_type($row, $value, $t) {
-  $name = $row['varname'];
-  $prefix = $row['prefix'];
-  $heading = $row['heading'];
-  $text = $row['text'];
-  $pwf = widget_select_pw($name, $value, $t);
-  $out = <<<"END"
-<div style="width:100%;">
-<div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
-  {$text}
-</div>
-<div style="vertical-align:top; ;width:400px;float:left;">
-  {$pwf}
-</div>
-</div>
-END;
-  return $out;
-}
+
 function html_sec_elem_info_normal($row, $value, $t) {
   /* $prefix = $row['prefix'];
      $heading = $row['heading']; */
@@ -448,15 +443,8 @@ function html_sec_head($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
+  logit("SECHEAD: {$prefix} {$heading}");
   $out = <<<"END"
-      <td class="ctb dg nsp"></td>
-      <td class="cb dg nsp">Y</td>
-      <td class="cb dg nsp">P</td>
-      <td class="cb dg nsp">N</td>
-      <td class="cb dg nsp">Comments</td>
-      <td class="cb dg nsp">Score</td>
-    </tr>
-<tr>
 <td colspan=6 style="padding: 2px 4px;color:white;background-color:black;">
   <div style="text-transform:uppercase;padding-bottom:10px;font-size:1.0625em;">
     <span>{$prefix}</span>
@@ -468,31 +456,42 @@ END;
   return $out;
 }
 
-function html_sec_head_lab($row, $value, $t) {
+function html_sec_head_lab_info($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
-  $info = $row['info'];
-  $name = $row['varname'];
-  $max_score = $row['score'];
-  $widget_nyp = widget_select_ynp_calc($name, $value, $t, $max_score);
-  $head = ($heading) ? "{$heading}<br />" : "";
-  $tarea = TEXTAREA("{$name}_comment", $value, "width:100%;height:50px;margin-top:5px;");
   $out = <<<"END"
-  <table style="width:100%;"><tr>
-      <td style="padding: 2px 4px;">
-        <div style="display:inline-block;width:100%x;vertical-align:top;">
-          <div style="width:788px;display:inline;">
-            <div style="display:inline;font-weight:bold;width:25px;vertical-align:top;">{$prefix}</div>
-            <div style="display:inline-block;width:755px;">
-              <div style="text-decoration:underline;font-weight:bold;display:inline;">{$head}</div>
-              <div style="vertical-align:top;display:inline;">{$text}
-              </div>
-            </div>
-          </div>
-        </div>
-      </td>
-  </tr></table>
+<td colspan="6" class="nb">
+  <table border="0"><tr class="dg">
+    <td style="" class="ss">{$text}</td>
+    <td style="width:8%;" class="cb"></td>
+    <td style="width:8%;" class="cb"></td>
+  </tr></table></td>
+END;
+
+  return $out;
+}
+
+function html_prof_info_yn_suff($row, $value, $t) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $name = $row['varname'];
+  $extradata = $ending = '';
+  if ($name == 'sufficient_other') {
+      $extradata = get_arrval($value, "{$name}_data", '');
+      $ending = '</tr><tr><td colspan="6" class="nb"><div class="pagebreak" style="height:15px;">&nbsp;</div></td>';
+      }
+  //logit("YN: {$name}_yn
+  $yn = getPROF(get_arrval($value, "{$name}_yn", ''));
+
+  $out = <<<"END"
+<td colspan="6" class="nb">
+  <table style="border:none;width:100%;"><tr class="dg">
+    <td class="ss" style="padding:7px;font-weight:bold;">{$text} {$extradata}</td>
+    <td style="width:8%;" class="c {$yn['Y']}">YES</td>
+    <td style="width:8%;" class="c {$yn['N']}">NO</td>
+  </tr></table></td>{$ending}
 END;
 
   return $out;
@@ -518,14 +517,9 @@ function html_sec_head_small($row, $value, $t) {
   $heading = $row['heading'];
   $text = $row['text'];
   $out = <<<"END"
-<table style="width:100%;">
-<tr>
-<td style="font-size:14px;font-weight: bold;padding: 2px 4px;">
-<div style="">
-<div style="vertical-align:top;">{$prefix} {$heading}</div>
-</div>
+<td colspan="6" class="dg">
+{$prefix} {$heading}
 </td>
-</tr></table>
 END;
 
   return $out;
@@ -536,11 +530,12 @@ function html_info_i($row, $value, $t) {
   $heading = $row['heading'];
   $text = $row['text'];
   $out = <<<"END"
+<td colspan="6">
 <table style="width:100%;"><tr>
 <td style="font-size:14px;font-style:italic;padding: 2px 4px;">
 <div style="vertical-align:top;">{$text}</div>
 </td>
-</tr></table>
+</tr></table></td>
 END;
 
   return $out;
@@ -908,17 +903,15 @@ function html_tab_head3($row, $value, $t) {
   $text = $row['text'];
   $name = $row['varname'];
   $out = <<<"END"
-<table style="width:100%;"><tr>
-<td style="vertical-align:top;padding: 2px 4px;">
+<td colspan="2" style="vertical-align:top;padding: 2px 4px;text-align:center;">
 <i>{$prefix}</i>
 </td>
-<td style="vertical-align:top;padding: 2px 4px;">
+<td colspan="2" style="vertical-align:top;padding: 2px 4px;text-align:center;">
 <i>{$heading}</i>
 </td>
-<td style="vertical-align:top;padding: 2px 4px;">
+<td colspan="2" style="vertical-align:top;padding: 2px 4px;text-align:center;">
 <i>{$text}</i>
 </td>
-</tr></table>
 END;
 
   return $out;
@@ -1068,15 +1061,10 @@ function html_com_and_rec($row, $value, $t) {
   $tval = get_arrval($value, $name, '');
   //$tarea = TEXTAREA($name, $value, $style = "width:100%;height:400px;");
   $out = <<<"END"
-<td colspan="6" class="nb">
-  <table style="width:100%;">
-  <tr>
-    <td class="tbw">
-    <div class="bigtitlei">{$heading}</div>
-    <div style="min-height:150px;vertical-align:top;margin-left:5px;margin-top:4px;">{$tval}</div>
-    </td>
-  </tr>
-</table></td>
+<td colspan="6">
+  <div class="bigtitlei">{$heading}</div>
+  <div style="min-height:150px;vertical-align:top;margin-left:5px;margin-top:4px;">{$tval}</div>
+</td>
 </tr><tr><td colspan="6" class="nb"><div class="pagebreak" style="height:15px;">&nbsp;</div></td>
 END;
 
@@ -1089,8 +1077,8 @@ function html_criteria_2_heading($row, $value, $t) {
   $text = $row['text'];
   $name = $row['varname'];
   $out = <<<"END"
-  <table style="width:100%;">
-  <tr class="dg">
+<td colspan="6">
+  <table style="width:100%;"><tr class="dg">
     <td width="7%" class="centertopbold ">{$prefix}</td>
     <td class="topbold">
       {$heading}
@@ -1098,8 +1086,7 @@ function html_criteria_2_heading($row, $value, $t) {
     <td style="width:14%;" class="centertop">{$t['Date of panel receipt']}</td>
     <td style="width:18%;" class="centertop">{$t['Were results reported within 15 days?']}</td>
     <td style="width:10%;" class="centertopbold">{$t['Results & % Correct']}</td>
-  </tr>
-  </table>
+</tr></table></td>
 END;
 
   return $out;
@@ -1111,6 +1098,7 @@ function html_panel_heading($row, $value, $t) {
   $text = $row['text'];
   $name = $row['varname'];
   $out = <<<"END"
+<td colspan="6">
   <table style="width:100%;">
   <tr class="lg">
     <td width="7%"></td>
@@ -1118,8 +1106,7 @@ function html_panel_heading($row, $value, $t) {
       {$heading}
     </td>
     <td width="10%" class="percent">%</td>
-  </tr>
-  </table>
+</tr></table></td>
 END;
 
   return $out;
@@ -1132,6 +1119,7 @@ function html_panel_heading2($row, $value, $t) {
   $name = $row['varname'];
   $sfield = widget_integer("{$name}_name", $value, 32);
   $out = <<<"END"
+<td colspan="6">
   <table style="width:100%;">
   <tr>
     <td width="7%"></td>
@@ -1140,9 +1128,181 @@ function html_panel_heading2($row, $value, $t) {
     </td>
     <td width="10%" class="percent">%</td>
   </tr>
-  </table>
+  </table></td>
 END;
 
+  return $out;
+}
+
+function html_tel_type($row, $value, $t) {
+  $names = array('end_date','dola','slmta_pas','names_affil_t','labname','labnum','labaddr',
+      'labtel','labfax','labemail','labhead','labheadtel','labheadteltype','lablevel','labaffil',
+      'labaffil_other','prof_deg_num','prof_deg_yni','prof_dip_num','prof_dip_yni','prof_cert_num',
+      'prof_cert_yni','microscopist_num','microscopist_yni','dataclerk_num','dataclerk_yni',
+      'phlebo_num','phlebo_yni','cleaner_num','cleaner_yni','cleaner_dedicated','cleaner_trained',
+      'driver_num','driver_yni','driver_dedicated','driver_trained','other_num','other_yni',
+      'sufficient_space','sufficient_equipment','sufficient_supplies','sufficient_personnel',
+      'sufficient_infra');
+  $v = array();
+  foreach($names as $n) {
+    $v[$n] = get_arrval($value, $n, '');
+  }
+ // $stars_rev = rev("getStars", $t);
+ // $v['slmta_pas'] = $stars_rev[$v[$n]];
+  $ll = getLL($v['lablevel']);
+  $af = getAF($v['labaffil']);
+  $st = getST($v['slmta_pas']);
+  $tt = getTT($v['labheadteltype']);
+  $v['labaddr'] = str_replace("\n", "<br />", $v['labaddr']);
+  /*$pdeg = $getPROF($v['prof_deg_yni']);
+  $pdip = $getPROF($v['prof_dip_yni']);
+  $pcert = $getPROF($v['prof_cert_yni']);
+  $micro = $getPROF($v['microscopist_yni']);
+  $dataclerk = $getPROF($v['microscopist_yni']);
+  $phlobo = $getPROF($v['microscopist_yni']);
+  $micro = $getPROF($v['microscopist_yni']);
+  $micro = $getPROF($v['microscopist_yni']);
+  $micro = $getPROF($v['microscopist_yni']);*/
+  $out = <<<"END"
+ <td colspan="6">
+ <table class="display">
+  <tr style>
+    <!--="display:none;"> -->
+    <td style="width: 16%;">1</td>
+    <td style="width: 7%;">2</td>
+    <td style="width: 10%;">3</td>
+    <td style="width: 5%;">4</td>
+    <td style="width: 9%;">5</td>
+    <td style="width: 4%;">6</td>
+    <td style="width: 6%;">7</td>
+    <td style="width: 7%;">8</td>
+    <td style="width: 4%;">9</td>
+    <td style="width: 7%;">10</td>
+    <td style="width: 4%;">11</td>
+    <td style="width: 11%;">12</td>
+    <td style="width: 3%;">13</td>
+    <td style="">14</td>
+  </tr>
+  <tr>
+    <td colspan=14
+      style="padding: 2px 4px; background-color: black; color: white;">
+      <div
+        style="text-transform: uppercase; padding-bottom: 15px; font-family: Helvetica, Arial, sans-serif; font-size: 18px;">
+        part I: laboratory profile</div>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="7" style="vertical-align: top;"><span class="dhead">Date
+        of Audit</span> <span class="data">{$v['end_date']}</span></td>
+    <td colspan="7" style="vertical-align: top;"><span class="dhead">Date
+        of Last Audit</span> <span class="data">{$v['dola']}</span></td>
+  </tr>
+  <tr>
+    <td colspan=2 class="dhead" style="vertical-align: top;">Prior Audit
+      Status</td>
+    <td colspan=2 class="star lg {$st['N']}">Not Audited</td>
+    <td class="star lg {$st['0']}">0 Stars</td>
+    <td colspan=2 class="star lg {$st['1']}">1 Star</td>
+    <td colspan=2 class="star lg {$st['2']}">2 Stars</td>
+    <td colspan=2 class="star lg {$st['3']}">3 Stars</td>
+    <td class="star lg {$st['4']}">4 Stars</td>
+    <td colspan=2 class="star lg {$st['5']}">5 Stars</td>
+  </tr>
+  <tr>
+    <td colspan="14" class="la"><span
+      class="dhead">Names and Affiliation(s) of Auditor(s)</span>
+      <div class="data">
+        {$v['names_affil_t']}
+      </div></td>
+  </tr>
+  <tr>
+    <td colspan=10 style="vertical-align: top;"><span class="dhead">Laboratory
+        Name</span> <span class="data"><br />{$v['labname']}</span></td>
+    <td colspan=4 style="vertical-align: top;"><span class="dhead">Laboratory
+        Number</span> <span class="data"><br />{$v['labnum']}</span></td>
+  </tr>
+  <tr>
+    <td colspan=14 style="vertical-align: top;"><span class="dhead">Laboratory
+        Address</span> <span class="data"><br />{$v['labaddr']}</span></td>
+  </tr>
+  <tr>
+    <td colspan=3 style="vertical-align: top;"><span class="dhead">Laboratory
+        Telephone</span> <span class="data"><br />{$v['labtel']}</span></td>
+    <td colspan=6 style="vertical-align: top;"><span class="dhead">Fax</span>
+      <span class="data"><br />{$v['labfax']}</span></td>
+    <td colspan=5 style="vertical-align: top;"><span class="dhead">Email</span><span
+      class="data"><br />{$v['labemail']}</span></td>
+  </tr>
+  <tr>
+    <td colspan=6 rowspan=2 style="vertical-align: top;"><span
+      class="dhead">Head of Laboratory</span> <span class="data"><br />{$v['labhead']}</span></td>
+    <td colspan=7 rowspan=2 style="vertical-align: top;"><span
+      class="dhead">Telephone</span> <span class="data">(Head of
+        Laboratory)</span> <span class="data"><br />{$v['labheadtel']}</span></td>
+    <td style="text-align: center;" class="{$tt['P']}">Personal</td>
+  </tr>
+  <tr>
+    <td style="text-align: center;" class="{$tt['W']}">Work</td>
+  </tr>
+  <tr class="lg" style="height: 35px">
+    <td colspan=6 style="vertical-align: top;"><span class="dhead">Laboratory
+        Level</span> <span class="data">(check only one)</span></td>
+    <td colspan=8 style="vertical-align: top;"><span class="dhead">Type
+        of Laboratory/Laboratory Affiliation</span> <span class="data">(check
+        only one)</span></td>
+  </tr>
+  <tr>
+    <td colspan=1 class="la">
+      <div class="cbx">{$ll['N']}</div> <span class="la">National</span>
+    </td>
+    <td colspan=2 class="la">
+      <div class="cbx">{$ll['R']}</div> <span class="la">Reference</span>
+    </td>
+    <td colspan=3 class="la">
+      <div class="cbx">{$ll['P']}</div> <span class="la">Regional/Provincial</span>
+    </td>
+    <td colspan=2 class="la">
+      <div class="cbx">{$af['P']}</div> <span class="la">Public</span>
+    </td>
+    <td colspan=3 class="la">
+      <div class="cbx">{$af['H']}</div> <span class="la">Hospital<br />
+        <br /></span>
+    </td>
+    <td colspan=3 class="la">
+      <div class="cbx">{$af['V']}</div> <span class="la">Private</span>
+    </td>
+  </tr>
+  <tr>
+    <td colspan=1 class="la">
+      <div class="cbx">{$ll['D']}</div> <span class="la">District</span>
+    </td>
+    <td colspan=2 class="la">
+      <div class="cbx">{$ll['Z']}</div> <span class="la">Zonal</span>
+    </td>
+    <td colspan=3 class="la">
+      <div class="cbx">{$ll['F']}</div> <span class="la">Field</span>
+    </td>
+    <td colspan=2 class="la">
+      <div class="cbx">{$af['R']}</div> <span class="la">Research</span>
+    </td>
+    <td colspan=3 class="la">
+      <div class="cbx">{$af['N']}</div> <span class="la">Non-hospital
+        Outpatient Clinic</span>
+    </td>
+    <td colspan=3 class="la">
+      <div class="cbx">{$af['O']}</div> <span class="la">Other --
+        Please specify:</span>
+      <div style="text-decoration: underline; vertical-align: bottom;">{$v['labaffil_other']}</div>
+    </td>
+  </tr>
+  <tr class="lg" style="height:35px">
+    <td colspan=14 class="dhead">
+      <span>Laboratory Staffing Summary</span>
+    </td>
+  </tr>
+</table>
+</td>
+END;
   return $out;
 }
 
@@ -1161,6 +1321,7 @@ function html_panel_result($row, $value, $t) {
   $y = ($mc_yn == 'YES') ? 'Y': '';
   $n = ($mc_yn == 'NO') ? 'N': '';
   $out = <<<"END"
+<td colspan="6">
 <table style="width:100%;">
   <tr>
     <td style="width:7%;" class="title c">{$prefix}</td>
@@ -1170,7 +1331,7 @@ function html_panel_result($row, $value, $t) {
     <td style="width:9%;"class="cb">{$n}</td>
     <td style="width:10%;" class="c">{$smallint}</td>
   </tr>
-</table>
+</table></td>
 END;
   return $out;
 }
@@ -1180,15 +1341,12 @@ function html_info($row, $value, $t) {
   $heading = $row['heading'];
   $text = $row['text'];
   $name = $row['varname'];
-  $tarea = TEXTAREA($name, $value, $style = "width:100%;height:250px;");
+  //$tarea = TEXTAREA($name, $value, $style = "width:100%;height:250px;");
+  $tval = get_arrval($value, $name, '');
   $out = <<<"END"
-<table style="width:100%;">
-  <tr>
-     <td>
-       {$tarea}
-     </td>
-  </tr>
-  </table>
+<td colspan="6">
+<div style="min-height:150px;vertical-align:top;margin-left:5px;margin-top:4px;">{$tval}</div>
+</td>
 END;
   return $out;
 }
@@ -1197,16 +1355,16 @@ function html_action_plan_heading($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
+  $info = $row['info'];
   $name = $row['varname'];
   $out = <<<"END"
-<table style="width:100%;"><tr>
-    <td width="45%" class="centertopbold">
-      {$heading}
-    </td>
-    <td width="20%" class="centertopbold">Responsible Persons</td>
-    <td width="10%" class="centertopbold">Timeline</td>
-    <td class="centertopbold">Signature</td>
-</tr></table>
+  <td colspan="6">
+<table style="width:100%;"><tr class="dg">
+    <td width="45%" class="centertopbold">{$prefix}</td>
+    <td width="20%" class="centertopbold">{$heading}</td>
+    <td width="12%" class="centertopbold">{$text}</td>
+    <td class="centertopbold">{$info}</td>
+</tr></table></td>
 END;
   return $out;
 }
@@ -1217,24 +1375,27 @@ function html_action_plan_data($row, $value, $t) {
   $text = $row['text'];
   $name = $row['varname'];
   $input_style = "width:100%;height:50px;";
-  $item = TEXTAREA("{$name}_item", $value, $input_style);
-  $person = TEXTAREA("{$name}_person", $value, $input_style);
-  $time = TEXTAREA("{$name}_time", $value, $input_style);
-  $sign = TEXTAREA("{$name}_sign", $value, $input_style);
+  $item = str_replace("\n", "<br />", get_arrval($value, "{$name}_item",''));
+  $person = str_replace("\n", "<br />", get_arrval($value, "{$name}_person", ''));
+  $time = str_replace("\n", "<br />", get_arrval($value, "{$name}_time",''));
+  $sign = str_replace("\n", "<br />", get_arrval($value, "{$name}_sign", ''));
   $out = <<<"END"
-  <table style="width:810px;">
-  <tr>
-    <td width="45%">{$item}</td>
-    <td width="20%">{$person}</td>
-    <td width="10%">{$time}</td>
-    <td >{$sign}</td>
-  </tr>
-  </table>
+<td colspan="6" class="nb">
+  <table style="width:100%;">
+  <tr style="">
+    <td width="45%" style="padding:4px;vertical-align:top;height:25px;">{$item}</td>
+    <td width="20%" style="padding:4px;vertical-align:top;">{$person}</td>
+    <td width="12%" style="padding:4px;vertical-align:top;">{$time}</td>
+    <td style="padding:4px;vertical-align:top;">{$sign}</td>
+</tr></table></td>
 END;
 
   return $out;
 }
 
+function html_pagebreak() {
+  return '<td colspan="6" class="nb"><div class="pagebreak" style="height:15px;">&nbsp;</div></td>';
+}
 function html_sec_total($row, $value, $t) {
   $heading = $row['heading'];
   $name = $row['varname'];
@@ -1521,32 +1682,48 @@ function calculate_view($rows, $value, $langtag) { //$tword) {
 logit('VALUE: '. print_r($value, true));
   $tlist = getTranslatables($langtag); //$tword );
   $allowed_list = array(
-      'sec_elem_info_normal',
-      'sec_head',
-      'sub_sec_head',
-      'sub_sec_head_ynp',
-      'sub_sec_head_yna',
-      'sub_sec_head_ro',
+      'action_plan_heading',
+      'action_plan_data',
+      'banner_rev',
+      'banner_rev_border',
+      'com_and_rec',
+      'criteria_1_heading',
+      'criteria_1_values',
+      'criteria_2_heading',
+      'full',
+      'img',
+      'info',
+      'info_i',
+      'main2',
+      'main_heading',
+      'pagebreak',
+      'panel_heading',
+      'panel_result',
+      'prof_info',
+      'prof_info_yn_html',
+      'prof_info_yn_suff',
       'sec_elem_info',
       'sec_elem_ynp',
       'sec_element',
+      'sec_element_info',
       'sec_element_yna',
       'sec_element_ynp',
-      'sec_element_info',
-      'sub_sec_info',
-      'sec_total',
-      'img',
-      'main_heading',
-      'main2',
-      'banner_rev',
-      'banner_rev_border',
+      'sec_head',
+      'sec_head_lab_info',
+      'sec_head_small',
       'sec_head_top',
-      'criteria_1_heading',
-      'criteria_1_values',
-      'com_and_rec',
-      'criteria_2_heading',
-      'panel_heading',
-      'panel_result',
+      'sec_total',
+      'sub_sec_head',
+      'sub_sec_head_ro',
+      'sub_sec_head_yna',
+      'sub_sec_head_ynp',
+      'sub_sec_info',
+      'tab_head3',
+      'tel_type',
+      //'prof_info_yn', //
+      //'sec_elem_info_normal',
+      //'sec_head_lab',
+     'sec_elem_info_normal',
 
   );
   $tout = array ();
@@ -1566,6 +1743,8 @@ END;
   $ctr = 0;
   $slmta = false;
   foreach($rows as $row) {
+  if ($row['row_type'] == 'tel_type')
+    logit("at tel_type");
     $ctr++;
     $type = $row['row_type'];
     $arow = array ();
@@ -1573,7 +1752,7 @@ END;
     $arow['heading'] = get_lang_text($row['heading'], $row['lhdefault'], $row['lhlang']);
     $arow['text'] = get_lang_text($row['text'], $row['ltdefault'], $row['ltlang']);
     $arow['varname'] = $row['varname'];
-    $arow['info'] = $row['info'];
+    $arow['info'] = get_lang_text($row['info'], $row['lidefault'], $row['lilang']); //$row['info'];
     $arow['score'] = $row['score'];
     $arow['baseurl'] = $baseurl;
     //$arow['homeurl'] = "{$baseurl}/audit/main";

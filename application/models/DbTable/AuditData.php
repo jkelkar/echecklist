@@ -116,7 +116,8 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
   public function handleLabData($data, $aid, $page_id, $labrow) {
     // copy lab data into the audit
     $key = 'labhead';
-    logit('In handleLabData');
+    //logit('In handleLabData');
+    //logit('LAB: '. print_r($labrow, true));
     if (array_key_exists($key, $data)) {
       $labfields = array(
           'labname',
@@ -126,7 +127,8 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
           'labemail',
           'lablevel',
           'labaffil',
-          'labaddr'
+          'labaddr',
+          'labaffil_other'
       );
       foreach($labfields as $n) {
         $v = '';
@@ -138,11 +140,12 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
           case 'labemail' :
           case 'lablevel' :
           case 'labaffil' :
+          case 'labaffil_other':
             if (array_key_exists($n, $labrow)) {
               //$data[$n]
               $v = $labrow[$n];
             }
-            logit("ch data {$n}: $v");
+            //logit("ch data {$n}: $v");
             break;
           case 'labaddr' :
             $labaddr = '';
@@ -168,7 +171,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
           default :
           // we should never reach here!
         }
-        logit("HLABDATA: {$aid} {$n} {$v} <{$page_id}>");
+        //logit("HLABDATA: {$aid} {$n} {$v} <{$page_id}>");
         $this->updateAuditField($aid, $n, $v, $page_id);
       }
     }
@@ -210,79 +213,12 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     if ($page_id != '') {
       $page_id = (int) $page_id;
     }
-    logit("AD upd: {$aid} {$page_id} " . print_r($data, true));
+    //logit("AD upd: {$aid} {$page_id} " . print_r($data, true));
     // update lab info
     // do all this only if labhead is a variable on this page
     $this->handleLabData($data, $aid, $page_id, $labrow);
-    /*$key = 'labhead';
-    if (array_key_exists($key, $data)) {
-      $labfields = array (
-          'labname',
-          'labnum',
-          'labtel',
-          'labfax',
-          'labemail',
-          'lablevel',
-          'labaffil',
-          'labaddr'
-      );
 
-      foreach($labfields as $n) {
-        $v = '';
-        switch ($n) {
-          case 'labname' :
-          case 'labnum' :
-          case 'labtel' :
-          case 'labfax' :
-          case 'labemail' :
-          case 'lablevel' :
-          case 'labaffil' :
-            if (array_key_exists($n, $labrow)) {
-              //$data[$n]
-              $v = $labrow[$n];
-            }
-            logit("ch data {$n}: $v");
-            break;
-          case 'labaddr' :
-            $labaddr = '';
-            if (count($labrow) > 5) {
-              if ($labrow['street'] > '')
-                $labaddr = "{$labrow['street']}\n";
-              if ($labrow['street2'] > '')
-                $labaddr .= "{$labrow['street2']}\n";
-              if ($labrow['street3'] > '')
-                $labaddr .= "{$labrow['street3']}\n";
-              if ($labrow['city'] > '')
-                $labaddr .= "{$labrow['city']}";
-              if ($labrow['state'] > '')
-                $labaddr .= ", {$labrow['state']}\n";
-              if ($labrow['country'] > '')
-                $labaddr .= "{$labrow['country']}";
-              if ($labrow['postcode'] > '')
-                $labaddr .= " {$labrow['postcode']}";
-            }
-            //$data['labaddr']
-            $v = $labaddr;
-            break;
-          default :
-          // we should never reach here!
-        }
-        $this->updateAuditField($aid, $n, $v, $page_id);
-      }
-    }*/
     $this->handleAuditHeadData($data, $aid);
-    /*
-     if (array_key_exists('start_date', $data)) {
-      // logit('updating dates: ' . print_r($data, true));
-      $start_date = convert_ISO(get_arrval($data, 'start_date', ''));
-      $end_date = convert_ISO(get_arrval($data, 'end_date', ''));
-      // copy the start_date and end_date into audit
-      $sql = "update audit set start_date = '{$start_date->format($this->ISOformat)}', " .
-      " end_date='{$end_date->format($this->ISOformat)}' where id = {$aid}";
-      // logit("UPD: {$sql}");
-      $this->execute($sql);
-    }
-    */
     foreach($data as $n => $v) {
       // logit ("BEFORE: {$n} ==> {$v}");
       $this->updateAuditField($aid, $n, $v, $page_id);
@@ -326,10 +262,6 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
       case 'dt' :
       case 'date' :
         $ftype = 'date';
-        //$dt = date_parse_from_format($format, $value);
-        //$date = new DateTime();
-        //$date->setDate($dt['year'], $dt['month'], $dt['day']);
-        //$dval = $date;
         $dval = convert_ISO($value);
         logit("Date: {$name} {$dval->format($ISOformat)}");
         break;
@@ -385,7 +317,7 @@ string_val='{$sval}', date_val='{$dval->format($ISOformat)}', bool_val='{$bval}'
 field_type='{$ftype}' where audit_id={$did} and field_name='{$name}'
 END;
     }
-    logit("SQL: {$sql}");
+    // logit("SQL: {$sql}");
     $ct = $this->queryRowcount($sql);
     return $ct;
   }

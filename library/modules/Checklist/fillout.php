@@ -165,7 +165,7 @@ function TEXTAREA($name, $value, $style = '', $class = '') {
   $val = get_arrval($value, $name, '');
   $use_style = ($style == '') ? "style=\"height:50px;\"" : "style=\"{$style}\"";
   $out = <<<"END"
-    <textarea {$use_style} onchange="noteChange();" name="{$name}" id="{$name}" class="autogrow tarea {$class}">{$val}</textarea>
+    <textarea {$use_style} onchange="noteChange();" name="{$name}" id="{$name}" class=" tarea {$class}">{$val}</textarea>
 END;
   //logit("TA: {$name} {$out}");
   return $out;
@@ -376,10 +376,10 @@ function widget_select_yna_add($varname, $value, $t) {
 }
 
 
-function widget_select_wp($varname, $value, $t) {
+/* function widget_select_wp($varname, $value, $t) {
   $optvals = getWP($t);
   return OPTIONS($varname, $optvals, $value);
-}
+} */
 
 function widget_select_yni($varname, $value, $t) {
   $optvals = getYNI($t);
@@ -781,6 +781,10 @@ END;
   return $out;
 }
 
+function partial_prof_info_yn_suff($row, $value, $t) {
+  return partial_prof_info_yn($row, $value, $t);
+}
+
 function partial_prof_info_yn($row, $value, $t) {
   $name = $row['varname'];
   $prefix = $row['prefix'];
@@ -933,12 +937,7 @@ function partial_sec_head_lab($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
   $text = $row['text'];
-  $info = $row['info'];
-  $name = $row['varname'];
-  $max_score = $row['score'];
-  $widget_nyp = widget_select_ynp_calc($name, $value, $t, $max_score);
   $head = ($heading) ? "{$heading}<br />" : "";
-  $tarea = TEXTAREA("{$name}_comment", $value, "width:100%;height:50px;margin-top:5px;");
   $out = <<<"END"
   <table style="width:100%;"><tr>
       <td style="padding: 2px 4px;">
@@ -959,6 +958,29 @@ END;
   return $out;
 }
 
+function partial_sec_head_lab_info($row, $value, $t) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $out = <<<"END"
+  <table style="width:100%;"><tr>
+      <td style="padding: 2px 4px;">
+        <div style="display:inline-block;width:100%x;vertical-align:top;">
+          <div style="width:788px;display:inline;">
+            <div style="display:inline;font-weight:bold;width:25px;vertical-align:top;"></div>
+            <div style="display:inline-block;width:755px;">
+              <div style="text-decoration:underline;font-weight:bold;display:inline;"></div>
+              <div style="vertical-align:top;display:inline;">{$text}
+              </div>
+            </div>
+          </div>
+        </div>
+      </td>
+  </tr></table>
+END;
+
+  return $out;
+}
 function partial_sec_head_top($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
@@ -1825,14 +1847,13 @@ function partial_action_plan_heading($row, $value, $t) {
   $heading = $row['heading'];
   $text = $row['text'];
   $name = $row['varname'];
+  $info = $row['info'];
   $out = <<<"END"
 <table style="width:100%;"><tr>
-    <td width="45%" class="centertopbold">
-      {$heading}
-    </td>
-    <td width="20%" class="centertopbold">Responsible Persons</td>
-    <td width="10%" class="centertopbold">Timeline</td>
-    <td class="centertopbold">Signature</td>
+    <td width="45%" class="centertopbold">{$prefix}</td>
+    <td width="20%" class="centertopbold">{$heading}</td>
+    <td width="10%" class="centertopbold">{$text}</td>
+    <td class="centertopbold">{$info}</td>
 </tr></table>
 END;
   return $out;
@@ -1843,13 +1864,16 @@ function partial_action_plan_data($row, $value, $t) {
   $heading = $row['heading'];
   $text = $row['text'];
   $name = $row['varname'];
-  $input_style = "width:100%;height:50px;";
+  $input_style = "width:96%;height:50px;";
   $item = TEXTAREA("{$name}_item", $value, $input_style);
+  $input_style = "width:92%;height:50px;";
   $person = TEXTAREA("{$name}_person", $value, $input_style);
+  $input_style = "width:83%;height:50px;";
   $time = TEXTAREA("{$name}_time", $value, $input_style);
+  $input_style = "width:100%;height:50px;";
   $sign = TEXTAREA("{$name}_sign", $value, $input_style);
   $out = <<<"END"
-  <table style="width:810px;">
+  <table style="width:100%;">
   <tr>
     <td width="45%">{$item}</td>
     <td width="20%">{$person}</td>
@@ -2164,6 +2188,7 @@ function calculate_page($rows, $value, $langtag) { //$tword) {
       'action_plan_heading',
       'full'
   );
+  $ignore_types = array('prof_info_yn_html', 'pagebreak');
   $tlist = getTranslatables($langtag); //$tword );
   $tout = array ();
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
@@ -2173,12 +2198,13 @@ function calculate_page($rows, $value, $langtag) { //$tword) {
   foreach($rows as $row) {
     $ctr++;
     $type = $row['row_type'];
+    if (in_array($type, $ignore_types)) continue;
     $arow = array ();
     $arow['prefix'] = get_lang_text($row['prefix'], $row['lpdefault'], $row['lplang']);
     $arow['heading'] = get_lang_text($row['heading'], $row['lhdefault'], $row['lhlang']);
     $arow['text'] = get_lang_text($row['text'], $row['ltdefault'], $row['ltlang']);
     $arow['varname'] = $row['varname'];
-    $arow['info'] = $row['info'];
+    $arow['info'] = get_lang_text($row['info'], $row['lidefault'], $row['lilang']); //$row['info'];
     $arow['score'] = $row['score'];
     $arow['baseurl'] = $baseurl;
     //$arow['homeurl'] = "{$baseurl}/audit/main";
@@ -2196,7 +2222,7 @@ function calculate_page($rows, $value, $langtag) { //$tword) {
         $slmta = true;
     }
 
-    $tout[] = "<tr id=\"tr_{$ctr}\"><td {$bpad}>" .
+    $tout[] = "<tr ><td {$bpad}>" .
          call_user_func("partial_{$type}", $arow, $value, $tlist) .
          '</td></tr>';
     if ($slmta && substr($row['varname'], 0, 5) != 'slmta') {

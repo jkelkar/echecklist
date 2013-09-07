@@ -420,6 +420,10 @@ textarea.signature {
 	height: 75px;
 	border: 0;
 }
+div.bat_comment {
+	min-height:30px;
+	padding: 4px;	
+}
 
 div.maintitle {
 	font-family: "Times New Roman", serif;

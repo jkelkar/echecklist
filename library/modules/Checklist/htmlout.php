@@ -26,7 +26,7 @@ require_once '../application/models/DbTable/Audit.php';
  * These implement widgets each of which is responsible for an instance
  * of an input area on the screen
  */
-
+/*
 function widget_select_yn($varname, $value, $t) {
   $optvals = getYN($t);
   return OPTIONS($varname, $optvals, $value);
@@ -40,9 +40,9 @@ function widget_select_ynp($varname, $value, $t) {
 }
 
 function widget_select_ynp_ro($varname, $value, $t) {
-  /*
+  / *
    * This is a display for calculated choices
-   */
+   * /
   $ro_char = "{$varname}_ynp";
   $v_ro_char = get_arrval($value, $ro_char, 'N');
   $out = <<<"END"
@@ -141,6 +141,7 @@ function widget_integer($name, $value, $length = 0) {
 function widget_integersmall($name, $value, $length = 0) {
   return INPUT($name, $value, 'integersmall', $length);
 }
+**/
 
 function html_main_heading($row) {
   $heading = $row['heading'];
@@ -190,11 +191,26 @@ function html_full($row, $value, $t) {
   $text = str_replace('"', '\"', $text);
   eval("\$text = \"$text\"; ");
   $out = <<<"END"
-<td colspan="6" >
+<td colspan="6">
 {$text}
 </td>
 END;
   return $out;
+}
+
+function html_full_nb($row, $value, $t) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $name = $row['varname'];
+  $text = str_replace('"', '\"', $text);
+  eval("\$text = \"$text\"; ");
+  $out = <<<"END"
+<td colspan="6" class="nb">
+{$text}
+</td>
+END;
+return $out;
 }
 
 function html_banner_rev($row) {
@@ -511,6 +527,18 @@ END;
 
   return $out;
 }
+function html_sec_head_empty($row, $value, $t) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $out = <<<"END"
+<td colspan="6" class="" style="padding:4px;">
+{$prefix} {$heading}
+</td>
+END;
+
+return $out;
+}
 
 function html_sec_head_small($row, $value, $t) {
   $prefix = $row['prefix'];
@@ -611,13 +639,25 @@ function html_sub_sec_head_ynp($row, $value, $t) {
   $ec = $row['element_count'];
 
   $selval = get_arrval($value, "{$name}_ynp", '');
-  $ch = getYNPA(selval);
+  $ch = getYNPA($selval);
   $comment = fixText(get_arrval($value, "{$name}_comment", ''));
-  $widget_nyp = widget_select_ynp_add("{$name}_ynp", $value, $t);
+  // $widget_nyp = widget_select_ynp_add("{$name}_ynp", $value, $t);
   $head = ($heading) ? "{$heading}<br />" : "";
   $nscore = "{$name}_score";
-  $scoreval = get_arrval($value, $nscore, 0);
+  $scoreval = get_arrval($value, $nscore, 0);END;
   $out = <<<"END"
+<td style="vertical-align:top;padding: 3px 0 0 3px;">{$prefix}</td>
+<td style="padding: 2px 4px;">
+  <div style="padding-left: 10px;">{$text}</div>
+  <div class="en">{$info}</div>
+</td>
+<td class="cb {$ch['YC']}">{$ch['Y']}</td>
+<td class="cb {$ch['NC']}">{$ch['N']}</td>
+<td class="cb {$ch['PC']}">{$ch['P']}</td>
+<td class="comment">{$comment}</td>
+END;
+
+  $outx = <<<"END"
   <td style="padding: 2px 4px;">
   <div style="display:inline-block;vertical-align:top;">
     <div style="display:inline;">
@@ -1134,8 +1174,9 @@ END;
   return $out;
 }
 
-function html_tel_type($row, $value, $t) {
-  $names = array('end_date','dola','slmta_pas','names_affil_t','labname','labnum','labaddr',
+function html_slipta_tel_type($row, $value, $t) {
+  $names = array('end_date','dola','slmta_pas',
+      'names_affil_t','labname','labnum','labaddr',
       'labtel','labfax','labemail','labhead','labheadtel','labheadteltype','lablevel','labaffil',
       'labaffil_other','prof_deg_num','prof_deg_yni','prof_dip_num','prof_dip_yni','prof_cert_num',
       'prof_cert_yni','microscopist_num','microscopist_yni','dataclerk_num','dataclerk_yni',
@@ -1154,15 +1195,6 @@ function html_tel_type($row, $value, $t) {
   $st = getST($v['slmta_pas']);
   $tt = getTT($v['labheadteltype']);
   $v['labaddr'] = str_replace("\n", "<br />", $v['labaddr']);
-  /*$pdeg = $getPROF($v['prof_deg_yni']);
-  $pdip = $getPROF($v['prof_dip_yni']);
-  $pcert = $getPROF($v['prof_cert_yni']);
-  $micro = $getPROF($v['microscopist_yni']);
-  $dataclerk = $getPROF($v['microscopist_yni']);
-  $phlobo = $getPROF($v['microscopist_yni']);
-  $micro = $getPROF($v['microscopist_yni']);
-  $micro = $getPROF($v['microscopist_yni']);
-  $micro = $getPROF($v['microscopist_yni']);*/
   $out = <<<"END"
  <td colspan="6">
  <table class="display">
@@ -1306,6 +1338,336 @@ END;
   return $out;
 }
 
+function html_bat_tel_type($row, $value, $t) {
+  logit('biosafety_level');
+  $names = array('end_date','dola',//'slmta_pas',
+      'names_affil_t','labname','labnum','labaddr',
+      'labtel','labfax','labemail','labhead','labheadtel','labheadteltype','lablevel','labaffil',
+      'labaffil_other',
+      //'prof_deg_num','prof_deg_yni','prof_dip_num','prof_dip_yni','prof_cert_num',
+      //'prof_cert_yni','microscopist_num','microscopist_yni','dataclerk_num','dataclerk_yni',
+      //'phlebo_num','phlebo_yni','cleaner_num','cleaner_yni','cleaner_dedicated','cleaner_trained',
+      //'driver_num','driver_yni','driver_dedicated','driver_trained','other_num','other_yni',
+      //'sufficient_space','sufficient_equipment','sufficient_supplies','sufficient_personnel',
+      //'sufficient_infra',
+      'biosafety_level', 'toxins_comment');
+  $v = array();
+  foreach($names as $n) {
+    $v[$n] = get_arrval($value, $n, '');
+  }
+  // $stars_rev = rev("getStars", $t);
+  // $v['slmta_pas'] = $stars_rev[$v[$n]];
+  $ll = getLL($v['lablevel']);
+  $af = getAF($v['labaffil']);
+  //$st = getST($v['slmta_pas']);
+  $tt = getTT($v['labheadteltype']);
+  $v['labaddr'] = fixText($v['labaddr']);
+  $out = <<<"END"
+ <td colspan="6">
+ <table class="display">
+  <tr style>
+    <!--="display:none;"> -->
+    <td style="width: 16%;">1</td>
+    <td style="width: 7%;">2</td>
+    <td style="width: 10%;">3</td>
+    <td style="width: 5%;">4</td>
+    <td style="width: 9%;">5</td>
+    <td style="width: 4%;">6</td>
+    <td style="width: 6%;">7</td>
+    <td style="width: 7%;">8</td>
+    <td style="width: 4%;">9</td>
+    <td style="width: 7%;">10</td>
+    <td style="width: 4%;">11</td>
+    <td style="width: 11%;">12</td>
+    <td style="width: 3%;">13</td>
+    <td style="">14</td>
+  </tr>
+  <tr>
+    <td colspan=14
+      style="padding: 2px 4px; background-color: black; color: white;">
+      <div
+        style="text-transform: uppercase; padding-bottom: 15px; font-family: Helvetica, Arial, sans-serif; font-size: 18px;">
+        part I: laboratory profile</div>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="7" style="vertical-align: top;"><span class="dhead">Date
+        of Audit</span> <span class="data">{$v['end_date']}</span></td>
+    <td colspan="7" style="vertical-align: top;"><span class="dhead">Date
+        of Last Audit</span> <span class="data">{$v['dola']}</span></td>
+  </tr>
+  <!--tr>
+    <td colspan=2 class="dhead" style="vertical-align: top;">Prior Audit
+      Status</td>
+    <td colspan=2 class="star lg {$st['N']}">Not Audited</td>
+    <td class="star lg {$st['0']}">0 Stars</td>
+    <td colspan=2 class="star lg {$st['1']}">1 Star</td>
+    <td colspan=2 class="star lg {$st['2']}">2 Stars</td>
+    <td colspan=2 class="star lg {$st['3']}">3 Stars</td>
+    <td class="star lg {$st['4']}">4 Stars</td>
+    <td colspan=2 class="star lg {$st['5']}">5 Stars</td>
+  </tr-->
+  <tr>
+    <td colspan="14" class="la"><span
+      class="dhead">Names and Affiliation(s) of Auditor(s)</span>
+      <div class="data">
+        {$v['names_affil_t']}
+      </div></td>
+  </tr>
+  <tr>
+    <td colspan=10 style="vertical-align: top;"><span class="dhead">Laboratory
+        Name</span> <span class="data"><br />{$v['labname']}</span></td>
+    <td colspan=4 style="vertical-align: top;"><span class="dhead">Laboratory
+        Number</span> <span class="data"><br />{$v['labnum']}</span></td>
+  </tr>
+  <tr>
+    <td colspan=14 style="vertical-align: top;"><span class="dhead">Laboratory
+        Address</span> <span class="data"><br />{$v['labaddr']}</span></td>
+  </tr>
+  <tr>
+    <td colspan=3 style="vertical-align: top;"><span class="dhead">Laboratory
+        Telephone</span> <span class="data"><br />{$v['labtel']}</span></td>
+    <td colspan=6 style="vertical-align: top;"><span class="dhead">Fax</span>
+      <span class="data"><br />{$v['labfax']}</span></td>
+    <td colspan=5 style="vertical-align: top;"><span class="dhead">Email</span><span
+      class="data"><br />{$v['labemail']}</span></td>
+  </tr>
+  <tr>
+    <td colspan=6 rowspan=2 style="vertical-align: top;"><span
+      class="dhead">Head of Laboratory</span> <span class="data"><br />{$v['labhead']}</span></td>
+    <td colspan=7 rowspan=2 style="vertical-align: top;"><span
+      class="dhead">Telephone</span> <span class="data">(Head of
+        Laboratory)</span> <span class="data"><br />{$v['labheadtel']}</span></td>
+    <td style="text-align: center;" class="{$tt['P']}">Personal</td>
+  </tr>
+  <tr>
+    <td style="text-align: center;" class="{$tt['W']}">Work</td>
+  </tr>
+  <tr class="lg" style="height: 35px">
+    <td colspan=6 style="vertical-align: top;"><span class="dhead">Laboratory
+        Level</span> <span class="data">(check only one)</span></td>
+    <td colspan=8 style="vertical-align: top;"><span class="dhead">Type
+        of Laboratory/Laboratory Affiliation</span> <span class="data">(check
+        only one)</span></td>
+  </tr>
+  <tr>
+    <td colspan=1 class="la">
+      <div class="cbx">{$ll['N']}</div> <span class="la">National</span>
+    </td>
+    <td colspan=2 class="la">
+      <div class="cbx">{$ll['R']}</div> <span class="la">Reference</span>
+    </td>
+    <td colspan=3 class="la">
+      <div class="cbx">{$ll['P']}</div> <span class="la">Regional/Provincial</span>
+    </td>
+    <td colspan=2 class="la">
+      <div class="cbx">{$af['P']}</div> <span class="la">Public</span>
+    </td>
+    <td colspan=3 class="la">
+      <div class="cbx">{$af['H']}</div> <span class="la">Hospital<br />
+        <br /></span>
+    </td>
+    <td colspan=3 class="la">
+      <div class="cbx">{$af['V']}</div> <span class="la">Private</span>
+    </td>
+  </tr>
+  <tr>
+    <td colspan=1 class="la">
+      <div class="cbx">{$ll['D']}</div> <span class="la">District</span>
+    </td>
+    <td colspan=2 class="la">
+      <div class="cbx">{$ll['Z']}</div> <span class="la">Zonal</span>
+    </td>
+    <td colspan=3 class="la">
+      <div class="cbx">{$ll['F']}</div> <span class="la">Field</span>
+    </td>
+    <td colspan=2 class="la">
+      <div class="cbx">{$af['R']}</div> <span class="la">Research</span>
+    </td>
+    <td colspan=3 class="la">
+      <div class="cbx">{$af['N']}</div> <span class="la">Non-hospital
+        Outpatient Clinic</span>
+    </td>
+    <td colspan=3 class="la">
+      <div class="cbx">{$af['O']}</div> <span class="la">Other --
+        Please specify:</span>
+      <div style="text-decoration: underline; vertical-align: bottom;">{$v['labaffil_other']}</div>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="14"><div style="padding:4px;float:left;font-weight:bold;">Biosafety Level: </div>
+      <div style="margin-left:10px;padding:4px;float:left;">{$v['biosafety_level']}</div>
+      <div style="clear:both;"></div>
+  </td></tr>
+  <tr>
+    <td colspan="14" style="height:150px;padding:4px;vertical-align:top;">
+      <b>List Agents/Toxins Used in Laboratory:</b><br />{$v['toxins_comment']}
+  </td> </tr>
+ </table>
+</td>
+END;
+  return $out;
+}
+
+function html_tb_tel_type($row, $value, $t) {
+  logit('biosafety_level');
+  $names = array('end_date','dola','slmta_pas',
+      'names_affil_t','labname','labnum','labaddr',
+      'labtel','labfax','labemail','labhead','labheadtel','labheadteltype','lablevel','labaffil',
+      'labaffil_other','prof_deg_num','prof_deg_yni','prof_dip_num','prof_dip_yni','prof_cert_num',
+      'prof_cert_yni','microscopist_num','microscopist_yni','dataclerk_num','dataclerk_yni',
+      'phlebo_num','phlebo_yni','cleaner_num','cleaner_yni','cleaner_dedicated','cleaner_trained',
+      'driver_num','driver_yni','driver_dedicated','driver_trained','other_num','other_yni',
+      'sufficient_space','sufficient_equipment','sufficient_supplies','sufficient_personnel',
+      'sufficient_infra', 'biosafety_level', 'toxins');
+  $v = array();
+  foreach($names as $n) {
+    $v[$n] = get_arrval($value, $n, '');
+  }
+  // $stars_rev = rev("getStars", $t);
+  // $v['slmta_pas'] = $stars_rev[$v[$n]];
+  $ll = getLL($v['lablevel']);
+  $af = getAF($v['labaffil']);
+  $st = getST($v['slmta_pas']);
+  $tt = getTT($v['labheadteltype']);
+  $v['labaddr'] = str_replace("\n", "<br />", $v['labaddr']);
+  $out = <<<"END"
+ <td colspan="6">
+ <table class="display">
+  <tr style>
+    <!--="display:none;"> -->
+    <td style="width: 16%;">1</td>
+    <td style="width: 7%;">2</td>
+    <td style="width: 10%;">3</td>
+    <td style="width: 5%;">4</td>
+    <td style="width: 9%;">5</td>
+    <td style="width: 4%;">6</td>
+    <td style="width: 6%;">7</td>
+    <td style="width: 7%;">8</td>
+    <td style="width: 4%;">9</td>
+    <td style="width: 7%;">10</td>
+    <td style="width: 4%;">11</td>
+    <td style="width: 11%;">12</td>
+    <td style="width: 3%;">13</td>
+    <td style="">14</td>
+  </tr>
+  <tr>
+    <td colspan=14
+      style="padding: 2px 4px; background-color: black; color: white;">
+      <div
+        style="text-transform: uppercase; padding-bottom: 15px; font-family: Helvetica, Arial, sans-serif; font-size: 18px;">
+        part I: laboratory profile</div>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="7" style="vertical-align: top;"><span class="dhead">Date
+        of Audit</span> <span class="data">{$v['end_date']}</span></td>
+    <td colspan="7" style="vertical-align: top;"><span class="dhead">Date
+        of Last Audit</span> <span class="data">{$v['dola']}</span></td>
+  </tr>
+  <tr>
+    <td colspan=2 class="dhead" style="vertical-align: top;">Prior Audit
+      Status</td>
+    <td colspan=2 class="star lg {$st['N']}">Not Audited</td>
+    <td class="star lg {$st['0']}">0 Stars</td>
+    <td colspan=2 class="star lg {$st['1']}">1 Star</td>
+    <td colspan=2 class="star lg {$st['2']}">2 Stars</td>
+    <td colspan=2 class="star lg {$st['3']}">3 Stars</td>
+    <td class="star lg {$st['4']}">4 Stars</td>
+    <td colspan=2 class="star lg {$st['5']}">5 Stars</td>
+  </tr>
+  <tr>
+    <td colspan="14" class="la"><span
+      class="dhead">Names and Affiliation(s) of Auditor(s)</span>
+      <div class="data">
+        {$v['names_affil_t']}
+      </div></td>
+  </tr>
+  <tr>
+    <td colspan=10 style="vertical-align: top;"><span class="dhead">Laboratory
+        Name</span> <span class="data"><br />{$v['labname']}</span></td>
+    <td colspan=4 style="vertical-align: top;"><span class="dhead">Laboratory
+        Number</span> <span class="data"><br />{$v['labnum']}</span></td>
+  </tr>
+  <tr>
+    <td colspan=14 style="vertical-align: top;"><span class="dhead">Laboratory
+        Address</span> <span class="data"><br />{$v['labaddr']}</span></td>
+  </tr>
+  <tr>
+    <td colspan=3 style="vertical-align: top;"><span class="dhead">Laboratory
+        Telephone</span> <span class="data"><br />{$v['labtel']}</span></td>
+    <td colspan=6 style="vertical-align: top;"><span class="dhead">Fax</span>
+      <span class="data"><br />{$v['labfax']}</span></td>
+    <td colspan=5 style="vertical-align: top;"><span class="dhead">Email</span><span
+      class="data"><br />{$v['labemail']}</span></td>
+  </tr>
+  <tr>
+    <td colspan=6 rowspan=2 style="vertical-align: top;"><span
+      class="dhead">Head of Laboratory</span> <span class="data"><br />{$v['labhead']}</span></td>
+    <td colspan=7 rowspan=2 style="vertical-align: top;"><span
+      class="dhead">Telephone</span> <span class="data">(Head of
+        Laboratory)</span> <span class="data"><br />{$v['labheadtel']}</span></td>
+    <td style="text-align: center;" class="{$tt['P']}">Personal</td>
+  </tr>
+  <tr>
+    <td style="text-align: center;" class="{$tt['W']}">Work</td>
+  </tr>
+  <tr class="lg" style="height: 35px">
+    <td colspan=6 style="vertical-align: top;"><span class="dhead">Laboratory
+        Level</span> <span class="data">(check only one)</span></td>
+    <td colspan=8 style="vertical-align: top;"><span class="dhead">Type
+        of Laboratory/Laboratory Affiliation</span> <span class="data">(check
+        only one)</span></td>
+  </tr>
+  <tr>
+    <td colspan=1 class="la">
+      <div class="cbx">{$ll['N']}</div> <span class="la">National</span>
+    </td>
+    <td colspan=2 class="la">
+      <div class="cbx">{$ll['R']}</div> <span class="la">Reference</span>
+    </td>
+    <td colspan=3 class="la">
+      <div class="cbx">{$ll['P']}</div> <span class="la">Regional/Provincial</span>
+    </td>
+    <td colspan=2 class="la">
+      <div class="cbx">{$af['P']}</div> <span class="la">Public</span>
+    </td>
+    <td colspan=3 class="la">
+      <div class="cbx">{$af['H']}</div> <span class="la">Hospital<br />
+        <br /></span>
+    </td>
+    <td colspan=3 class="la">
+      <div class="cbx">{$af['V']}</div> <span class="la">Private</span>
+    </td>
+  </tr>
+  <tr>
+    <td colspan=1 class="la">
+      <div class="cbx">{$ll['D']}</div> <span class="la">District</span>
+    </td>
+    <td colspan=2 class="la">
+      <div class="cbx">{$ll['Z']}</div> <span class="la">Zonal</span>
+    </td>
+    <td colspan=3 class="la">
+      <div class="cbx">{$ll['F']}</div> <span class="la">Field</span>
+    </td>
+    <td colspan=2 class="la">
+      <div class="cbx">{$af['R']}</div> <span class="la">Research</span>
+    </td>
+    <td colspan=3 class="la">
+      <div class="cbx">{$af['N']}</div> <span class="la">Non-hospital
+        Outpatient Clinic</span>
+    </td>
+    <td colspan=3 class="la">
+      <div class="cbx">{$af['O']}</div> <span class="la">Other --
+        Please specify:</span>
+      <div style="text-decoration: underline; vertical-align: bottom;">{$v['labaffil_other']}</div>
+    </td>
+  </tr>
+ </table>
+</td>
+END;
+        return $out;
+}
 function html_panel_result($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
@@ -1411,7 +1773,7 @@ function html_sec_total($row, $value, $t) {
 <td class="cb">
     {$this_score} /<span class="tiny">{$max_score}</span></td>
 </td>
-    </tr><tr><td colspan="6" class="nb"><div class="pagebreak" style="height:15px;">&nbsp;</div></td>
+</tr><tr><td colspan="6" class="nb"><div class="pagebreak" style="height:15px;">&nbsp;</div></td>
 END;
 
   return $out;
@@ -1434,6 +1796,22 @@ function html_sec_element_info($row, $value, $t) {
   <td class="cb" style="font-size:.85em;">Yes</td>
   <td class="cb" style="font-size:.85em;">No</td>
   <td class="cb" style="font-size:.85em;">N/A</td>
+END;
+
+  return $out;
+}
+
+function html_bat_element_info($row, $value, $t) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  // $name = $row['varname'];
+  $out = <<<"END"
+<td></td><td></td>
+<td class="cb" style="font-size:.85em;">Yes</td>
+<td class="cb" style="font-size:.85em;">No</td>
+<td class="cb" style="font-size:.85em;">N/A</td>
+<td></td>
 END;
 
   return $out;
@@ -1491,13 +1869,13 @@ function html_part_head($row, $value, $t) {
   $heading = $row['heading'];
   $text = $row['text'];
   $out = <<<"END"
-<table style="width:100%;"><tr>
-<td style="font-size:18px;text-transform:uppercase;padding: 2px 4px;">
+
+<td colspan="6" style="font-size:18px;text-transform:uppercase;padding: 2px 4px;">
 <div style="">
 <div style="vertical-align:top;"> {$heading}</div>
 </div>
 </td>
-</tr></table>
+
 END;
   return $out;
 }
@@ -1522,11 +1900,10 @@ function html_bat_sec_head($row) {
   // $text = $row ['text'];
   // $name = $row ['varname'];
   $out = <<<"END"
-<div style="width:100%;">
+<td colspan=6 style="padding:2px 4px;color:white;background-color:#666;">
   <div class="bat_banner_rev">
   {$heading}
-  </div>
-</div>
+</div></td>
 END;
   return $out;
 }
@@ -1534,65 +1911,55 @@ END;
 function html_bat_element($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
+  if ($heading) {
+    $heading = $heading . '<br />';
+  }
   $text = $row['text'];
   $info = $row['info'];
-  $dinfo = '';
-  if ($info != '') {
-    $dinfo = "<div style=\"border:1px solid #999;background-color:#eee;font-style:italic;\">{$info}</div>";
-  }
   $name = $row['varname'];
-  $mc_yna = widget_select_yna_add("{$name}_ynaa", $value, $t);
-  $tarea = TEXTAREA("{$name}_comment", $value, "width:100%;height:50px;margin-top:6px;");
-  $tareanc = TEXTAREA("{$name}_note", $value, "width:100%;height:50px;margin-top:6px;", 'nc');
-  $ncval = get_arrval($value, $name . '_nc', 'F');
-  $checked = '';
-  if ($ncval === 'T') {
-    $checked = 'checked';
-    $vis = '';
-  } else {
-    $ncval = 'F';
-    $vis = "display:none;";
-  }
+  $yn = get_arrval($value, "{$name}_ynaa", '');
+  $ynname = "{$name}_ynaa";
+  //logit("YN: {$ynname} : {$value[$ynname]} = {$yn}");
+  $ch = getYNPA($yn);
+  $comment = fixText(get_arrval($value, "{$name}_comment", ''));
+  if ($info == '') {
   $out = <<<"END"
-<div style="width:100%;">
-  <div style="padding: 2px 4px;">
-    <div style="display:inline-block;width:100%x;vertical-align:top;">
-      <div style="width:390px;padding-right:10px;display:inline;float:left;">
-        <div style="display:inline;font-weight:bold;width:30px;vertical-align:top;">{$prefix}</div>
-        <div style="display:inline-block;width:340px;">
-          <div style="vertical-align:top;display:inline;">{$text}
-            <div style="width:100%;text-align:right;margin-top:5px;">
-              <label><input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
-                      onclick="toggleNCBox(this);">Non-Compliant</label>
-              <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div style="width:400px;display:inline;float:left;">
-        <div style="">{$mc_yna} </div>
-          {$tarea}
-        <div id="div{$name}_nc" style="{$vis}" >
-          Notes:<br /> {$tareanc}
-        </div>
-      </div>
-    </div>
-    {$dinfo}
-  </div>
-</div>
+<td style="vertical-align:top;padding:3px 0 0 3px;font-size:0.9em;">{$prefix}</td>
+<td style="padding:2px 4px;font-size:0.9em;">
+  <div style="padding-left:5px;">{$text}</div>
+</td>
+<td class="cb {$ch['YC']}">{$ch['Y']}</td>
+<td class="cb {$ch['NC']}">{$ch['N']}</td>
+<td class="cb {$ch['NAC']}">{$ch['NA']}</td>
+<td class="comment" style="padding:2px 4px;font-size:0.9em;">{$comment}</td>
 END;
+  } else {
+    $out = <<<"END"
+<td rowspan=2 style="vertical-align:top;padding: 3px 0 0 3px;font-size:0.9em;">{$prefix}</td>
+<td style="padding: 2px 4px;">
+  <div style="padding-left: 5px;font-size:0.9em;">{$text}</div>
+</td>
+<td class="cb {$ch['YC']}">{$ch['Y']}</td>
+<td class="cb {$ch['NC']}">{$ch['N']}</td>
+<td class="cb {$ch['NAC']}">{$ch['NA']}</td>
+<td class="comment" style="padding: 2px 4px;font-size:0.9em;">{$comment}</td></tr>
+<tr>
+<td colspan="5" style="padding: 3px 4px;font-size:0.78em;font-style: italic;" class="lg">{$info}</td>
+END;
+  }
   return $out;
 }
 
 function html_bat_comment($row, $value, $t) {
   $name = $row['varname'];
-  $tarea = TEXTAREA($name, $value, "width:810px;height:50px;margin:6px 10px 4px 10px;");
+  //$tarea = TEXTAREA($name, $value, "width:810px;height:50px;margin:6px 10px 4px 10px;");
+  $ta = fixText(get_arrval($value, $name, ''));
   $out = <<<"END"
-<div style="width:100%;">
+<td colspan="6">
   <div class="bat_comment">
-  {$tarea}
+  {$ta}
   </div>
-</div>
+</td>
 END;
   return $out;
 }
@@ -1612,22 +1979,13 @@ function html_ynna_ct($row, $value, $t) {
   $name = $row['varname'];
   $ec = $row['element_count'];
   $out = <<<"END"
-<div style="padding: 2px; 4px;width:810px;background:#ccccff;">
-  <div style="font-size:14px;padding: 4px;font-weight:bold;background:#ccccff;width:570px;float:left;">{$heading}</div>
-  <div style="display:inline;float:right;margin-left:5px;background:#ccccff;">
-N/A<input class="ro" name="{$name}_na_ct" id="{$name}_na_ct" value="{$v_na_ct}"
-           type="text"  size="2">
-  </div>
-  <div style="display:inline;float:right;margin-left:5px;background:#ccccff;">
-No<input class="ro" name="{$name}_n_ct" id="{$name}_n_ct" value="{$v_n_ct}"
-           type="text"  size="2">
-  </div>
- <div style="display:inline;float:right;margin-left:5px;background:#ccccff;">
-Yes<input class="ro" name="{$name}_y_ct" id="{$name}_y_ct" value="{$v_y_ct}"
-           type="text"  size="2">
-  </div>
-<div style="clear:both;"></div>
-</div>
+<td colspan="6">
+  <div style="float:left;font-size:0.9em;"><br />{$heading}</div>
+  <div style="float:right;width:50px;text-align:center;font-size:0.9em;"><b>N/A<br />{$v_na_ct}</b></div>
+  <div style="float:right;width:50px;text-align:center;font-size:0.9em;"><b>No<br />{$v_n_ct}</b></div>
+  <div style="float:right;width:50px;text-align:center;font-size:0.9em;"><b>Yes<br />{$v_y_ct}</b></div>
+</td>
+</tr><tr><td colspan="6" class="nb"><div class="pagebreak" style="height:15px;">&nbsp;</div></td>
 END;
 
   return $out;
@@ -1648,26 +2006,20 @@ function html_ynp_ct($row, $value, $t) {
   $name = $row['varname'];
   $ec = $row['element_count'];
   $out = <<<"END"
-<div style="padding: 2px; 4px;width:810px;background:#ccccff;">
-  <div style="font-size:14px;padding: 4px;font-weight:bold;background:#ccccff;width:570px;float:left;">{$heading}</div>
-  <div style="display:inline;float:right;margin-left:5px;background:#ccccff;">
-No<input class="ro" name="{$name}_n_ct" id="{$name}_n_ct" value="{$v_n_ct}"
-         type="text"  size="2"> </div>
-  <div style="display:inline;float:right;margin-left:5px;background:#ccccff;">
-Partial<input class="ro" name="{$name}_p_ct" id="{$name}_p_ct" value="{$v_p_ct}"
-              type="text"  size="2"> </div>
- <div style="display:inline;float:right;margin-left:5px;background:#ccccff;">
-Yes<input class="ro" name="{$name}_y_ct" id="{$name}_y_ct" value="{$v_y_ct}"
-          type="text"  size="2"> </div>
-<div style="clear:both;"></div>
-</div>
+<td colspan="6">
+  <div style="float:left;font-size:0.9em;"><br />{$heading}</div>
+  <div style="float:right;width:50px;text-align:center;font-size:0.9em;"><b>No<br />{$v_n_ct}</b></div>
+  <div style="float:right;width:50px;text-align:center;font-size:0.9em;"><b>Partial<br />{$v_p_ct}</b></div>
+  <div style="float:right;width:50px;text-align:center;font-size:0.9em;"><b>Yes<br />{$v_y_ct}</b></div>
+</td>
+</tr><tr><td colspan="6" class="nb"><div class="pagebreak" style="height:15px;">&nbsp;</div></td>
 END;
 
   return $out;
 }
 
 /* the bottom line */
-function calculate_view($rows, $value, $langtag) { //$tword) {
+function calculate_view($rows, $value, $langtag, $audit_type) { //$tword) {
   /**
    * Result of the query to get all template rows sorted in order
    *
@@ -1679,18 +2031,24 @@ function calculate_view($rows, $value, $langtag) { //$tword) {
    */
   // This is a list of words used often - get it translated only once
   // $rows contains translated list of text
-logit('VALUE: '. print_r($value, true));
+  logit('VALUE: '. print_r($value, true));
   $tlist = getTranslatables($langtag); //$tword );
   $allowed_list = array(
       'action_plan_heading',
       'action_plan_data',
       'banner_rev',
       'banner_rev_border',
+      'bat_comment',
+      'bat_element',
+      'bat_element_info',
+      'bat_sec_head',
+      'bat_tel_type',
       'com_and_rec',
       'criteria_1_heading',
       'criteria_1_values',
       'criteria_2_heading',
       'full',
+      'full_nb',
       'img',
       'info',
       'info_i',
@@ -1699,6 +2057,7 @@ logit('VALUE: '. print_r($value, true));
       'pagebreak',
       'panel_heading',
       'panel_result',
+      'part_head',
       'prof_info',
       'prof_info_yn_html',
       'prof_info_yn_suff',
@@ -1710,27 +2069,33 @@ logit('VALUE: '. print_r($value, true));
       'sec_element_ynp',
       'sec_head',
       'sec_head_lab_info',
+      'sec_head_empty',
       'sec_head_small',
       'sec_head_top',
       'sec_total',
+      'slipta_tel_type',
       'sub_sec_head',
       'sub_sec_head_ro',
       'sub_sec_head_yna',
       'sub_sec_head_ynp',
       'sub_sec_info',
       'tab_head3',
-      'tel_type',
+      'tb_tel_type',
       //'prof_info_yn', //
       //'sec_elem_info_normal',
       //'sec_head_lab',
      'sec_elem_info_normal',
-
+     'ynna_ct',
+     'ynp_ct'
   );
   $tout = array ();
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
   $tout[] = '<table class="display">';
   /*  $tout[] = '<table border=0  class="display">'; */
-  $tout[] = <<<"END"
+  //logit("audit_type: {$audit_type}");
+  switch ($audit_type) {
+    case 'SLIPTA' :
+      $tout[] = <<<"END"
 <tr style="">
   <td style="width:36% !important;">1</td>
   <td style="width:5.4% !important;">2</td>
@@ -1740,9 +2105,26 @@ logit('VALUE: '. print_r($value, true));
   <td>6</td>
 </tr>
 END;
+      break;
+    case 'BAT' :
+    case 'TB' :
+      $tout[] = <<<"END"
+<tr style="">
+  <td style="width:4.6% !important;">1</td>
+  <td style="width:47% !important;">2</td>
+  <td style="width:4.6% !important;">3</td>
+  <td style="width:5.6% !important;">4</td>
+  <td style="width:5.6% !important;">5</td>
+  <td>6</td>
+</tr>
+END;
+      break;
+    default :
+  }
   $ctr = 0;
   $slmta = false;
   foreach($rows as $row) {
+    logit("ROW: {$row['varname']} - {$row['row_type']}");
   if ($row['row_type'] == 'tel_type')
     logit("at tel_type");
     $ctr++;

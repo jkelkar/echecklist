@@ -16,14 +16,15 @@ class Processing extends Process_Common {
     // $name -
     $report = new Application_Model_DbTable_Report();
     $tinfo = $this->collect($name);
-    $numtabs = count($tinfo) - 1;
+    logit("tinfo: ".print_r($tinfo, true));
+    $numtabs = count($tinfo) - 3; // -3 to ignore the heading, report_type, and file_type
     logit("Tabs: {$numtabs}");
     //$start = 0;
     $filehandle = null;
     $heading = $tinfo['heading'];
     $report_type = $tinfo['report_type'];
     $file_type = $tinfo['file_type'];
-
+    logit("ft: {$file_type}");
     switch ($file_type) {
       case 'excel' :
         // this is going to be an excel file

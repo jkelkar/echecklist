@@ -67,8 +67,10 @@ class LabController extends Application_Controller_Action // Zend_Controller_Act
       // display the form here
       if ($this->collectData()) return;
       // logit('Data: ' . print_r($this->data, true));
+      unset($this->data['save_button']);
+      logit('LAB edit: '. print_r($this->data, true));
       $lab->updateData($this->data, $id);
-      $this->_redirector->gotoUrl($this->mainpage);
+      $this->_redirector->gotoUrl('/lab/select');
     }
   }
 

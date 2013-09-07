@@ -184,6 +184,18 @@ function getPROF($data) {
       );
   return $out;
 }
+
+function getLTypes($t) {
+  return array( // Lab Types for SLMTA counting
+      "{$t['Select']} ..."=> '-',
+      "{$t['National']}"=> '1',
+      "{$t['Regional or Provincial']}"=> '2',
+      "{$t['District or Primary']}"=> '3',
+      "{$t['NGO, Faith-based, or private']}"=> '4',
+      "{$t['Military']}"=> '5'
+          );
+
+}
 function getLevels($t) {
   return array(
       "{$t['Select']} ..."=> '-',
@@ -372,7 +384,11 @@ function getTranslatables(/*$tword,*/ $langtag) {
       'BioSafety',
       'SLIPTA',
       'TB',
-      'Show Incomplete Audit'
+      'Show Incomplete Audit',
+      'Regional or Provincial',
+      'District or Primary',
+      'NGO, Faith-based, or private',
+      'Military'
   );
   $tlist = get_common_words_translated($tword, $words);
   //logit('TLIST: '. print_r($tlist, true));

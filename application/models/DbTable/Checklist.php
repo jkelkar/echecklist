@@ -53,6 +53,7 @@ class Application_Model_DbTable_Checklist extends Zend_Db_Table_Abstract
      * This runs the sql against the database and returns the result
      * as $rows
      */
+    logit("SQL: {$sql}");
     $db = $this->getDb();
     $stmt = $db->query($sql);
     $rows = $stmt->fetchAll();

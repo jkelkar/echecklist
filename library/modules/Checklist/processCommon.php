@@ -52,7 +52,7 @@ class Process_Common {
       if ($row['tabpos'] == 0) {
         $guide['heading'] = $row['field_label'];
         $guide['report_type'] = $row['report_type'];
-        $fuide['file_type'] = $row['file_type'];
+        $guide['file_type'] = $row['file_type'];
       } else {
         // in non tab 0
         $tabpos = $row['tabpos'];

@@ -10,6 +10,7 @@ class Application_Model_DbTable_TemplateRows extends Application_Model_DbTable_C
 
   public function getRows($id, $page_num, $lang) {
     $id = ( int ) $id;
+    $page_num = (int) $page_num;
     $sql = <<<"SQL"
       select r.varname, r.row_type, r.score, p.page_num, p.page_id,
       r.prefix, r.heading, r.text, r.info, r.element_count,

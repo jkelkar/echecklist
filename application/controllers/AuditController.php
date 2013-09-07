@@ -313,7 +313,7 @@ END;
             $this->redirect($newuri);
           } else {
             if ($nextpage == 999) {
-              $this->redirect($mainpage);
+              $this->redirect($this->mainpage);
             }
             $this->redirect($page_url);
           }
@@ -321,7 +321,7 @@ END;
         case 'Next':
         /* just go to the next page - nothing to save */
         if ($nextpage == 999) {
-            $this->redirect($mainpage);
+            $this->redirect($this->mainpage);
           }
           $this->redirect($page_url);
         default :
@@ -358,7 +358,9 @@ END;
 
     $rows = $tmplr->getAllRows($template_id, $langtag);
     $value = $data->getAllData($audit_id);
-    $tout = calculate_view($rows, $value, $langtag); //$tword );
+    $audit_type = $auditrow['tag'];
+    logit("AUDIT_ID: {$audit_type}");
+    $tout = calculate_view($rows, $value, $langtag, $audit_type); //$tword );
     $this->view->outlines = implode("\n", $tout);
     $this->_helper->layout->setLayout('mainview');
   }

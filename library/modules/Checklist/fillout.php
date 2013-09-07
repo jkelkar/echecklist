@@ -362,7 +362,7 @@ function widget_select_ynp_calc($varname, $value, $t, $score) {
 function widget_select_ynp_add($varname, $value, $t) {
   $optvals = getYNP($t);
   $sendid = substr($varname, 0, 3);
-  return OPTIONS_ADD($varname, $optvals, $value, "onclick=\"count_ynp_add('{$sendid}');\"");
+  return OPTIONS_ADD($varname, $optvals, $value, "onclick=\"watch_radio('{$varname}');count_ynp_add('{$sendid}');\"");
 }
 
 function widget_select_yna_calc($varname, $value, $t, $score) {
@@ -372,7 +372,7 @@ function widget_select_yna_calc($varname, $value, $t, $score) {
 function widget_select_yna_add($varname, $value, $t) {
   $optvals = getYNA($t);
   $sendid = substr($varname, 0, 3);
-  return OPTIONS_ADD($varname, $optvals, $value, "onclick=\"count_ynaa_add('{$sendid}');\"");
+  return OPTIONS_ADD($varname, $optvals, $value, "onclick=\"watch_radio('{$varname}');count_ynaa_add('{$sendid}');\"");
 }
 
 
@@ -420,6 +420,11 @@ function widget_select_lablevel($varname, $value, $t, $scr = '', $multiple = fal
   return OPTIONS($varname, $optvals, $value, $scr, $multiple);
 }
 
+function widget_select_labtype($varname, $value, $t, $scr = '', $multiple = false) {
+  $optvals = getLTypes($t);
+  return OPTIONS($varname, $optvals, $value, $scr, $multiple);
+}
+
 function widget_select_labaffil($varname, $value, $t, $scr = '', $multiple = false) {
   $optvals = getAffiliations($t);
   return OPTIONS($varname, $optvals, $value, $scr, $multiple);
@@ -446,6 +451,11 @@ function dialog_lablevel($row, $value, $t) {
   // return widget_select_lablevel($varname, $value, $t);
 }
 
+function dialog_labtype($row, $value, $t) {
+  $varname = $row['varname'];
+  $optvals = getLTypes($t);
+  return SELECT($varname, $optvals, $value, '', false);
+}
 function dialog_lablevel_m($row, $value, $t) {
   $varname = $row['varname'];
   $optvals = getLevels($t);
@@ -639,6 +649,10 @@ END;
   return $out;
 }
 
+function partial_full_nb($row) {
+  return(partial_full($row));
+}
+
 function partial_banner_rev($row) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
@@ -719,12 +733,29 @@ function partial_string_ro($row, $value, $t) {
   $text = $row['text'];
   //$stringf = INPUT($name, $value, 'string', 55, '', '');
   $val = get_arrval($value, $name, '');
+  logit("739: {$val} - {$name}");
+  switch($name) {
+  	case 'slmta_labtype':
+  	  $rev_lt = rev('getLTypes', $t);
+  	  $val = $rev_lt[$val];
+  	  break;
+  	case 'lablevel':
+  	  $rev_lt = rev('getLevels', $t);
+  	  $val = $rev_lt[$val];
+  	  break;
+  	case 'labaffil':
+  	  $rev_lt = rev('getAffiliations', $t);
+  	  $val = $rev_lt[$val];
+  	  break;
+  	default:
+  }
+  logit("RO: {$name} --- {$val}");
   $out = <<<"END"
 <div style="width:100%;">
 <div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
   {$text}
 </div>
-<div style="vertical-align:top;width:400px;float:left;">
+<div style="vertical-align:top;width:400px;float:left;color:#3366cc;">
   {$val}
 </div>
 </div>
@@ -855,7 +886,7 @@ function partial_text_ro($row, $value, $t) {
 <div style="display:inline-block;vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left">
   {$text}
 </div>
-<div style="display:inline-block;vertical-align:top;width:400px;float:left;">
+<div style="display:inline-block;vertical-align:top;width:400px;float:left;color:#3366cc;">
   {$val}
 </div>
 </div>
@@ -881,6 +912,18 @@ function partial_date_field($row, $value, $t) {
 </div>
 END;
   return $out;
+}
+// the next three as just being aliased
+function partial_slipta_date_field($row, $value, $t) {
+  return partial_date_field($row, $value, $t);
+}
+
+function partial_bat_date_field($row, $value, $t) {
+  return partial_date_field($row, $value, $t);
+}
+
+function partial_tb_date_field($row, $value, $t) {
+  return partial_date_field($row, $value, $t);
 }
 
 function dialog_date_field($row, $value, $t) {
@@ -913,6 +956,17 @@ END;
   return $out;
 }
 
+function partial_slipta_tel_type($row, $value, $t) {
+  return partial_tel_type($row, $value, $t);
+}
+
+function partial_bat_tel_type($row, $value, $t) {
+  return partial_tel_type($row, $value, $t);
+}
+
+function partial_tb_tel_type($row, $value, $t) {
+  return partial_tel_type($row, $value, $t);
+}
 function partial_sec_head($row, $value, $t) {
   $name = $row['varname'];
   $prefix = $row['prefix'];
@@ -924,7 +978,7 @@ function partial_sec_head($row, $value, $t) {
 <table style="width:100%;"><tr>
 <td style="font-size:18px;font-weight: bold;text-transform:uppercase;padding: 2px 4px;">
 <div style=""><input type="hidden" id="{$secinc}" name="{$secinc}" value="{$incval}"/>
-<div style="vertical-align:top;"> {$heading}</div>
+<div style="vertical-align:top;"> {$prefix} {$heading}</div>
 </div>
 </td>
 </tr></table>
@@ -1455,6 +1509,26 @@ function partial_lablevel($row, $value, $t) {
 END;
 
   return $out;
+}
+
+function partial_labtype($row, $value, $t) {
+  $prefix = $row['prefix'];
+  $heading = $row['heading'];
+  $text = $row['text'];
+  $name = $row['varname'];
+  $mc_lab_type = widget_select_labtype($name, $value, $t);
+  $out = <<<"END"
+<table style="width:100%;"><tr>
+<td style="vertical-align:top;padding-right:10px;width:390px;text-align:right;">
+{$text}
+</td>
+<td style="vertical-align:top;padding: 2px 4px;width:400px;float:left;">
+{$mc_lab_type}
+</td>
+</tr></table>
+END;
+
+return $out;
 }
 
 function partial_slipta_official($row, $value, $t) {
@@ -2041,6 +2115,37 @@ function partial_bat_element($row, $value, $t) {
     $vis = "display:none;";
   }
   $out = <<<"END"
+  <table style="width=100%;"><tr>
+      <td style="vertical-align:top;padding: 2px 4px;width:440px;">
+        <div style="display:inline-block;vertical-align:top;">
+          <div style="width:395px;">
+            <div style="width:100%">
+              <div style="vertical-align:top;display:inline;">{$prefix}</div>
+              <div style="text-decoration:underline;font-weight:bold;vertical-align:top;display:inline;">{$heading}</div>
+              <div style="vertical-align:top;display:inline;">{$text}
+              </div>
+            </div>
+          </div>
+          <div style="font-style:italic;font-weight:bold;font-size:10px;margin-top:4px;">{$info}</div>
+        </div>
+      </td>
+      <td  style="vertical-align:top;padding: 2px 4px;width:350px;">
+        <div style="">{$mc_yna} </div>
+        {$tarea}
+        <div style="width:100%;text-align:left;margin-left:13px;">
+                  <label><input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
+                          onclick="toggleNCBox(this);">Non-Compliant</label>
+                  <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
+                </div>
+        <div id="div{$name}_nc" style="{$vis}" >
+        Notes:<br />
+        {$tareanc}
+        </div>
+      </td>
+</tr></table>
+END;
+
+ /* $out = <<<"END"
 <div style="width:100%;">
   <div style="padding: 2px 4px;">
     <div style="display:inline-block;width:100%x;vertical-align:top;">
@@ -2068,6 +2173,7 @@ function partial_bat_element($row, $value, $t) {
   </div>
 </div>
 END;
+*/
   return $out;
 }
 
@@ -2188,7 +2294,10 @@ function calculate_page($rows, $value, $langtag) { //$tword) {
       'action_plan_heading',
       'full'
   );
-  $ignore_types = array('prof_info_yn_html', 'pagebreak');
+  $ignore_types = array(
+      'prof_info_yn_html',
+      'pagebreak',
+      'bat_element_info');
   $tlist = getTranslatables($langtag); //$tword );
   $tout = array ();
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();

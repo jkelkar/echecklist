@@ -114,18 +114,20 @@ function watch_radio(name) {
 }
 
 function watch_select(name, baseurl) {
-  var selector = "#"+name;
-  $(selector).change(function() {
-    switch($(this).val()) {
-      case '-':
-        $(this).after(' <img id="' + name + '_icon" ' + 'src="'+baseurl+'/cancel-on.png" />');
-        changed = true;
-        break;
-      default:
-        $("#"+name+'_icon').remove();
-        changed= true;
-    }
-  });
+	var selector = "#"+name;
+	$(selector).change(function() {
+		switch($(this).val()) {
+		case '-':
+			//$(this).after(' <img id="' + name + '_icon" ' + 'src="'+baseurl+'/cancel-on.png" />');
+			$('#'+name+'_icon').show();
+			changed = true;
+			break;
+		default:
+			//$("#"+name+'_icon').remove();
+			$('#'+name+'_icon').hide();
+		changed= true;
+		}
+	});
 }
 
 function clear()  {

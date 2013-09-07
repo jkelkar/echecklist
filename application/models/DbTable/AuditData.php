@@ -42,7 +42,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
           $val = $row['string_val'];
       }
       $value[$field_name] = $val;
-      // logit ( "{$field_name} ==> {$val}" );
+      //logit ( "{$field_name} RED {$val}" );
     }
     return $value;
   }
@@ -140,7 +140,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
           case 'labemail' :
           case 'lablevel' :
           case 'labaffil' :
-          case 'labaffil_other':
+          case 'labaffil_other' :
             if (array_key_exists($n, $labrow)) {
               //$data[$n]
               $v = $labrow[$n];
@@ -176,6 +176,20 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
       }
     }
   }
+
+  public function handleSLMTAData($data, $aid, $page_id, $labrow) {
+    // copy lab data into the audit
+    $key = 'slmta_type';
+    //logit('In handleLabData');
+    //logit('LAB: '. print_r($labrow, true));
+    if (array_key_exists($key, $data)) {
+      $n = 'slmta_labtype';
+      $v = $labrow['slmta_labtype'];
+      logit("SLMTA_labtype: {$v}->{$v}");
+      $this->updateAuditField($aid, $n, $v, $page_id);
+    }
+  }
+
 
   public function handleAuditHeadData($data, $aid) {
     // update the AuditHaead (table audit) row with audit details
@@ -217,7 +231,8 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     // update lab info
     // do all this only if labhead is a variable on this page
     $this->handleLabData($data, $aid, $page_id, $labrow);
-
+    logit('SLMTAData'. print_r($data, true));
+    $this->handleSLMTAData($data, $aid, $page_id, $labrow);
     $this->handleAuditHeadData($data, $aid);
     foreach($data as $n => $v) {
       // logit ("BEFORE: {$n} ==> {$v}");
@@ -226,7 +241,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     $this->updateFinalScore($aid, 0);
   }
 
-  public function updateAuditField($did, $name, $value, $page_id='') {
+  public function updateAuditField($did, $name, $value, $page_id = '') {
     $suff = end(preg_split("/_/", $name));
     // logit ( "END: {$name} : {$value} --> {$suff}" );
     $format = 'm/d/Y';

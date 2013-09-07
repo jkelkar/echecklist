@@ -1198,8 +1198,7 @@ function html_slipta_tel_type($row, $value, $t) {
   $out = <<<"END"
  <td colspan="6">
  <table class="display">
-  <tr style>
-    <!--="display:none;"> -->
+  <tr style="display:none;">
     <td style="width: 16%;">1</td>
     <td style="width: 7%;">2</td>
     <td style="width: 10%;">3</td>
@@ -1365,8 +1364,7 @@ function html_bat_tel_type($row, $value, $t) {
   $out = <<<"END"
  <td colspan="6">
  <table class="display">
-  <tr style>
-    <!--="display:none;"> -->
+  <tr style="display:none;">
     <td style="width: 16%;">1</td>
     <td style="width: 7%;">2</td>
     <td style="width: 10%;">3</td>
@@ -1534,8 +1532,7 @@ function html_tb_tel_type($row, $value, $t) {
   $out = <<<"END"
  <td colspan="6">
  <table class="display">
-  <tr style>
-    <!--="display:none;"> -->
+  <tr style="display:none;">
     <td style="width: 16%;">1</td>
     <td style="width: 7%;">2</td>
     <td style="width: 10%;">3</td>
@@ -2096,7 +2093,7 @@ function calculate_view($rows, $value, $langtag, $audit_type) { //$tword) {
   switch ($audit_type) {
     case 'SLIPTA' :
       $tout[] = <<<"END"
-<tr style="">
+<tr style="display:none;">
   <td style="width:36% !important;">1</td>
   <td style="width:5.4% !important;">2</td>
   <td style="width:5.4% !important;">3</td>
@@ -2109,7 +2106,7 @@ END;
     case 'BAT' :
     case 'TB' :
       $tout[] = <<<"END"
-<tr style="">
+<tr style="display:none;">
   <td style="width:4.6% !important;">1</td>
   <td style="width:47% !important;">2</td>
   <td style="width:4.6% !important;">3</td>

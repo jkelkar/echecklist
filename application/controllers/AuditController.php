@@ -347,7 +347,9 @@ END;
     $audit_id = (int) $pinfo[3];
     $template_id = $data->getTemplateId($audit_id);
     $langtag = $this->echecklistNamespace->lang;
-    $thispage = (int) $pinfo[4];
+    //$thispage = '';
+    //if (count($pinfo) > 4)
+    //  $thispage = (int) $pinfo[4];
     $auditrow = $aud->getAudit($audit_id);
     $this->echecklistNamespace->audit = $auditrow;
     $this->echecklistNamespace->lab = array (
@@ -535,7 +537,8 @@ END;
     logit("In audit/exportdata");
     $vars = $this->_request->getPathInfo();
     $pinfo = explode("/", $vars);
-    $id = (int) $pinfo[3];
+    $id = $this->audit['audit_id'];
+    // logit("Audit: ". print_r($this->audit, true));
     if (! $this->getRequest()->isPost()) {
       // export includes a row of lab, audit and matching auditdata
       $out = exportData($id);

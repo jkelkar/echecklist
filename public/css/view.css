@@ -1,7 +1,7 @@
 /*@CHARSET "UTF-8"; */
 @font-face {
-	font-family: 'arialnarrow';
-	src: url('../arialn.ttd') format('truetype'), url('../arialn.eot');
+	font-family: ArialNarrow;
+	src: url('../fonts/arialn.ttf') format('truetype'), url('../fonts/arialn.eot');
 	/* IE9+ */
 }
 
@@ -11,7 +11,7 @@
 }
 
 body {
-	font-family: "arialnarrow", arial, verdana, sans-serif;
+	font-family: ArialNarrow, arial, verdana, sans-serif;
 	font-size: 14px;
 	font-weight: normal;
 	margin: 5px 5px;

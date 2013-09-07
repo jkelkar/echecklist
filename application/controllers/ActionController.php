@@ -312,11 +312,11 @@ END;
 END;
       $auditinfo = '';
       //if ($this->dialog_name == 'audit/edit') {
-      $auditinfo = "<div style=\"margin:6px 0 6px 20px;padding-right:5px;\"><b>Current Audit:</b> {$this->showaudit}</div>";
+      $auditinfo = "<div style=\"margin:6px 0 6px 20px;padding-right:5px;\">Selected Audit: {$this->showaudit}</div>";
       //}
       $this->header .= <<<"END"
 <div style="display:inline-block;">
-  <div style="margin:6px 0px 6px 20px;padding-right:5px;"><b>Current Lab:</b> {$this->labnum}/{$this->labname}</div>
+  <div style="margin:6px 0px 6px 20px;padding-right:5px;">Selected Lab: {$this->labnum}/{$this->labname}</div>
     {$auditinfo}
   <div style="clear:both;"></div></div>
 END;

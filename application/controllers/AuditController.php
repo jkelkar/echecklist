@@ -677,6 +677,8 @@ END;
     } else {
       // update audit info with the lab id (from this system)
       logit("Lab exists: ". print_r($haslab, true));
+      // replace the lab info with that from the selected lab
+      //$auditdatarows = $audit_data->updateAuditWithLabInfo($auditdatarows, $haslab);
       $auditinfo['lab_id'] = $haslab['id'];
     }
     unset($auditinfo['id']); // remove the id
@@ -694,7 +696,12 @@ END;
 
     // insert the audit data rows
     $audit_data->insertAs($auditdatarows, $auditid);
-
+    logit('LABROW: '. print_r($labrow, true));
+      // update the lab data with that from existing lab
+    if ($haslab) {
+      $defarray = array('labhead'=> 'place holder');
+      $audit_data->handleLabData($defarray, $auditid, '', $haslab);
+    }
     // delete the physical file
     unlink($thisfile['path']);
 
@@ -754,6 +761,7 @@ END;
     logit('LABROW: '. print_r($labrow, true));
     $defarray = array('labhead' => 'place holder');
     $audit_data->handleLabData($defarray, $auditid, '', $labrow);
+    //$auditdatarows = $audit_data->updateAuditWithLabInfo($auditdatarows, $labrow);
 
     // delete the physical file
     unlink($thisfile['path']);

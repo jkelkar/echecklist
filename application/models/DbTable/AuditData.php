@@ -460,4 +460,28 @@ END;
 
   }
 
+  public function updateAuditWithLabInfo($auditdatarows, $haslab) {
+    // copy the lab fields from haslab to auditdatarows
+    $labfields = array(
+        'labname',
+        'labnum',
+        'labtel',
+        'labfax',
+        'labemail',
+        'lablevel',
+        'labaffil',
+        'labaddr',
+        'labaffil_other'
+    );
+    $out = array();
+    foreach($auditdatarows as $ar) {
+      if (in_array($ar['field_name'], $labfields)) {
+        $fn = $ar['field_name'];
+        $ar['string_val'] = $haslab[$fn];
+      }
+      $out[] = $ar;
+    }
+    return $out;
+  }
+
 }

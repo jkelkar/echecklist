@@ -257,7 +257,7 @@ END;
   <!--li><a href="{$this->baseurl}/audit/find"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Find</a></li-->
 {$complete_audit}
   <li class="divider"></li>
-  <li><a href="{$this->baseurl}/audit/select"><span title=".icon  .icon-color  .icon-newwin " class="icon icon-color icon-newwin"></span> Select Audits</a></li>
+  <li><a href="{$this->baseurl}/audit/select"><span title=".icon  .icon-color  .icon-newwin " class="icon icon-color icon-newwin"></span> Process Audits</a></li>
   <li class="divider"></li>
   <li><a href="{$this->baseurl}/audit/import"><span title=".icon  .icon-blue .icon-import " class="icon icon-blue icon-archive"></span> Import</a></li>
 </ul>

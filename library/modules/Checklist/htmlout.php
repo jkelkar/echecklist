@@ -1198,21 +1198,21 @@ function html_slipta_tel_type($row, $value, $t) {
   $out = <<<"END"
  <td colspan="6">
  <table class="display">
-  <tr style="display:none;">
-    <td style="width: 16%;">1</td>
-    <td style="width: 7%;">2</td>
-    <td style="width: 10%;">3</td>
-    <td style="width: 5%;">4</td>
-    <td style="width: 9%;">5</td>
-    <td style="width: 4%;">6</td>
-    <td style="width: 6%;">7</td>
-    <td style="width: 7%;">8</td>
-    <td style="width: 4%;">9</td>
-    <td style="width: 7%;">10</td>
-    <td style="width: 4%;">11</td>
-    <td style="width: 11%;">12</td>
-    <td style="width: 3%;">13</td>
-    <td style="">14</td>
+  <tr style="">
+    <td style="width: 16%;"></td>
+    <td style="width: 7%;"></td>
+    <td style="width: 10%;"></td>
+    <td style="width: 5%;"></td>
+    <td style="width: 9%;"></td>
+    <td style="width: 4%;"></td>
+    <td style="width: 6%;"></td>
+    <td style="width: 7%;"></td>
+    <td style="width: 4%;"></td>
+    <td style="width: 7%;"></td>
+    <td style="width: 4%;"></td>
+    <td style="width: 11%;"></td>
+    <td style="width: 3%;"></td>
+    <td style=""></td>
   </tr>
   <tr>
     <td colspan=14
@@ -1364,21 +1364,21 @@ function html_bat_tel_type($row, $value, $t) {
   $out = <<<"END"
  <td colspan="6">
  <table class="display">
-  <tr style="display:none;">
-    <td style="width: 16%;">1</td>
-    <td style="width: 7%;">2</td>
-    <td style="width: 10%;">3</td>
-    <td style="width: 5%;">4</td>
-    <td style="width: 9%;">5</td>
-    <td style="width: 4%;">6</td>
-    <td style="width: 6%;">7</td>
-    <td style="width: 7%;">8</td>
-    <td style="width: 4%;">9</td>
-    <td style="width: 7%;">10</td>
-    <td style="width: 4%;">11</td>
-    <td style="width: 11%;">12</td>
-    <td style="width: 3%;">13</td>
-    <td style="">14</td>
+  <tr style="">
+    <td style="width: 16%;"></td>
+    <td style="width: 7%;"></td>
+    <td style="width: 10%;"></td>
+    <td style="width: 5%;"></td>
+    <td style="width: 9%;"></td>
+    <td style="width: 4%;"></td>
+    <td style="width: 6%;"></td>
+    <td style="width: 7%;"></td>
+    <td style="width: 4%;"></td>
+    <td style="width: 7%;"></td>
+    <td style="width: 4%;"></td>
+    <td style="width: 11%;"></td>
+    <td style="width: 3%;"></td>
+    <td style=""></td>
   </tr>
   <tr>
     <td colspan=14
@@ -1532,21 +1532,21 @@ function html_tb_tel_type($row, $value, $t) {
   $out = <<<"END"
  <td colspan="6">
  <table class="display">
-  <tr style="display:none;">
-    <td style="width: 16%;">1</td>
-    <td style="width: 7%;">2</td>
-    <td style="width: 10%;">3</td>
-    <td style="width: 5%;">4</td>
-    <td style="width: 9%;">5</td>
-    <td style="width: 4%;">6</td>
-    <td style="width: 6%;">7</td>
-    <td style="width: 7%;">8</td>
-    <td style="width: 4%;">9</td>
-    <td style="width: 7%;">10</td>
-    <td style="width: 4%;">11</td>
-    <td style="width: 11%;">12</td>
-    <td style="width: 3%;">13</td>
-    <td style="">14</td>
+  <tr style="">
+    <td style="width: 16%;"></td>
+    <td style="width: 7%;"></td>
+    <td style="width: 10%;"></td>
+    <td style="width: 5%;"></td>
+    <td style="width: 9%;"></td>
+    <td style="width: 4%;"></td>
+    <td style="width: 6%;"></td>
+    <td style="width: 7%;"></td>
+    <td style="width: 4%;"></td>
+    <td style="width: 7%;"></td>
+    <td style="width: 4%;"></td>
+    <td style="width: 11%;"></td>
+    <td style="width: 3%;"></td>
+    <td style=""></td>
   </tr>
   <tr>
     <td colspan=14
@@ -2093,26 +2093,26 @@ function calculate_view($rows, $value, $langtag, $audit_type) { //$tword) {
   switch ($audit_type) {
     case 'SLIPTA' :
       $tout[] = <<<"END"
-<tr style="display:none;">
-  <td style="width:36% !important;">1</td>
-  <td style="width:5.4% !important;">2</td>
-  <td style="width:5.4% !important;">3</td>
-  <td style="width:5.4% !important;">4</td>
-  <td style="width:41% !important;">5</td>
-  <td>6</td>
+<tr style="/*display:none;*/">
+  <td style="width:36% !important;"></td>
+  <td style="width:5.4% !important;"></td>
+  <td style="width:5.4% !important;"></td>
+  <td style="width:5.4% !important;"></td>
+  <td style="width:41% !important;"></td>
+  <td></td>
 </tr>
 END;
       break;
     case 'BAT' :
     case 'TB' :
       $tout[] = <<<"END"
-<tr style="display:none;">
-  <td style="width:4.6% !important;">1</td>
-  <td style="width:47% !important;">2</td>
-  <td style="width:4.6% !important;">3</td>
-  <td style="width:5.6% !important;">4</td>
-  <td style="width:5.6% !important;">5</td>
-  <td>6</td>
+<tr style="/*display:none;*/">
+  <td style="width:4.6% !important;"></td>
+  <td style="width:47% !important;"></td>
+  <td style="width:4.6% !important;"></td>
+  <td style="width:5.6% !important;"></td>
+  <td style="width:5.6% !important;"></td>
+  <td></td>
 </tr>
 END;
       break;

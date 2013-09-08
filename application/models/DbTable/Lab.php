@@ -23,6 +23,22 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
     return $row->toArray();
   }
 
+  public function getLabByLabnum($labnum)
+  {
+    /**
+     * Get a lab with this id
+     */
+    $row = $this->fetchRow("labnum = '$labnum'");
+
+    if (! $row) {
+      logit("bylabnum: {$labnum} NOT found");
+      return null;
+    } else
+      $out = $row->toArray();
+    logit("bylabnum: {$labnum} -> ". print_r($out, true));
+    return $out;
+  }
+
   public function getLabs($data, $start, $ct) {
     /*
      * Get $ct labs starting at position $start

@@ -610,27 +610,27 @@ END;
   public function fileparseAction() {
     // audit import file has been seen - now process it.
     $this->dialog_name = 'audit/fileparse';
-    logit("In audit/fileparse");
+    // logit("In audit/fileparse");
     if (! $this->getRequest()->isPost()) {
       // read the imported file and extract the
       // lab info and audit into
       $toimport = new Application_Model_DbTable_ToImport();
       $thisfile = $toimport->getByOwner($this->userid);
       $sdata = file_get_contents($thisfile['path']);
-      logit('SLEN: ' . strlen($sdata) . ' ' . print_r($thisfile, true));
+      // logit('SLEN: ' . strlen($sdata) . ' ' . print_r($thisfile, true));
       $data = unserialize($sdata);
       $this->lab = $data['lab'];
-            logit('LAB: ' . print_r($this->lab, true));
+      // logit('LAB: ' . print_r($this->lab, true));
       $this->audit = $data['audit'];
-      logit('AUDIT: ' . print_r($this->audit, true));
+      // logit('AUDIT: ' . print_r($this->audit, true));
       $tmpl = new Application_Model_DbTable_Template();
       $tid = $this->audit['template_id'];
-      logit("TID: {$tid}");
+      // logit("TID: {$tid}");
       $this->tmpl_row = $tmpl->get($tid);
       //get($this->audit['template_id']);
       $this->makeDialog();
     } else {
-      logit('Import: In post');
+      // logit('Import: In post');
     }
   }
 
@@ -659,20 +659,29 @@ END;
     logit('SLEN: ' . strlen($sdata) . ' ' . print_r($thisfile, true));
     $data = unserialize($sdata);
     $labinfo = $data['lab'];
+    $labnum = $labinfo['labnum'];
     logit('LAB: ' . print_r($labinfo, true));
     $auditinfo = $data['audit'];
     logit("Audit: {$auditid} " . print_r($auditinfo, true));
     $auditdatarows = $data['audit_data'];
-    logit("Inserting data: {$auditid} - ". count($auditdatarows));
-
-    // lab data
-    unset($labinfo['id']); // remove the id
-    $labid = $lab->insertData($labinfo);
-    logit("Lab: {$labid} " . print_r($labinfo, true));
-
-    // insert audit row
+    logit("Inserting data: {$auditid} - " . count($auditdatarows));
+    $haslab = $lab->getLabByLabnum($labnum);
+    if (! $haslab) {
+      // the labnum is not in the system
+      // so install this lab data
+      logit("No such lab: {$labnum}");
+      unset($labinfo['id']); // remove the id
+      $labid = $lab->insertData($labinfo);
+      logit("Lab: {$labid} " . print_r($labinfo, true));
+      $auditinfo['lab_id'] = $labid;
+    } else {
+      // update audit info with the lab id (from this system)
+      logit("Lab exists: ". print_r($haslab, true));
+      $auditinfo['lab_id'] = $haslab['id'];
+    }
     unset($auditinfo['id']); // remove the id
-    $auditinfo['lab_id'] = $labid;
+    logit("adding in audit: ". print_r($auditinfo, true));
+    // insert audit row
     $auditid = $audit->insertData($auditinfo);
 
     // insert into audit_owner
@@ -751,6 +760,32 @@ END;
 
     $toimport->delete($thifile['id']); // delete entry from toimport
     $this->echecklistNamespace->flash = 'Import complete';
+    $this->_redirector->gotoUrl($this->mainpage);
+  }
+
+  public function cancelimportAction() {
+    // cancel current import and reset import engine
+  /*
+   * 1. Remove the file from the path in toimport for this user as owner_id
+   * 2. Delete the row from toimport for this user as owner_id
+   */
+    $toimport = new Application_Model_DbTable_ToImport();
+    $thefile = $toimport->getByOwner($this->userid);
+    $filepath = $thefile['path'];
+    unlink($filepath);
+    $toimport->delete($thefile['id']);
+    $this->echecklistNamespace->flash = 'Import has been reset';
+    $this->_redirector->gotoUrl($this->mainpage);
+  }
+
+  public function deleteAction() {
+    // delete the audit in question
+    $audit = new Application_Model_DbTable_Audit();
+    $auditdata = new Application_Model_DbTable_AuditData();
+    $audit_id = $this->audit['audit_id'];
+    $auditdata->deleteAuditRows($audit_id);
+    $audit->deleteAudit($audit_id);
+    $this->echecklistNamespace->flash = "Audit with Id #{$audit_id}: delete successfully";
     $this->_redirector->gotoUrl($this->mainpage);
   }
 }

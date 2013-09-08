@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 07, 2013 at 03:24 AM
+-- Generation Time: Sep 08, 2013 at 05:12 AM
 -- Server version: 5.5.31
 -- PHP Version: 5.3.10-1ubuntu3.6
 
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `audit` (
   `slmta_type` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
   `status` varchar(10) CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Header for data for one document' AUTO_INCREMENT=37 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Header for data for one document' AUTO_INCREMENT=40 ;
 
 --
 -- Dumping data for table `audit`
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `audit_data` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `head_data` (`audit_id`,`field_name`),
   KEY `audit_page` (`audit_id`,`page_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='One row per field of data saved.' AUTO_INCREMENT=48729 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='One row per field of data saved.' AUTO_INCREMENT=53880 ;
 
 --
 -- Dumping data for table `audit_data`
@@ -8316,7 +8316,7 @@ CREATE TABLE IF NOT EXISTS `audit_owner` (
   `owner` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `audit_owner` (`audit_id`,`owner`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Maps audits to owners' AUTO_INCREMENT=25 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Maps audits to owners' AUTO_INCREMENT=28 ;
 
 --
 -- Dumping data for table `audit_owner`
@@ -8344,7 +8344,10 @@ INSERT INTO `audit_owner` (`id`, `audit_id`, `owner`) VALUES
 (21, 33, 1),
 (22, 34, 1),
 (23, 35, 1),
-(24, 36, 1);
+(24, 36, 1),
+(25, 37, 1),
+(26, 38, 1),
+(27, 39, 1);
 
 -- --------------------------------------------------------
 
@@ -8695,7 +8698,7 @@ INSERT INTO `dialog` (`id`, `dialog_id`, `position`, `field_name`, `field_label`
 (56, 6, 3, 'password', 'New Password', '', 'password_field', 'f', '', ''),
 (57, 6, 4, 'password2', 'Password Again', '', 'password_field', 'f', '', ''),
 (58, 6, 5, 'reset_button', 'Cancel,Change', '', 'submit_button', 'f', '', ''),
-(59, 7, 0, 'audit/main', '', '', 'info', 'f', 'Here you will find audits which are not COMPLETE.<br /> Click:<br /><ul><li><b>Edit</b> - to edit</li><li><b>View</b> - to see full audit</li><li><b>Export</b> - to export to data file</li></ul>', 'Audits available for Editing'),
+(59, 7, 0, 'audit/main', '', '', 'info', 'f', 'Here you will find audits which are not COMPLETE.<br /> Click:<br /><ul><li><b>Edit</b> - to edit</li><li><b>View</b> - to see full audit</li>\r\n</ul>\r\nThe following are available under Audit in the title bar:\r\n<ul><li><b>Export Data</b> - to export to data file</li><li><b>Delete</b> - Delete the selected audit/li><li><b>Complete</b> - Change selected audit status to COMPLETE</li></ul>', 'Audits available for Editing'),
 (60, 8, 0, 'lab/select', '', '', 'info', 'f', 'Search for a lab. Use a combination of one or more of :<br /><ol><li>Country Name</li><li>First part of Lab Name</li><li>First part of the Lab Number</ol>', 'Search For a Lab'),
 (61, 8, 1, 'country', 'Country', '', 'country', 'f', '', ''),
 (62, 8, 2, 'labname', 'Lab Name', '', 'string_field', 'f', '', ''),
@@ -8725,7 +8728,7 @@ INSERT INTO `dialog` (`id`, `dialog_id`, `position`, `field_name`, `field_label`
 (86, 12, 1, 'file', 'FIle to Import', 'str_nempty', 'file', 'f', '', ''),
 (87, 12, 3, 'submit_button', 'Cancel,Start', '', 'submit_button', 'f', '', ''),
 (88, 13, 0, 'audit/fileparse', '', '', 'info', 'f', 'These are the data in the imported file.', 'Import file details'),
-(89, 13, 1, 'info', '', '', 'text', 'f', '<div style="font-size: 1em; line-height: 1.2em;">\n  <div id="help2">\n    <div style="float: left; padding: 5px 20px 5px 0px;">\n      Lab info for import data:<br>\n      <table>\n        <tr>\n          <td style="padding-right: 20px;"><b>Lab Name:</b></td>\n          <td>{$this->lab[''labname'']}</td>\n        </tr>\n        <tr>\n          <td style="padding-right: 20px;"><b>Lab Number:</b></td>\n          <td>{$this->lab[''labnum'']}</td>\n        </tr>\n        <tr>\n          <td><b>Country:</b></td>\n          <td>{$this->lab[''country'']}</td>\n        </tr>\n      </table>\n    </div>\n    <div style="float: left; padding: 5px 20px 5px 0px;">\n      Audit info for import data:<br>\n      <table>\n        <tr>\n          <td style="padding-right: 20px;"><b>Audit Type:</b></td>\n          <td>{$this->tmpl_row[''tag'']}</td>\n        </tr>\n        <tr>\n          <td style="padding-right: 20px;"><b>Audit Date:</b></td>\n          <td>{$this->audit[''end_date'']}</td>\n        </tr>\n\n      </table>\n    </div>\n    <div style="clear: both;"></div>\n  </div>\n  <div>\n    <div style="display: inline-block;vertical-align:top;">Choice #1</div>\n    <div class="btn-group" style="display: inline-block;">\n      <a class="btn" href="{$this->importall}" style="color: blue;"> <span\n        style="padding: 5px;">Import Lab and data</span></a>\n    </div>\n  </div>\n  <br>\n  <div style="float: left; padding: 5px 20px 5px 0px;">\n    <table>\n      <tr>\n        <td style="padding-right: 10px;"><b>Currently selected lab is:</b>\n        </td>\n        <td><span style="color: blue; border: 1pxsolid #eee; padding: 4px;">\n            {$this->labname} [{$this->labnum}]</span></td>\n      </tr>\n    </table>\n    <div>\n      <div style="display: inline-block; vertical-align: top;">Choice #2</div>\n      <div class="btn-group" style="display: inline-block;">\n        <a class="btn" href="{$this->import2lab}" style="color: blue;"> <span\n          style="padding: 5px;">Import only data into current lab</span></a>\n      </div>\n    </div>\n    <br> <br> <b>To change the lab:</b> Labs -->Select a Lab and then\n    import again <br> <b>To create a new lab:</b> Labs-->New Lab, input lab\n    info and then import again <br> \n  </div>\n</div>', ''),
+(89, 13, 1, 'info', '', '', 'text', 'f', '<div style="font-size: 1em; line-height: 1.2em;">\r\n  <div id="help2">\r\n    <div style="float: left; padding: 5px 20px 5px 0px;">\r\n      Lab info for import data:<br>\r\n      <table>\r\n        <tr>\r\n          <td style="padding-right: 20px;"><b>Lab Name:</b></td>\r\n          <td>{$this->lab[''labname'']}</td>\r\n        </tr>\r\n        <tr>\r\n          <td style="padding-right: 20px;"><b>Lab Number:</b></td>\r\n          <td>{$this->lab[''labnum'']}</td>\r\n        </tr>\r\n        <tr>\r\n          <td><b>Country:</b></td>\r\n          <td>{$this->lab[''country'']}</td>\r\n        </tr>\r\n      </table>\r\n    </div>\r\n    <div style="float: left; padding: 5px 20px 5px 0px;">\r\n      Audit info for import data:<br>\r\n      <table>\r\n        <tr>\r\n          <td style="padding-right: 20px;"><b>Audit Type:</b></td>\r\n          <td>{$this->tmpl_row[''tag'']}</td>\r\n        </tr>\r\n        <tr>\r\n          <td style="padding-right: 20px;"><b>Audit Date:</b></td>\r\n          <td>{$this->audit[''end_date'']}</td>\r\n        </tr>\r\n\r\n      </table>\r\n    </div>\r\n    <div style="clear: both;"></div>\r\n  </div>\r\n  <div>\r\n    <div style="display: inline-block;vertical-align:top;">Choice #1</div>\r\n    <div class="btn-group" style="display: inline-block;">\r\n      <a class="btn" href="{$this->importall}" style="color: blue;"> <span\r\n        style="padding: 5px;">Import Lab and data</span></a>\r\n    </div>\r\n  </div>\r\n  <br>\r\n  <div style="float: left; padding: 5px 20px 5px 0px;">\r\n    <table>\r\n      <tr>\r\n        <td style="padding-right: 10px;"><b>Currently selected lab is:</b>\r\n        </td>\r\n        <td><span style="color: blue; border: 1pxsolid #eee; padding: 4px;">\r\n            {$this->labname} [{$this->labnum}]</span></td>\r\n      </tr>\r\n    </table>\r\n    <div>\r\n      <div style="display: inline-block; vertical-align: top;">Choice #2</div>\r\n      <div class="btn-group" style="display: inline-block;">\r\n        <a class="btn" href="{$this->import2lab}" style="color: blue;"> <span\r\n          style="padding: 5px;">Import only data into current lab</span></a>\r\n      </div>\r\n    </div>\r\n  </div>\r\n  <br>\r\n  <div style="float: left; padding: 5px 20px 5px 0px;">\r\n    <table>\r\n      <tr>\r\n        <td style="padding-right: 10px;"><b>Cancel current import, and reset import engine:</b>\r\n        </td>\r\n        <td></td>\r\n      </tr>\r\n    </table>\r\n    <div>\r\n      <div style="display: inline-block; vertical-align: top;">Choice #3</div>\r\n      <div class="btn-group" style="display: inline-block;">\r\n        <a class="btn" href="{$this->cancelimport}" style="color: red;"> <span\r\n          style="padding: 5px;">Reset Import</span></a>\r\n      </div>\r\n    </div>\r\n    <br> <br> <b>To change the lab:</b> Labs -->Select a Lab and then\r\n    import again <br> <b>To create a new lab:</b> Labs-->New Lab, input lab\r\n    info and then import again <br> \r\n  </div>\r\n</div>', ''),
 (90, 14, 0, 'user/find', '', '', 'info', 'f', 'Search for user(s).', 'Find user(s)'),
 (91, 14, 1, '', '', '', 'info2', 'f', 'To find user(s) type in a part of the name and click Find.', ''),
 (92, 14, 2, 'name', 'User Name', 'str_nempty', 'string_field', 'f', '', ''),
@@ -8767,7 +8770,7 @@ CREATE TABLE IF NOT EXISTS `lab` (
   `labaffil_other` varchar(64) NOT NULL,
   `slmta_labtype` varchar(64) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Lab info ' AUTO_INCREMENT=69 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Lab info ' AUTO_INCREMENT=71 ;
 
 --
 -- Dumping data for table `lab`
@@ -8786,8 +8789,7 @@ INSERT INTO `lab` (`id`, `labname`, `labnum`, `street`, `street2`, `street3`, `c
 (27, 'Best Lab, Inc', 'lab-0071', '124 Morrow Ln', '', '', 'Alpharetta', 'GA', 'USA', '30076', '404.776.3490', '404.453.4532', 'user@lab.com', 'REGIONAL', 'RESEARCH', '', '2'),
 (28, 'Best Lab, Inc', 'lab-0072', '124 Morrow Ln', '', '', 'Alpharetta', 'GA', 'USA', '30076', '404.776.3490', '404.453.4532', 'user@lab.com', 'REGIONAL', 'RESEARCH', '', '3'),
 (29, 'Best Lab, Inc', 'lab-0073', '124 Morrow Ln', '', '', 'Alpharetta', 'GA', 'USA', '30076', '404.776.3490', '404.453.4532', 'user@lab.com', 'REGIONAL', 'RESEARCH', '', '4'),
-(63, 'testing 123', 'IND-1243', '125 Delhi Ln', '', '', 'New Delhi', 'Delhi', 'India', '100076', '912345678909', '8765432109', 'jk@xx.com', 'NATIONAL', 'PUBLIC', '', '5'),
-(68, 'my lab', '012345', '4253 My Street', '', '', 'Norcross', 'GA', 'USA', '30097', '', '', '', 'NATIONAL', 'OTHER', 'Another Affiliation', '2');
+(63, 'testing 123', 'IND-1243', '125 Delhi Ln', '', '', 'New Delhi', 'Delhi', 'India', '100076', '912345678909', '8765432109', 'jk@xx.com', 'NATIONAL', 'PUBLIC', '', '5');
 
 -- --------------------------------------------------------
 
@@ -11319,7 +11321,7 @@ CREATE TABLE IF NOT EXISTS `toimport` (
   `owner_id` int(11) NOT NULL,
   `path` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Stores pointer to uploaded files' AUTO_INCREMENT=22 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Stores pointer to uploaded files' AUTO_INCREMENT=28 ;
 
 -- --------------------------------------------------------
 

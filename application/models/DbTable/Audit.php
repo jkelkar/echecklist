@@ -181,4 +181,11 @@ END;
     return $newid;
   }*/
 
+  public function deleteAudit($audit_id) {
+    // delete audit with id = $audi_id
+    $audit_id = (int) $audit_id;
+    $sql = "delete from audit where id = {$audit_id}";
+    $this->execute($sql);
+  }
+
 }

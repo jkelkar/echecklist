@@ -450,4 +450,14 @@ END;
       $this->insertData($row);
     }
   }
+
+  public function deleteAuditRows($audit_id) {
+    // delete all rows for audit_id
+
+    $audit_id = (int) $audit_id;
+    $sql = "delete from audit_data where audit_id = {$audit_id}";
+    $this->execute($sql);
+
+  }
+
 }

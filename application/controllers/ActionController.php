@@ -212,7 +212,10 @@ class Application_Controller_Action extends Zend_Controller_Action {
       $complete_audit = <<<"END"
 <li class="divider"></li>
 <li><a href="{$this->baseurl}/audit/exportdata/$this->audit['id']"><span title=".icon  .icon-color  .icon-extlink " class="icon icon-color icon-extlink"></span> Export Data</a></li>
-<li><a href="{$this->baseurl}/audit/delete"><span title=".icon  .icon-color .icon-close " class="icon icon-color icon-close"></span> Delete</a></li>
+<li><a href="{$this->baseurl}/audit/delete"
+       onclick=" return confirm('do you want to delete the current Audit (#{$this->audit['audit_id']}-{$this->audit['tag']})?');">
+    <span title=".icon  .icon-color .icon-close " class="icon icon-color icon-close"></span>
+    Delete #{$this->audit['audit_id']}</a></li>
 END;
 
       if ($this->audit['status'] == 'INCOMPLETE') {
@@ -346,6 +349,7 @@ END;
     $tout = array();
     $this->importall = "{$this->baseurl}/audit/importall";
     $this->import2lab = "{$this->baseurl}/audit/import2lab";
+    $this->cancelimport =  "{$this->baseurl}/audit/cancelimport";
     $title = $drows[0]['title'];
     $tout[] = <<<"END"
 <div style="margin-left:200px;"><h1 style="margin-bottom:10px;">{$title}

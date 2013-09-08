@@ -274,7 +274,8 @@ function getSLMTAType($t) {
 function getReportTypes($t) {
   return array(
       "{$t['Select']} ..."=> '-',
-      "{$t['Export Audits To Excel']}" => 'audits2excel',
+      "{$t['SLMTA data:Excel']}" => 'slmta2excel',
+      "{$t['SLIPTA:Excel']}" => 'slipta2excel',
       "{$t['Compare scores in a Spider Chart']}" => 'spiderchart',
       "{$t['Campare scores in a Bar Chart']}" => 'barchart',
       "{$t['Show Incomplete Audit']}" => 'incompletechart'
@@ -388,7 +389,9 @@ function getTranslatables(/*$tword,*/ $langtag) {
       'Regional or Provincial',
       'District or Primary',
       'NGO, Faith-based, or private',
-      'Military'
+      'Military',
+      'SLMTA data:Excel',
+      'SLIPTA:Excel'
   );
   $tlist = get_common_words_translated($tword, $words);
   //logit('TLIST: '. print_r($tlist, true));

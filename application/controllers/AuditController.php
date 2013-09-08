@@ -453,7 +453,7 @@ END;
       if ($this->collectData())
         return;
       if ($this->data['todo'] == '-' || $this->data['todo'] == '') {
-        $this->echecklistNamespace->flash = "Choose an action and retry";
+        $this->echecklistNamespace->flash = "Select a Report Type and continue";
         $this->_redirector->gotoUrl('audit/select');
       }
       $prefix = 'cb_';

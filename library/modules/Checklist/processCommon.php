@@ -24,8 +24,12 @@ class Process_Common {
       return $o; //'A' + ($v - 1);
     } else {
       $rem = $v % 26;
-      $rem = ($rem == 0) ? 26 : $rem;
-      return i2a(int($v / 26)) + i2a($rem);
+      if ($rem == 0) {
+        $rem = 26;
+        return $this->i2a(intval($v/26)-1) . $this->i2a($rem);
+      } else {
+        return $this->i2a(intval($v / 26)) . $this->i2a($rem);
+      }
     }
   }
 
@@ -72,7 +76,7 @@ class Process_Common {
         }
       }
     }
-    // logit('GUIDE: ' . print_r($guide, true));
+    logit('GUIDE: ' . print_r($guide, true));
     return $guide;
   }
 
@@ -112,7 +116,7 @@ class Process_Common {
       $audit_id = $row['audit_id'];
       $fname = $row['field_name'];
       if (! key_exists($audit_id, $data)) {
-        $data[$audit_id] = array();
+        $data[$audit_id] = array('audit_id' => $audit_id);
       }
       $data[$audit_id][$fname] = $this->convertRow($row);
     }
@@ -176,6 +180,8 @@ class Process_Common {
     );
     logit('Add header');
     // echo date('H:i:s'), " Add some data", EOL;
+    if ($tabnum > 1)
+      $objPHPExcel->createSheet($tabnum - 1);
     $s = $objPHPExcel->setActiveSheetIndex($tabnum - 1);
     // Rename worksheet
     logit("Rename worksheet: {$heading}");
@@ -196,6 +202,7 @@ class Process_Common {
     $row = 3;
     // Insert the header line
     foreach($labels as $name) {
+      logit("SCV: {$name} {$row} {$col} ". $this->rc($col, $row));
       $s->setCellValue($this->rc($col, $row), $name);
       $s->getStyle($this->rc($col, $row))->getAlignment()->setHorizontal(
           PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
@@ -208,11 +215,15 @@ class Process_Common {
 
     $col = 1;
     logit('NAMES: ' . print_r($names, true));
+    //logit('DATA EXCEL: ' . print_r($data, true));
     foreach($data as $d) {
       $col = 1;
       foreach($names as $name) {
         if ($name != '') {
+          $dn = get_arrval($d, $name, '');
+          $cn = $this->rc($col, $row);
           if (key_exists($name, $d)) {
+            logit("ED: {$row} {$col} {$cn} = {$name} v {$dn}");
             $s->setCellValue($this->rc($col, $row), $d[$name]);
           }
           /*
@@ -232,10 +243,10 @@ class Process_Common {
     // write the file out
     logit(" Write to Excel5 format");
 
-    $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+    $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
     $path = dirname(__DIR__) . '/../../public/tmp/';
     // FIXME: add in code to delete any files that are over an hour old
-    $filename = $this->randFileName('xls');
+    $filename = $this->randFileName('xlsx');
     $fileloc = "{$path}{$filename}";
     logit("FilePath: {$fileloc}");
     $objWriter->save($fileloc);

@@ -313,6 +313,10 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     }
       //logit ( "AD: {$did}, '{$name}', {$ival}, '{$tval}', '{$sval}',
       //'{$dval->format($ISOformat)}', '{$bval}', {$ftype}', {$page_id}" );
+
+      // needed to escape the strings to hide the single quotes " ' "
+      $tval = mysql_real_escape_string($tval);
+      $sval = mysql_real_escape_string($sval);
     if ($page_id != '') {
       $sql = <<<"END"
 INSERT INTO audit_data (audit_id, field_name, int_val, text_val,

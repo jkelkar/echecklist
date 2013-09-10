@@ -857,14 +857,21 @@ END;
 
   public function completeAction() {
     // mark audit complete
+    $audit = new Application_Model_DbTable_Audit();
+    $newstatus = "COMPLETE";
     $users = array('ADMIN','USER','APPROVER');
     if ( in_array($this->usertype, $users)) {
         // if type is SLIPTA - check for incomplete
-
+      $audit_id = $this->audit['audit_id'];
       // BAT and TB can be incomplete and it is OK
       // logit('AU: '. print_r($this->audit, true));
+      if ($this->audit['status'] != 'INCOMPLETE') {
+        $this->echecklistNamespace->flash = "Audit id #{$audit_id} status is not INCOMPLETE";
+        $this->_redirector->gotoUrl($this->mainpage);
+        return ;
+      }
       if ($this->audit['tag'] == 'SLIPTA') {
-        $audit_id = $this->audit['audit_id'];
+        // $audit_id = $this->audit['audit_id'];
         // logit("COMP: {$audit_id}");
         // icmap contains the incomplete elements for use in completing
         $icmap = $this->iscomplete($audit_id);
@@ -872,28 +879,99 @@ END;
           // is not complete so show incomplete map
           $this->view->outlines .= $icmap;
           $this->_helper->layout->setLayout('overall');
-          // logit("IC x");
+          // logit("IC");
         } else {
-          // logit("no IC");
+          // logit("no IC"); // It is complete - move status to complete
+          $audit->moveStatus($audit_id, $newstatus);
+          $this->echecklistNamespace->flash = "Audit id #{$audit_id} has been changed to {$newstatus}";
+          $this->_redirector->gotoUrl($this->mainpage);
         }
+      } else {
+        // not SLIPTA
+        $audit->moveStatus($audit_id, $newstatus);
+        $this->echecklistNamespace->flash = "Audit id #{$audit_id} has been changed to {$newstatus}";
+        $this->_redirector->gotoUrl($this->mainpage);
       }
     } else {
       $this->echecklistNamespace->flash = 'Invalid action';
       $this->_redirector->gotoUrl($this->mainpage);
     }
-    // exit();
   }
 
   public function incompleteAction() {
+    // mark audit complete
+    $audit = new Application_Model_DbTable_Audit();
+    $newstatus = "INCOMPLETE";
+    $users = array('ADMIN','USER','APPROVER');
+    if ( in_array($this->usertype, $users)) {
+      // if type is SLIPTA - check for incomplete
+      $audit_id = $this->audit['audit_id'];
+      // BAT and TB can be incomplete and it is OK
+      // logit('AU: '. print_r($this->audit, true));
+      if ($this->audit['status'] != 'COMPLETE') {
+        $this->echecklistNamespace->flash = "Audit id #{$audit_id} status is not COMPLETE";
+        $this->_redirector->gotoUrl($this->mainpage);
+        return ;
+      }
+      $audit->moveStatus($audit_id, $newstatus);
+      $this->echecklistNamespace->flash = "Audit id #{$audit_id} has been changed to {$newstatus}";
+      $this->_redirector->gotoUrl($this->mainpage);
 
+    } else {
+      $this->echecklistNamespace->flash = 'Invalid action';
+      $this->_redirector->gotoUrl($this->mainpage);
+    }
   }
 
   public function finalizeAction() {
 
+    // finalize the complete audit
+    $audit = new Application_Model_DbTable_Audit();
+    $newstatus = "FINALIZED";
+    $users = array('APPROVER');
+    if ( in_array($this->usertype, $users)) {
+      // if type is SLIPTA - check for incomplete
+      $audit_id = $this->audit['audit_id'];
+      // BAT and TB can be incomplete and it is OK
+      // logit('AU: '. print_r($this->audit, true));
+      if ($this->audit['status'] != 'COMPLETE') {
+        $this->echecklistNamespace->flash = "Audit id #{$audit_id} status is not COMPLETE";
+        $this->_redirector->gotoUrl($this->mainpage);
+        return ;
+      }
+      $audit->moveStatus($audit_id, $newstatus);
+      $this->echecklistNamespace->flash = "Audit id #{$audit_id} has been changed to {$newstatus}";
+      $this->_redirector->gotoUrl($this->mainpage);
+
+    } else {
+      $this->echecklistNamespace->flash = 'Invalid action';
+      $this->_redirector->gotoUrl($this->mainpage);
+    }
   }
 
   public function rejectAction() {
+    // reject the complete audit
+    $audit = new Application_Model_DbTable_Audit();
+    $newstatus = "REJECTED";
+    $users = array('APPROVER');
+    if ( in_array($this->usertype, $users)) {
+      // if type is SLIPTA - check for incomplete
+      $audit_id = $this->audit['audit_id'];
+      // BAT and TB can be incomplete and it is OK
+      // logit('AU: '. print_r($this->audit, true));
+      if ($this->audit['status'] != 'COMPLETE') {
+        $this->echecklistNamespace->flash = "Audit id #{$audit_id} status is not COMPLETE";
+        $this->_redirector->gotoUrl($this->mainpage);
+        return ;
+      }
+      $audit->moveStatus($audit_id, $newstatus);
+      $this->echecklistNamespace->flash = "Audit id #{$audit_id} has been changed to {$newstatus}";
+      $this->_redirector->gotoUrl($this->mainpage);
 
+    } else {
+      $this->echecklistNamespace->flash = 'Invalid action';
+      $this->_redirector->gotoUrl($this->mainpage);
+    }
   }
 
   public function complete2Action() {
@@ -902,6 +980,10 @@ END;
 
   public function iscomplete($audit_id) {
     // check if this slipta audit is complete
+    $sec_div = '<div style="border:1px solid #ccc;background-color:#ffc;padding:3px;margin: 2px;display:inline-block;">';
+    $ncnote_div = '<div style="border:1px solid #ccc;background-color:#ccf;padding:3px;margin: 2px;display:inline-block;">';
+    $comm_div = '<div style="border:1px solid #ccc;background-color:#ccc;padding:3px;margin: 2px;display:inline-block;">';
+    $inc_div = '<div style="border:1px solid #cfc;background-color:#ccc;padding:3px;margin: 2px;display:inline-block;">';
     $tmplr = new Application_Model_DbTable_TemplateRows();
     $auditd = new Application_Model_DbTable_AuditData();
     $tmpl_id = 1; // for SLIPTA
@@ -909,8 +991,9 @@ END;
     $adrows = $auditd->getAllData($audit_id);
     $tracker = array();
     $line = '';
+    $secbegin = '';
     foreach($tmplrows as $tr) {
-      //logit("TR: ". print_r($tr, true));
+      // logit("TR: ". print_r($tr, true));
       if ($tr['required'] == 'F')
         continue;
       $ect = $tr['element_count'];
@@ -919,15 +1002,16 @@ END;
         case 'sec_head' :
           if ($line != '') {
             logit('NEW:');
-            $tracker[] = $line;
+            $tracker[] = $secbegin . $line;
           }
           $line = '';
           $name = $vname;
           //logit("sec: {$name} - ". get_arrval($adrows, "{$name}_secinc", 100));
           if (get_arrval($adrows, "{$name}_secinc", 999) != 0) {
-            $line .= 'Section ' . (int) substr($name, 1) . ': Inc ';
+            $secbegin = $sec_div . 'Section ' . (int) substr($name, 1). '</div>';
+            $line .= $inc_div . (int) substr($name, 1). ": Inc </div>";
           } else {
-            $line .= 'Section ' . (int) substr($name, 1);
+            $line .= '';
           }
           break;
         case 'sub_sec_head_ro' :
@@ -942,21 +1026,43 @@ END;
             // $tracker[] = "SubSection {$ss} incomplete";
             $line .= "{$ss}: Inc ";
           }
+          $val = get_arrval($adrows, "{$name}_yn", '') . get_arrval($adrows, "{$name}_yna", '');
+          //logit("ECT: {$name} ==> {$val} :" . $adrows['{$name}_inc']);
+          logit("rVAL: {$name} {$val}");
+          $s1 = (int) substr($name, 1, 2);
+          $s2 = (int) substr($name, 3, 2);
+          $sse = "{$s1}.{$s2}";
+          if ($val && $val != 'YES' and $val != '-') {
+            logit("r1VAL: {$name} {$val}");
+            // check for comment
+            if ($adrows["{$name}_comment"] == '') {
+              // $tracker[] = "Missing comment: {$name}";
+              $line .= "$comm_div}{$sse}: Comm </div>";
+            }
+          }
+          $nc =   get_arrval($adrows, "{$name}_nc", '');
+          $note = get_arrval($adrows, "{$name}_note", '');
+          logit("{$name} NC: {$nc} - {$note}");
+          if ($nc == 'T' && $note == '') {
+            // there should be a note - non compliant note - it is missing
+            // $tracker[] = "Missing Non Compliant note: {$name}";
+            $line .= "{$ncnote_div}{$sse}: nc note </div>";
+          }
           for($i = 1; $i <= $ect; $i ++) {
             $name = ($i < 10) ? "{$vname}0{$i}" : "{$vname}{$i}";
             $val = get_arrval($adrows, "{$name}_yn", '') . get_arrval($adrows, "{$name}_yna", '');
             //logit("ECT: {$name} ==> {$val} :" . $adrows['{$name}_inc']);
             logit("rVAL: {$name} {$val}");
+            $s1 = (int) substr($name, 1, 2);
+            $s2 = (int) substr($name, 3, 2);
+            $s3 = (int) substr($name, 5, 2);
+            $sse = "{$s1}.{$s2}.{$s3}";
             if ($val && $val != 'YES' and $val != '-') {
               logit("r1VAL: {$name} {$val}");
               // check for comment
               if ($adrows["{$name}_comment"] == '') {
                 // $tracker[] = "Missing comment: {$name}";
-                $s1 = (int) substr($name, 1, 2);
-                $s2 = (int) substr($name, 1, 2);
-                $s3 = (int) substr($name, 1, 2);
-                $sse = "{$s1}.{$s2}.{$s3}";
-                $line .= "x{$sse}: Comm ";
+                $line .= "{$comm_div}{$sse}: Comm </div>";
               }
             }
             $nc =   get_arrval($adrows, "{$name}_nc", '');
@@ -965,7 +1071,7 @@ END;
             if ($nc == 'T' && $note == '') {
               // there should be a note - non compliant note - it is missing
               // $tracker[] = "Missing Non Compliant note: {$name}";
-              $line .= "{$sse}: nc note ";
+              $line .= "{$ncnote_div}{$sse}: nc note </div>";
             }
           }
 
@@ -988,7 +1094,7 @@ END;
             // check for comment
             if (get_arrval($adrows, "{$name}_comment", '') == '') {
               // $tracker[] = "Missing comment: {$name}";
-              $line .= "{$ss}: Comm ";
+              $line .= "<div style=\"border:1px solid #ccc;background-color:#ddd;padding:3px;margin:2px;display:inline-block;\">{$ss}: Comm</div> ";
             }
           }
           $nc =   get_arrval($adrows, "{$name}_nc", '');
@@ -998,7 +1104,7 @@ END;
             // there should be a note - non compliant note - it is missing
             // $tracker[] = "Missing Non Compliant note: {$name}";
             logit("NC: {$ss}");
-            $line .= "{$ss}: nc note ";
+            $line .= "<div style=\"border:1px solid #ccc;background-color:#ccf;padding:3px;margin: 2px;display:inline-block;\">{$ss}: nc note</div> ";
           }
           break;
         default :
@@ -1006,10 +1112,14 @@ END;
     }
     if ($line != '') {
       logit('end');
-      $tracker[] = $line;
+      $tracker[] = "{$secbegin} {$line}";
     }
-      // logit("IC: ". print_r($tracker, true));
-    return implode("<br />\n", $tracker);
+    // logit("IC: ". print_r($tracker, true));
+    if ($tracker) {
+      array_unshift($tracker, "<h2>Missing items in Audit</h2>");
+      return implode("<br />\n", $tracker);
+    }
+    return null;
   }
 
 }

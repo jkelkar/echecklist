@@ -214,4 +214,12 @@ END;
     $this->execute($sql);
   }
 
+  public function moveStatus($audit_id, $status) {
+    /// change the status of audit_id audit to status
+    $audit_id = (int) $audit_id;
+    $sql = "update audit set status='{$status}' where id = {$audit_id}";
+    $this->execute($sql);
+    return;
+  }
+
 }

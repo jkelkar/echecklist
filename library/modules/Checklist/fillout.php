@@ -1170,7 +1170,7 @@ function partial_sub_sec_head($row, $value, $t) {
                 <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
             </div>
       <div id="div{$name}_nc" style="{$vis}" >
-        Notes:<br />
+        Non Compliance Notes:<br />
         {$tareanc}
       </div>
     </td>
@@ -1229,7 +1229,7 @@ function partial_sub_sec_head_ynp($row, $value, $t) {
       <div style="margin-right:5px;display:inline;">{$widget_nyp}</div>
       <div>{$tarea}</div>
       <div id="div{$name}_nc" style="{$vis}" >
-        Notes:<br />
+        Non Compliance Notes:<br />
         {$tareanc}
       </div>
     </td>
@@ -1269,7 +1269,7 @@ function partial_sub_sec_head_ro($row, $value, $t) {
   }
   $out = <<<"END"
   <table style="width:810px;"><tr>
-      <td style="padding: 2px 4px;">
+      <td style="padding: 2px 4px;vertical-align:top;">
         <div style="display:inline-block;width:440px;vertical-align:top;">
           <div style="width:438px;display:inline;">
             <div style="display:inline;font-weight:bold;width:25px;vertical-align:top;">{$prefix}</div>
@@ -1295,7 +1295,7 @@ function partial_sub_sec_head_ro($row, $value, $t) {
                 <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
             </div>
       <div id="div{$name}_nc" style="{$vis}" >
-        Notes:<br />
+        Non Compliance Notes:<br />
         {$tareanc}
       </div>
       </td>
@@ -1367,6 +1367,36 @@ function partial_sec_element_yna($row, $value, $t) {
   <table style="width=100%;"><tr>
       <td style="vertical-align:top;padding: 2px 4px;width:440px;">
         <div style="display:inline-block;vertical-align:top;">
+          <div style="width:395px;">
+            <div style="width:100%">
+              <div style="vertical-align:top;display:inline;">{$prefix}</div>
+              <div style="text-decoration:underline;font-weight:bold;vertical-align:top;display:inline;">{$heading}</div>
+              <div style="vertical-align:top;display:inline;">{$text}
+              </div>
+            </div>
+          </div>
+          <div style="font-style:italic;font-weight:bold;font-size:10px;margin-top:4px;">{$info}</div>
+        </div>
+      </td>
+      <td  style="vertical-align:top;padding: 2px 4px;width:350px;">
+        <div style="">{$mc_yna} </div>
+        {$tarea}
+        <div style="width:100%;text-align:left;margin-left:13px;">
+                  <label><input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
+                          onclick="toggleNCBox(this);">Non-Compliant</label>
+                  <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
+                </div>
+        <div id="div{$name}_nc" style="{$vis}" >
+        Non Compliance Notes:<br />
+        {$tareanc}
+        </div>
+      </td>
+</tr></table>
+END;
+  $outx = <<<"END"
+  <table style="width=100%;"><tr>
+      <td style="vertical-align:top;padding: 2px 4px;width:440px;">
+        <div style="display:inline-block;vertical-align:top;">
           <div style="width:425px;">
             <div style="width:100%">
               <div style="vertical-align:top;display:inline;">{$prefix}</div>
@@ -1386,7 +1416,7 @@ function partial_sec_element_yna($row, $value, $t) {
         <div style="">{$mc_yna} </div>
         {$tarea}
         <div id="div{$name}_nc" style="{$vis}" >
-        Notes:<br />
+        Non Compliance Notes:<br />
         {$tareanc}
         </div>
       </td>
@@ -1440,7 +1470,7 @@ function partial_sec_element_ynp($row, $value, $t) {
         <div style="">{$mc_ynp} </div>
         {$tarea}
         <div id="div{$name}_nc" style="{$vis}" >
-        Notes:<br />
+        Non Compliance Notes:<br />
         {$tareanc}
         </div>
       </td>
@@ -1495,7 +1525,7 @@ function partial_sec_element($row, $value, $t) {
                   <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
                 </div>
         <div id="div{$name}_nc" style="{$vis}" >
-        Notes:<br />
+        Non Compliance Notes:<br />
         {$tareanc}
         </div>
       </td>
@@ -2152,7 +2182,7 @@ function partial_bat_element($row, $value, $t) {
                   <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
                 </div>
         <div id="div{$name}_nc" style="{$vis}" >
-        Notes:<br />
+        Non Compliance Notes:<br />
         {$tareanc}
         </div>
       </td>

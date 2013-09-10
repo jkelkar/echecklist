@@ -33,10 +33,11 @@ class Application_Model_DbTable_User extends Application_Model_DbTable_Checklist
     $sql = "select * from user where userid = '{$username}'";
     //$row = $this->fetchRow("username = '{$username}'" );
     $rows = $this->queryRows($sql);
-    if (!$rows) {
+    /*if (!$rows) {
       throw new Exception("No matching users found");
-    }
-    return $rows[0];
+    }*/
+    return ($rows) ? $rows[0] : null;
+    // return $rows[0];
   }
 
   public function getUsersByUsername($username) {

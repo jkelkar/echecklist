@@ -37,6 +37,12 @@ class UserController extends Application_Controller_Action
     } else {
       if ($this->collectData()) return;
       $row = $user->getUserByUsername($this->data['userid']);
+      if (! $row) {
+        unset($this->data['password']);
+        $this->echecklistNamespace->flash = 'Either userid or password incorrect';
+        $this->makeDialog($this->data);
+        return;
+      }
       if ($this->data['password'] == $row['password']) { // FIXME - goto BCRYPT
         $xuser = array();
         foreach($row as $a => $b) {

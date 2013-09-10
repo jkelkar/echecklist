@@ -104,7 +104,9 @@ class Application_Controller_Action extends Zend_Controller_Action {
     }
     if (isset($this->echecklistNamespace->audit)) {
       // logit('AUEC: '. print_r($this->echecklistNamespace->audit, true));
-      $this->audit = $this->echecklistNamespace->audit;
+
+      $au = new Application_Model_DbTable_Audit();
+      $this->audit = $this->echecklistNamespace->audit = $au->getAudit($this->echecklistNamespace->audit['audit_id']);
       $this->showaudit = "{$this->audit['tag']} - #{$this->audit['audit_id']}" .
            "- {$this->audit['labname']}";
       // logit('ec audit: ' . print_r($this->audit, true));
@@ -208,6 +210,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
     }
     $complete_user = array('ADMIN','USER','APPROVER');
     $complete_audit = '';
+    logit("audit: " .  print_r($this->audit, true));
     if (in_array($this->usertype, $complete_user)) {
       $complete_audit = <<<"END"
 <li class="divider"></li>
@@ -227,12 +230,12 @@ END;
       if ($this->audit['status'] == 'COMPLETE') {
         $complete_audit .= <<<"END"
 <li><a href="{$this->baseurl}/audit/incomplete">
-<span title=".icon  .icon-color  .icon-locked " class="icon icon-color icon-locked"></span> Complete</a></li>
+<span title=".icon  .icon-color  .icon-unlocked " class="icon icon-color icon-unlocked"></span> Incomplete</a></li>
 END;
       }
       if ($this->audit['status'] == 'COMPLETE' && $this->usertype == 'APPROVER') {
         $complete_audit .= <<<"END"
-<li><a href="{$this->baseurl}/audit/finalize/$this->audit['id']"><span title=".icon  .icon-color  .icon-locked " class="icon icon-color icon-locked"></span> Complete</a></li>
+<li><a href="{$this->baseurl}/audit/finalize/$this->audit['id']"><span title=".icon  .icon-color  .icon-sent " class="icon icon-color icon-sent"></span> Finalize</a></li>
 END;
       }
     }
@@ -680,17 +683,16 @@ END;
       //logit('Audit: ' . print_r($row, true));
       $ct ++;
       $cls = ($ct % 2 == 0) ? 'even' : 'odd';
-      $edit = "<a href=\"{$this->baseurl}/audit/edit/{$row['audit_id']}/\"" .
-           " class=\"btn btn-mini btn-inverse\">Edit</a>";
+      $edit = ($row['status'] == 'INCOMPLETE') ? "<a href=\"{$this->baseurl}/audit/edit/{$row['audit_id']}/\" class=\"btn btn-mini btn-inverse\">Edit</a>" : '';
       $view = "<a href=\"{$this->baseurl}/audit/view/{$row['audit_id']}\" class=\"btn btn-mini btn-success\">View</a>";
       /*$delete = "<a href=\"#\" class=\"btn btn-mini btn-danger\">Delete</a>";
       $export = "<a href=\"{$this->baseurl}/audit/exportdata/{$row['audit_id']}\"" .
            " class=\"btn btn-mini btn-warning\">Data Export</a>";*/
       $adduser = '';
-      if ($row['status'] == 'INCOMPLETE') {
-        $adduser = "<a href=\"{$this->baseurl}/audit/choose/{$row["audit_id"]}\" class=\"btn btn-mini btn-info\">Select</a>";
-      }
-  $tout[] = "<tr class='{$cls}' style=\"height:24px;\">";
+      //if ($row['status'] == 'INCOMPLETE') {
+      $adduser = "<a href=\"{$this->baseurl}/audit/choose/{$row["audit_id"]}\" class=\"btn btn-mini btn-info\">Select</a>";
+      //}
+      $tout[] = "<tr class='{$cls}' style=\"height:24px;\">";
       if ($cb) {
         $name = "cb_{$row['audit_id']}";
         $tout[] = "<td style='width:40px;padding:4px 0;'>" .
@@ -715,20 +717,20 @@ END;
 END;
       if (! $cb) {
         $tout[] = "<td>{$view} {$edit}</td><td></td></tr>";
-        //{$export} {$delete}
-      } else {
-        $tout[] = "<td></td></tr>";
-      }
-    }
-    if ($cb) {
-      $tout[] = '<tr><td colspan=13 style="text-align:right;" ><input class="input-xlarge submit" type="submit" name="doit" value="Process Request">';
-    }
-    $tout[] = '</table><div style="height: 65px;">&nbsp;</div>' . '<div style="clear: both;"></div>';
-    /* if ($cb) {
+    //{$export} {$delete}
+  } else {
+    $tout[] = "<td></td></tr>";
+  }
+}
+if ($cb) {
+  $tout[] = '<tr><td colspan=13 style="text-align:right;" ><input class="input-xlarge submit" type="submit" name="doit" value="Process Request">';
+}
+$tout[] = '</table><div style="height: 65px;">&nbsp;</div>' . '<div style="clear: both;"></div>';
+/* if ($cb) {
       $tour[] = '</form>';
     }*/
-    $lines = implode("\n", $tout);
-    return $lines;
+$lines = implode("\n", $tout);
+return $lines;
   }
 
   public function makeUserLines($rows, $cb = false) {

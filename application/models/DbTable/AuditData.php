@@ -84,7 +84,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     $sql = "select * from audit_data " .
          " where audit_id = {$audit_id} " .
          "   and field_name like '{$field_name}%'";
-    logit("get: {$audit_id} {$field_name} -- {$sql}");
+    // logit("get: {$audit_id} {$field_name} -- {$sql}");
     $rows = $this->queryRows($sql);
     return $rows;
   }
@@ -185,7 +185,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     if (array_key_exists($key, $data)) {
       $n = 'slmta_labtype';
       $v = $labrow['slmta_labtype'];
-      logit("SLMTA_labtype: {$v}->{$v}");
+      //logit("SLMTA_labtype: {$v}->{$v}");
       $this->updateAuditField($aid, $n, $v, $page_id);
     }
   }
@@ -208,7 +208,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
       $sql = "update audit set start_date = '{$start_date->format($this->ISOformat)}', " .
            " end_date='{$end_date->format($this->ISOformat)}', " .
            " slipta_official='{$slipta_official}' where id = {$aid}";
-      logit("UPD: {$sql}");
+      // logit("UPD: {$sql}");
       $this->execute($sql);
     }
     if (array_key_exists('slmta_type', $data)) {
@@ -231,7 +231,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     // update lab info
     // do all this only if labhead is a variable on this page
     $this->handleLabData($data, $aid, $page_id, $labrow);
-    logit('SLMTAData'. print_r($data, true));
+    // logit('SLMTAData'. print_r($data, true));
     $this->handleSLMTAData($data, $aid, $page_id, $labrow);
     $this->handleAuditHeadData($data, $aid);
     foreach($data as $n => $v) {

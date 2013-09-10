@@ -41,17 +41,17 @@ class Application_Controller_Action extends Zend_Controller_Action {
 
   public function init() {
     /* initialize here */
-    logit("MT act init: " . microtime(true));
+    // logit("MT act init: " . microtime(true));
     $this->baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
     $this->_redirector = $this->_helper->getHelper('Redirector');
 
     $this->setupSession();
-    logit("CHECK: {$this->labid}, {$this->labname}, {$this->labnum}");
+    // logit("CHECK: {$this->labid}, {$this->labname}, {$this->labnum}");
     $this->setHeader();
     $this->setHeaderFiles();
     $vars = $this->_request->getPathInfo();
     $pinfo = explode("/", $vars);
-    logit('PINFO: ' . print_r($pinfo, true));
+    // logit('PINFO: ' . print_r($pinfo, true));
     if (! isset($this->echecklistNamespace->user) && ! ($pinfo[1] == 'user' && $pinfo[2] == 'login')) {
       $this->_redirector->gotoUrl($this->loginpage);
     }
@@ -60,7 +60,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
 
   public function handleCancel() {
     // cancel action: take user to main screen
-    logit('HC: ' . print_r($this->data, true));
+    // logit('HC: ' . print_r($this->data, true));
     if ($this->data['submit_button'] == 'Cancel') {
       $this->data = array();
       $this->error = array();
@@ -76,20 +76,20 @@ class Application_Controller_Action extends Zend_Controller_Action {
   public function setupSession() {
     /* start the session */
     $this->echecklistNamespace = new Zend_Session_Namespace('eChecklist');
-    logit("test: {$this->echecklistNamespace->lab['labnum']}");
+    // logit("test: {$this->echecklistNamespace->lab['labnum']}");
     if (isset($this->echecklistNamespace->user)) {
       $u = $this->echecklistNamespace->user;
       $this->usertype = $u['usertype'];
       $this->username = $u['userid'];
       $this->userfullname = $u['name'];
       $this->userid = $u['id'];
-      logit("{$this->username}, {$this->usertype}, {$this->userfullname}, {$this->userid}");
+      // logit("{$this->username}, {$this->usertype}, {$this->userfullname}, {$this->userid}");
     }
-    logit('TIME1: ' . isset($this->echecklistNamespace->lab));
+    // logit('TIME1: ' . isset($this->echecklistNamespace->lab));
     if (isset($this->echecklistNamespace->lab)) {
 
       $this->lab = $this->echecklistNamespace->lab;
-      logit('ECLAB: ' . print_r($this->lab, true));
+      // logit('ECLAB: ' . print_r($this->lab, true));
       $this->labid = $this->lab['id'];
       $this->labname = $this->lab['labname'];
       $this->labnum = get_arrval($this->lab, 'labnum', 'No-NUM');
@@ -107,7 +107,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
       $this->audit = $this->echecklistNamespace->audit;
       $this->showaudit = "{$this->audit['tag']} - #{$this->audit['audit_id']}" .
            "- {$this->audit['labname']}";
-      logit('ec audit: ' . print_r($this->audit, true));
+      // logit('ec audit: ' . print_r($this->audit, true));
       // / {$this->audit['updated_at']}";
     } else {
       $this->audit = null;
@@ -220,7 +220,14 @@ END;
 
       if ($this->audit['status'] == 'INCOMPLETE') {
         $complete_audit .= <<<"END"
-<li><a href="{$this->baseurl}/audit/complete/$this->audit['id']"><span title=".icon  .icon-color  .icon-locked " class="icon icon-color icon-locked"></span> Complete</a></li>
+<li><a href="{$this->baseurl}/audit/complete">
+<span title=".icon  .icon-color  .icon-locked " class="icon icon-color icon-locked"></span> Complete</a></li>
+END;
+      }
+      if ($this->audit['status'] == 'COMPLETE') {
+        $complete_audit .= <<<"END"
+<li><a href="{$this->baseurl}/audit/incomplete">
+<span title=".icon  .icon-color  .icon-locked " class="icon icon-color icon-locked"></span> Complete</a></li>
 END;
       }
       if ($this->audit['status'] == 'COMPLETE' && $this->usertype == 'APPROVER') {
@@ -254,7 +261,7 @@ END;
   <span class="caret"></span></a>
 <ul class="dropdown-menu">
   <li><a href="{$this->baseurl}/audit/create"><span title=".icon  .icon-green .icon-clipboard " class="icon icon-green icon-clipboard"></span> New Audit</a></li>
-  <!--li><a href="{$this->baseurl}/audit/find"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Find</a></li-->
+  <li><a href="{$this->baseurl}/audit/find"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Find Audit</a></li>
 {$complete_audit}
   <li class="divider"></li>
   <li><a href="{$this->baseurl}/audit/select"><span title=".icon  .icon-color  .icon-newwin " class="icon icon-color icon-newwin"></span> Process Audits</a></li>
@@ -395,7 +402,7 @@ END;
           break;
         case 'text' :
           $info = str_replace('"', '\"', $info);
-          logit("TEXT: {$info}");
+          // logit("TEXT: {$info}");
           $audit = $this->audit;
           eval("\$lines = \"$info\"; ");
           $tout[] = <<<"END"
@@ -433,7 +440,7 @@ END;
           $arow['field_label'] = $field_label;
           //$arow['baseurl'] = $baseurl;
           $arow['homeurl'] = "{$this->baseurl}/audit/main";
-          logit("HURL: {$arow['homeurl']}");
+          // logit("HURL: {$arow['homeurl']}");
           $field_label = '';
         default :
           $inp = call_user_func("dialog_{$type}", $arow, $value, $tlist);
@@ -458,7 +465,7 @@ END;
      */
     $dialog = new Application_Model_DbTable_Dialog();
     $this->drows = $dialog->getDialogRows($this->dialog_name);
-    logit('DROWS: ' . print_r($this->drows, true));
+    // logit('DROWS: ' . print_r($this->drows, true));
   }
 
   public function makeDialog($value = array(''=>''), $morelines = '') {
@@ -531,7 +538,7 @@ END;
     if ($errorct == 0)
       $this->error = array();
     $this->handleCancel();
-    logit("ECT: " . count($this->error));
+    // logit("ECT: " . count($this->error));
     if (count($this->error) > 0) {
       $this->echecklistNamespace->flash = 'Correct errors and retry';
       $this->makeDialog($this->data);
@@ -543,7 +550,7 @@ END;
     /*
      * Collect all the post data
      */
-    logit('REST: ' . print_r($this->getRequest()->getPost(), true));
+    // logit('REST: ' . print_r($this->getRequest()->getPost(), true));
     $vars = $this->getRequest()->getPost();
     $lprefix = strlen($prefix);
     $out = array();
@@ -665,7 +672,7 @@ END;
 <td style='width:92px;font-weight:bold;'>Status</td>
 END;
     if (! $cb) {
-      $tout[] = "<td style='width:90px;font-weight:bold;'></td><td></td></tr>";
+      $tout[] = "<td style='width:130px;font-weight:bold;'></td><td></td></tr>";
     } else {
       $tout[] = "<td></td></tr>";
     }
@@ -681,21 +688,21 @@ END;
            " class=\"btn btn-mini btn-warning\">Data Export</a>";*/
       $adduser = '';
       if ($row['status'] == 'INCOMPLETE') {
-        $adduser = "<a href=\"{$this->baseurl}/audit/choose/{$row['audit_id']}\"" . " class=\"btn btn-mini btn-info\">Select</a>";
-  }
+        $adduser = "<a href=\"{$this->baseurl}/audit/choose/{$row["audit_id"]}\" class=\"btn btn-mini btn-info\">Select</a>";
+      }
   $tout[] = "<tr class='{$cls}' style=\"height:24px;\">";
-  if ($cb) {
-    $name = "cb_{$row['audit_id']}";
-    $tout[] = "<td style='width:40px;padding:4px 0;'>" .
-         "<center><input type='checkbox' name='{$name}' id='{$name}'></center></td>";
-  } else if ($addsel) {
-    $butt = "<a href=\"{$this->baseurl}/lab/choose/{$row['audit_id']}\"" .
-         " class=\"btn btn-mini btn-success\">Select</a>";
-    $tout[] = "<td style='width:40px;padding:2px 4px;'>{$butt}</td>";
-  } else {
-    $tout[] = "<td style='width:40px;padding:2px 4px;'>{$adduser}</td>";
-  }
-  $tout[] = <<<"END"
+      if ($cb) {
+        $name = "cb_{$row['audit_id']}";
+        $tout[] = "<td style='width:40px;padding:4px 0;'>" .
+             "<center><input type='checkbox' name='{$name}' id='{$name}'></center></td>";
+      } else if ($addsel) {
+        $butt = "<a href=\"{$this->baseurl}/lab/choose/{$row['audit_id']}\"" .
+             " class=\"btn btn-mini btn-success\">Select</a>";
+        $tout[] = "<td style='width:40px;padding:2px 4px;'>{$butt}</td>";
+      } else {
+        $tout[] = "<td style='width:40px;padding:2px 4px;'>{$adduser}</td>";
+      }
+      $tout[] = <<<"END"
 <td>{$row['audit_id']}</td>
 <td>{$row['audit_type']}</td><td>{$row['slmta_type']}</td><td>{$row['slipta_official']}</td>
 <td>{$row['end_date']}</td>
@@ -706,81 +713,81 @@ END;
 <td>{$row['cohort_id']}</td><td>{$row['status']}</td>
 
 END;
-  if (! $cb) {
-    $tout[] = "<td>{$view} {$edit}</td><td></td></tr>";
-    //{$export} {$delete}
-  } else {
-    $tout[] = "<td></td></tr>";
-  }
-}
-if ($cb) {
-  $tout[] = '<tr><td colspan=13 style="text-align:right;" ><input class="input-xlarge submit" type="submit" name="doit" value="Process Request">';
-}
-$tout[] = '</table><div style="height: 65px;">&nbsp;</div>' . '<div style="clear: both;"></div>';
-/* if ($cb) {
+      if (! $cb) {
+        $tout[] = "<td>{$view} {$edit}</td><td></td></tr>";
+        //{$export} {$delete}
+      } else {
+        $tout[] = "<td></td></tr>";
+      }
+    }
+    if ($cb) {
+      $tout[] = '<tr><td colspan=13 style="text-align:right;" ><input class="input-xlarge submit" type="submit" name="doit" value="Process Request">';
+    }
+    $tout[] = '</table><div style="height: 65px;">&nbsp;</div>' . '<div style="clear: both;"></div>';
+    /* if ($cb) {
       $tour[] = '</form>';
     }*/
-$lines = implode("\n", $tout);
-return $lines;
-}
+    $lines = implode("\n", $tout);
+    return $lines;
+  }
 
-public function makeUserLines($rows, $cb = false) {
-// Given User rows - show in a table
-$rev_ut = rev('getUserTypes', $this->tlist);
-$ct = 0;
-$tout = array();
-if (in_array($this->usertype, array('USER','APPROVER'))) {
-  $tout[] = "<div style=\"margin-left:200px\"><h1 style=\"margin-bottom:10px;\">Add owner to the current Audit</h1></div>";
-}
-if ($this->usertype == 'ADMIN') {
-  $tout[] = "<h1 style=\"margin-bottom:10px;\">Edit User</h1>";
-}
-$tout[] = '<table style="margin-left:250px;color:black;">';
-$tout[] = "<tr class='even'>";
-if ($cb) {
-  $tout[] = "<td style='width:80px;'>Select/<br />Deselect All</td>";
-} else {
-  $tout[] = "<td style='width:80px;'></td>";
-}
-$tout[] = <<<"END"
+  public function makeUserLines($rows, $cb = false) {
+    // Given User rows - show in a table
+    $rev_ut = rev('getUserTypes', $this->tlist);
+    $ct = 0;
+    $tout = array();
+    if (in_array($this->usertype, array('USER','APPROVER'))) {
+      $tout[] = "<div style=\"margin-left:200px\"><h1 style=\"margin-bottom:10px;\">Add owner to the current Audit</h1></div>";
+    }
+    if ($this->usertype == 'ADMIN') {
+      $tout[] = "<h1 style=\"margin-bottom:10px;\">Edit User</h1>";
+    }
+    $tout[] = '<table style="margin-left:250px;color:black;">';
+    $tout[] = "<tr class='even'>";
+    if ($cb) {
+      $tout[] = "<td style='width:80px;'>Select/<br />Deselect All</td>";
+    } else {
+      $tout[] = "<td style='width:80px;'></td>";
+    }
+    $tout[] = <<<"END"
 <td style='width:100px;font-weight:bold;'>UserId</td>
 <td style='width:200px;font-weight:bold;'>Name</td>
 <td style='width:85px;font-weight:bold;'>UserType</td>
 END;
-foreach($rows as $row) {
-  $ct ++;
-  $cls = ($ct % 2 == 0) ? 'even' : 'odd';
+    foreach($rows as $row) {
+      $ct ++;
+      $cls = ($ct % 2 == 0) ? 'even' : 'odd';
 
-  $tout[] = "<tr class='{$cls}'>";
-  if ($cb) {
-    $name = "cb_{$row['id']}";
-    $tout[] = "<td style='width:40px;padding:2px 0;'>" .
-         "<input type='checkbox' name='{$name}' id='{$name}'></td>";
-  } else {
-    $sel = "<a href=\"{$this->baseurl}/user/edit/{$row['id']}\"" .
-         " class=\"btn btn-mini btn-success\">Edit</a>";
-    $addo = '';
-    if ($row['usertype'] != 'ADMIN' && $row['usertype'] != 'ANALYST') {
-      $addo = "<a href=\"{$this->baseurl}/user/addowner/{$row['id']}\"" . " class=\"btn btn-mini btn-warning\">Add Owner</a>";
-}
-logit("UT: {$this->usertype}, {$this->audit['status']}");
-if ($this->usertype == 'USER' && $this->audit['status'] == 'INCOMPLETE') {
-  $tout[] = "<td style='width:40px;padding:2px 0;'>{$addo}</td>";
-}
-if ($this->usertype == 'ADMIN') {
-  $tout[] = "<td style='width:40px;padding:2px 0;'>{$sel}</td>";
-}
-}
-// $sl = ($row['slmta'] == 't') ? 'Yes' : 'No';
-$tout[] = <<<"END"
+      $tout[] = "<tr class='{$cls}'>";
+      if ($cb) {
+        $name = "cb_{$row['id']}";
+        $tout[] = "<td style='width:40px;padding:2px 0;'>" .
+             "<input type='checkbox' name='{$name}' id='{$name}'></td>";
+      } else {
+        $sel = "<a href=\"{$this->baseurl}/user/edit/{$row['id']}\"" .
+             " class=\"btn btn-mini btn-success\">Edit</a>";
+        $addo = '';
+        if ($row['usertype'] != 'ADMIN' && $row['usertype'] != 'ANALYST') {
+          $addo = "<a href=\"{$this->baseurl}/user/addowner/{$row['id']}\" class=\"btn btn-mini btn-warning\">Add Owner</a>";
+        }
+        // logit("UT: {$this->usertype}, {$this->audit['status']}");
+        if ($this->usertype == 'USER' && $this->audit['status'] == 'INCOMPLETE') {
+          $tout[] = "<td style='width:40px;padding:2px 0;'>{$addo}</td>";
+        }
+        if ($this->usertype == 'ADMIN') {
+          $tout[] = "<td style='width:40px;padding:2px 0;'>{$sel}</td>";
+        }
+      }
+      // $sl = ($row['slmta'] == 't') ? 'Yes' : 'No';
+      $tout[] = <<<"END"
 <td>{$row['userid']}</td>
 <td>{$row['name']}</td>
 <td>{$rev_ut[$row['usertype']]}</td>
 END;
-  // "<td style='width:45px;font-weight:bold;'>SLMTA</td>" .
-  // <td>{$sl}</td>
-}
-$tout[] = '</table>';
-$this->view->showlines = implode("\n", $tout);
-}
+      // "<td style='width:45px;font-weight:bold;'>SLMTA</td>" .
+      // <td>{$sl}</td>
+    }
+    $tout[] = '</table>';
+    $this->view->showlines = implode("\n", $tout);
+  }
 }

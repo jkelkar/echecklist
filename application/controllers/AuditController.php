@@ -131,7 +131,7 @@ END;
           logit("Page data: {$a} => {$p}\n");
         }
       }
-      logit("Page Tag {$page_row['tag']}\n");
+      // logit("Page Tag {$page_row['tag']}\n");
       // Generate the entries to make a tree - using dtree
       $jsrows = array ();
       $page_url = "{$baseurl}/audit/edit/{$audit_id}";
@@ -159,14 +159,14 @@ END;
         }
         $purl = "{$page_url}/{$r['page_num']}";
         $ptag = $r['tag'];
-        logit("Tag: {$ptag}");
+        // logit("Tag: {$ptag}"); // this is tag data from the page table
         $pint = (int) substr($ptag, 7);
         if ($tmpl_type == 'SLIPTA' && strtolower(substr($ptag, 0, 7)) == 'section') {
           $incval = get_arrval($secinc, $pint, 1);
         } else {
           $incval = 0;
         }
-        logit("Secinc: {$ptag} {$incval}");
+        // logit("Secinc: {$ptag} {$incval}");
         $inc = '';
         if ($incval > 0) {
           $inc = "<img src=\"{$this->baseurl}/cancel-on.png\" />";
@@ -194,8 +194,7 @@ END;
         }
       }
       $tout = calculate_page($rows, $value, $langtag); //$tword );
-      logit(
-          'VALUE: ' . print_r($value, true));
+      // logit('VALUE: ' . print_r($value, true));
 
       if ($prof) {
         $mt2 = microtime(true);
@@ -251,7 +250,7 @@ END;
       $sbname = $formData['sbname'];
       logit("action: {$sbname}");
       $uri = Zend_Controller_Front::getInstance()->getRequest()->getRequestUri();
-      logit("URI: {$uri}");
+      // logit("URI: {$uri}");
       $u = preg_split("/\//", $uri);
       if ($this->debug) {
         foreach($u as $un) {
@@ -270,7 +269,7 @@ END;
       $nextpage = $pagerow['next_page_num'];
 
       $page_url = "/audit/edit/{$audit_id}/{$nextpage}";
-      logit("URINEW: {$newuri}");
+      // logit("URINEW: {$newuri}");
       switch ($sbname) {
         case 'Cancel' :
           logit("Sbname: {$sbname} switch");
@@ -290,12 +289,12 @@ END;
             $mt = $mt2;
           }
           $did = $formData['audit_id'];
-          logit("LABID: {$this->labid}");
+          // logit("LABID: {$this->labid}");
           $labrow = $lab->get($this->labid);
-          logit('UPLAB: ' . print_r($labrow, true));
+          // logit('UPLAB: ' . print_r($labrow, true));
           $data->updateData($dvalue, $did, $pageid, $labrow);
           $srows = $data->get($did, 'slmta_status');
-          logit('AData: ' . print_r($srows, true));
+          // logit('AData: ' . print_r($srows, true));
           /**
            *  // $aud->updateTS_SLMTA($did);
            *  // Pulls latest lab data into audit
@@ -361,7 +360,7 @@ END;
     $rows = $tmplr->getAllRows($template_id, $langtag);
     $value = $data->getAllData($audit_id);
     $audit_type = $auditrow['tag'];
-    logit("AUDIT_ID: {$audit_type}");
+    // logit("AUDIT_ID: {$audit_type}");
     $tout = calculate_view($rows, $value, $langtag, $audit_type); //$tword );
     $this->view->outlines = implode("\n", $tout);
     $this->_helper->layout->setLayout('mainview');
@@ -375,7 +374,7 @@ END;
     //$baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
     $this->dialog_name = 'audit/main';
     $format = 'Y-m-d H:i:s';
-    logit("{$this->dialog_name}");
+    // logit("{$this->dialog_name}");
     $audit = new Application_Model_DbTable_Audit();
     //$vars = $this->_request->getPathInfo();
     //$pinfo = explode("/", $vars);
@@ -383,7 +382,7 @@ END;
     $langtag = $this->echecklistNamespace->lang;
     //if (! $this->getRequest()->isPost()) {
     $rows = $audit->getIncompleteAudits($id);
-    logit('AROWS: ' . print_r($rows, true));
+    // logit('AROWS: ' . print_r($rows, true));
     $auditlines = $this->makeAuditLines($rows);
     $this->makeDialog(null, $auditlines);
 
@@ -424,7 +423,7 @@ END;
           'created_at' => $nowiso,
           'updated_at' => $nowiso,
           'updated_by' => $this->userid,
-          'audit_type' => $data['audit_type'],
+          'audit_type' => $this->data['audit_type'],
           //'start_date' => convert_ISO($this->data['start_date'])->format($this->ISOformat),
           //'end_date' => convert_ISO($this->data['end_date'])->format($this->ISOformat),
           'lab_id' => $this->labid,
@@ -441,36 +440,95 @@ END;
     }
   }
 
-  public function selectAction() {
-    $this->dialog_name = 'audit/select';
-    logit("In LS");
+  public function findAction() {
+    $this->dialog_name = 'audit/find';
+    // logit("In LS");
     $aud = new Application_Model_DbTable_Audit();
     if (! $this->getRequest()->isPost()) {
       $this->makeDialog();
     } else {
       require_once 'modules/Checklist/processor.php';
-      logit('Select: In post');
+      // logit('Select: In post');
       if ($this->collectData())
         return;
+      if ($this->data['audit_type'] == '-' || $this->data['audit_type'] == '') {
+        $this->echecklistNamespace->flash = "Select a Audit Type and continue";
+        $this->makeDialog($this->data);
+        //$this->_redirector->gotoUrl('audit/select');
+      }
+
+      $prefix = 'cb_';
+      $this->collectExtraData($prefix);
+      $audit_type = $this->data['audit_type'];
+
+      // logit('OutData: ' . print_r($this->data, true));
+      // logit('Going in for Extra stuff');
+      $this->collectExtraData($prefix);
+      // logit('OutExtraData: ' . print_r($this->extra, true));
+      if (count($this->extra) > 0) {
+        $list = array();
+        foreach($this->extra as $n => $v) {
+          $list[] = (int) substr($n, 3);
+          // logit('LIST: '. print_r($list, true));
+        }
+        // logit('Auditsel: ' . print_r($this->data, true));
+
+        $out = new Processing();
+        $msg = $out->process($list, $name);
+        $this->echecklistNamespace->flash = 'Excel sheet done.';
+        $this->_redirector->gotoUrl($this->mainpage);
+        //$this->echecklistNamespace->flash = $msg;
+        //$this->_redirector->gotoUrl($this->mainpage);
+      }
+      $arows = $aud->selectAudits($this->data);
+
+      //logit("AROWS: " . print_r($arows, true));
+      $auditlines = $this->makeAuditLines($arows, array(
+          'cb'=> false
+      ));
+      $this->makeDialog($this->data, $auditlines);
+    }
+  }
+
+  public function selectAction() {
+    $this->dialog_name = 'audit/select';
+    // logit("In LS");
+    $aud = new Application_Model_DbTable_Audit();
+    if (! $this->getRequest()->isPost()) {
+      $this->makeDialog();
+    } else {
+      require_once 'modules/Checklist/processor.php';
+      // logit('Select: In post');
+      if ($this->collectData())
+        return;
+      logit('DATA: ' .  print_r($this->data, true));
       if ($this->data['todo'] == '-' || $this->data['todo'] == '') {
         $this->echecklistNamespace->flash = "Select a Report Type and continue";
-        $this->_redirector->gotoUrl('audit/select');
+        $this->makeDialog($this->data);
+        return;
+        //$this->_redirector->gotoUrl('audit/select');
+      }
+      if ($this->data['audit_type'] == '-' || $this->data['audit_type'] == '') {
+        $this->echecklistNamespace->flash = "Select an Audit Type and continue";
+        $this->makeDialog($this->data);
+        return;
+        // $this->_redirector->gotoUrl('audit/select');
       }
       $prefix = 'cb_';
       $this->collectExtraData($prefix);
       $name = $this->data['todo'];
 
-      logit('OutData: ' . print_r($this->data, true));
-      logit('Going in for Extra stuff');
+      // logit('OutData: ' . print_r($this->data, true));
+      // logit('Going in for Extra stuff');
       $this->collectExtraData($prefix);
       logit('OutExtraData: ' . print_r($this->extra, true));
       if (count($this->extra) > 0) {
         $list = array();
         foreach($this->extra as $n => $v) {
           $list[] = (int) substr($n, 3);
-          logit('LIST: '. print_r($list, true));
+          // logit('LIST: '. print_r($list, true));
         }
-        logit('Auditsel: ' . print_r($this->data, true));
+        // logit('Auditsel: ' . print_r($this->data, true));
 
         $out = new Processing();
         $msg = $out->process($list, $name);
@@ -491,7 +549,7 @@ END;
 
   public function chooseAction() {
     $this->dialog_name = 'user/addowner';
-    logit("{$this->dialog_name}");
+    // logit("{$this->dialog_name}");
     $vars = $this->_request->getPathInfo();
     $pinfo = explode("/", $vars);
     $id = (int) $pinfo[3];
@@ -505,22 +563,22 @@ END;
 
   public function exportxlsAction() {
     $this->dialog_name = 'audit/select';
-    logit("In LS");
+    // logit("In LS");
     if (! $this->getRequest()->isPost()) {
       $this->makeDialog();
     } else {
-      logit('Exportxls: In post');
+      //logit('Exportxls: In post');
       $prefix = 'cb_';
       $lprefix = strlen($prefix);
       if ($this->collectData()) return;
       $this->collectextraData($prefix);
-      logit('Exportxls: ' . print_r($this->data, true));
-      logit('Exportxls+: ' . print_r($this->extra, true));
+      // logit('Exportxls: ' . print_r($this->data, true));
+      // logit('Exportxls+: ' . print_r($this->extra, true));
       $alist = array ();
       foreach($this->extra as $n => $v) {
         $alist[] = (int) substr($n, $lprefix);
       }
-      logit('collected data: ' . print_r($alist, true));
+      // logit('collected data: ' . print_r($alist, true));
       exit();
       /*$aud = new Application_Model_DbTable_Audit();
       $arows = $aud->selectAudits($this->data);
@@ -534,7 +592,7 @@ END;
   public function exportdataAction() {
     // Exports an audit to dataexport file (.edx)
     $this->dialog_name = 'audit/exportdata';
-    logit("In audit/exportdata");
+    // logit("In audit/exportdata");
     $vars = $this->_request->getPathInfo();
     $pinfo = explode("/", $vars);
     $id = $this->audit['audit_id'];
@@ -547,7 +605,7 @@ END;
       // The data is ready
       // The proposed name is: <lab_num>_<audit_type>_<audit_date>.edx
       $fname = $out['name'];
-      logit('FNAME: ' . $fname);
+      // logit('FNAME: ' . $fname);
       // Send the file
       //call the action helper to send the file to the browser
       $this->_helper->layout->disableLayout();
@@ -558,7 +616,7 @@ END;
           'Content-Disposition', 'attachment; filename="' . $fname . '"');
       $this->getResponse()->setBody($out['data']);
     } else {
-      logit('Import: In post');
+      // logit('Import: In post');
       $this->collectData();
     }
   }
@@ -566,9 +624,9 @@ END;
   public function importAction() {
     // Imports a dataexport file
     $this->dialog_name = 'audit/import';
-    logit("In audit/import");
+    // logit("In audit/import");
     $path = dirname(__DIR__) . '/tmp/';
-    logit("PATH: {$path}");
+    // logit("PATH: {$path}");
     $adapter = new Zend_File_Transfer_Adapter_Http();
     $adapter->setDestination($path);
     $toimport = new Application_Model_DbTable_ToImport();
@@ -576,28 +634,28 @@ END;
       if ($toimport->getByOwner($this->userid)) {
         $this->_redirector->gotoUrl('audit/fileparse');
       }
-      logit('now1:');
-      logit("EC: {$this->echecklistNamespace->flash}");
+      // logit('now1:');
+      // logit("EC: {$this->echecklistNamespace->flash}");
       $this->makeDialog();
     } else {
-      logit('Import: In post');
+      // logit('Import: In post');
       if (! $adapter->receive()) {
         $messages = $adapter->getMessages();
-        logit('MSGS: ' . print_r(implode("\n", $messages), true));
-        logit('msgout1: ');
+        // logit('MSGS: ' . print_r(implode("\n", $messages), true));
+        // logit('msgout1: ');
         $this->echecklistNamespace->flash = 'File not loaded - No file chosen';
         //$this->makeDialog();
         $this->_redirector->gotoUrl('audit/import');
       }
       $files = $adapter->getFileInfo();
-      logit('FILE: ' . print_r($files, true));
+      // logit('FILE: ' . print_r($files, true));
       $uploadedfile = $files['uploadedfile'];
 
       $data = array ();
       $data['owner_id'] = $this->userid;
       $data['path'] = $uploadedfile['tmp_name'];
       if (strlen($data['path']) < 10) {
-        logit('msgout1: no file');
+        // logit('msgout1: no file');
         $this->echecklistNamespace->flash = 'File not loaded - Try again';
         //$this->makeDialog();
         $this->_redirector->gotoUrl('audit/import');
@@ -638,7 +696,7 @@ END;
     // import the entire export file as is
     // comes here from a link click
     $this->dialog_name = "audit/importall";
-    logit('In audit/importall');
+    // logit('In audit/importall');
     $audit = new Application_Model_DbTable_Audit();
     $lab = new Application_Model_DbTable_Lab();
     $audit_data = new Application_Model_DbTable_AuditData();
@@ -656,33 +714,33 @@ END;
      */
     $thisfile = $toimport->getByOwner($this->userid);
     $sdata = file_get_contents($thisfile['path']);
-    logit('SLEN: ' . strlen($sdata) . ' ' . print_r($thisfile, true));
+    // logit('SLEN: ' . strlen($sdata) . ' ' . print_r($thisfile, true));
     $data = unserialize($sdata);
     $labinfo = $data['lab'];
     $labnum = $labinfo['labnum'];
-    logit('LAB: ' . print_r($labinfo, true));
+    // logit('LAB: ' . print_r($labinfo, true));
     $auditinfo = $data['audit'];
-    logit("Audit: {$auditid} " . print_r($auditinfo, true));
+    // logit("Audit: {$auditid} " . print_r($auditinfo, true));
     $auditdatarows = $data['audit_data'];
-    logit("Inserting data: {$auditid} - " . count($auditdatarows));
+    // logit("Inserting data: {$auditid} - " . count($auditdatarows));
     $haslab = $lab->getLabByLabnum($labnum);
     if (! $haslab) {
       // the labnum is not in the system
       // so install this lab data
-      logit("No such lab: {$labnum}");
+      // logit("No such lab: {$labnum}");
       unset($labinfo['id']); // remove the id
       $labid = $lab->insertData($labinfo);
-      logit("Lab: {$labid} " . print_r($labinfo, true));
+      // logit("Lab: {$labid} " . print_r($labinfo, true));
       $auditinfo['lab_id'] = $labid;
     } else {
       // update audit info with the lab id (from this system)
-      logit("Lab exists: ". print_r($haslab, true));
+      // logit("Lab exists: ". print_r($haslab, true));
       // replace the lab info with that from the selected lab
       //$auditdatarows = $audit_data->updateAuditWithLabInfo($auditdatarows, $haslab);
       $auditinfo['lab_id'] = $haslab['id'];
     }
     unset($auditinfo['id']); // remove the id
-    logit("adding in audit: ". print_r($auditinfo, true));
+    // logit("adding in audit: ". print_r($auditinfo, true));
     // insert audit row
     $auditid = $audit->insertData($auditinfo);
 
@@ -692,11 +750,11 @@ END;
         'owner' => $this->userid
     );
     $aoid = $auditowner->insertData($ao);
-    logit("AOID: {$aoid}");
+    // logit("AOID: {$aoid}");
 
     // insert the audit data rows
     $audit_data->insertAs($auditdatarows, $auditid);
-    logit('LABROW: '. print_r($labrow, true));
+    // logit('LABROW: '. print_r($labrow, true));
       // update the lab data with that from existing lab
     if ($haslab) {
       $defarray = array('labhead'=> 'place holder');
@@ -732,7 +790,7 @@ END;
 
     $thisfile = $toimport->getByOwner($this->userid);
     $sdata = file_get_contents($thisfile['path']);
-    logit('SLEN: ' . strlen($sdata) . ' ' . print_r($thisfile, true));
+    // logit('SLEN: ' . strlen($sdata) . ' ' . print_r($thisfile, true));
     $data = unserialize($sdata);
     $auditdatarows = $data['audit_data'];
     // we do not need the lab data as we will use the current lab
@@ -741,7 +799,7 @@ END;
     $auditinfo = $data['audit'];
     unset($auditinfo['id']);
     $auditinfo['lab_id'] = $this->labid; // the current lab
-    logit("Audit: {$auditid} " . print_r($auditinfo, true));
+    // logit("Audit: {$auditid} " . print_r($auditinfo, true));
     $auditid = $audit->insertData($auditinfo);
 
     // insert into audit_owner
@@ -751,14 +809,14 @@ END;
         'owner' => $this->userid
     );
     $aoid = $auditowner->insertData($ao);
-    logit("AOID: {$aoid}");
+    // logit("AOID: {$aoid}");
 
     // insert the audit data rows
-    logit("Inserting data: {$auditid} - ". count($auditdatarows));
+    // logit("Inserting data: {$auditid} - ". count($auditdatarows));
     $audit_data->insertAs($auditdatarows, $auditid);
     // change the original audit data to that of the current lab
     $labrow = $lab->get($this->labid);
-    logit('LABROW: '. print_r($labrow, true));
+    // logit('LABROW: '. print_r($labrow, true));
     $defarray = array('labhead' => 'place holder');
     $audit_data->handleLabData($defarray, $auditid, '', $labrow);
     //$auditdatarows = $audit_data->updateAuditWithLabInfo($auditdatarows, $labrow);
@@ -796,4 +854,162 @@ END;
     $this->echecklistNamespace->flash = "Audit with Id #{$audit_id}: delete successfully";
     $this->_redirector->gotoUrl($this->mainpage);
   }
+
+  public function completeAction() {
+    // mark audit complete
+    $users = array('ADMIN','USER','APPROVER');
+    if ( in_array($this->usertype, $users)) {
+        // if type is SLIPTA - check for incomplete
+
+      // BAT and TB can be incomplete and it is OK
+      // logit('AU: '. print_r($this->audit, true));
+      if ($this->audit['tag'] == 'SLIPTA') {
+        $audit_id = $this->audit['audit_id'];
+        // logit("COMP: {$audit_id}");
+        // icmap contains the incomplete elements for use in completing
+        $icmap = $this->iscomplete($audit_id);
+        if ($icmap) {
+          // is not complete so show incomplete map
+          $this->view->outlines .= $icmap;
+          $this->_helper->layout->setLayout('overall');
+          // logit("IC x");
+        } else {
+          // logit("no IC");
+        }
+      }
+    } else {
+      $this->echecklistNamespace->flash = 'Invalid action';
+      $this->_redirector->gotoUrl($this->mainpage);
+    }
+    // exit();
+  }
+
+  public function incompleteAction() {
+
+  }
+
+  public function finalizeAction() {
+
+  }
+
+  public function rejectAction() {
+
+  }
+
+  public function complete2Action() {
+
+  }
+
+  public function iscomplete($audit_id) {
+    // check if this slipta audit is complete
+    $tmplr = new Application_Model_DbTable_TemplateRows();
+    $auditd = new Application_Model_DbTable_AuditData();
+    $tmpl_id = 1; // for SLIPTA
+    $tmplrows = $tmplr->getAllRowsNotext($tmpl_id, $this->langtag);
+    $adrows = $auditd->getAllData($audit_id);
+    $tracker = array();
+    $line = '';
+    foreach($tmplrows as $tr) {
+      //logit("TR: ". print_r($tr, true));
+      if ($tr['required'] == 'F')
+        continue;
+      $ect = $tr['element_count'];
+      $vname = $tr['varname'];
+      switch ($tr['row_type']) {
+        case 'sec_head' :
+          if ($line != '') {
+            logit('NEW:');
+            $tracker[] = $line;
+          }
+          $line = '';
+          $name = $vname;
+          //logit("sec: {$name} - ". get_arrval($adrows, "{$name}_secinc", 100));
+          if (get_arrval($adrows, "{$name}_secinc", 999) != 0) {
+            $line .= 'Section ' . (int) substr($name, 1) . ': Inc ';
+          } else {
+            $line .= 'Section ' . (int) substr($name, 1);
+          }
+          break;
+        case 'sub_sec_head_ro' :
+          // multiple elements
+          $name = $vname;
+          //logit("RO {$name}");
+          //logit("EXT: {$name} " . get_arrval($adrows, $name, ''));
+          $ssinc = get_arrval($adrows, "{$name}_inc", 9);
+          //logit("ssinc: {$ssinc}");
+          $ss = (int) substr($name, 1, 2) . '.' . (int) substr($name, 3, 2);
+          if ($ssinc > 0) {
+            // $tracker[] = "SubSection {$ss} incomplete";
+            $line .= "{$ss}: Inc ";
+          }
+          for($i = 1; $i <= $ect; $i ++) {
+            $name = ($i < 10) ? "{$vname}0{$i}" : "{$vname}{$i}";
+            $val = get_arrval($adrows, "{$name}_yn", '') . get_arrval($adrows, "{$name}_yna", '');
+            //logit("ECT: {$name} ==> {$val} :" . $adrows['{$name}_inc']);
+            logit("rVAL: {$name} {$val}");
+            if ($val && $val != 'YES' and $val != '-') {
+              logit("r1VAL: {$name} {$val}");
+              // check for comment
+              if ($adrows["{$name}_comment"] == '') {
+                // $tracker[] = "Missing comment: {$name}";
+                $s1 = (int) substr($name, 1, 2);
+                $s2 = (int) substr($name, 1, 2);
+                $s3 = (int) substr($name, 1, 2);
+                $sse = "{$s1}.{$s2}.{$s3}";
+                $line .= "x{$sse}: Comm ";
+              }
+            }
+            $nc =   get_arrval($adrows, "{$name}_nc", '');
+            $note = get_arrval($adrows, "{$name}_note", '');
+            logit("{$name} NC: {$nc} - {$note}");
+            if ($nc == 'T' && $note == '') {
+              // there should be a note - non compliant note - it is missing
+              // $tracker[] = "Missing Non Compliant note: {$name}";
+              $line .= "{$sse}: nc note ";
+            }
+          }
+
+          break;
+        case 'sub_sec_head' :
+          $name = $vname;
+          //logit("Non-RO {$name}");
+          $ssinc = get_arrval($adrows, "{$name}_inc", 9);
+          //logit("ssinc: {$ssinc}");
+          $ss = (int) substr($name, 1, 2) . '.' . (int) substr($name, 3, 2);
+          if ($ssinc > 0) {
+            // $tracker[] = "SubSection {$ss} incomplete";
+            $line .= "{$ss}: Inc ";
+          }
+          $val = get_arrval($adrows, "{$name}", '-');
+          //logit("ECT: {$name} ==> {$val} : " . get_arrval($adrows, "{$name}_inc", ''));
+          logit("nVAL: {$name} {$val}");
+          if ($val && $val != 'YES' && $val != '-') {
+            logit("n1VAL: {$name} {$val}");
+            // check for comment
+            if (get_arrval($adrows, "{$name}_comment", '') == '') {
+              // $tracker[] = "Missing comment: {$name}";
+              $line .= "{$ss}: Comm ";
+            }
+          }
+          $nc =   get_arrval($adrows, "{$name}_nc", '');
+          $note = get_arrval($adrows, "{$name}_note", '');
+          logit("{$name} NC: {$nc} - {$note}");
+          if ($nc == 'T' && $note == '') {
+            // there should be a note - non compliant note - it is missing
+            // $tracker[] = "Missing Non Compliant note: {$name}";
+            logit("NC: {$ss}");
+            $line .= "{$ss}: nc note ";
+          }
+          break;
+        default :
+      }
+    }
+    if ($line != '') {
+      logit('end');
+      $tracker[] = $line;
+    }
+      // logit("IC: ". print_r($tracker, true));
+    return implode("<br />\n", $tracker);
+  }
+
 }

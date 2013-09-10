@@ -68,6 +68,27 @@ SQL;
 
   }
 
+  public function getAllRowsNotext($id, $lang) {
+    // get the rows without the text
+    $id = ( int ) $id;
+    $sql = <<<"SQL"
+select r.varname, r.row_type, r.element_count, r.required
+  from page p, template_row r
+ where r.template_id = {$id}
+   and p.page_id = r.page_id
+ order by r.part, r.level1, r.level2, r.level3, r.level4
+SQL;
+    // logit("SQL: {$sql}");
+    $rows = $this->queryRows($sql); // $stmt->fetchAll ();
+    if (! $rows) {
+      throw new Exception ( "No rows available for this template." );
+    }
+    /*
+     * foreach($rows as $row) { logit("{$row['text']}"); }
+    */
+    return $rows;
+
+  }
   public function getAudits($uid, $atype) {
     /*
      * Return all matching audits

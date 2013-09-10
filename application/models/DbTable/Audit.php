@@ -69,30 +69,53 @@ END;
   }
 
   private function _mkList($data) {
+    logit("MKL: {$data} " . print_r($data, true));
     $out = '';
     // if (count($data) == 0) {
     //  return
-    switch(count($data)) {
-    case 0 :
-      //logit("0: {$data} --". print_r($data, true));
-      break;
-    case 1:
-      //logit("A: = '{$data[0]}' ");
-      return "= '{$data[0]}' ";
-      break;
-    default:
-      foreach($data as $d) {
-        if ($out != '') $out .= ',';
-        if (is_string($d))
-          $out .= "'{$d}'" ;
+    if (is_string($data)) {
+      logit('STR');
+      return "= '{$data}' ";
+    } else {
+      logit('ARR');
+      switch (count($data)) {
+        case 0 :
+          //logit("0: {$data} --". print_r($data, true));
+          break;
+        case 1 :
+          //logit("A: = '{$data[0]}' ");
+          if ($data[0] == '-')
+          return "= '{$data[0]}' ";
+          break;
+        default :
+          foreach($data as $d) {
+            if ($out != '')
+              $out .= ',';
+            if (is_string($d))
+              $out .= "'{$d}'";
+          }
+          //logit("A: = in ({$out}) ");
+          return "in ({$out})";
       }
-      //logit("A: = in ({$out}) ");
-      return "in ({$out})";
     }
   }
 
   public function selectAudits($data) {
-  logit('IN top: '. print_r($data, true));
+    logit('IN top: ' . print_r($data, true));
+
+    foreach($data as $n => $v) {
+      logit("$n -> $v " . print_r($v, true));
+      if (is_string($v) && $v == '-') {
+        logit('unset');
+        unset($data[$n]);
+        continue;
+      }
+      if (is_array($v) && count($v) == 1 && $v[0] = '-') {
+        logit('unset');
+        unset($data[$n]);
+        continue;
+      }
+    }
     $sql = <<<"END"
 select a.id audit_id, a.end_date, a.cohort_id, a.status, a.slipta_official,
        a.slmta_type, a.audit_type, l.id labid, a.audit_type tag,
@@ -126,6 +149,9 @@ END;
             break;
           case 'audit_type' :
             $sql .= " and a.audit_type " . $this->_mkList($b);
+            break;
+          case 'audit_state' :
+            $sql .= " and a.status " . $this->_mkList($b);
             break;
           case 'slmta_type' :
             $sql .= " and a.slmta_type " . $this->_mkList($b);

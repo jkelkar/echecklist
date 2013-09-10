@@ -562,6 +562,20 @@ function dialog_slmtastatus_m($row, $value, $t) {
   return SELECT($varname, $optvals, $value, '', true);
 }
 
+function dialog_auditstates_m($row, $value, $t) {
+  $varname = $row['varname'];
+  $optvals = getAuditStates($t);
+  $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
+  return SELECT($varname, $optvals, $value, '', true);
+}
+
+function dialog_auditstates($row, $value, $t) {
+  $varname = $row['varname'];
+  $optvals = getAuditStates($t);
+  $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
+  return SELECT($varname, $optvals, $value, '', false);
+}
+
 function widget_select_slmtatype($varname, $value, $t) {
   $optvals = getSLMTAType($t);
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
@@ -732,8 +746,8 @@ function partial_string_ro($row, $value, $t) {
   $heading = $row['heading'];
   $text = $row['text'];
   //$stringf = INPUT($name, $value, 'string', 55, '', '');
-  $val = get_arrval($value, $name, '');
-  logit("739: {$val} - {$name}");
+  $val = get_arrval($value, $name, '-');
+  //logit("739: {$val} - {$name}");
   switch($name) {
   	case 'slmta_labtype':
   	  $rev_lt = rev('getLTypes', $t);
@@ -973,7 +987,7 @@ function partial_sec_head($row, $value, $t) {
   $heading = $row['heading'];
   $text = $row['text'];
   $secinc = "{$name}_secinc";
-  $incval = get_arrval($value, $secinc, 1);
+  $incval = get_arrval($value, $secinc, 999);
   $out = <<<"END"
 <table style="width:100%;"><tr>
 <td style="font-size:18px;font-weight: bold;text-transform:uppercase;padding: 2px 4px;">

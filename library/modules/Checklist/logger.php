@@ -1,6 +1,6 @@
 <?php //-*- coding: utf-8 -*-
 ?>
-<?php 
+<?php
 
 /**
  * using the widgets and partials fill out the row
@@ -11,6 +11,8 @@
  */
 require_once 'modules/KLogger.php';
 
+$userid = null;
+$langtag = null;
 function logit($msg) {
   $log = new KLogger("/var/log/log.txt", KLogger::DEBUG);
   $log->LogInfo($msg);

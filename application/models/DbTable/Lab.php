@@ -54,10 +54,10 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
         }
         break;
       default:
-        $sql = $sql . " and {$a} like '{$b}%' ";
+        $sql = $sql . " and {$a} like '%{$b}%' ";
       }
     }
-    $sql = $sql . " limit {$start}, {$ct}";
+    //$sql = $sql . " limit {$start}, {$ct}";
     logit("getLabs: {$sql}");
     $rows = $this->queryRows( $sql );
     foreach($rows as $row) {

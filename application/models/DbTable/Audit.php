@@ -36,12 +36,16 @@ class Application_Model_DbTable_Audit extends Application_Model_DbTable_Checklis
 
   public function getAudit($id) {
     // get audit from this audit id
+    global $userid;
+    if (! $userid) $userid = 99999;
     $id = (int) $id;
     $sql = <<<"END"
  select a.id audit_id, a.end_date, a.cohort_id, a.status,
         a.slmta_type, l.id lab_id, a.audit_type tag,
-        l.labname, l.labnum, l.country, l.lablevel, l.labaffil
-   from audit a, lab l
+        l.labname, l.labnum, l.country, l.lablevel, l.labaffil,
+        ao.owner
+   from lab l, audit a left join audit_owner ao on
+        (ao.audit_id = a.id and ao.owner = {$userid})
   where a.id = {$id} and l.id = a.lab_id
 END;
     $rows = $this->queryRows($sql);
@@ -58,9 +62,9 @@ END;
     $sql = <<<"END"
 select a.id audit_id, a.end_date, a.cohort_id, a.status, a.audit_type,
        a.slipta_official, a.slmta_type, l.id lab_id,
-       l.labname, l.labnum, l.country, l.lablevel, l.labaffil
-  from audit a, lab l, audit_owner ao
- where a.id = ao.audit_id and ao.owner ={$id}
+       l.labname, l.labnum, l.country, l.lablevel, l.labaffil, ao.owner
+  from lab l, audit a, audit_owner ao
+ where a.id = ao.audit_id and ao.owner = {$id}
    and l.id = a.lab_id and a.status = 'INCOMPLETE'
 END;
 
@@ -101,6 +105,8 @@ END;
   }
 
   public function selectAudits($data) {
+    global $userid;
+    if (! $userid) $userid = 99999;
     logit('IN top: ' . print_r($data, true));
 
     foreach($data as $n => $v) {
@@ -119,8 +125,9 @@ END;
     $sql = <<<"END"
 select a.id audit_id, a.end_date, a.cohort_id, a.status, a.slipta_official,
        a.slmta_type, a.audit_type, l.id labid, a.audit_type tag,
-       l.labname, l.labnum, l.country, l.lablevel, l.labaffil
-  from audit a, lab l
+       l.labname, l.labnum, l.country, l.lablevel, l.labaffil, ao.owner
+  from lab l, audit a left join audit_owner ao on
+       (ao.owner = {$userid} and ao.audit_id = a.id)
  where l.id = a.lab_id
 END;
     foreach($data as $a => $b) {

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 10, 2013 at 03:36 PM
+-- Generation Time: Sep 11, 2013 at 02:48 AM
 -- Server version: 5.5.31
 -- PHP Version: 5.3.10-1ubuntu3.6
 
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `audit` (
 --
 
 INSERT INTO `audit` (`id`, `template_id`, `created_at`, `updated_at`, `updated_by`, `start_date`, `end_date`, `audit_type`, `slipta_official`, `lab_id`, `cohort_id`, `slmta_type`, `status`) VALUES
-(1, 1, '2013-07-22 11:23:36', '2013-08-17 20:03:34', 1, '2013-09-02', '2013-09-06', 'SLIPTA', 'T', 1, '1', 'BASE', 'COMPLETE'),
+(1, 1, '2013-07-22 11:23:36', '2013-08-17 20:03:34', 1, '2013-09-02', '2013-09-06', 'SLIPTA', 'T', 1, '1', 'BASE', 'INCOMPLETE'),
 (2, 2, '2013-08-10 11:24:44', '2013-08-17 21:38:09', 1, '2013-09-03', '2013-09-09', 'BAT', '', 9, '3', 'BASE', 'INCOMPLETE'),
 (3, 3, '2013-08-15 13:25:29', '2013-08-17 09:47:40', 1, '2013-09-02', '2013-09-05', 'TB', '', 10, '5', '-', 'INCOMPLETE'),
 (18, 1, '2013-07-22 11:23:36', '2013-08-17 20:03:34', 1, '2013-08-01', '2013-08-14', 'SLIPTA', '', 27, '1', '', 'INCOMPLETE'),
@@ -11731,7 +11731,7 @@ CREATE TABLE IF NOT EXISTS `report` (
   `report_type` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `file_type` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Report and Details' AUTO_INCREMENT=614 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Report and Details' AUTO_INCREMENT=616 ;
 
 --
 -- Dumping data for table `report`
@@ -12350,7 +12350,9 @@ INSERT INTO `report` (`id`, `report_id`, `tabpos`, `position`, `field_label`, `t
 (610, 2, 3, 447, '12.20.score', 'audit_data', 's1220_score', '', '', '', ''),
 (611, 2, 3, 448, '12.20.', 'audit_data', 's1220', '', '', '', ''),
 (612, 2, 3, 449, '12.21.score', 'audit_data', 's1221_score', '', '', '', ''),
-(613, 2, 3, 450, '12.21.', 'audit_data', 's1221', '', '', '', '');
+(613, 2, 3, 450, '12.21.', 'audit_data', 's1221', '', '', '', ''),
+(614, 3, 0, 0, '{$Audit_id} Non Conformity Table', '', '', 'ncexcel', '', '', 'excel'),
+(615, 3, 1, 0, 'Non Conformity Table', '', '', 'Non Compliance', '', '', '');
 
 -- --------------------------------------------------------
 

@@ -1,6 +1,7 @@
 <?php
-require_once 'modules/Checklist/fillout.php';
+
 require_once 'modules/Checklist/logger.php';
+require_once 'modules/Checklist/fillout.php';
 require_once '../application/controllers/ActionController.php';
 
 class LanguageController extends Application_Controller_Action {
@@ -12,10 +13,10 @@ class LanguageController extends Application_Controller_Action {
   }
 
   public function indexAction() {
-  
+
   }
 
-  
+
   public function switchAction() {
     $lang_default= 'EN';
     $baseurl = Zend_Controller_Front::getInstance ()->getBaseUrl ();
@@ -39,10 +40,10 @@ class LanguageController extends Application_Controller_Action {
       $request = $this->getRequest();
       $referer = $request->getHeader('referer');
       $this->_redirector->gotoUrl($referer);
-//} 
-  
+//}
+
   }
 
-  
+
 }
- 
+

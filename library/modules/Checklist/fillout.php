@@ -17,7 +17,7 @@ require_once '../application/models/DbTable/Audit.php';
 /**
  * these implement low level html code generators
  */
-function SELECT($name, $optvals, $value, $scr = '', $multiple = false) {
+function SELECT($name, $optvals, $value, $scr = '', $multiple = false, $divcss='') {
   // $log = new KLogger("/var/log/log.txt", KLogger::DEBUG);
   if (count($optvals) == 0) {
     throw new Exception('Optvals has no elements', 0);
@@ -49,7 +49,7 @@ function SELECT($name, $optvals, $value, $scr = '', $multiple = false) {
   $mult = ($multiple) ? 'multiple' : '';
   $namemul = ($multiple) ? "{$name}[]" : $name;
   $out = <<<"END"
-   <div style="display:inline;float:left;"> <select name="{$namemul}" id="{$name}" data-rel="chosen" {$mult} class="select">
+   <div style="display:inline;float:left;{$divcss}"> <select name="{$namemul}" id="{$name}" data-rel="chosen" {$mult} class="select">
   {$options}
 </select></div><div style="display:inline;float:left;">{$icon}</div>
 END;
@@ -433,33 +433,33 @@ function widget_select_labaffil($varname, $value, $t, $scr = '', $multiple = fal
 function dialog_report($row, $value, $t) {
   $varname = $row['varname'];
   $optvals = getReportTypes($t);
-  return SELECT($varname, $optvals, $value, '', false);
+  return SELECT($varname, $optvals, $value, '', false, 'padding: 2px 0 8px 0;');
   // return widget_select_lablevel($varname, $value, $t);
 }
 
 function dialog_audittype_m($row, $value, $t) {
   $varname = $row['varname'];
   $optvals = getAuditTypes($t);
-  return SELECT($varname, $optvals, $value, '', true);
+  return SELECT($varname, $optvals, $value, '', true, 'padding: 2px 0 8px 0;');
   // return widget_select_lablevel($varname, $value, $t, '', true);
 }
 
 function dialog_lablevel($row, $value, $t) {
   $varname = $row['varname'];
   $optvals = getLevels($t);
-  return SELECT($varname, $optvals, $value, '', false);
+  return SELECT($varname, $optvals, $value, '', false, 'padding: 2px 0 8px 0;');
   // return widget_select_lablevel($varname, $value, $t);
 }
 
 function dialog_labtype($row, $value, $t) {
   $varname = $row['varname'];
   $optvals = getLTypes($t);
-  return SELECT($varname, $optvals, $value, '', false);
+  return SELECT($varname, $optvals, $value, '', false, 'padding: 2px 0 8px 0;');
 }
 function dialog_lablevel_m($row, $value, $t) {
   $varname = $row['varname'];
   $optvals = getLevels($t);
-  return SELECT($varname, $optvals, $value, '', true);
+  return SELECT($varname, $optvals, $value, '', true, 'padding: 2px 0 8px 0;');
   // return widget_select_lablevel($varname, $value, $t, '', true);
 }
 
@@ -478,7 +478,7 @@ function dialog_audit_type($row, $value, $t) {
   }
   //logit('TAGS: ' . print_r($c, true));
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
-  return SELECT($varname, $c, $value, '', false);
+  return SELECT($varname, $c, $value, '', false, 'padding: 2px 0 8px 0;');
 }
 
 function dialog_country($row, $value, $t) {
@@ -496,7 +496,7 @@ function dialog_country($row, $value, $t) {
   }
   //logit('COUNTRIES: ' . print_r($c, true));
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
-  return SELECT($varname, $c, $value, '', false);
+  return SELECT($varname, $c, $value, '', false, 'padding: 2px 0 8px 0;');
 }
 
 function dialog_country_m($row, $value, $t) {
@@ -514,7 +514,7 @@ function dialog_country_m($row, $value, $t) {
   }
   //logit('COUNTRIES: ' . print_r($c, true));
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
-  return SELECT($varname, $c, $value, '', true);
+  return SELECT($varname, $c, $value, '', true, 'padding: 2px 0 8px 0;');
 }
 
 function dialog_cohortid_m($row, $value, $t) {
@@ -533,20 +533,20 @@ function dialog_cohortid_m($row, $value, $t) {
   }
   //logit('COHORTS: ' . print_r($c, true));
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
-  return SELECT($varname, $c, $value, '', true);
+  return SELECT($varname, $c, $value, '', true, 'padding: 2px 0 8px 0;');
 }
 
 function dialog_labaffil($row, $value, $t) {
   $varname = $row['varname'];
   $optvals = getAffiliations($t);
-  return SELECT($varname, $optvals, $value, '', false);
+  return SELECT($varname, $optvals, $value, '', false, 'padding: 2px 0 8px 0;');
   //return widget_select_labaffil($varname, $value, $t);
 }
 
 function dialog_labaffil_m($row, $value, $t) {
   $varname = $row['varname'];
   $optvals = getAffiliations($t);
-  return SELECT($varname, $optvals, $value, '', true);
+  return SELECT($varname, $optvals, $value, '', true, 'padding: 2px 0 8px 0;');
   //return widget_select_labaffil($varname, $value, $t, '', true);
 }
 
@@ -559,32 +559,32 @@ function dialog_slmtastatus_m($row, $value, $t) {
   $varname = $row['varname'];
   $optvals = getSLMTATypes($t);
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
-  return SELECT($varname, $optvals, $value, '', true);
+  return SELECT($varname, $optvals, $value, '', true, 'padding: 2px 0 8px 0;');
 }
 
 function dialog_auditstates_m($row, $value, $t) {
   $varname = $row['varname'];
   $optvals = getAuditStates($t);
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
-  return SELECT($varname, $optvals, $value, '', true);
+  return SELECT($varname, $optvals, $value, '', true, 'padding: 2px 0 8px 0;');
 }
 
 function dialog_auditstates($row, $value, $t) {
   $varname = $row['varname'];
   $optvals = getAuditStates($t);
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
-  return SELECT($varname, $optvals, $value, '', false);
+  return SELECT($varname, $optvals, $value, '', false, 'padding: 2px 0 8px 0;');
 }
 
 function widget_select_slmtatype($varname, $value, $t) {
   $optvals = getSLMTAType($t);
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
-  return SELECT($varname, $optvals, $value, "watch_select('{$varname}', '{$baseurl}');");
+  return SELECT($varname, $optvals, $value, "watch_select('{$varname}', '{$baseurl}');", 'padding: 2px 0 8px 0;');
 }
 
 function dialog_slmta_type($row, $value, $t) {
   $varname = $row['varname'];
-  return widget_select_slmtatype($varname, $value, $t, '', true);
+  return widget_select_slmtatype($varname, $value, $t, '', true, 'padding: 2px 0 8px 0;');
 }
 
 function widget_dt($name, $value, $length = 14) {

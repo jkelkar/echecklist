@@ -47,7 +47,6 @@ class Process_Common {
     $rows = $report->getReportRows($rid);
     //logit("report: " . print_r($rows, true));
 
-
     $namelist = array();
     $heading = $tabheading = '';
     $guide = array();
@@ -76,7 +75,7 @@ class Process_Common {
         }
       }
     }
-    logit('GUIDE: ' . print_r($guide, true));
+    // logit('GUIDE: ' . print_r($guide, true));
     return $guide;
   }
 
@@ -195,7 +194,7 @@ class Process_Common {
     $col = 1;
     $row = 1;
     // $s->setCellValue($this->rc($col, $row), 'Table data: Albums');
-    $s->mergeCells('A1:H1');
+    $s->mergeCells('A1:E1');
     $s->getStyle('A1')->applyFromArray($styleArray);
     $s->setCellValue('A1', $heading);
     $col = 1;
@@ -223,7 +222,7 @@ class Process_Common {
           $dn = get_arrval($d, $name, '');
           $cn = $this->rc($col, $row);
           if (key_exists($name, $d)) {
-            logit("ED: {$row} {$col} {$cn} = {$name} v {$dn}");
+            // logit("ED: {$row} {$col} {$cn} = '{$name}' : '{$dn}'");
             $s->setCellValue($this->rc($col, $row), $d[$name]);
           }
           /*
@@ -241,7 +240,7 @@ class Process_Common {
 
   public function saveFile($objPHPExcel) {
     // write the file out
-    logit(" Write to Excel5 format");
+    logit(" Write to Excel2007 format");
 
     $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
     $path = dirname(__DIR__) . '/../../public/tmp/';
@@ -253,5 +252,71 @@ class Process_Common {
     // Echo done
     logit("Done writing files");
     logit("Files have been created in {$fileloc}.");
+    return $fileloc;
   }
+
+  public function genNCReport($audit_id) {
+    // generate the non compliance report$v['varname']
+    logit("AI: {$audit_id}");
+    global $langtag;
+    $ar = new Application_Model_DbTable_AuditData();
+    $au = new Application_Model_DbTable_Audit();
+    $tr = new Application_Model_DbTable_TemplateRows();
+    $audit = $au->get($audit_id);
+    $tid = $audit['template_id'];
+    $regex = '^s[0-9]{4,6}$';
+    $trows = $tr->getByVarname($tid, $regex);
+    $vlist = array();
+    foreach($trows as $tx) {
+      if (! $tx['varname'])
+        continue;
+      // logit("- {$tx['varname']}");
+      $vlist[$tx['varname']] = $tx;
+    }
+    $arows = $ar->getAllData($audit_id);
+    $all = array();
+    foreach($vlist as $v) {
+      $vname = $v['varname'];
+      // logit("V: {$vname}");
+      $vlen = strlen($vname);
+      $val = $q = '';
+      switch ($vlen) {
+      	case 5:
+      	  $q = (int) substr($vname, 1, 2) . '.' . (int) substr($vname, 3, 2);
+      	  $key = $vname;
+      	  if (key_exists($key, $arows))  $val = get_arrval($arows, $key, '');
+      	  $key = "{$vname}_ynp";
+      	  if (key_exists($key, $arows))  $val = get_arrval($arows, $key, '');
+      	  break;
+      	case 7:
+      	  $q = (int) substr($vname, 1, 2) . '.' . (int) substr($vname, 3, 2) . '.' . (int) substr($vname, 5, 2);
+      	  $key = "{$vname}_yn";
+      	  if (key_exists($key, $arows))  $val = get_arrval($arows, $key, '');
+      	  $key = "{$vname}_yna";
+      	  if (key_exists($key, $arows))  $val = get_arrval($arows, $key, '');
+      	  break;
+      	default;
+      }
+      logit("Question: {$q}");
+      if ($val != 'YES'){
+        $comment = get_arrval($arows, "{$vname}_comment", '');
+        $nc = get_arrval($arows, "{$vname}_nc", '');
+        $ncnote = '';
+        if ($nc == 'T')
+          $ncnote = get_arrval($arows, "{$vname}_note", '');
+        $all[] = array(
+            'comment' => $comment,
+            'nc' => $ncnote,
+            'mm' => '',
+            'question' => "Q$q",
+            'iso' => ''
+        );
+      }
+
+    }
+    //logit("ALL: " . print_r($all, true));
+
+    return $all;
+  }
+
 }

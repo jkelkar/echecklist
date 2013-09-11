@@ -54,14 +54,37 @@ class Processing extends Process_Common {
           logit("Heading: {$heading}");
           logit('fnames: ' . print_r($fnames, true) . '  ' . print_r($names, true));
           // logit('flabels: '. print_r($flabels, true).'  '. print_r($labels, true));
-          eval("\$sql = \"$query\"; ");
-          logit("CALC Q: {$sql}");
-          $rows = $report->runQuery($sql);
-          logit('ROWS: ' . print_r($rows, true));
-          $data = $this->collectRows($rows);
-          $this->startWorkSheet($filehandle, $i, $heading, $flabels, $fnames, $data);
+          switch ($name) {
+            case 'ncexcel' :
+              // this is the non compliance excel report
+              logit("$name");
+              $audit_id = $list[0];
+              $data = $this->genNCReport($audit_id);
+              $i = 1;
+              $flabels = array(
+                  'Non Conformities',
+                  'Recommendations/Comments',
+                  'Checklist Question',
+                  'ISO 15189 References',
+                  'Major/Minor'
+              );
+              $fnames = array('comment', 'nc', 'question', 'isp', 'mm');
+              $this->startWorkSheet($filehandle, $i, $heading, $flabels, $fnames, $data);
+              break;
+            default :
+              if ($query) {
+                eval("\$sql = \"$query\"; ");
+                logit("CALC Q: {$sql}");
+              }
+              $rows = $report->runQuery($sql);
+              logit('ROWS: ' . print_r($rows, true));
+              $data = $this->collectRows($rows);
+              $this->startWorkSheet($filehandle, $i, $heading, $flabels, $fnames, $data);
+          }
         }
-        $this->saveFile($filehandle);
+        $filename = $this->saveFile($filehandle);
+        logit("FN: $filename");
+        return $filename;
         break;
       case 'html' :
         // this is going to be an image file

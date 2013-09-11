@@ -276,6 +276,7 @@ function getReportTypes($t) {
       "{$t['Select']} ..."=> '-',
       "{$t['SLMTA data:Excel']}" => 'slmta2excel',
       "{$t['SLIPTA:Excel']}" => 'slipta2excel',
+      "{$t['Non Compliance Report']}" => 'ncexcel',
       "{$t['Compare scores in a Spider Chart']}" => 'spiderchart',
       "{$t['Campare scores in a Bar Chart']}" => 'barchart',
       "{$t['Show Incomplete Audit']}" => 'incompletechart'
@@ -366,6 +367,7 @@ function getTranslatables(/*$tword,*/ $langtag) {
       'N/A',
       'NGO, Faith-based, or private',
       'National',
+      'Non Compliance Report',
       'Non SLMTA Audit',
       'No',
       'Non SLMTA',

@@ -5,8 +5,8 @@
  *
  *
  */
-require_once 'modules/Checklist/general.php';
 require_once 'modules/Checklist/logger.php';
+require_once 'modules/Checklist/general.php';
 //require_once 'modules/Checklist/fillout.php';
 require_once 'modules/Checklist/validation.php';
 
@@ -33,6 +33,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
   public $showaudit;
   public $drows;
   public $mainpage = '/audit/main';
+  public $postcomplete = '/audit/find';
   public $loginpage = '/user/login';
   public $ISOdtformat = 'Y-m-d H:i:s';
   public $ISOformat = 'Y-m-d';
@@ -75,6 +76,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
 
   public function setupSession() {
     /* start the session */
+    global $userid, $langtag;
     $this->echecklistNamespace = new Zend_Session_Namespace('eChecklist');
     // logit("test: {$this->echecklistNamespace->lab['labnum']}");
     if (isset($this->echecklistNamespace->user)) {
@@ -82,7 +84,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
       $this->usertype = $u['usertype'];
       $this->username = $u['userid'];
       $this->userfullname = $u['name'];
-      $this->userid = $u['id'];
+      $userid = $this->userid = $u['id'];
       // logit("{$this->username}, {$this->usertype}, {$this->userfullname}, {$this->userid}");
     }
     // logit('TIME1: ' . isset($this->echecklistNamespace->lab));
@@ -115,8 +117,8 @@ class Application_Controller_Action extends Zend_Controller_Action {
       $this->audit = null;
       $this->showaudit = '';
     }
-    $this->view->langtag = $this->echecklistNamespace->lang;
-    $this->langtag = $this->echecklistNamespace->lang;
+    $langtag = $this->view->langtag = $this->langtag = $this->echecklistNamespace->lang;
+    // $this->langtag = $this->echecklistNamespace->lang;
     // logit('LT: '. $this->view->langtag);
     Zend_Session::start();
   }
@@ -166,7 +168,8 @@ class Application_Controller_Action extends Zend_Controller_Action {
 
   public function makeMenu($menu) {
     /*
-     * The input is an array of arrays array(top, array(array(icon, item),))+ The top level creates buttons the rest create the menu items
+     * The input is an array of arrays array(top, array(array(icon, item),))+
+     * The top level creates buttons the rest create the menu items
      */
     $out = array();
     $out[] = "<div class=\"btn-group pull-left\">";
@@ -205,37 +208,45 @@ class Application_Controller_Action extends Zend_Controller_Action {
     /* Create the top line */
     $dt = date('j M, Y');
     $name_header = '';
+    $ao = new Application_Model_DbTable_AuditOwner();
     if ($this->usertype != '') {
       $name_header = "&nbsp {$this->userfullname}";
     }
     $complete_user = array('ADMIN','USER','APPROVER');
     $complete_audit = '';
+    $audit_id = $this->audit['audit_id'];
     logit("audit: " .  print_r($this->audit, true));
     if (in_array($this->usertype, $complete_user)) {
       $complete_audit = <<<"END"
 <li class="divider"></li>
 <li><a href="{$this->baseurl}/audit/exportdata/$this->audit['id']"><span title=".icon  .icon-color  .icon-extlink " class="icon icon-color icon-extlink"></span> Export Data</a></li>
+END;
+      if ($ao->isOwned($audit_id, $this->userid)) {
+        $complete_audit .= <<<"END"
 <li><a href="{$this->baseurl}/audit/delete"
-       onclick=" return confirm('do you want to delete the current Audit (#{$this->audit['audit_id']}-{$this->audit['tag']})?');">
-    <span title=".icon  .icon-color .icon-close " class="icon icon-color icon-close"></span>
+       onclick=" return confirm('Do you want to delete Audit (#{$this->audit['audit_id']}-{$this->audit['tag']})?');">
+    <span title=".icon  .icon-color .icon-trash " class="icon icon-color icon-trash"></span>
     Delete #{$this->audit['audit_id']}</a></li>
 END;
-
-      if ($this->audit['status'] == 'INCOMPLETE') {
+      }
+      if ($this->audit['status'] == 'INCOMPLETE' && $ao->isOwned($audit_id, $this->userid)) {
         $complete_audit .= <<<"END"
 <li><a href="{$this->baseurl}/audit/complete">
-<span title=".icon  .icon-color  .icon-locked " class="icon icon-color icon-locked"></span> Complete</a></li>
+<span title=".icon  .icon-color  .icon-locked " class="icon icon-color icon-locked"></span> Mark Complete</a></li>
 END;
       }
-      if ($this->audit['status'] == 'COMPLETE') {
+      if ($this->audit['status'] == 'COMPLETE' && $ao->isOwned($audit_id, $this->userid)) {
         $complete_audit .= <<<"END"
 <li><a href="{$this->baseurl}/audit/incomplete">
-<span title=".icon  .icon-color  .icon-unlocked " class="icon icon-color icon-unlocked"></span> Incomplete</a></li>
+<span title=".icon  .icon-color  .icon-unlocked " class="icon icon-color icon-unlocked"></span> Mark Incomplete</a></li>
 END;
       }
       if ($this->audit['status'] == 'COMPLETE' && $this->usertype == 'APPROVER') {
         $complete_audit .= <<<"END"
-<li><a href="{$this->baseurl}/audit/finalize/$this->audit['id']"><span title=".icon  .icon-color  .icon-sent " class="icon icon-color icon-sent"></span> Finalize</a></li>
+<li><a href="{$this->baseurl}/audit/finalize/$this->audit['id']"
+onclick=" return confirm('Do you want to finalize Audit (#{$this->audit['audit_id']}-{$this->audit['tag']})?');"><span title=".icon  .icon-color  .icon-sent " class="icon icon-color icon-sent"></span> Mark Finalized</a></li>
+<li><a href="{$this->baseurl}/audit/reject/$this->audit['id']"
+    onclick=" return confirm('Do you want to reject Audit (#{$this->audit['audit_id']}-{$this->audit['tag']})?');"><span title=".icon  .icon-color  .icon-cross " class="icon icon-color icon-cross"></span> Mark Rejected</a></li>
 END;
       }
     }
@@ -263,13 +274,26 @@ END;
   <span class="hidden-phone">Audit</span>
   <span class="caret"></span></a>
 <ul class="dropdown-menu">
+END;
+      if (in_array($this->usertype, $complete_user)) {
+        $this->header .= <<<"END"
   <li><a href="{$this->baseurl}/audit/create"><span title=".icon  .icon-green .icon-clipboard " class="icon icon-green icon-clipboard"></span> New Audit</a></li>
+END;
+      }
+      $this->header .= <<<"END"
   <li><a href="{$this->baseurl}/audit/find"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Find Audit</a></li>
 {$complete_audit}
   <li class="divider"></li>
   <li><a href="{$this->baseurl}/audit/select"><span title=".icon  .icon-color  .icon-newwin " class="icon icon-color icon-newwin"></span> Process Audits</a></li>
+END;
+
+  if (in_array($this->usertype, $complete_user)) {
+    $this->header .= <<<"END"
   <li class="divider"></li>
   <li><a href="{$this->baseurl}/audit/import"><span title=".icon  .icon-blue .icon-import " class="icon icon-blue icon-archive"></span> Import</a></li>
+END;
+  }
+  $this->header .= <<<"END"
 </ul>
 </div>
 
@@ -577,9 +601,9 @@ END;
     $tout[] = '<table style="margin-left:50px;color:black;">';
     $tout[] = "<tr class='even'>";
     if ($cb) {
-      $first = "<td style='width:50px;'>Select/<br />Deselect All</td>";
+      $first = "<td style='width:55px;'>Select/<br />Deselect All</td>";
     } else {
-      $first = "<td style='width:50px;'></td>";
+      $first = "<td style='width:55px;'></td>";
     }
     $etop = '';
     if (in_array($this->usertype, $edit_users)) {
@@ -596,6 +620,7 @@ END;
 {$etop}</tr>
 END;
     foreach($rows as $row) {
+      //logit("LAB: " .  print_r($row, true));
       $ct ++;
       $cls = ($ct % 2 == 0) ? 'even' : 'odd';
       $edit = '';
@@ -603,18 +628,24 @@ END;
         $edit = "<a href=\"{$this->baseurl}/lab/edit/{$row['id']}\"" .
              " class=\"btn btn-mini btn-warning\">Edit</a>";
       }
-      $tout[] = "<tr class='{$cls}'>";
+      $line = '';
       if ($cb) {
         $name = "cb_{$row['id']}";
-        $tout[] = "<td style='width:40px;padding:2px 0;'>" .
-             "<input type='checkbox' name='{$name}' id='{$name}'></td>";
+        $line .= "<td style='width:40px;padding:2px 0;'>" .
+            "<input type='checkbox' name='{$name}' id='{$name}'></td>";
+      } else if ($this->labnum == $row['labnum']) {
+        $cls = 'hilight';
+        $line .= "<td><div style=\"color:red;\">Selected</div></td>";
       } else {
         $butt = "<a href=\"{$this->baseurl}/lab/choose/{$row['id']}\"" .
-             " class=\"btn btn-mini btn-success\">Select</a>";
-        $tout[] = "<td style='width:40px;padding:2px 0;'>{$butt}</td>";
+        " class=\"btn btn-mini btn-success\">Select</a>";
+        $line .= "<td style='width:55px;padding:2px 0;'>{$butt}</td>";
       }
-      // $sl = ($row['slmta'] == 't') ? 'Yes' : 'No';
+      //$tout[] = "<tr class='{$cls}'>";
+
       $tout[] = <<<"END"
+<tr class="{$cls}">
+{$line}
 <td>{$row['labnum']}</td>
 <td>{$row['labname']}</td>
 <td>{$row['country']}</td>
@@ -622,6 +653,7 @@ END;
 <td><p class="small">{$rev_affil[$row['labaffil']]}</p></td>
 <td><p class="small">{$rev_type[$row['slmta_labtype']]}</p></td>
 END;
+
       if ($edit != '')
         $tout[] = "<td style='width:40px;padding:2px 0;'>{$edit}</td>";
       $tout[] = '</tr>';
@@ -665,7 +697,7 @@ END;
 <td style='width:55px;font-weight:bold;'>Type</td>
 <td style='width:55px;font-weight:bold;'>SLMTA<br />Type</td>
 <td style='width:55px;font-weight:bold;'>Slipta<br />Off.</td>
-        <td style='width:90px;font-weight:bold;'>Date</td>
+<td style='width:130px;font-weight:bold;'>Date</td>
 <td style='width:100px;font-weight:bold;'>Labnum</td>
 <td style='width:150px;font-weight:bold;'>Labname</td>
 <td style='width:85px;font-weight:bold;'>Country</td>
@@ -680,19 +712,21 @@ END;
       $tout[] = "<td></td></tr>";
     }
     foreach($rows as $row) {
-      //logit('Audit: ' . print_r($row, true));
+      logit('Audit: ' . print_r($row, true));
+      //if ($)
       $ct ++;
       $cls = ($ct % 2 == 0) ? 'even' : 'odd';
-      $edit = ($row['status'] == 'INCOMPLETE') ? "<a href=\"{$this->baseurl}/audit/edit/{$row['audit_id']}/\" class=\"btn btn-mini btn-inverse\">Edit</a>" : '';
+      $edit = ($row['status'] == 'INCOMPLETE' && $row['owner']) ?
+      "<a href=\"{$this->baseurl}/audit/edit/{$row['audit_id']}/\" class=\"btn btn-mini btn-inverse\">Edit</a>" : '';
       $view = "<a href=\"{$this->baseurl}/audit/view/{$row['audit_id']}\" class=\"btn btn-mini btn-success\">View</a>";
-      /*$delete = "<a href=\"#\" class=\"btn btn-mini btn-danger\">Delete</a>";
-      $export = "<a href=\"{$this->baseurl}/audit/exportdata/{$row['audit_id']}\"" .
-           " class=\"btn btn-mini btn-warning\">Data Export</a>";*/
       $adduser = '';
-      //if ($row['status'] == 'INCOMPLETE') {
-      $adduser = "<a href=\"{$this->baseurl}/audit/choose/{$row["audit_id"]}\" class=\"btn btn-mini btn-info\">Select</a>";
-      //}
-      $tout[] = "<tr class='{$cls}' style=\"height:24px;\">";
+      if ($this->audit['audit_id'] != $row["audit_id"]) {
+        $selx = "<a href=\"{$this->baseurl}/audit/choose/{$row["audit_id"]}\" class=\"btn btn-mini btn-info\">Select</a>";
+      } else {
+        $cls = 'hilight';
+        $selx = "<div style=\"color:red;\">Selected</div>";
+      }
+      $tout[] = "<tr class='{$cls} ' style=\"height:24px;\">";
       if ($cb) {
         $name = "cb_{$row['audit_id']}";
         $tout[] = "<td style='width:40px;padding:4px 0;'>" .
@@ -702,7 +736,7 @@ END;
              " class=\"btn btn-mini btn-success\">Select</a>";
         $tout[] = "<td style='width:40px;padding:2px 4px;'>{$butt}</td>";
       } else {
-        $tout[] = "<td style='width:40px;padding:2px 4px;'>{$adduser}</td>";
+        $tout[] = "<td style='width:40px;padding:2px 4px;'>{$selx}</td>";
       }
       $tout[] = <<<"END"
 <td>{$row['audit_id']}</td>

@@ -36,10 +36,24 @@ class OutputController extends Application_Controller_Action {
       $list[] = (int) substr($n, 3);
       //logit('LIST: '. print_r($list, true));
     }
+    $audit_id = $list[0];
+    logit("AID: {$audit_id}");
     $name = $todo;
-    $proc->process($list, $name);
-    $this->echecklistNamespace->flash = 'Excel sheet done.';
-    $this->_redirector->gotoUrl($this->mainpage);
+    $filename = $proc->process($list, $name);
+
+    $fname = "SLIPTA_{$audit_id}.xlsx";
+    logit("Filename: {$filename} {$fname}");
+    //  = end(preg_split("/\//", $filename));
+    $filestr = file_get_contents($filename);
+    logit("LEN: " . strlen($filestr));
+    // $this->echecklistNamespace->flash = 'Excel sheet done.';
+    $this->_helper->layout->disableLayout();
+    $this->_helper->viewRenderer->setNoRender(true);
+
+    $this->getResponse()->setHeader('Content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    $this->getResponse()->setHeader('Content-Disposition', 'attachment; filename="' . $fname . '"');
+    $this->getResponse()->setBody($filestr);
+    // $this->_redirector->gotoUrl($this->mainpage);
   }
 
   public function graphicAction() {
@@ -82,9 +96,10 @@ class OutputController extends Application_Controller_Action {
       $data1 = array(65,36,58,19,89,19,72,23,78,49,33,45,68);
       $data2 = array(40,92,76,47,86,27,68,11,97,55,96,22,74);
     }
-    $labels = array("Total","Section<*br*>1","Section<*br*>2","Section<*br*>3","Section<*br*>4",
-        "Section<*br*>5","Section<*br*>6","Section<*br*>7","Section<*br*>8","Section<*br*>9",
-        "Section<*br*>10","Section<*br*>11","Section<*br*>12");
+    $labels = array("Total","Section<*br*>1","Section<*br*>2","Section<*br*>3",
+        "Section<*br*>4","Section<*br*>5","Section<*br*>6","Section<*br*>7",
+        "Section<*br*>8","Section<*br*>9","Section<*br*>10","Section<*br*>11",
+        "Section<*br*>12");
 
     $c = new PolarChart(660, 700, 0xe0e0e0, 0x000000, 1);
 
@@ -139,8 +154,9 @@ class OutputController extends Application_Controller_Action {
     $data2 = array(70, 22, 45, 67, 23, 13, 59, 63, 34, 12, 13, 15, 17);
 
     # The labels for the bar chart
-    $labels = array("All","Section 1","Section 2","Section 3","Section 4","Section 5","Section 6",
-    "Section 7","Section 8","Section 9","Section 10","Section 11","Section 12",);
+    $labels = array("All","Section 1","Section 2","Section 3","Section 4","Section 5",
+        "Section 6","Section 7","Section 8","Section 9","Section 10","Section 11",
+        "Section 12");
 
     # Create a XYChart object of size 500 x 320 pixels
     $c = new XYChart(700, 420);
@@ -188,8 +204,9 @@ class OutputController extends Application_Controller_Action {
     $data2 = array(34, 12, 13, 15, 17, 70, 22, 45, 67, 23, 13, 59, 63);
 
     # The labels for the bar chart
-    $labels = array("All","Section 1","Section 2","Section 3","Section 4","Section 5","Section 6",
-    "Section 7","Section 8","Section 9","Section 10","Section 11","Section 12",);
+    $labels = array("All","Section 1","Section 2","Section 3","Section 4","Section 5",
+        "Section 6","Section 7","Section 8","Section 9","Section 10","Section 11",
+        "Section 12");
 
     # Create a XYChart object of size 500 x 320 pixels
     $c = new XYChart(700, 420);

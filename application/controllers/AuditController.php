@@ -1,8 +1,7 @@
 <?php
 
-
-require_once 'modules/Checklist/export.php';
 require_once 'modules/Checklist/logger.php';
+require_once 'modules/Checklist/export.php';
 require_once 'modules/Checklist/datefns.php';
 require_once 'modules/Checklist/general.php';
 require_once '../application/controllers/ActionController.php';
@@ -531,15 +530,34 @@ END;
         // logit('Auditsel: ' . print_r($this->data, true));
 
         $out = new Processing();
-        $msg = $out->process($list, $name);
+        $filename = $out->process($list, $name);
+        $audit_id = $list[0];
+        $fname = "NC_SLIPTA_{$audit_id}.xlsx";
+        logit("Filename: {$filename} {$fname}");
+        $this->_helper->layout->disableLayout();
+        $this->_helper->viewRenderer->setNoRender(true);
+        $fstr = file_get_contents($filename);
+        logit("LEN: " . strlen($fstr));
+        header ("Content-type: octet/stream");
+        header ("Content-disposition: attachment; filename=".$fname.";");
+        header("Content-Length: ".filesize($filename));
+        readfile($filename);
+        return;
+        /*
+        $this->getResponse()->setHeader('Content-type', 'octet-stream');
+        // application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $this->getResponse()->setHeader('Content-Disposition', "attachment; filename={$fname}");
+        $this->getResponse()->setBody($fstr);
+        */
         $this->echecklistNamespace->flash = 'Excel sheet done.';
-        $this->_redirector->gotoUrl($this->mainpage);
-        //$this->echecklistNamespace->flash = $msg;
         //$this->_redirector->gotoUrl($this->mainpage);
+
+        // $this->echecklistNamespace->flash = $msg;
+        // $this->_redirector->gotoUrl($this->mainpage);
       }
       $arows = $aud->selectAudits($this->data);
 
-      //logit("AROWS: " . print_r($arows, true));
+      // logit("AROWS: " . print_r($arows, true));
       $auditlines = $this->makeAuditLines($arows, array(
           'cb'=> true
       ));
@@ -555,7 +573,7 @@ END;
     $id = (int) $pinfo[3];
     $audit = new Application_Model_DbTable_Audit();
     $auditrow = $audit->getAudit($id);
-    $this->echecklistNamespace->flash = 'Chosen as current audit';
+    $this->echecklistNamespace->flash = "Selected audit #{$auditrow['audit_id']}";
     $this->echecklistNamespace->audit = $auditrow;
     $this->_redirector->gotoUrl($this->mainpage);
   }
@@ -643,7 +661,7 @@ END;
         $messages = $adapter->getMessages();
         // logit('MSGS: ' . print_r(implode("\n", $messages), true));
         // logit('msgout1: ');
-        $this->echecklistNamespace->flash = 'File not loaded - No file chosen';
+        $this->echecklistNamespace->flash = 'File not loaded - No file selected';
         //$this->makeDialog();
         $this->_redirector->gotoUrl('audit/import');
       }
@@ -656,7 +674,7 @@ END;
       $data['path'] = $uploadedfile['tmp_name'];
       if (strlen($data['path']) < 10) {
         // logit('msgout1: no file');
-        $this->echecklistNamespace->flash = 'File not loaded - Try again';
+        $this->echecklistNamespace->flash = 'File not loaded - Retry';
         //$this->makeDialog();
         $this->_redirector->gotoUrl('audit/import');
       }
@@ -858,6 +876,7 @@ END;
   public function completeAction() {
     // mark audit complete
     $audit = new Application_Model_DbTable_Audit();
+    $ao = new Application_Model_DbTable_AuditOwner();
     $newstatus = "COMPLETE";
     $users = array('ADMIN','USER','APPROVER');
     if ( in_array($this->usertype, $users)) {
@@ -865,7 +884,7 @@ END;
       $audit_id = $this->audit['audit_id'];
       // BAT and TB can be incomplete and it is OK
       // logit('AU: '. print_r($this->audit, true));
-      if ($this->audit['status'] != 'INCOMPLETE') {
+      if ($this->audit['status'] != 'INCOMPLETE' && $ao->isOwned($audit_id, $this->userid)) {
         $this->echecklistNamespace->flash = "Audit id #{$audit_id} status is not INCOMPLETE";
         $this->_redirector->gotoUrl($this->mainpage);
         return ;
@@ -884,13 +903,13 @@ END;
           // logit("no IC"); // It is complete - move status to complete
           $audit->moveStatus($audit_id, $newstatus);
           $this->echecklistNamespace->flash = "Audit id #{$audit_id} has been changed to {$newstatus}";
-          $this->_redirector->gotoUrl($this->mainpage);
+          $this->_redirector->gotoUrl($this->postcomplete);
         }
       } else {
         // not SLIPTA
         $audit->moveStatus($audit_id, $newstatus);
         $this->echecklistNamespace->flash = "Audit id #{$audit_id} has been changed to {$newstatus}";
-        $this->_redirector->gotoUrl($this->mainpage);
+        $this->_redirector->gotoUrl($this->postcomplete);
       }
     } else {
       $this->echecklistNamespace->flash = 'Invalid action';
@@ -901,6 +920,7 @@ END;
   public function incompleteAction() {
     // mark audit complete
     $audit = new Application_Model_DbTable_Audit();
+    $ao = new Application_Model_DbTable_AuditOwner();
     $newstatus = "INCOMPLETE";
     $users = array('ADMIN','USER','APPROVER');
     if ( in_array($this->usertype, $users)) {
@@ -908,7 +928,7 @@ END;
       $audit_id = $this->audit['audit_id'];
       // BAT and TB can be incomplete and it is OK
       // logit('AU: '. print_r($this->audit, true));
-      if ($this->audit['status'] != 'COMPLETE') {
+      if ($this->audit['status'] != 'COMPLETE' && $ao->isOwned($audit_id, $this->userid)) {
         $this->echecklistNamespace->flash = "Audit id #{$audit_id} status is not COMPLETE";
         $this->_redirector->gotoUrl($this->mainpage);
         return ;
@@ -924,7 +944,6 @@ END;
   }
 
   public function finalizeAction() {
-
     // finalize the complete audit
     $audit = new Application_Model_DbTable_Audit();
     $newstatus = "FINALIZED";

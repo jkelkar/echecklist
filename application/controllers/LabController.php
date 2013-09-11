@@ -1,6 +1,7 @@
 <?php
-require_once 'modules/Checklist/htmlhelp.php';
+
 require_once 'modules/Checklist/logger.php';
+require_once 'modules/Checklist/htmlhelp.php';
 require_once '../application/controllers/ActionController.php';
 
 class LabController extends Application_Controller_Action // Zend_Controller_Action

@@ -240,6 +240,10 @@ table tr.even th, .even {
 table tr.odd th, .odd {
     background: none repeat scroll 0 0 #eaf0f3; /*#e5e5e5;*/
 }
+table tr.hilight {
+	background: none repeat scroll 0 0 #ffff99;
+	border: 1px solid #ff9999;
+}
 div.bigtitlei {
 	text-align: left;
 	padding-left: 10px;

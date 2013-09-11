@@ -43,7 +43,7 @@ SQL;
     $id = ( int ) $id;
     $sql = <<<"SQL"
 select r.varname, r.row_type, r.score, p.page_num, p.page_id,
-       r.prefix, r.heading, r.text, r.info, r.element_count,
+       r.prefix, r.heading, r.text, r.info, r.element_count, r.required,
        lp.row_id lprowid, lp.def lpdefault, lp.{$lang} lplang,
        lh.row_id lhrowid, lh.def lhdefault, lh.{$lang} lhlang,
        lt.row_id ltrowid, lt.def ltdefault, lt.{$lang} ltlang,
@@ -89,13 +89,19 @@ SQL;
     return $rows;
 
   }
-  public function getAudits($uid, $atype) {
+  public function getByVarname($tid, $regex) {
     /*
-     * Return all matching audits
-     * - user $uid and Type $atype
+     * Return all matching template rows which have
+     *   varname rlike the regex
      */
+    $sql = <<<"SQL"
+select * from template_row
+ where template_id = {$tid}
+   and varname rlike '{$regex}'
+SQL;
 
-
+   $rows =  $this->queryRows($sql);
+   return $rows;
   }
 
 }

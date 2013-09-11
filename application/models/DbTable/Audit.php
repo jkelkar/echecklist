@@ -72,7 +72,7 @@ END;
     return $rows;
   }
 
-  private function _mkList($data) {
+  public function _mkList($data) {
     logit("MKL: {$data} " . print_r($data, true));
     $out = '';
     // if (count($data) == 0) {
@@ -88,15 +88,24 @@ END;
           break;
         case 1 :
           //logit("A: = '{$data[0]}' ");
-          if ($data[0] == '-')
-          return "= '{$data[0]}' ";
+          //if ($data[0] == '-')
+          //  return "= '{$data[0]}' ";
+          if (is_string($data[0])) {
+            $out .= "= '{$data[0]}'";
+          } else {
+            $out .= "= {$data[0]}";
+          }
+          return $out;
           break;
         default :
           foreach($data as $d) {
             if ($out != '')
               $out .= ',';
-            if (is_string($d))
+            if (is_string($d)) {
               $out .= "'{$d}'";
+            } else {
+              $out .= "{$d}";
+            }
           }
           //logit("A: = in ({$out}) ");
           return "in ({$out})";

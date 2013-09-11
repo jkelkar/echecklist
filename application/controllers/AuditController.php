@@ -530,8 +530,12 @@ END;
         // logit('Auditsel: ' . print_r($this->data, true));
 
         $out = new Processing();
-        $filename = $out->process($list, $name);
-        $audit_id = $list[0];
+        // $filename =
+        $this->_helper->layout->disableLayout();
+        $this->_helper->viewRenderer->setNoRender(true);
+        logit("LN: {$name} " .print_r($list, true));
+        $out->process($list, $name);
+        /*$audit_id = $list[0];
         $fname = "NC_SLIPTA_{$audit_id}.xlsx";
         logit("Filename: {$filename} {$fname}");
         $this->_helper->layout->disableLayout();
@@ -541,17 +545,9 @@ END;
         header ("Content-type: octet/stream");
         header ("Content-disposition: attachment; filename=".$fname.";");
         header("Content-Length: ".filesize($filename));
-        readfile($filename);
+        readfile($filename);*/
         return;
-        /*
-        $this->getResponse()->setHeader('Content-type', 'octet-stream');
-        // application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        $this->getResponse()->setHeader('Content-Disposition', "attachment; filename={$fname}");
-        $this->getResponse()->setBody($fstr);
-        */
-        $this->echecklistNamespace->flash = 'Excel sheet done.';
-        //$this->_redirector->gotoUrl($this->mainpage);
-
+        // $this->echecklistNamespace->flash = 'Excel sheet done.';
         // $this->echecklistNamespace->flash = $msg;
         // $this->_redirector->gotoUrl($this->mainpage);
       }
@@ -903,13 +899,16 @@ END;
           // logit("no IC"); // It is complete - move status to complete
           $audit->moveStatus($audit_id, $newstatus);
           $this->echecklistNamespace->flash = "Audit id #{$audit_id} has been changed to {$newstatus}";
-          $this->_redirector->gotoUrl($this->postcomplete);
+          // clear selected audit
+          $this->echecklistNamespace->audit = null;
+          $this->_redirector->gotoUrl($this->poststatchange);
         }
       } else {
         // not SLIPTA
         $audit->moveStatus($audit_id, $newstatus);
         $this->echecklistNamespace->flash = "Audit id #{$audit_id} has been changed to {$newstatus}";
-        $this->_redirector->gotoUrl($this->postcomplete);
+        $this->echecklistNamespace->audit = null;
+        $this->_redirector->gotoUrl($this->poststatchange);
       }
     } else {
       $this->echecklistNamespace->flash = 'Invalid action';
@@ -930,13 +929,14 @@ END;
       // logit('AU: '. print_r($this->audit, true));
       if ($this->audit['status'] != 'COMPLETE' && $ao->isOwned($audit_id, $this->userid)) {
         $this->echecklistNamespace->flash = "Audit id #{$audit_id} status is not COMPLETE";
-        $this->_redirector->gotoUrl($this->mainpage);
-        return ;
+        $this->_redirector->gotoUrl($this->poststatchange);
+        //return ;
       }
       $audit->moveStatus($audit_id, $newstatus);
       $this->echecklistNamespace->flash = "Audit id #{$audit_id} has been changed to {$newstatus}";
-      $this->_redirector->gotoUrl($this->mainpage);
-
+      $this->echecklistNamespace->audit = null;
+      $this->_redirector->gotoUrl($this->poststatchange);
+      //return;
     } else {
       $this->echecklistNamespace->flash = 'Invalid action';
       $this->_redirector->gotoUrl($this->mainpage);
@@ -955,13 +955,15 @@ END;
       // logit('AU: '. print_r($this->audit, true));
       if ($this->audit['status'] != 'COMPLETE') {
         $this->echecklistNamespace->flash = "Audit id #{$audit_id} status is not COMPLETE";
-        $this->_redirector->gotoUrl($this->mainpage);
-        return ;
+        $this->echecklistNamespace->audit = null;
+        $this->_redirector->gotoUrl($this->poststatchange);
+        //return ;
       }
       $audit->moveStatus($audit_id, $newstatus);
       $this->echecklistNamespace->flash = "Audit id #{$audit_id} has been changed to {$newstatus}";
-      $this->_redirector->gotoUrl($this->mainpage);
-
+      $this->echecklistNamespace->audit = null;
+      $this->_redirector->gotoUrl($this->poststatchange);
+      // return;
     } else {
       $this->echecklistNamespace->flash = 'Invalid action';
       $this->_redirector->gotoUrl($this->mainpage);
@@ -980,13 +982,15 @@ END;
       // logit('AU: '. print_r($this->audit, true));
       if ($this->audit['status'] != 'COMPLETE') {
         $this->echecklistNamespace->flash = "Audit id #{$audit_id} status is not COMPLETE";
-        $this->_redirector->gotoUrl($this->mainpage);
-        return ;
+        $this->echecklistNamespace->audit = null;
+        $this->_redirector->gotoUrl($this->poststatchange);
+        //return ;
       }
       $audit->moveStatus($audit_id, $newstatus);
       $this->echecklistNamespace->flash = "Audit id #{$audit_id} has been changed to {$newstatus}";
-      $this->_redirector->gotoUrl($this->mainpage);
-
+      $this->echecklistNamespace->audit = null;
+      $this->_redirector->gotoUrl($this->poststatchange);
+      // return;
     } else {
       $this->echecklistNamespace->flash = 'Invalid action';
       $this->_redirector->gotoUrl($this->mainpage);
@@ -1141,4 +1145,14 @@ END;
     return null;
   }
 
+  public function doAction() {
+    // just a way to call code for testing
+    require_once 'modules/Checklist/processCommon.php';
+    $proc = new Process_Common();
+    $path = dirname(__DIR__) . '/../public/tmp/';
+    logit("PATH: {$path}");
+    $secs = 3600;
+    $proc->rmOldFiles($path, $secs);
+    // exit();
+  }
 }

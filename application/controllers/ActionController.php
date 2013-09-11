@@ -33,7 +33,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
   public $showaudit;
   public $drows;
   public $mainpage = '/audit/main';
-  public $postcomplete = '/audit/find';
+  public $poststatchange = '/audit/find';
   public $loginpage = '/user/login';
   public $ISOdtformat = 'Y-m-d H:i:s';
   public $ISOformat = 'Y-m-d';
@@ -81,6 +81,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
     // logit("test: {$this->echecklistNamespace->lab['labnum']}");
     if (isset($this->echecklistNamespace->user)) {
       $u = $this->echecklistNamespace->user;
+      $user = $u;
       $this->usertype = $u['usertype'];
       $this->username = $u['userid'];
       $this->userfullname = $u['name'];
@@ -769,15 +770,19 @@ return $lines;
 
   public function makeUserLines($rows, $cb = false) {
     // Given User rows - show in a table
+    global $user;
+    logit("US: {$this->usertype}");
     $rev_ut = rev('getUserTypes', $this->tlist);
     $ct = 0;
     $tout = array();
-    if (in_array($this->usertype, array('USER','APPROVER'))) {
-      $tout[] = "<div style=\"margin-left:200px\"><h1 style=\"margin-bottom:10px;\">Add owner to the current Audit</h1></div>";
+    if (in_array($this->usertype, array('ADMIN', 'USER', 'APPROVER'))) {
+      //$tout[] = "<div style=\"margin-left:200px\"><h1 style=\"margin-bottom:10px;\">Add owner to the current Audit</h1></div>";
     }
-    if ($this->usertype == 'ADMIN') {
+    /*if ($this->usertype == 'ADMIN') {
       $tout[] = "<h1 style=\"margin-bottom:10px;\">Edit User</h1>";
-    }
+    } else {
+      $tout[] = "<h1 style=\"margin-bottom:10px;\"></h1>";
+    }*/
     $tout[] = '<table style="margin-left:250px;color:black;">';
     $tout[] = "<tr class='even'>";
     if ($cb) {
@@ -795,9 +800,10 @@ END;
       $cls = ($ct % 2 == 0) ? 'even' : 'odd';
 
       $tout[] = "<tr class='{$cls}'>";
+      $firstcol = '';
       if ($cb) {
         $name = "cb_{$row['id']}";
-        $tout[] = "<td style='width:40px;padding:2px 0;'>" .
+        $firstcol = "<td style='width:40px;padding:2px 0;'>" .
              "<input type='checkbox' name='{$name}' id='{$name}'></td>";
       } else {
         $sel = "<a href=\"{$this->baseurl}/user/edit/{$row['id']}\"" .
@@ -808,14 +814,18 @@ END;
         }
         // logit("UT: {$this->usertype}, {$this->audit['status']}");
         if ($this->usertype == 'USER' && $this->audit['status'] == 'INCOMPLETE') {
-          $tout[] = "<td style='width:40px;padding:2px 0;'>{$addo}</td>";
+          $firstcol = "<td style='width:40px;padding:2px 0;'>{$addo}</td>";
         }
         if ($this->usertype == 'ADMIN') {
-          $tout[] = "<td style='width:40px;padding:2px 0;'>{$sel}</td>";
+          $firstcol = "<td style='width:40px;padding:2px 0;'>{$sel}</td>";
+        }
+        if ($this->usertype == 'APPROVER') {
+          $firstcol = '<td></td>';
         }
       }
       // $sl = ($row['slmta'] == 't') ? 'Yes' : 'No';
       $tout[] = <<<"END"
+{$firstcol}
 <td>{$row['userid']}</td>
 <td>{$row['name']}</td>
 <td>{$rev_ut[$row['usertype']]}</td>

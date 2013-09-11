@@ -5,6 +5,7 @@ require_once 'modules/Checklist/logger.php';
 require_once 'modules/Checklist/processCommon.php';
 /** Include PHPExcel */
 require_once 'modules/Classes/PHPExcel.php';
+require_once 'modules/ChartDirector/lib/phpchartdir.php';
 
 class Processing extends Process_Common {
 
@@ -14,7 +15,9 @@ class Processing extends Process_Common {
     //    then creates SQL query to extract required data from DB into rows
     // $list - the list of selected audits
     // $name -
+    $audit = new Application_Model_DbTable_Audit();
     $report = new Application_Model_DbTable_Report();
+    $check = new Application_Model_DbTable_Checklist();
     $tinfo = $this->collect($name);
     logit("tinfo: ".print_r($tinfo, true));
     $numtabs = count($tinfo) - 3; // -3 to ignore the heading, report_type, and file_type
@@ -25,6 +28,9 @@ class Processing extends Process_Common {
     $report_type = $tinfo['report_type'];
     $file_type = $tinfo['file_type'];
     logit("ft: {$file_type}");
+    $fname = '';
+    logit("LIST: " . print_r($list, true));
+    $audits = $audit->_mkList($list);
     switch ($file_type) {
       case 'excel' :
         // this is going to be an excel file
@@ -49,53 +55,124 @@ class Processing extends Process_Common {
             }
           }
           // $flabels;
-          $names = $this->_mkList($fnames);
-          $audits = $this->_mkList($list);
+          $names = $audit->_mkList($fnames);
           logit("Heading: {$heading}");
           logit('fnames: ' . print_r($fnames, true) . '  ' . print_r($names, true));
-          // logit('flabels: '. print_r($flabels, true).'  '. print_r($labels, true));
-          switch ($name) {
-            case 'ncexcel' :
-              // this is the non compliance excel report
-              logit("$name");
-              $audit_id = $list[0];
-              $data = $this->genNCReport($audit_id);
-              $i = 1;
-              $flabels = array(
-                  'Non Conformities',
-                  'Recommendations/Comments',
-                  'Checklist Question',
-                  'ISO 15189 References',
-                  'Major/Minor'
-              );
-              $fnames = array('comment', 'nc', 'question', 'isp', 'mm');
-              $this->startWorkSheet($filehandle, $i, $heading, $flabels, $fnames, $data);
-              break;
-            default :
-              if ($query) {
-                eval("\$sql = \"$query\"; ");
-                logit("CALC Q: {$sql}");
-              }
-              $rows = $report->runQuery($sql);
-              logit('ROWS: ' . print_r($rows, true));
-              $data = $this->collectRows($rows);
-              $this->startWorkSheet($filehandle, $i, $heading, $flabels, $fnames, $data);
+            // logit('flabels: '. print_r($flabels, true).'  '. print_r($labels, true));
+          logit("NAME: {$name}");
+          if ($name == 'ncexcel') {
+            // this is the non compliance excel report
+            logit("$name");
+            $audit_id = $list[0];
+            $data = $this->genNCReport($audit_id);
+            $i = 1;
+            $flabels = array('Non Conformities','Recommendations/Comments',
+                'Checklist Question','ISO 15189 References','Major/Minor');
+
+            $fnames = array('comment','nc','question','isp','mm');
+            $this->startWorkSheet($filehandle, $i, $heading, $flabels, $fnames, $data);
+            $fname = "NC_SLIPTA_{$audit_id}.xlsx";
+          } else {
+            switch ($name) {
+
+              case 'slmta2excel' :
+                $fname = 'SLMTA_stats.xlsx';
+                break;
+              case 'slipta2excel' :
+                $fname = 'SLIPTA_stats.xlsx';
+              default :
+            }
+            if ($query) {
+              eval("\$sql = \"$query\"; ");
+              logit("CALC Q: {$sql}");
+            }
+            $rows = $report->runQuery($sql);
+            logit('ROWS: ' . print_r($rows, true));
+            $data = $this->collectRows($rows);
+            $this->startWorkSheet($filehandle, $i, $heading, $flabels, $fnames, $data);
+            //$fname = "NC_SLIPTA_{$audit_id}.xlsx";
           }
         }
         $filename = $this->saveFile($filehandle);
         logit("FN: $filename");
-        return $filename;
+
+        logit("Filename: {$filename} {$fname}");
+        //$this->_helper->layout->disableLayout();
+        //$this->_helper->viewRenderer->setNoRender(true);
+        $fstr = file_get_contents($filename);
+        logit("LEN: " . strlen($fstr));
+        header ("Content-type: octet/stream");
+        header ("Content-disposition: attachment; filename=".$fname.";");
+        header ("Content-Length: ".filesize($filename));
+        readfile($filename);
+        return;
+
+        // return $filename;
         break;
       case 'html' :
         // this is going to be an image file
         // Generate an HTML file and insert in it a graphic image
         $this->createHTMLFile();
         break;
-      case 'graphic' :
+      case 'graph' :
+        logit("Processing tab 1");
+
+        $tabinfo = $tinfo[1];
+        $fnames = array();
+        $flabels = array();
+        $sql = '';
+        foreach($tabinfo as $n => $v) {
+          switch ($n) {
+          	case 'heading' :
+          	  $heading = $v;
+          	  break;
+          	case 'query' :
+          	  $query = $v;
+          	  break;
+          	default :
+          	  $flabels[] = $v[0];
+          	  $fnames[] = $v[2];
+          }
+        }
+        // $audits = $audit->_mkList($list);
+        /*$names = $this->_mkList($fnames);
+        $audits = $this->_mkList($list);
+        if ($query) {
+          eval("\$sql = \"$query\"; ");
+          logit("CALC Q: {$sql}");
+        }
+        $rows = $report->runQuery($sql);
+        logit('ROWS: ' . print_r($rows, true));
+        $data = $this->collectRows($rows);
+        */
+        logit("Heading: {$heading}");
+        // logit('fnames: ' . print_r($fnames, true) . '  ' . print_r($names, true));
+        switch ($name) {
+        	case 'spiderchart':
+        	  logit("AUDITS: {$audits}");
+        	  $sql = <<<"SQL"
+select * from audit_data
+ where audit_id {$audits}
+   and field_name like 's__\_total'
+SQL;
+        	  $arows = $check->queryRows($sql);
+        	  $data = $this->collectRows($arows);
+        	  logit("SQL: {$sql}");
+        	  //logit("AROWS: " . print_r($arows, true));
+        	  logit("DATA: " . print_r($data, true));
+        	  $this->spider_chart($data);
+        	  break;
+        	case 'barchart':
+        	  break;
+        	case 'incompletechart':
+        	  break;
+        	default:
+        }
         break;
       default :
     }
   }
+
 }
 
 

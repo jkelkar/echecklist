@@ -176,6 +176,7 @@ class UserController extends Application_Controller_Action
       $rows = $user->getUsersByUsername($this->data['name']);
       logit('Users: ' . print_r($rows, true));
       $this->makeDialog($this->data);
+      logit("User lines");
       $this->makeUserLines($rows);
     }
   }

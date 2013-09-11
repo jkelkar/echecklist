@@ -122,31 +122,38 @@ class Process_Common {
     return $data;
   }
 
-  public function _mkList($data) {
+  /*public function x_mkList($data) {
+    logit("MKL: {$data} " . print_r($data, true));
     $out = '';
-    switch (count($data)) {
-      case 0 :
-        break;
-      case 1 :
-        if (is_string($data[0]))
-          return "= '{$data[0]}' ";
-        else
-          return "= {$data[0]} ";
-        break;
-      default :
-        foreach($data as $d) {
-          if ($d == '')
-            continue;
-          if ($out != '')
-            $out .= ',';
-          if (is_string($d))
-            $out .= "'{$d}'";
-          else
-            $out .= " {$d}";
-        }
-        return "in ({$out})";
+    // if (count($data) == 0) {
+    //  return
+    if (is_string($data)) {
+      logit('STR');
+      return "= '{$data}' ";
+    } else {
+      logit('ARR');
+      switch (count($data)) {
+        case 0 :
+          //logit("0: {$data} --". print_r($data, true));
+          break;
+        case 1 :
+          //logit("A: = '{$data[0]}' ");
+          if ($data[0] == '-')
+            return "= '{$data[0]}' ";
+          break;
+        default :
+          foreach($data as $d) {
+            if ($out != '')
+              $out .= ',';
+            if (is_string($d))
+              $out .= "'{$d}'";
+          }
+          //logit("A: = in ({$out}) ");
+          return "in ({$out})";
+      }
     }
   }
+  */
 
   public function randFileName($suffix) {
     $filename = "checklist_" . uniqid() . '.' . $suffix;
@@ -154,15 +161,18 @@ class Process_Common {
   }
   public function startExcelDoc($heading) {
     // Create new PHPExcel object
+    global $user;
     $objPHPExcel = new PHPExcel();
 
-    // Set document properties
-    $objPHPExcel->getProperties()->setCreator("Jay Kelkar")->setLastModifiedBy("Jay Kelkar")->setTitle(
-        "{$heading}");
-    //->setSubject("All the rows")
-    //->setDescription("This is a list of all the rows in the albums table")
-    //->setKeywords("office PHPExcel php")
-    //->setCategory("Test result file");
+      // Set document properties
+    $objPHPExcel->getProperties()
+      ->setCreator($user['name'])
+      ->setLastModifiedBy($user['name'])
+      ->setTitle("{$heading}");
+    // ->setSubject("All the rows")
+    // ->setDescription("This is a list of all the rows in the albums table")
+    // ->setKeywords("office PHPExcel php")
+    // ->setCategory("Test result file");
     return $objPHPExcel;
   }
 
@@ -241,17 +251,18 @@ class Process_Common {
   public function saveFile($objPHPExcel) {
     // write the file out
     logit(" Write to Excel2007 format");
-
     $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
     $path = dirname(__DIR__) . '/../../public/tmp/';
+    $secs = 3600;
+    $this->rmOldFiles($path, $secs);
     // FIXME: add in code to delete any files that are over an hour old
     $filename = $this->randFileName('xlsx');
     $fileloc = "{$path}{$filename}";
     logit("FilePath: {$fileloc}");
     $objWriter->save($fileloc);
     // Echo done
-    logit("Done writing files");
-    logit("Files have been created in {$fileloc}.");
+    // logit("Done writing files");
+    logit("File has been created in {$fileloc}.");
     return $fileloc;
   }
 
@@ -315,8 +326,87 @@ class Process_Common {
 
     }
     //logit("ALL: " . print_r($all, true));
-
     return $all;
+  }
+
+  public function rmOldFiles($path, $secs) {
+    // from the path remove all files older than secs seconds
+    // logit("DP: {$path} -- {$secs}");
+    if ($handle = opendir($path)) {
+      while (false !== ($file = readdir($handle))) {
+        if ($file == '.' || $file == '..') continue;
+        if ((time() - filemtime($path . $file)) > $secs) {
+          unlink($path . $file);
+        }
+      }
+    }
+  }
+
+  // generate graphs here
+  public function spider_chart($data) {
+    // this is a fully localized test image - uses not outside info
+    # Data for the chart
+    /*$data0 = array(70,20,42,23,37,41,34,18,6,16,22,35,47);
+    if (false) {
+      $data1 = array(65,36,58,19,89,19,72,23,78,49,33,45,68);
+      $data2 = array(40,92,76,47,86,27,68,11,97,55,96,22,74);
+    }
+    */
+    $labels = array("Section<*br*>1","Section<*br*>2","Section<*br*>3",
+        "Section<*br*>4","Section<*br*>5","Section<*br*>6","Section<*br*>7",
+        "Section<*br*>8","Section<*br*>9","Section<*br*>10","Section<*br*>11",
+        "Section<*br*>12");
+    $c = new PolarChart(660, 700, 0xe0e0e0, 0x000000, 1);
+
+    $textBoxObj = $c->addTitle("SLIPTA Audit Scoring", "arialbi.ttf", 15);
+    //$textBoxObj->setBackground($c->patternColor(dirname(__FILE__)."/wood.png"));
+
+
+    # Set center of plot area at (230, 280) with radius 180 pixels, and white (ffffff)
+    # background.
+    $c->setPlotArea(330, 350, 235, 0xffffff);
+
+    # Set the grid style to circular grid
+    $c->setGridStyle(false);
+
+    # Add a legend box at top-center of plot area (230, 35) using horizontal layout. Use
+    # 10 pts Arial Bold font, with 1 pixel 3D border effect.
+    $b = $c->addLegend(230, 35, false, "arialbd.ttf", 9);
+    $b->setAlignment(TopCenter);
+    $b->setBackground(Transparent, Transparent, 1);
+
+    # Set angular axis using the given labels
+    $c->angularAxis->setLabels($labels);
+
+    # Specify the label format for the radial axis
+    $c->radialAxis->setLabelFormat("{value}%");
+
+    # Set radial axis label background to semi-transparent grey (40cccccc)
+    $textBoxObj = $c->radialAxis->setLabelStyle();
+    $textBoxObj->setBackground(0x40cccccc, 0);
+
+    # Add the data as area layers
+    $colrs = array(0x30ff0000, 0x3000ff00, 0x300000ff);
+    foreach ($data as $d) {
+      logit("Data: ". print_r($d, true));
+      $c->addAreaLayer(array_slice($d, 1), 0x80ff0000, "Audit {$d[0]}");
+    }
+    /*
+    $c->addAreaLayer($data0, 0x80ff0000, "Lab A");
+    if (false) {
+      $c->addAreaLayer($data1, 0x8000ff00, "Lab B");
+      $c->addAreaLayer($data2, 0x800000ff, "lab C");
+    }
+    */
+    // $this->_helper->layout->disableLayout();
+    // $this->_helper->viewRenderer->setNoRender(true);
+    # Output the chart
+    //$path = dirname(__DIR__) . '/../public/tmp/';
+    //$fname = "{$path}savethis.png";
+    //$this->getResponse()->setHeader("Content-type: image/png");
+    //$this->getResponse()->setBody($c->makeChart2(PNG));
+    header("Content-type: image/png");
+    print($c->makeChart2(PNG));
   }
 
 }

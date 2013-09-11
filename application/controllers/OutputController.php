@@ -93,7 +93,7 @@ class OutputController extends Application_Controller_Action {
       // this is a fully localized test image - uses not outside info
       # Data for the chart
     $data0 = array(70,20,42,23,37,41,34,18,6,16,22,35,47);
-    if (false) {
+    if (true) {
       $data1 = array(65,36,58,19,89,19,72,23,78,49,33,45,68);
       $data2 = array(40,92,76,47,86,27,68,11,97,55,96,22,74);
     }
@@ -102,7 +102,7 @@ class OutputController extends Application_Controller_Action {
         "Section<*br*>8","Section<*br*>9","Section<*br*>10","Section<*br*>11",
         "Section<*br*>12");
 
-    $c = new PolarChart(660, 700, 0xe0e0e0, 0x000000, 1);
+    $c = new PolarChart(860, 700, 0xe0e0e0, 0x000000, 1);
 
     $textBoxObj = $c->addTitle("SLIPTA Audit Scoring", "arialbi.ttf", 15);
     //$textBoxObj->setBackground($c->patternColor(dirname(__FILE__)."/wood.png"));
@@ -117,7 +117,7 @@ class OutputController extends Application_Controller_Action {
 
     # Add a legend box at top-center of plot area (230, 35) using horizontal layout. Use
     # 10 pts Arial Bold font, with 1 pixel 3D border effect.
-    $b = $c->addLegend(230, 35, false, "arialbd.ttf", 9);
+    $b = $c->addLegend(700, 35, true, "arialbd.ttf", 9);
     $b->setAlignment(TopCenter);
     $b->setBackground(Transparent, Transparent, 1);
 
@@ -132,10 +132,10 @@ class OutputController extends Application_Controller_Action {
     $textBoxObj->setBackground(0x40cccccc, 0);
 
     # Add the data as area layers
-    $c->addAreaLayer($data0, 0x80ff0000, "Lab A");
-    if (false) {
-      $c->addAreaLayer($data1, 0x8000ff00, "Lab B");
-      $c->addAreaLayer($data2, 0x800000ff, "lab C");
+    $c->addAreaLayer($data0, 0xe0ff0000, "Lab A");
+    if (true) {
+      $c->addAreaLayer($data1, 0xe000ff00, "Lab B");
+      $c->addAreaLayer($data2, 0xe00000ff, "lab C");
     }
     // $this->_helper->layout->disableLayout();
     // $this->_helper->viewRenderer->setNoRender(true);

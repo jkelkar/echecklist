@@ -6,5 +6,10 @@ $this->headTitle($this->title);
 
 <div style="margin: 10px auto;width:900px;">
   <?php echo $this->outlines; ?>
+  <?php
+  if ($this->img) {
+    echo "<img style=\"-webkit-user-select: none\" src=\"{$this->img}\">";
+  }
+  ?>
 </div>
 

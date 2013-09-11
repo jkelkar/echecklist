@@ -531,10 +531,20 @@ END;
 
         $out = new Processing();
         // $filename =
-        $this->_helper->layout->disableLayout();
-        $this->_helper->viewRenderer->setNoRender(true);
+
         logit("LN: {$name} " .print_r($list, true));
-        $out->process($list, $name);
+        $rc = $out->process($this, $list, $name);
+        if (!$rc) {
+          $this->_helper->layout->disableLayout();
+          $this->_helper->viewRenderer->setNoRender(true);
+          return;
+        } else {
+          //
+          $this->view->outlines = '';
+          $this->view->showlines = '';
+          $this->_helper->layout->setLayout('overall');
+          return;
+        }
         /*$audit_id = $list[0];
         $fname = "NC_SLIPTA_{$audit_id}.xlsx";
         logit("Filename: {$filename} {$fname}");
@@ -546,7 +556,7 @@ END;
         header ("Content-disposition: attachment; filename=".$fname.";");
         header("Content-Length: ".filesize($filename));
         readfile($filename);*/
-        return;
+        // return;
         // $this->echecklistNamespace->flash = 'Excel sheet done.';
         // $this->echecklistNamespace->flash = $msg;
         // $this->_redirector->gotoUrl($this->mainpage);

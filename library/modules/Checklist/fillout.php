@@ -2341,7 +2341,8 @@ function calculate_page($rows, $value, $langtag) { //$tword) {
   $ignore_types = array(
       'prof_info_yn_html',
       'pagebreak',
-      'bat_element_info');
+      'bat_element_info',
+      'ignore');
   $tlist = getTranslatables($langtag); //$tword );
   $tout = array ();
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();

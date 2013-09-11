@@ -8,13 +8,20 @@ require_once 'modules/Classes/PHPExcel.php';
 require_once 'modules/ChartDirector/lib/phpchartdir.php';
 
 class Processing extends Process_Common {
+  public $base ;
 
-  public function process($list, $name) {
+  public function init() {
+    // initialize
+
+  }
+  public function process($base, $list, $name) {
     // this is the driver for processing the request for output generation
     // gets the config data from table report, converts it into a struct
     //    then creates SQL query to extract required data from DB into rows
+    // base is the this pointer from the controller
     // $list - the list of selected audits
     // $name -
+    $this->base = $base;
     $audit = new Application_Model_DbTable_Audit();
     $report = new Application_Model_DbTable_Report();
     $check = new Application_Model_DbTable_Checklist();
@@ -153,16 +160,59 @@ class Processing extends Process_Common {
         	  $sql = <<<"SQL"
 select * from audit_data
  where audit_id {$audits}
-   and field_name like 's__\_total'
+   and (field_name like 's__\_total' or field_name like 'final_score')
+ order by field_name
 SQL;
         	  $arows = $check->queryRows($sql);
+        	  logit("AR: " . print_r($arows, true));
         	  $data = $this->collectRows($arows);
+        	  $mql = <<<"SQL"
+select varname, score from template_row
+ where (varname like 's__\_total' or varname like 'all_total')
+ order by varname
+SQL;
+        	  $mrows = $check->queryRows($mql);
+        	  logit("M: ". print_r($mrows, true));
+        	  $totals = array();
+        	  foreach ($mrows as $m) {
+        	    $totals[] = $m['score'];
+        	  }
         	  logit("SQL: {$sql}");
-        	  //logit("AROWS: " . print_r($arows, true));
+        	  // logit("AROWS: " . print_r($arows, true));
         	  logit("DATA: " . print_r($data, true));
-        	  $this->spider_chart($data);
+        	  $img = $this->spider_chart($data, $totals);
+        	  $this->base->view->img = $img;
+        	  return 1;
         	  break;
         	case 'barchart':
+        	  logit("AUDITS: {$audits}");
+        	  $sql = <<<"SQL"
+select * from audit_data
+ where audit_id {$audits}
+   and (field_name like 's__\_total' or field_name like 'final_score')
+ order by field_name
+SQL;
+        	  $arows = $check->queryRows($sql);
+        	  logit("AR: " . print_r($arows, true));
+        	  $data = $this->collectRows($arows);
+        	  $mql = <<<"SQL"
+select varname, score from template_row
+ where (varname like 's__\_total' or varname like 'all_total')
+ order by varname
+SQL;
+        	  $mrows = $check->queryRows($mql);
+        	  logit("M: ". print_r($mrows, true));
+        	  $totals = array();
+        	  foreach ($mrows as $m) {
+        	    $totals[] = $m['score'];
+        	  }
+        	  logit("SQL: {$sql}");
+        	  // logit("AROWS: " . print_r($arows, true));
+        	  logit("DATA: " . print_r($data, true));
+        	  $img = $this->parallel_barchart($data, $totals);
+        	  $this->base->view->img = $img;
+        	  return 1;
+        	  break;
         	  break;
         	case 'incompletechart':
         	  break;

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 11, 2013 at 02:40 PM
+-- Generation Time: Sep 11, 2013 at 06:35 PM
 -- Server version: 5.5.31
 -- PHP Version: 5.3.10-1ubuntu3.6
 
@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS `audit_data` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `head_data` (`audit_id`,`field_name`),
   KEY `audit_page` (`audit_id`,`page_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='One row per field of data saved.' AUTO_INCREMENT=60296 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='One row per field of data saved.' AUTO_INCREMENT=60323 ;
 
 --
 -- Dumping data for table `audit_data`
@@ -2125,7 +2125,7 @@ INSERT INTO `audit_data` (`id`, `audit_id`, `field_name`, `int_val`, `text_val`,
 (18710, 1, 'start_date', 0, '', '', '2013-09-02', '', 'date', 6),
 (18711, 1, 'end_date', 0, '', '', '2013-09-06', '', 'date', 6),
 (18712, 1, 'slipta_official', 0, '', 'T', '2013-09-06', '', 'string', 6),
-(19959, 18, 'action', 0, '', '', '2013-09-09', '', 'string', 21),
+(19959, 18, 'action', 0, '', '', '2013-09-11', '', 'string', 14),
 (19960, 18, 'action01_item', 0, '', 'Mr. Smith', '2013-08-21', '', 'string', 28),
 (19961, 18, 'action01_person', 0, '', 'Mr. Smith', '2013-08-21', '', 'string', 28),
 (19962, 18, 'action01_sign', 0, '', '', '2013-08-21', '', 'string', 28),
@@ -2192,9 +2192,9 @@ INSERT INTO `audit_data` (`id`, `audit_id`, `field_name`, `int_val`, `text_val`,
 (20023, 18, 'dola', 0, '', '', '2013-09-05', '', 'string', 6),
 (20024, 18, 'driver', 0, '', '', '2013-08-19', '', 'string', 7),
 (20025, 18, 'end_date', 0, '', '', '2013-08-14', '', 'date', 4),
-(20026, 18, 'final_n', 0, '', 'N', '2013-09-09', '', 'string', 0),
-(20027, 18, 'final_score', 21, '', '', '2013-09-09', '', 'integer', 0),
-(20028, 18, 'final_y', 0, '', '', '2013-09-09', '', 'string', 0),
+(20026, 18, 'final_n', 0, '', 'N', '2013-09-11', '', 'string', 0),
+(20027, 18, 'final_score', 29, '', '', '2013-09-11', '', 'integer', 0),
+(20028, 18, 'final_y', 0, '', '', '2013-09-11', '', 'string', 0),
 (20029, 18, 'hema_mr_dt', 0, '', '', '0001-11-30', '', 'date', 25),
 (20030, 18, 'hema_mr_num', 0, '', '', '2013-08-19', '', 'integer', 25),
 (20031, 18, 'hema_smr_dt', 0, '', '', '0001-11-30', '', 'date', 25),
@@ -2696,23 +2696,23 @@ INSERT INTO `audit_data` (`id`, `audit_id`, `field_name`, `int_val`, `text_val`,
 (20527, 18, 's0308_note', 0, '', '', '2013-08-16', '', 'text', 13),
 (20528, 18, 's0308_score', 0, '', '', '2013-08-16', '', 'integer', 13),
 (20529, 18, 's03_total', 2, '', '', '2013-08-16', '', 'integer', 13),
-(20530, 18, 's0401_comment', 0, '', '', '2013-08-17', '', 'text', 14),
-(20531, 18, 's0401_nc', 0, '', '', '2013-08-17', 'F', 'bool', 14),
-(20532, 18, 's0401_note', 0, '', '', '2013-08-17', '', 'text', 14),
-(20533, 18, 's0401_score', 0, '', '', '2013-08-17', '', 'integer', 14),
-(20534, 18, 's0402_comment', 0, '', '', '2013-08-17', '', 'text', 14),
-(20535, 18, 's0402_nc', 0, '', '', '2013-08-17', 'F', 'bool', 14),
-(20536, 18, 's0402_note', 0, '', '', '2013-08-17', '', 'text', 14),
-(20537, 18, 's0402_score', 0, '', '', '2013-08-17', '', 'integer', 14),
-(20538, 18, 's0403_comment', 0, '', '', '2013-08-17', '', 'text', 14),
-(20539, 18, 's0403_nc', 0, '', '', '2013-08-17', 'F', 'bool', 14),
-(20540, 18, 's0403_note', 0, '', '', '2013-08-17', '', 'text', 14),
-(20541, 18, 's0403_score', 0, '', '', '2013-08-17', '', 'integer', 14),
-(20542, 18, 's0404_comment', 0, '', '', '2013-08-17', '', 'text', 14),
-(20543, 18, 's0404_nc', 0, '', '', '2013-08-17', 'F', 'bool', 14),
-(20544, 18, 's0404_note', 0, '', '', '2013-08-17', '', 'text', 14),
-(20545, 18, 's0404_score', 0, '', '', '2013-08-17', '', 'integer', 14),
-(20546, 18, 's04_total', 0, '', '', '2013-08-17', '', 'integer', 14),
+(20530, 18, 's0401_comment', 0, '', '', '2013-09-11', '', 'text', 14),
+(20531, 18, 's0401_nc', 0, '', '', '2013-09-11', 'F', 'bool', 14),
+(20532, 18, 's0401_note', 0, '', '', '2013-09-11', '', 'text', 14),
+(20533, 18, 's0401_score', 2, '', '', '2013-09-11', '', 'integer', 14),
+(20534, 18, 's0402_comment', 0, '', '', '2013-09-11', '', 'text', 14),
+(20535, 18, 's0402_nc', 0, '', '', '2013-09-11', 'F', 'bool', 14),
+(20536, 18, 's0402_note', 0, '', '', '2013-09-11', '', 'text', 14),
+(20537, 18, 's0402_score', 2, '', '', '2013-09-11', '', 'integer', 14),
+(20538, 18, 's0403_comment', 0, '', '', '2013-09-11', '', 'text', 14),
+(20539, 18, 's0403_nc', 0, '', '', '2013-09-11', 'F', 'bool', 14),
+(20540, 18, 's0403_note', 0, '', '', '2013-09-11', '', 'text', 14),
+(20541, 18, 's0403_score', 2, '', '', '2013-09-11', '', 'integer', 14),
+(20542, 18, 's0404_comment', 0, '', '', '2013-09-11', '', 'text', 14),
+(20543, 18, 's0404_nc', 0, '', '', '2013-09-11', 'F', 'bool', 14),
+(20544, 18, 's0404_note', 0, '', '', '2013-09-11', '', 'text', 14),
+(20545, 18, 's0404_score', 2, '', '', '2013-09-11', '', 'integer', 14),
+(20546, 18, 's04_total', 8, '', '', '2013-09-11', '', 'integer', 14),
 (20547, 18, 's0501_comment', 0, '', '', '2013-08-17', '', 'text', 15),
 (20548, 18, 's0501_nc', 0, '', '', '2013-08-17', 'F', 'bool', 15),
 (20549, 18, 's0501_note', 0, '', '', '2013-08-17', '', 'text', 15),
@@ -10121,7 +10121,16 @@ INSERT INTO `audit_data` (`id`, `audit_id`, `field_name`, `int_val`, `text_val`,
 (59667, 1, 's1003_note', 0, '', '', '2013-09-10', '', 'text', 20),
 (59716, 1, 's0305_comment', 0, '', '', '2013-09-10', '', 'text', 13),
 (59717, 1, 's0305_nc', 0, '', '', '2013-09-10', 'F', 'bool', 13),
-(59718, 1, 's0305_note', 0, '', '', '2013-09-10', '', 'text', 13);
+(59718, 1, 's0305_note', 0, '', '', '2013-09-10', '', 'text', 13),
+(60296, 18, 's04_secinc', 0, '', '', '2013-09-11', '', 'integer', 14),
+(60297, 18, 's0401', 0, '', 'YES', '2013-09-11', '', 'string', 14),
+(60299, 18, 's0401_inc', 0, '', '', '2013-09-11', '', 'integer', 14),
+(60303, 18, 's0402', 0, '', 'YES', '2013-09-11', '', 'string', 14),
+(60305, 18, 's0402_inc', 0, '', '', '2013-09-11', '', 'integer', 14),
+(60309, 18, 's0403', 0, '', 'YES', '2013-09-11', '', 'string', 14),
+(60311, 18, 's0403_inc', 0, '', '', '2013-09-11', '', 'integer', 14),
+(60315, 18, 's0404', 0, '', 'YES', '2013-09-11', '', 'string', 14),
+(60317, 18, 's0404_inc', 0, '', '', '2013-09-11', '', 'integer', 14);
 
 -- --------------------------------------------------------
 
@@ -11732,7 +11741,7 @@ CREATE TABLE IF NOT EXISTS `report` (
   `file_type` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `number` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Report and Details' AUTO_INCREMENT=645 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Report and Details' AUTO_INCREMENT=673 ;
 
 --
 -- Dumping data for table `report`
@@ -12353,7 +12362,7 @@ INSERT INTO `report` (`id`, `report_id`, `tabpos`, `position`, `field_label`, `t
 (612, 2, 3, 450, '12.21.', 'audit_data', 's1221', '', '', '', '', 0),
 (613, 3, 0, 0, '{$Audit_id} Non Conformity Table', '', '', 'ncexcel', '', '', 'excel', 0),
 (614, 3, 1, 0, 'Non Conformity Table', '', '', 'Non Compliance', '', '', '', 0),
-(615, 4, 0, 0, 'SLIPTA Comparison', '', '', 'spiderchart', '', '', 'graph', 0),
+(615, 4, 0, 0, 'SLIPTA Comparison ', '', '', 'spiderchart', '', '', 'graph', 0),
 (616, 4, 1, 0, 'SLIPTA Comparison', '', '', '', 'select * from audit_data where field_name {$names} and audit_id {$audits}', '', '', 0),
 (617, 4, 1, 1, 'Lab Number', 'audit_data', 'labnum', '', '', '', '', 0),
 (618, 4, 1, 2, 'Lab Name', 'audit_data', 'labname', '', '', '', '', 0),
@@ -12382,7 +12391,35 @@ INSERT INTO `report` (`id`, `report_id`, `tabpos`, `position`, `field_label`, `t
 (641, 4, 1, 25, 'section11%', '', '', '', '', '', '', 0),
 (642, 4, 1, 26, 'section12', 'audit_data', 's12_total', '', '', '', '', 0),
 (643, 4, 1, 27, 'section12%', '', '', '', '', '', '', 0),
-(644, 5, 0, 0, 'SLIPTA Completeness', '', '', '', '', '', 'graph', 0);
+(644, 5, 0, 0, 'SLIPTA Comparison', '', '', 'barchart', '', '', 'graph', 0),
+(645, 5, 1, 0, 'SLIPTA Comparison', '', '', '', 'select * from audit_data where field_name {$names} and audit_id {$audits}', '', '', 0),
+(646, 5, 1, 1, 'Lab Number', 'audit_data', 'labnum', '', '', '', '', 0),
+(647, 5, 1, 2, 'Lab Name', 'audit_data', 'labname', '', '', '', '', 0),
+(648, 5, 1, 3, 'Audit Id', 'audit_data', 'audit_id', '', '', '', '', 0),
+(649, 5, 1, 4, 'section1', 'audit_data', 's01_total', '', '', '', '', 0),
+(650, 5, 1, 5, 'section1%', '', '', '', '', '', '', 0),
+(651, 5, 1, 6, 'section2', 'audit_data', 's02_total', '', '', '', '', 0),
+(652, 5, 1, 7, 'section2%', '', '', '', '', '', '', 0),
+(653, 5, 1, 8, 'section3', 'audit_data', 's03_total', '', '', '', '', 0),
+(654, 5, 1, 9, 'section3%', '', '', '', '', '', '', 0),
+(655, 5, 1, 10, 'section4', 'audit_data', 's04_total', '', '', '', '', 0),
+(656, 5, 1, 11, 'section4%', '', '', '', '', '', '', 0),
+(657, 5, 1, 12, 'section5', 'audit_data', 's05_total', '', '', '', '', 0),
+(658, 5, 1, 13, 'section5%', '', '', '', '', '', '', 0),
+(659, 5, 1, 14, 'section6', 'audit_data', 's06_total', '', '', '', '', 0),
+(660, 5, 1, 15, 'section6%', '', '', '', '', '', '', 0),
+(661, 5, 1, 16, 'section7', 'audit_data', 's07_total', '', '', '', '', 0),
+(662, 5, 1, 17, 'section7%', '', '', '', '', '', '', 0),
+(663, 5, 1, 18, 'section8', 'audit_data', 's08_total', '', '', '', '', 0),
+(664, 5, 1, 19, 'section8%', '', '', '', '', '', '', 0),
+(665, 5, 1, 20, 'section9', 'audit_data', 's09_total', '', '', '', '', 0),
+(666, 5, 1, 21, 'section9%', '', '', '', '', '', '', 0),
+(667, 5, 1, 22, 'section10', 'audit_data', 's10_total', '', '', '', '', 0),
+(668, 5, 1, 23, 'section10%', '', '', '', '', '', '', 0),
+(669, 5, 1, 24, 'section11', 'audit_data', 's11_total', '', '', '', '', 0),
+(670, 5, 1, 25, 'section11%', '', '', '', '', '', '', 0),
+(671, 5, 1, 26, 'section12', 'audit_data', 's12_total', '', '', '', '', 0),
+(672, 5, 1, 27, 'section12%', '', '', '', '', '', '', 0);
 
 -- --------------------------------------------------------
 
@@ -12430,13 +12467,13 @@ CREATE TABLE IF NOT EXISTS `template_row` (
   `heading` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `text` text COLLATE utf8_unicode_ci NOT NULL,
   `info` text COLLATE utf8_unicode_ci NOT NULL,
-  `score` tinyint(4) NOT NULL,
+  `score` smallint(4) NOT NULL,
   `element_count` int(11) NOT NULL,
   `page_id` int(11) NOT NULL,
   `required` char(1) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `tmpl_page` (`template_id`,`page_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Stores template info of a display row.' AUTO_INCREMENT=1270 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Stores template info of a display row.' AUTO_INCREMENT=1271 ;
 
 --
 -- Dumping data for table `template_row`
@@ -13716,7 +13753,8 @@ INSERT INTO `template_row` (`id`, `template_id`, `row_name`, `varname`, `row_typ
 (1266, 3, 'p4_t', 'tb_comment19', 'tb_comment', 4, 0, 0, 0, 19, '', '', '', '', 0, 0, 92, 'F'),
 (1267, 3, 'p4_t', 'tb_comment20', 'tb_comment', 4, 0, 0, 0, 20, '', '', '', '', 0, 0, 92, 'F'),
 (1268, 3, 'p4_t', 'tb_comment21', 'tb_comment', 4, 0, 0, 0, 21, '', '', '', '', 0, 0, 92, 'F'),
-(1269, 3, 'p4_t', 'tb_comment22', 'tb_comment', 4, 0, 0, 0, 22, '', '', '', '', 0, 0, 92, 'F');
+(1269, 3, 'p4_t', 'tb_comment22', 'tb_comment', 4, 0, 0, 0, 22, '', '', '', '', 0, 0, 92, 'F'),
+(1270, 1, '', 'all_total', 'ignore', 4, 0, 0, 0, 0, '', '', '', '', 258, 0, 30, 'F');
 
 -- --------------------------------------------------------
 
@@ -13769,7 +13807,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `languages` varchar(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`userid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Used to store allowed users' AUTO_INCREMENT=20 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Used to store allowed users' AUTO_INCREMENT=21 ;
 
 --
 -- Dumping data for table `user`
@@ -13779,11 +13817,12 @@ INSERT INTO `user` (`id`, `userid`, `name`, `usertype`, `password`, `languages`)
 (1, 'jkelkar', 'Jay Kelkar', 'USER', 'jk', 'EN,FR,VI'),
 (2, 'oddeater', 'Odd Eater', 'USER', 'oddeater', 'EN,VI'),
 (3, 'analist', 'An ALIST', 'ANALYST', 'analist', 'EN'),
-(4, 'jon', 'Jon Lipsky', 'ANALYST', 'lipsky', 'EN,FR,VI'),
+(4, 'jon', 'lipsky', 'USER', 'lipsky', 'EN,FR,VI'),
 (5, 'lipsky', 'Jon Lipsky', 'ANALYST', 'lipsky', 'EN,FR,VI'),
 (17, 'ekelkar', 'Erin Kelkar', 'ADMIN', 'kelkar', 'EN,FR,VI'),
 (18, 'jhaffa', 'Jimmy Haffa', 'USER', 'haffa', 'EN,FR,VI'),
-(19, 'theman', 'The Man', 'APPROVER', 'theman', '');
+(19, 'theman', 'The Man', 'APPROVER', 'theman', ''),
+(20, 'admin', 'Administrator', 'ADMIN', 'admin', '');
 
 -- --------------------------------------------------------
 

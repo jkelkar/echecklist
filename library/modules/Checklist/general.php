@@ -100,7 +100,7 @@ function getYNI($t) {
   return array( // "{$t['Select']} ..." => '-',
       "{$t['Yes']}"=> 'YES',
       "{$t['No']}"=> 'NO',
-      "{$t['Insufficient Data']}"=> 'I'
+      "{$t['Insufficient data']}"=> 'I'
   );
 }
 
@@ -276,6 +276,8 @@ function getReportTypes($t) {
       "{$t['Select']} ..."=> '-',
       "{$t['SLMTA data:Excel']}" => 'slmta2excel',
       "{$t['SLIPTA:Excel']}" => 'slipta2excel',
+      "{$t['BAT:Excel']}" => 'bat2excel',
+      "{$t['TB:Excel']}" => 'tb2excel',
       "{$t['Non Compliance Report']}" => 'ncexcel',
       "{$t['Compare scores in a Spider Chart']}" => 'spiderchart',
       "{$t['Campare scores in a Bar Chart']}" => 'barchart',
@@ -345,6 +347,7 @@ function getTranslatables(/*$tword,*/ $langtag) {
       'Approver',
       'Base Line Assessment',
       'Baseline Audit',
+      'BAT:Excel',
       'BioSafety',
       'Both',
       'Campare scores in a Bar Chart',
@@ -400,6 +403,7 @@ function getTranslatables(/*$tword,*/ $langtag) {
       'Stars',
       'Surveillance Audit',
       'TB',
+      'TB:Excel',
       'User',
       'Weekly',
       'Were results reported within 15 days?',

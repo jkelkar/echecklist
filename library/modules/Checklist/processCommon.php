@@ -122,6 +122,61 @@ class Process_Common {
     return $data;
   }
 
+
+  public function icollectRows($rows) {
+    $data = array();
+    $labels = array();
+    $names = array();
+    logit("IC: ". print_r($rows, true));
+    foreach($rows as $row) {
+      $audit_id = $row['audit_id'];
+      $fname = $row['field_name'];
+      if (! key_exists($audit_id, $data)) {
+        $data[$audit_id] = array('audit_id' => $audit_id);
+      }
+      $data[$audit_id][$fname] = $this->convertRow($row);
+      $pos = strpos($fname, '_');
+      // the following line handles fname in (labnum, labname)
+      // just pass the fname through
+      if (!$pos) $pos = 3;
+      $l = '';
+      $n = '';
+      switch ($pos) {
+
+      	case 3:
+      	  $s1 = $this->i2a((int)substr($fname,1,2));
+      	  $l = "{$fname}";
+      	  $n = "{$fname}";
+      	  break;
+      	case 5:
+      	  $s1 = $this->i2a((int)substr($fname,1,2));
+      	  $s2 = (int)substr($fname,3,2);
+      	  $l = "Q {$s1}.{$s2}";
+      	  $n = "{$fname}";
+      	  break;
+      	default:
+
+      }
+
+      $labels[$l] = 1;
+      $names[$n] = 1;
+    }
+    $labels = array_keys($labels);
+    $names = array_keys($names);
+    asort($labels);
+    foreach(array('end_date','labname','labnum') as $wantkey) {
+      if (($key = array_search($wantkey, $labels)) !== false) {
+        unset($labels[$key]);
+      }
+    }
+    asort($names);
+    //logit("L: " . print_r($labels, true));
+    //logit("N: " . print_r($names, true));
+    //exit();
+
+    return array($data, $labels, $names);
+  }
+
   /*public function x_mkList($data) {
     logit("MKL: {$data} " . print_r($data, true));
     $out = '';
@@ -238,7 +293,7 @@ class Process_Common {
           $dn = get_arrval($d, $name, '');
           $cn = $this->rc($col, $row);
           if (key_exists($name, $d)) {
-            // logit("ED: {$row} {$col} {$cn} = '{$name}' : '{$dn}'");
+            logit("ED: {$row} {$col} {$cn} = '{$name}' : '{$dn}'");
             $s->setCellValue($this->rc($col, $row), $d[$name]);
           }
         }

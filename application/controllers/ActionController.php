@@ -708,7 +708,7 @@ END;
 <td style='width:92px;font-weight:bold;'>Status</td>
 END;
     if (! $cb) {
-      $tout[] = "<td style='width:130px;font-weight:bold;'></td><td></td></tr>";
+      $tout[] = "<td style='width:175px;font-weight:bold;'></td><td></td></tr>";
     } else {
       $tout[] = "<td></td></tr>";
     }

@@ -500,7 +500,8 @@ END;
       // logit('Select: In post');
       if ($this->collectData())
         return;
-      logit('DATA: ' .  print_r($this->data, true));
+
+      // logit('DATA: ' .  print_r($this->data, true));
       if ($this->data['todo'] == '-' || $this->data['todo'] == '') {
         $this->echecklistNamespace->flash = "Select a Report Type and continue";
         $this->makeDialog($this->data);
@@ -529,11 +530,16 @@ END;
         }
         // logit('Auditsel: ' . print_r($this->data, true));
 
-        $out = new Processing();
+        $proc = new Processing();
         // $filename =
+        // clean up old files
+        $path = dirname(__DIR__) . '/../public/tmp/';
+        logit("PATH: {$path}");
+        $secs = 3600;
+        $proc->rmOldFiles($path, $secs);
 
         logit("LN: {$name} " .print_r($list, true));
-        $rc = $out->process($this, $list, $name);
+        $rc = $proc->process($this, $list, $name);
         if (!$rc) {
           $this->_helper->layout->disableLayout();
           $this->_helper->viewRenderer->setNoRender(true);

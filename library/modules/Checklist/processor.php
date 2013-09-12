@@ -87,6 +87,17 @@ class Processing extends Process_Common {
                 break;
               case 'slipta2excel' :
                 $fname = 'SLIPTA_stats.xlsx';
+                break;
+              case 'bat2excel' :
+                $fname = 'BAT_stats.xlsx';
+                // $fnames = array('audit_id');//'audit_id', 'labname', 'labnum', 'end_date');
+                // $flabels = array('Audit Id', 'Audit Date', 'Labname', 'Labnum');
+                break;
+              case 'tb2excel' :
+                $fname = 'TB_stats.xlsx';
+                // $fnames = array('audit_id'); //audit_id', 'labname', 'labnum', 'end_date');
+                // $flabels = array('Audit Id', 'Audit Date', 'Labname', 'Labnum');
+                break;
               default :
             }
             if ($query) {
@@ -95,9 +106,22 @@ class Processing extends Process_Common {
             }
             $rows = $report->runQuery($sql);
             logit('ROWS: ' . print_r($rows, true));
-            $data = $this->collectRows($rows);
+
+            //if (in_array($name, array('slmta2excel', 'slipta2excel'))) {
+              $data = $this->collectRows($rows);
+            /*} else {
+              // collect with implied fields
+              $idata = $this->icollectRows($rows);
+              $data = $idata[0];
+              logit('D: '. print_r($data, true));
+              $labels = $idata[1];
+              $names = $idata[2];
+              asort($labels);
+              $flabels = array_merge($flabels, $labels);
+              $fnames = array_merge($fnames, $names);
+            }*/
+            //logit("SQL: {$sql} " . print_r($rows, true));
             $this->startWorkSheet($filehandle, $i, $heading, $flabels, $fnames, $data);
-            //$fname = "NC_SLIPTA_{$audit_id}.xlsx";
           }
         }
         $filename = $this->saveFile($filehandle);

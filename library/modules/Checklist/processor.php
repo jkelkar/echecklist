@@ -25,8 +25,9 @@ class Processing extends Process_Common {
     $audit = new Application_Model_DbTable_Audit();
     $report = new Application_Model_DbTable_Report();
     $check = new Application_Model_DbTable_Checklist();
+    $name = $this->getAuditName($name, $base->data['audit_type']);
     $tinfo = $this->collect($name);
-    logit("tinfo: ".print_r($tinfo, true));
+    // logit("tinfo: ".print_r($tinfo, true));
     $numtabs = count($tinfo) - 3; // -3 to ignore the heading, report_type, and file_type
     logit("Tabs: {$numtabs}");
     //$start = 0;
@@ -64,9 +65,9 @@ class Processing extends Process_Common {
           // $flabels;
           $names = $audit->_mkList($fnames);
           logit("Heading: {$heading}");
-          logit('fnames: ' . print_r($fnames, true) . '  ' . print_r($names, true));
+          //logit('fnames: ' . print_r($fnames, true) . '  ' . print_r($names, true));
             // logit('flabels: '. print_r($flabels, true).'  '. print_r($labels, true));
-          logit("NAME: {$name}");
+          logit("NAME:  {$name}");
           if ($name == 'ncexcel') {
             // this is the non compliance excel report
             logit("$name");
@@ -81,53 +82,35 @@ class Processing extends Process_Common {
             $fname = "NC_SLIPTA_{$audit_id}.xlsx";
           } else {
             switch ($name) {
-
               case 'slmta2excel' :
                 $fname = 'SLMTA_stats.xlsx';
                 break;
-              case 'slipta2excel' :
-                $fname = 'SLIPTA_stats.xlsx';
-                break;
               case 'bat2excel' :
                 $fname = 'BAT_stats.xlsx';
-                // $fnames = array('audit_id');//'audit_id', 'labname', 'labnum', 'end_date');
-                // $flabels = array('Audit Id', 'Audit Date', 'Labname', 'Labnum');
+                break;
+              case 'slipta2excel' :
+                logit('SLPTA2EXCEL');
+                $fname = 'SLIPTA_stats.xlsx';
                 break;
               case 'tb2excel' :
                 $fname = 'TB_stats.xlsx';
-                // $fnames = array('audit_id'); //audit_id', 'labname', 'labnum', 'end_date');
-                // $flabels = array('Audit Id', 'Audit Date', 'Labname', 'Labnum');
-                break;
+
               default :
             }
             if ($query) {
               eval("\$sql = \"$query\"; ");
-              logit("CALC Q: {$sql}");
+              // logit("CALC Q: {$sql}");
             }
             $rows = $report->runQuery($sql);
-            logit('ROWS: ' . print_r($rows, true));
-
-            //if (in_array($name, array('slmta2excel', 'slipta2excel'))) {
-              $data = $this->collectRows($rows);
-            /*} else {
-              // collect with implied fields
-              $idata = $this->icollectRows($rows);
-              $data = $idata[0];
-              logit('D: '. print_r($data, true));
-              $labels = $idata[1];
-              $names = $idata[2];
-              asort($labels);
-              $flabels = array_merge($flabels, $labels);
-              $fnames = array_merge($fnames, $names);
-            }*/
-            //logit("SQL: {$sql} " . print_r($rows, true));
+            //logit('ROWS: ' . print_r($rows, true));
+            $data = $this->collectRows($rows);
             $this->startWorkSheet($filehandle, $i, $heading, $flabels, $fnames, $data);
           }
         }
         $filename = $this->saveFile($filehandle);
         logit("FN: $filename");
 
-        logit("Filename: {$filename} {$fname}");
+        logit("Filename: {$filename}-->{$fname}");
         //$this->_helper->layout->disableLayout();
         //$this->_helper->viewRenderer->setNoRender(true);
         $fstr = file_get_contents($filename);

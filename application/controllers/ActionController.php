@@ -714,6 +714,7 @@ END;
     }
     foreach($rows as $row) {
       logit('Audit: ' . print_r($row, true));
+      if (! $row['owner'] && $row['status'] == 'INCOMPLETE') continue;
       //if ($)
       $ct ++;
       $cls = ($ct % 2 == 0) ? 'even' : 'odd';
@@ -774,21 +775,24 @@ return $lines;
     logit("US: {$this->usertype}");
     $rev_ut = rev('getUserTypes', $this->tlist);
     $ct = 0;
+    $user_users = array('ADMIN', 'USER', 'APPROVER');
+    $ao = new Application_Model_DbTable_AuditOwner();
+    $owner = $ao->isOwned($this->audit['audit_id'], $this->userid);
     $tout = array();
-    if (in_array($this->usertype, array('ADMIN', 'USER', 'APPROVER'))) {
+    /*if (in_array($this->usertype, array('ADMIN', 'USER', 'APPROVER'))) {
       //$tout[] = "<div style=\"margin-left:200px\"><h1 style=\"margin-bottom:10px;\">Add owner to the current Audit</h1></div>";
-    }
+    }*/
     /*if ($this->usertype == 'ADMIN') {
       $tout[] = "<h1 style=\"margin-bottom:10px;\">Edit User</h1>";
     } else {
       $tout[] = "<h1 style=\"margin-bottom:10px;\"></h1>";
     }*/
-    $tout[] = '<table style="margin-left:250px;color:black;">';
+    $tout[] = '<table style="margin-left:200px;color:black;">';
     $tout[] = "<tr class='even'>";
     if ($cb) {
-      $tout[] = "<td style='width:80px;'>Select/<br />Deselect All</td>";
+      $tout[] = "<td style='width:110px;'>Select/<br />Deselect All</td>";
     } else {
-      $tout[] = "<td style='width:80px;'></td>";
+      $tout[] = "<td style='width:110px;'></td>";
     }
     $tout[] = <<<"END"
 <td style='width:100px;font-weight:bold;'>UserId</td>
@@ -798,7 +802,6 @@ END;
     foreach($rows as $row) {
       $ct ++;
       $cls = ($ct % 2 == 0) ? 'even' : 'odd';
-
       $tout[] = "<tr class='{$cls}'>";
       $firstcol = '';
       if ($cb) {
@@ -806,22 +809,27 @@ END;
         $firstcol = "<td style='width:40px;padding:2px 0;'>" .
              "<input type='checkbox' name='{$name}' id='{$name}'></td>";
       } else {
+
         $sel = "<a href=\"{$this->baseurl}/user/edit/{$row['id']}\"" .
              " class=\"btn btn-mini btn-success\">Edit</a>";
         $addo = '';
-        if ($row['usertype'] != 'ADMIN' && $row['usertype'] != 'ANALYST') {
-          $addo = "<a href=\"{$this->baseurl}/user/addowner/{$row['id']}\" class=\"btn btn-mini btn-warning\">Add Owner</a>";
+        if (in_array($row['usertype'], $user_users)) {
+          $addo = "<a href=\"{$this->baseurl}/user/addowner/{$row['id']}\" onclick=\"return confirm('Add {$row['name']} to owners of selected audit?');\" class=\"btn btn-mini btn-warning\">Add Owner</a>";
         }
+        $buttons = '';
         // logit("UT: {$this->usertype}, {$this->audit['status']}");
-        if ($this->usertype == 'USER' && $this->audit['status'] == 'INCOMPLETE') {
-          $firstcol = "<td style='width:40px;padding:2px 0;'>{$addo}</td>";
+        if ($this->audit['status'] == 'INCOMPLETE') {
+          $buttons .= $addo;
+          //$firstcol .= "<td style='width:40px;padding:2px 0;'>{$addo}</td>";
         }
         if ($this->usertype == 'ADMIN') {
-          $firstcol = "<td style='width:40px;padding:2px 0;'>{$sel}</td>";
+          $buttons .= $sel;
+          //$firstcol .= "<td style='width:40px;padding:2px 0;'>{$sel}</td>";
         }
         if ($this->usertype == 'APPROVER') {
-          $firstcol = '<td></td>';
+          $firstcol .= '<td></td>';
         }
+        $firstcol = "<td style='padding:2px 0;'>{$buttons}</td>";
       }
       // $sl = ($row['slmta'] == 't') ? 'Yes' : 'No';
       $tout[] = <<<"END"

@@ -71,6 +71,7 @@ class LabController extends Application_Controller_Action // Zend_Controller_Act
       unset($this->data['save_button']);
       logit('LAB edit: '. print_r($this->data, true));
       $lab->updateData($this->data, $id);
+      $this->updateDocs($id);
       $this->_redirector->gotoUrl('/lab/select');
     }
   }
@@ -123,5 +124,33 @@ class LabController extends Application_Controller_Action // Zend_Controller_Act
         'addsel' => false
     ));
     $this->makeDialog($this->data, $auditlines);
+  }
+
+  public function updateDocs($labid) {
+    // update all INCOMPLETE docs with this labid and set all the lab details accurately
+    // This is necessary because audit_data table stores one value per row
+    logit("LABID: {$labid}");
+    $lab = new Application_Model_DbTable_Lab();
+    $audit = new Application_Model_DbTable_Audit();
+    $tr =new Application_Model_DbTable_Template();
+    $tmplr = new Application_Model_DbTable_TemplateRows();
+    $auditd = new Application_Model_DbTable_AuditData();
+    // fetch the labrow
+    $labrow = $lab->get($labid);
+    logit("LABROW: {$labid} ".print_r($labrow, true));
+    // get audits with this labid
+    $arows = $audit->getIncompleteAuditsByLabid($labid);
+    foreach($arows as $a) {
+      $aid = $a['id'];
+      $trow = $tr->getByTag($a['audit_type']);
+      $tid = $trow['id'];
+      // update audit with id =aid info with labrow
+      $dummy = array('labhead' => 1);
+      // this will trigger the lab data copy into audit data
+      $varname = 'labhead';
+      $page_id = $tmplr->findPageId($tid, $varname);
+      $auditd->handleLabData($dummy, $aid, $page_id, $labrow);
+      logit("UPdated: ADid {$aid}-T {$tid}-V {$varname}-P {$page_id}". print_r($labrow, true));
+    }
   }
 }

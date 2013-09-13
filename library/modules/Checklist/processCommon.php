@@ -79,6 +79,32 @@ class Process_Common {
     return $guide;
   }
 
+  public function getAuditName($name, $type) {
+    // sometimes an audit name has to be calculated
+    //  This happens when the same name for different audit types'
+    //  results in different data being pulled from 'REPORT' table
+    switch ($name) {
+      case 'audit2excel' :
+        switch ($type) {
+          case 'BAT' :
+            $outname = 'bat2excel';
+            break;
+          case 'SLIPTA' :
+            $outname = 'slipta2excel';
+            break;
+          case 'TB' :
+            $outname = 'tb2excel';
+            break;
+          default :
+            // we should not come here
+        }
+        break;
+      default:
+        $outname = $name;
+    }
+    return $outname;
+  }
+
   public function convertRow($row) {
     // convert the row to a value
     $format = 'm/d/Y';
@@ -123,7 +149,7 @@ class Process_Common {
   }
 
 
-  public function icollectRows($rows) {
+  /*public function icollectRows($rows) {
     $data = array();
     $labels = array();
     $names = array();
@@ -175,40 +201,8 @@ class Process_Common {
     //exit();
 
     return array($data, $labels, $names);
-  }
+  }*/
 
-  /*public function x_mkList($data) {
-    logit("MKL: {$data} " . print_r($data, true));
-    $out = '';
-    // if (count($data) == 0) {
-    //  return
-    if (is_string($data)) {
-      logit('STR');
-      return "= '{$data}' ";
-    } else {
-      logit('ARR');
-      switch (count($data)) {
-        case 0 :
-          //logit("0: {$data} --". print_r($data, true));
-          break;
-        case 1 :
-          //logit("A: = '{$data[0]}' ");
-          if ($data[0] == '-')
-            return "= '{$data[0]}' ";
-          break;
-        default :
-          foreach($data as $d) {
-            if ($out != '')
-              $out .= ',';
-            if (is_string($d))
-              $out .= "'{$d}'";
-          }
-          //logit("A: = in ({$out}) ");
-          return "in ({$out})";
-      }
-    }
-  }
-  */
 
   public function randFileName($suffix, $prefix = '') {
     $uniq = uniqid();
@@ -272,7 +266,7 @@ class Process_Common {
     $row = 3;
     // Insert the header line
     foreach($labels as $name) {
-      logit("SCV: {$name} {$row} {$col} ". $this->rc($col, $row));
+      // logit("SCV: {$name} {$row} {$col} ". $this->rc($col, $row));
       $s->setCellValue($this->rc($col, $row), $name);
       $s->getStyle($this->rc($col, $row))->getAlignment()->setHorizontal(
           PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
@@ -284,8 +278,8 @@ class Process_Common {
     $i ++;
 
     $col = 1;
-    logit('NAMES: ' . print_r($names, true));
-    //logit('DATA EXCEL: ' . print_r($data, true));
+    // logit('NAMES: ' . print_r($names, true));
+    // logit('DATA EXCEL: ' . print_r($data, true));
     foreach($data as $d) {
       $col = 1;
       foreach($names as $name) {
@@ -293,7 +287,7 @@ class Process_Common {
           $dn = get_arrval($d, $name, '');
           $cn = $this->rc($col, $row);
           if (key_exists($name, $d)) {
-            logit("ED: {$row} {$col} {$cn} = '{$name}' : '{$dn}'");
+            // logit("ED: {$row} {$col} {$cn} = '{$name}' : '{$dn}'");
             $s->setCellValue($this->rc($col, $row), $d[$name]);
           }
         }
@@ -412,7 +406,7 @@ class Process_Common {
 
     # Set center of plot area at (230, 280) with radius 180 pixels, and white (ffffff)
     # background.
-    $c->setPlotArea(330, 350, 235, 0xffffff);
+    $c->setPlotArea(330, 305, 235, 0xffffff);
 
     # Set the grid style to circular grid
     $c->setGridStyle(false);
@@ -483,7 +477,7 @@ class Process_Common {
     $c->addLegend(80, 40)->setCols(3); //400, 100);
 
     # Add a title to the chart using 14 points Times Bold Itatic font
-    $c->addTitle("Completeness Levels - by section", "timesbi.ttf", 14);
+    $c->addTitle("Scores - by section", "timesbi.ttf", 14);
 
     # Add a title to the y axis. Draw the title upright (font angle = 0)
     $textBoxObj = $c->yAxis->setTitle("Items Counts");

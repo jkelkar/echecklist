@@ -104,4 +104,21 @@ SQL;
    return $rows;
   }
 
+  public function findPageId($template_id, $varname) {
+    /// given a template id and varname get its page_id
+    $template_id = (int) $template_id;
+    $sql = <<<"END"
+SELECT page_id
+FROM template_row
+WHERE template_id = {$template_id}
+AND varname = '{$varname}'
+END;
+    $rows = $this->queryRows($sql);
+    logit("TR R: ". print_r($rows, true));
+    if (! $rows) {
+      return null;
+    } else {
+      return $rows[0]['page_id'];
+    }
+  }
 }

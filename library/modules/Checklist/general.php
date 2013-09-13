@@ -275,12 +275,12 @@ function getReportTypes($t) {
   return array(
       "{$t['Select']} ..."=> '-',
       "{$t['SLMTA data:Excel']}" => 'slmta2excel',
-      "{$t['SLIPTA:Excel']}" => 'slipta2excel',
-      "{$t['BAT:Excel']}" => 'bat2excel',
-      "{$t['TB:Excel']}" => 'tb2excel',
+      "{$t['DATA:Excel']}" => 'audit2excel',
+      //"{$t['BAT:Excel']}" => 'bat2excel',
+      //"{$t['TB:Excel']}" => 'tb2excel',
       "{$t['Non Compliance Report']}" => 'ncexcel',
       "{$t['Compare scores in a Spider Chart']}" => 'spiderchart',
-      "{$t['Campare scores in a Bar Chart']}" => 'barchart',
+      "{$t['Compare scores in a Bar Chart']}" => 'barchart',
       "{$t['Show Incomplete Audit']}" => 'incompletechart'
   );
 }
@@ -298,7 +298,7 @@ function getAuditStates($t) {
 function getAuditTypes($t) {
   return array(
       "{$t['Select']} ..."=> '-',
-      "{$t['BioSafety']}" => 'BAT',
+      "{$t['BAT']}" => 'BAT',
       "{$t['SLIPTA']}" => 'SLIPTA',
       "{$t['TB']}" => 'TB',
   );
@@ -347,13 +347,14 @@ function getTranslatables(/*$tword,*/ $langtag) {
       'Approver',
       'Base Line Assessment',
       'Baseline Audit',
-      'BAT:Excel',
+      'BAT',
       'BioSafety',
       'Both',
-      'Campare scores in a Bar Chart',
+      'Compare scores in a Bar Chart',
       'Compare scores in a Spider Chart',
       'Complete',
       'Daily',
+      'DATA:Excel',
       'Date of panel receipt',
       'District or Primary',
       'District',
@@ -392,7 +393,7 @@ function getTranslatables(/*$tword,*/ $langtag) {
       'Research',
       'Results & % Correct',
       'SLIPTA',
-      'SLIPTA:Excel',
+      // 'SLIPTA:Excel',
       'SLMTA Audit',
       'SLMTA data:Excel',
       'SLMTA',
@@ -403,7 +404,7 @@ function getTranslatables(/*$tword,*/ $langtag) {
       'Stars',
       'Surveillance Audit',
       'TB',
-      'TB:Excel',
+      //'TB:Excel',
       'User',
       'Weekly',
       'Were results reported within 15 days?',

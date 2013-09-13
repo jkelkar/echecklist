@@ -172,7 +172,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
           // we should never reach here!
         }
         //logit("HLABDATA: {$aid} {$n} {$v} <{$page_id}>");
-        $this->updateAuditField($aid, $n, $v, $page_id);
+        $this->updateAuditDataField($aid, $n, $v, $page_id);
       }
     }
   }
@@ -186,10 +186,18 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
       $n = 'slmta_labtype';
       $v = $labrow['slmta_labtype'];
       //logit("SLMTA_labtype: {$v}->{$v}");
-      $this->updateAuditField($aid, $n, $v, $page_id);
+      $this->updateAuditDataField($aid, $n, $v, $page_id);
+
+      // update audit with slmta_cohortid
+      $audit = new Application_Model_DbTable_Audit();
+      $n = 'cohort_id';
+      $v = get_arrval($data, 'slmta_cohortid', '');
+      logit("COHORTID: $v");
+      $sldata = array();
+      $sldata[$n] = $v;
+      $audit->updateData($sldata, $aid);
     }
   }
-
 
   public function handleAuditHeadData($data, $aid) {
     // update the AuditHaead (table audit) row with audit details
@@ -236,12 +244,12 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     $this->handleAuditHeadData($data, $aid);
     foreach($data as $n => $v) {
       // logit ("BEFORE: {$n} ==> {$v}");
-      $this->updateAuditField($aid, $n, $v, $page_id);
+      $this->updateAuditDataField($aid, $n, $v, $page_id);
     }
     $this->updateFinalScore($aid, 0);
   }
 
-  public function updateAuditField($did, $name, $value, $page_id = '') {
+  public function updateAuditDataField($did, $name, $value, $page_id = '') {
     $suff = end(preg_split("/_/", $name));
     // logit ( "END: {$name} : {$value} --> {$suff}" );
     $format = 'm/d/Y';
@@ -360,9 +368,9 @@ END;
         }
       }
       // calculate if it is a minimum of 55% or 143 points
-      $this->updateAuditField($did, 'final_score', $final_score, $page_id);
+      $this->updateAuditDataField($did, 'final_score', $final_score, $page_id);
       $final_pct = (int)$final_score / 258 * 100;
-      $this->updateAuditField($did, 'final_pct', $final_pct, $page_id);
+      $this->updateAuditDataField($did, 'final_pct', $final_pct, $page_id);
       $final_y = '';
       $final_n = '';
       if ($final_score > 142) {
@@ -370,8 +378,8 @@ END;
       } else {
         $final_n = 'N';
       }
-      $this->updateAuditField($did, 'final_y', $final_y, $page_id);
-      $this->updateAuditField($did, 'final_n', $final_n, $page_id);
+      $this->updateAuditDataField($did, 'final_y', $final_y, $page_id);
+      $this->updateAuditDataField($did, 'final_n', $final_n, $page_id);
     }
     // update the totals for BAT & TB
     $sql = "select * from audit_data where audit_id = {$did} and field_name like '%_ct' ";
@@ -401,9 +409,9 @@ END;
         }
       }
       // calculate if it is a minimum of 55% or 143 points
-      $this->updateAuditField($did, 'final_y_ct', $final_y_ct, $page_id);
-      $this->updateAuditField($did, 'final_n_ct', $final_n_ct, $page_id);
-      $this->updateAuditField($did, 'final_na_ct', $final_na_ct, $page_id);
+      $this->updateAuditDataField($did, 'final_y_ct', $final_y_ct, $page_id);
+      $this->updateAuditDataField($did, 'final_n_ct', $final_n_ct, $page_id);
+      $this->updateAuditDataField($did, 'final_na_ct', $final_na_ct, $page_id);
     }
   }
 

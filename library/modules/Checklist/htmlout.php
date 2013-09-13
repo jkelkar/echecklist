@@ -1176,7 +1176,7 @@ END;
 
 function html_slipta_tel_type($row, $value, $t) {
   $names = array('end_date','dola','slmta_pas',
-      'names_affil_t','labname','labnum','labaddr',
+      'names_affil_t_comment','labname','labnum','labaddr',
       'labtel','labfax','labemail','labhead','labheadtel','labheadteltype','lablevel','labaffil',
       'labaffil_other','prof_deg_num','prof_deg_yni','prof_dip_num','prof_dip_yni','prof_cert_num',
       'prof_cert_yni','microscopist_num','microscopist_yni','dataclerk_num','dataclerk_yni',
@@ -1243,7 +1243,7 @@ function html_slipta_tel_type($row, $value, $t) {
     <td colspan="14" class="la"><span
       class="dhead">Names and Affiliation(s) of Auditor(s)</span>
       <div class="data">
-        {$v['names_affil_t']}
+        {$v['names_affil_t_comment']}
       </div></td>
   </tr>
   <tr>

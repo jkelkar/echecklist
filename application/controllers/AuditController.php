@@ -395,8 +395,11 @@ END;
     logit("{$this->dialog_name}");
     $audit = new Application_Model_DbTable_Audit();
     $adata = new Application_Model_DbTable_AuditData();
-    $tmpl = new Application_Model_DbTable_Template();
     $ao = new Application_Model_DbTable_AuditOwner();
+    $lab = new Application_Model_DbTable_Lab();
+    $tmpl = new Application_Model_DbTable_Template();
+    $tmplr = new Application_Model_DbTable_TemplateRows();
+
     //$vars = $this->_request->getPathInfo();
     //$pinfo = explode("/", $vars);
     // // $id = (int)  $pinfo[3];
@@ -413,10 +416,16 @@ END;
         $this->_redirector->gotoUrl('audit/create');
       }
       //logit('Data: ' . print_r($this->data));
+
       $trow = $tmpl->getByTag($this->data['audit_type']);
+      // get page_id for 'labhead'
+      $varname = 'labhead';
+      $page_id = $tmplr->findPageId($trow['id'], $varname);
+      logit("PAGE_ID: {$page_id}");
       //logit("LABID: {$this->labid} TR:" . print_r($trow, true));
       $now = new DateTime();
       $nowiso = $now->format($this->ISOdtformat);
+      // this will become the audit row
       $arow = array (
           'template_id' => $trow['id'],
           'created_at' => $nowiso,
@@ -428,13 +437,23 @@ END;
           'lab_id' => $this->labid,
           'status' => 'INCOMPLETE'
       );
+      $labrow = $lab->get($this->labid);
+      logit("LABROW: ". print_r($labrow, true));
+      // insert audit row
       $newauditid = $audit->insertData($arow);
       $aorow = array (
           'audit_id' => $newauditid,
           'owner' => $this->userid
       );
       $ao->insertData($aorow);
+      // insert lab data into audit data
+      $ad = array('labhead' => 1);
+      // 'ad' data is used to trigger copying lab data into audit_data
+      $adata->handleLabData($ad, $newauditid, $page_id, $labrow);
       $url = "/audit/edit/{$newauditid}/";
+      $this->echecklistNamespace->flash = "New {$this->data['audit_type']} audit #{$newauditid} created";
+      $arow = $audit->getAudit($newauditid);
+      $this->echecklistNamespace->audit = $arow;
       $this->_redirector->gotoUrl($url);
     }
   }
@@ -506,13 +525,11 @@ END;
         $this->echecklistNamespace->flash = "Select a Report Type and continue";
         $this->makeDialog($this->data);
         return;
-        //$this->_redirector->gotoUrl('audit/select');
       }
       if ($this->data['audit_type'] == '-' || $this->data['audit_type'] == '') {
         $this->echecklistNamespace->flash = "Select an Audit Type and continue";
         $this->makeDialog($this->data);
         return;
-        // $this->_redirector->gotoUrl('audit/select');
       }
       $prefix = 'cb_';
       $this->collectExtraData($prefix);
@@ -526,12 +543,9 @@ END;
         $list = array();
         foreach($this->extra as $n => $v) {
           $list[] = (int) substr($n, 3);
-          // logit('LIST: '. print_r($list, true));
         }
-        // logit('Auditsel: ' . print_r($this->data, true));
 
         $proc = new Processing();
-        // $filename =
         // clean up old files
         $path = dirname(__DIR__) . '/../public/tmp/';
         logit("PATH: {$path}");
@@ -551,22 +565,8 @@ END;
           $this->_helper->layout->setLayout('overall');
           return;
         }
-        /*$audit_id = $list[0];
-        $fname = "NC_SLIPTA_{$audit_id}.xlsx";
-        logit("Filename: {$filename} {$fname}");
-        $this->_helper->layout->disableLayout();
-        $this->_helper->viewRenderer->setNoRender(true);
-        $fstr = file_get_contents($filename);
-        logit("LEN: " . strlen($fstr));
-        header ("Content-type: octet/stream");
-        header ("Content-disposition: attachment; filename=".$fname.";");
-        header("Content-Length: ".filesize($filename));
-        readfile($filename);*/
-        // return;
-        // $this->echecklistNamespace->flash = 'Excel sheet done.';
-        // $this->echecklistNamespace->flash = $msg;
-        // $this->_redirector->gotoUrl($this->mainpage);
       }
+      // nothing selected so paint the data lines
       $arows = $aud->selectAudits($this->data);
 
       // logit("AROWS: " . print_r($arows, true));

@@ -10,7 +10,7 @@ class Application_Model_DbTable_Audit extends Application_Model_DbTable_Checklis
   private $debug = 0;
   private $format = 'Y-m-d H:i:s';
 
-  public function UpdateTS_SLMTA($id, $sstatis) {
+  public function UpdateTS_SLMTA($id, $sstatus) {
     $id = (int) $id;
     $dt = new DateTime();
     logit('TS: '. $dt->getTimestamp());
@@ -49,9 +49,9 @@ class Application_Model_DbTable_Audit extends Application_Model_DbTable_Checklis
   where a.id = {$id} and l.id = a.lab_id
 END;
     $rows = $this->queryRows($sql);
-    if (!$rows) {
+    /*if (!$rows) {
       throw new Exception("Could not find the audit.");
-    }
+    }*/
     return $rows[0];
   }
 
@@ -78,10 +78,12 @@ END;
     // if (count($data) == 0) {
     //  return
     if (is_string($data)) {
-      logit('STR');
-      return "= '{$data}' ";
+      // logit('STR');
+      $out =  "= '{$data}' ";
+      logit("MKLv: {$out}");
+      return $out;
     } else {
-      logit('ARR');
+      // logit('ARR');
       switch (count($data)) {
         case 0 :
           //logit("0: {$data} --". print_r($data, true));
@@ -95,6 +97,7 @@ END;
           } else {
             $out .= "= {$data[0]}";
           }
+          logit("MKL: {$out}");
           return $out;
           break;
         default :
@@ -107,7 +110,7 @@ END;
               $out .= "{$d}";
             }
           }
-          //logit("A: = in ({$out}) ");
+          logit("MKL2: {$out}");
           return "in ({$out})";
       }
     }
@@ -116,20 +119,21 @@ END;
   public function selectAudits($data) {
     global $userid;
     if (! $userid) $userid = 99999;
-    logit('IN top: ' . print_r($data, true));
+    // logit('IN top: ' . print_r($data, true));
 
     foreach($data as $n => $v) {
-      logit("$n -> $v " . print_r($v, true));
+      logit("BEG $n -> $v " . print_r($v, true));
       if (is_string($v) && $v == '-') {
         logit('unset');
         unset($data[$n]);
         continue;
       }
-      if (is_array($v) && count($v) == 1 && $v[0] = '-') {
+      if (is_array($v) && count($v) == 1 && $v[0] == '-') {
         logit('unset');
         unset($data[$n]);
         continue;
       }
+      logit("END {$n} ". print_r($data, true));
     }
     $sql = <<<"END"
 select a.id audit_id, a.end_date, a.cohort_id, a.status, a.slipta_official,
@@ -142,7 +146,7 @@ END;
     foreach($data as $a => $b) {
       if (! is_null($b) and $b != '') {
         //logit("IN: {$a} = {$b} " . print_r($b, true));
-          //logit("LIST: ", $this->_mkList($b));
+          logit("LIST: {$a} -> {$b}", $this->_mkList($b));
         switch ($a) {
           case 'country' :
             $sql .= " and l.country " . $this->_mkList($b);
@@ -166,7 +170,7 @@ END;
           case 'audit_type' :
             $sql .= " and a.audit_type " . $this->_mkList($b);
             break;
-          case 'audit_state' :
+          case 'audit_status' :
             $sql .= " and a.status " . $this->_mkList($b);
             break;
           case 'slmta_type' :
@@ -189,8 +193,9 @@ END;
         }
       }
     }
-    logit("SQL: {$sql}");
+    // logit("SQL: {$sql}");
     $sql .= " order by a.end_date desc, a.audit_type";
+    logit("CSQL: {$sql}");
     $rows = $this->queryRows($sql);
     return $rows;
   }
@@ -236,6 +241,14 @@ END;
     $sql = "update audit set status='{$status}' where id = {$audit_id}";
     $this->execute($sql);
     return;
+  }
+
+  public function getIncompleteAuditsByLabid($labid) {
+    // get only incomplate audits with this labid
+    $labid = (int) $labid;
+    $sql = "select * from audit where status = 'INCOMPLETE' and lab_id = {$labid}";
+    $rows = $this->queryRows($sql);
+    return $rows;
   }
 
 }

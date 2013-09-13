@@ -368,12 +368,14 @@ END;
         }
       }
       // calculate if it is a minimum of 55% or 143 points
+      $nax_score = 258;
+      $min_pct = 55; // 55% bar to cross
       $this->updateAuditDataField($did, 'final_score', $final_score, $page_id);
-      $final_pct = (int)$final_score / 258 * 100;
+      $final_pct = (int)$final_score / $max_score * 100;
       $this->updateAuditDataField($did, 'final_pct', $final_pct, $page_id);
       $final_y = '';
       $final_n = '';
-      if ($final_score > 142) {
+      if ($final_score > (int) ($max_score * $min_pct / 100)) {
         $final_y = 'Y';
       } else {
         $final_n = 'N';

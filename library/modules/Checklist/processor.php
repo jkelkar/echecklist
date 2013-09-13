@@ -22,7 +22,8 @@ class Processing extends Process_Common {
     // $list - the list of selected audits
     // $name -
     $this->base = $base;
-    $audit = new Application_Model_DbTable_Audit();
+    $check = new Application_Model_DbTable_Checklist();
+    //$audit = new Application_Model_DbTable_Audit();
     $report = new Application_Model_DbTable_Report();
     $check = new Application_Model_DbTable_Checklist();
     $name = $this->getAuditName($name, $base->data['audit_type']);
@@ -38,7 +39,7 @@ class Processing extends Process_Common {
     logit("ft: {$file_type}");
     $fname = '';
     logit("LIST: " . print_r($list, true));
-    $audits = $audit->_mkList($list);
+    $audits = $check->_mkList($list);
     switch ($file_type) {
       case 'excel' :
         // this is going to be an excel file
@@ -58,12 +59,12 @@ class Processing extends Process_Common {
                 $query = $v;
                 break;
               default :
-                $flabels[] = $v[0];
-                $fnames[] = $v[2];
+                $flabels[] = $v['field_label'];
+                $fnames[] = $v['field_name'];
             }
           }
           // $flabels;
-          $names = $audit->_mkList($fnames);
+          $names = $check->_mkList($fnames);
           logit("Heading: {$heading}");
           //logit('fnames: ' . print_r($fnames, true) . '  ' . print_r($names, true));
             // logit('flabels: '. print_r($flabels, true).'  '. print_r($labels, true));
@@ -111,8 +112,6 @@ class Processing extends Process_Common {
         logit("FN: $filename");
 
         logit("Filename: {$filename}-->{$fname}");
-        //$this->_helper->layout->disableLayout();
-        //$this->_helper->viewRenderer->setNoRender(true);
         $fstr = file_get_contents($filename);
         logit("LEN: " . strlen($fstr));
         header ("Content-type: octet/stream");
@@ -134,6 +133,7 @@ class Processing extends Process_Common {
         $tabinfo = $tinfo[1];
         $fnames = array();
         $flabels = array();
+        $series = array();
         $sql = '';
         foreach($tabinfo as $n => $v) {
           switch ($n) {
@@ -144,23 +144,26 @@ class Processing extends Process_Common {
           	  $query = $v;
           	  break;
           	default :
-          	  $flabels[] = $v[0];
-          	  $fnames[] = $v[2];
+          	  $flabels[] = $v['field_label'];
+          	  $fnames[] = $v['field_name'];
+          	  $series[] = $v['series'];
           }
         }
-        // $audits = $audit->_mkList($list);
-        /*$names = $this->_mkList($fnames);
-        $audits = $this->_mkList($list);
+        $names = $check->_mkList($fnames);
+        logit("NAME:  {$name}");
+        logit("Heading: {$heading}");
+        logit('G fnames: ' . print_r($fnames, true)  . '  ' . print_r($names, true));
+        logit('flabels: '  . print_r($flabels, true) );
+        logit('series ; ' . print_r($series, true));
+        logit("Heading: {$heading}");
         if ($query) {
           eval("\$sql = \"$query\"; ");
-          logit("CALC Q: {$sql}");
+          // logit("CALC Q: {$sql}");
         }
         $rows = $report->runQuery($sql);
-        logit('ROWS: ' . print_r($rows, true));
+        //logit('ROWS: ' . print_r($rows, true));
         $data = $this->collectRows($rows);
-        */
-        logit("Heading: {$heading}");
-        // logit('fnames: ' . print_r($fnames, true) . '  ' . print_r($names, true));
+        logit('DATA: '. print_r($data, true));
         switch ($name) {
         	case 'spiderchart':
         	  logit("AUDITS: {$audits}");
@@ -221,10 +224,48 @@ SQL;
         	  return 1;
         	  break;
         	  break;
-        	case 'incompletechart':
-        	  break;
-        	default:
+          case 'slipta2inc' :
+            logit('S');
+            break;
+          case 'bat2inc' :
+            logit('B');
+            $mql = <<<"SQL"
+select sum(1) ct, substr(varname, 1,3) name
+  from template_row
+ where template_id =2 and varname like 's____'
+   group by name
+SQL;
+            $mrows = $check->queryRows($mql);
+            $counts = array();
+            foreach ($mrows as $n => $v) {
+              $counts[$n] = $v;
+            }
+            logit('Counts: ' . print_r($counts, true));
+            $img = $this->stacked_barchart($data, $fnames, $flabels, $series, $counts);
+            $this->base->view->img = $img;
+            return 1;
+            break;
+          case 'tb2inc' :
+            logit('T');
+            $mql = <<<"SQL"
+select sum(1) ct, substr(varname, 1,3) name
+  from template_row
+ where template_id =3 and varname like 's____'
+   group by name
+SQL;
+            $mrows = $check->queryRows($mql);
+            $counts = array();
+            foreach ($mrows as $n => $v) {
+              $counts[$n] = $v;
+            }
+            logit('Counts: ' . print_r($counts, true));
+            $img = $this->stacked_barchart2($data, $fnames, $flabels, $series, $counts);
+            $this->base->view->img = $img;
+            return 1;
+            break;
+          default :
         }
+
         break;
       default :
     }

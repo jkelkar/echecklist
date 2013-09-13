@@ -122,5 +122,49 @@ class Application_Model_DbTable_Checklist extends Zend_Db_Table_Abstract
      */
     $this->delete('id = ' . (int)$id);
   }
+
+  public function _mkList($data) {
+    logit("MKL: {$data} " . print_r($data, true));
+    $out = '';
+    // if (count($data) == 0) {
+    //  return
+    if (is_string($data)) {
+      // logit('STR');
+      $out =  "= '{$data}' ";
+      logit("MKLv: {$out}");
+      return $out;
+    } else {
+      // logit('ARR');
+      switch (count($data)) {
+      	case 0 :
+      	  //logit("0: {$data} --". print_r($data, true));
+      	  break;
+      	case 1 :
+      	  //logit("A: = '{$data[0]}' ");
+      	  //if ($data[0] == '-')
+      	  //  return "= '{$data[0]}' ";
+      	  if (is_string($data[0])) {
+      	    $out .= "= '{$data[0]}'";
+      	  } else {
+      	    $out .= "= {$data[0]}";
+      	  }
+      	  logit("MKL: {$out}");
+      	  return $out;
+      	  break;
+      	default :
+      	  foreach($data as $d) {
+      	    if ($out != '')
+      	      $out .= ',';
+      	    if (is_string($d)) {
+      	      $out .= "'{$d}'";
+      	    } else {
+      	      $out .= "{$d}";
+      	    }
+      	  }
+      	  logit("MKL2: {$out}");
+      	  return "in ({$out})";
+      }
+      }
+    }
 }
 

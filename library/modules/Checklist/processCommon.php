@@ -68,9 +68,10 @@ class Process_Common {
           $guide[$tabpos]['query'] = $row['query'];
         } else {
           $guide[$tabpos][$pos] = array(
-              $row['field_label'],
-              $row['table_name'],
-              $row['field_name']
+              'field_label' => $row['field_label'],
+              'table_name' => $row['table_name'],
+              'field_name' => $row['field_name'],
+              'series' => $row['series']
           );
         }
       }
@@ -83,6 +84,7 @@ class Process_Common {
     // sometimes an audit name has to be calculated
     //  This happens when the same name for different audit types'
     //  results in different data being pulled from 'REPORT' table
+    logit("INC: {$name}-{$type}");
     switch ($name) {
       case 'audit2excel' :
         switch ($type) {
@@ -99,9 +101,26 @@ class Process_Common {
             // we should not come here
         }
         break;
+      case 'incompletechart':
+        logit('in');
+        switch($type) {
+          case 'BAT' :
+            $outname = 'bat2inc';
+            break;
+          case 'SLIPTA' :
+            $outname = 'slipta2inc';
+            break;
+          case 'TB' :
+            $outname = 'tb2inc';
+            break;
+          default :
+            // we should not come here
+        }
+        break;
       default:
         $outname = $name;
     }
+    logit("OUT: {$outname}");
     return $outname;
   }
 
@@ -432,6 +451,7 @@ class Process_Common {
       0x66ff0000, 0x6600ff00, 0x660000ff #0xf0cc0000, 0xf000cc00, 0xf00000cc
     );
     $i = -1;
+    // calculate the % from actual and total scores
     foreach ($data as $id => $d) {
       $i++;
       logit("Data: ". print_r($d, true));
@@ -538,4 +558,242 @@ class Process_Common {
     print($c->makeChart2(PNG));*/
   }
 
+  public function stacked_barchart($data, $fnames, $flabels, $series, $counts) {
+    // extract the data in a usable format
+    /*
+     * data - contains the actual data
+     * fnames - are the field names
+     * series - contains the mapping from flabel to series
+     * counts - the number of questions in each section
+     *
+     * out is an array of arrays mapped to series
+     */
+    $totals = array(); // total count of questions
+    $lbl = array(); // labels
+    $out = array(); // data
+    $audit_id = null;
+    foreach($data as $n => $v) {
+      $audit_id = $n;
+      $datarow = $v;
+      break;
+    }
+    logit('dr: '. print_r($datarow, true));
+    // Series 2, 3, 4 are data (n/a, n, y) and series 1 is lab info
+    $li = count($series);
+    $i = -1;
+    for($i = 0; $i < $li; $i++) {
+      // foreach($datarow as $n => $v) {
+      #$i ++;
+      $s = $series[$i];
+      if (! array_key_exists($s, $out)) {
+        logit("creating array $s");
+        $out[$s] = array();
+        $lbl[$s] = array();
+      }
+      //logit('L: ' .print_r($lbl[$s], true));
+      $n = $fnames[$i];
+      logit("NAME: {$n}");
+      $lbl[$s][] = $flabels[$i];
+      //logit("e: {$s} -- {$fnames[$i]}");
+      //logit('A: ' .print_r($lbl[$s], true));
+      $y = (array_key_exists($n, $datarow)) ? $datarow[$n] : 0;
+      // $y = $v;
+      //logit("Y: {$y}");
+      //logit('O: ' .print_r($out[$s], true));
+      $out[$s][] = $y;
+    }
+    //logit('CO: '. print_r($counts, true));
+    $l2 = count($lbl[2]);
+    //logit("L2: {$l2}");
+    for($i=0; $i < $l2; $i++) {
+      logit('C: '. print_r($counts[$i], true));
+      $totals[] = $counts[$i]['ct'] - ($out[2][$i] + $out[3][$i] + $out[4][$i]);
+    }
+    logit("out: ". print_r($out, true));
+    logit('lbl: ' . print_r($lbl, true));
+    logit('totals: '. print_r($totals, true));
+    # The data for the bar chart
+    $data0 = array(70,22,45,67,23,13,59,63,34,12,13,15,17);
+    $data1 = array(70,22,45,67,23,13,59,63,34,12,13,15,17);
+    $data2 = array(70,22,45,67,23,13,59,63,34,12,13,15,17);
+
+    # The labels for the bar chart
+    /*$labels = array("All","Section 1","Section 2","Section 3","Section 4","Section 5",
+        "Section 6","Section 7","Section 8","Section 9","Section 10","Section 11",
+        "Section 12");
+*/
+    $labels = $lbl[2];
+    # Create a XYChart object of size 500 x 320 pixels
+    $c = new XYChart(700, 420);
+
+    # Set the plotarea at (100, 40) and of size 280 x 240 pixels
+    $c->setPlotArea(80, 140, 560, 240);
+
+    # Add a legend box at (400, 100)
+    $c->addLegend(80, 80)->setCols(4); //400, 100);
+
+
+    # Add a title to the chart using 14 points Times Bold Itatic font
+    $heading = "{$out[1][2]}-{$out[1][3]}-{$out[1][0]}-{$out[1][1]}";
+    # labname} - $labnum - $audit_id $audit_date";
+    $c->addTitle("Answers - by section\n{$heading}", "timesbi.ttf", 14);
+
+    # Add a title to the y axis. Draw the title upright (font angle = 0)
+    $textBoxObj = $c->yAxis->setTitle("Items Counts");
+    $textBoxObj->setFontAngle(90);
+
+    # Set the labels on the x axis
+    $c->xAxis->setLabels($labels)->setFontAngle(45);
+
+    # Add a stacked bar layer and set the layer 3D depth to 8 pixels
+    $layer = $c->addBarLayer2(Stack, 0);
+
+    # Add the three data sets to the bar layer
+
+
+    #$layer->addDataSet($data2, 0x00ff00, "Yes");
+    #$layer->addDataSet($data1, 0xff0000, "No");
+    #$layer->addDataSet($data0, 0xffffff, "Not Answered");
+    $layer->addDataSet($out[4], 0x00ff00, "Yes");
+    $layer->addDataSet($out[3], 0xff0000, "No");
+    $layer->addDataSet($out[2], 0xffff00, "Not/Applicable");
+    $layer->addDataSet($totals, 0xffffff, "Not Answered");
+
+    # Enable bar label for the whole bar
+    $layer->setAggregateLabelStyle();
+
+    # Enable bar label for each segment of the stacked bar
+    $layer->setDataLabelStyle();
+
+    # Output the chart
+    #header("Content-type: image/png");
+    #print($c->makeChart2(PNG));
+    $path = dirname(__DIR__) . '/../../public/tmp/';
+    $filename = $this->randFileName('png', 'levelschart');
+    $fname = "{$path}{$filename}";
+    $imgpath = "{$this->base->baseurl}/tmp/{$filename}";
+    logit("IMG: {$this->base->baseurl}-{$path}-{$filename}-{$fname}-{$imgpath}");
+    logit("FN: {$fname}");
+    $c->makeChart($fname);
+    return $imgpath;
+  }
+
+  public function stacked_barchart2($data, $fnames, $flabels, $series, $counts) {
+    // extract the data in a usable format
+    /*
+    * data - contains the actual data
+    * fnames - are the field names
+    * series - contains the mapping from flabel to series
+    * counts - the number of questions in each section
+    *
+    * out is an array of arrays mapped to series
+    */
+    $totals = array(); // total count of questions
+    $lbl = array(); // labels
+    $out = array(); // data
+    $audit_id = null;
+    foreach($data as $n => $v) {
+    $audit_id = $n;
+    $datarow = $v;
+      break;
+    }
+    logit('dr: ' . print_r($datarow, true));
+    // Series 2, 3, 4 are data (n/a, n, y) and series 1 is lab info
+    $li = count($series);
+    $i = - 1;
+    for($i = 0; $i < $li; $i++) {
+    // foreach($datarow as $n => $v) {
+      #$i ++;
+      $s = $series[$i];
+      if (! array_key_exists($s, $out)) {
+        logit("creating array $s");
+        $out[$s] = array();
+        $lbl[$s] = array();
+      }
+      //logit('L: ' .print_r($lbl[$s], true));
+      $n = $fnames[$i];
+      logit("NAME: {$n}");
+      $lbl[$s][] = $flabels[$i];
+      //logit("e: {$s} -- {$fnames[$i]}");
+      //logit('A: ' .print_r($lbl[$s], true));
+      $y = (array_key_exists($n, $datarow)) ? $datarow[$n] : 0;
+      // $y = $v;
+      //logit("Y: {$y}");
+      //logit('O: ' .print_r($out[$s], true));
+      $out[$s][] = $y;
+    }
+    //logit('CO: '. print_r($counts, true));
+    $l2 = count($lbl[2]);
+    //logit("L2: {$l2}");
+    for($i = 0; $i < $l2; $i ++) {
+      logit('C: ' . print_r($counts[$i], true));
+      $totals[] = $counts[$i]['ct'] - ($out[2][$i] + $out[3][$i] + $out[4][$i]);
+    }
+    logit("out: " . print_r($out, true));
+    logit('lbl: ' . print_r($lbl, true));
+    logit('totals: ' . print_r($totals, true));
+    # The data for the bar chart
+    /*
+     $data0 = array(70,22,45,67,23,13,59,63,34,12,13,15,17);
+    $data1 = array(70,22,45,67,23,13,59,63,34,12,13,15,17);
+    $data2 = array(70,22,45,67,23,13,59,63,34,12,13,15,17);
+    */
+    # The labels for the bar chart
+    /*$labels = array("All","Section 1","Section 2","Section 3","Section 4","Section 5",
+    "Section 6","Section 7","Section 8","Section 9","Section 10","Section 11",
+    "Section 12");
+    */
+    $labels = $lbl[2];
+    # Create a XYChart object of size 500 x 320 pixels
+    $c = new XYChart(700, 420);
+
+    # Set the plotarea at (100, 40) and of size 280 x 240 pixels
+    $c->setPlotArea(80, 140, 560, 240);
+
+    # Add a legend box at (400, 100)
+    $c->addLegend(80, 80)->setCols(4); //400, 100);
+
+
+    # Add a title to the chart using 14 points Times Bold Itatic font
+    $heading = "{$out[1][2]}-{$out[1][3]}-{$out[1][0]}-{$out[1][1]}";
+    # labname} - $labnum - $audit_id $audit_date";
+    $c->addTitle("Answers - by section\n{$heading}", "timesbi.ttf", 14);
+
+    # Add a title to the y axis. Draw the title upright (font angle = 0)
+    $textBoxObj = $c->yAxis->setTitle("Items Counts");
+    $textBoxObj->setFontAngle(90);
+
+    # Set the labels on the x axis
+    $c->xAxis->setLabels($labels)->setFontAngle(45);
+
+    # Add a stacked bar layer and set the layer 3D depth to 8 pixels
+    $layer = $c->addBarLayer2(Stack, 0);
+
+    # Add the three data sets to the bar layer
+    #$layer->addDataSet($data2, 0x00ff00, "Yes");
+    #$layer->addDataSet($data1, 0xff0000, "No");
+    #$layer->addDataSet($data0, 0xffffff, "Not Answered");
+    $layer->addDataSet($out[4], 0x00ff00, "Yes");
+    $layer->addDataSet($out[3], 0xffff00, "Partial");
+    $layer->addDataSet($out[2], 0xff0000, "No");
+    $layer->addDataSet($totals, 0xffffff, "Not Answered");
+
+    # Enable bar label for the whole bar
+    $layer->setAggregateLabelStyle();
+
+    # Enable bar label for each segment of the stacked bar
+    $layer->setDataLabelStyle();
+
+    # Output the chart
+    #header("Content-type: image/png");
+    #print($c->makeChart2(PNG));
+    $path = dirname(__DIR__) . '/../../public/tmp/';
+    $filename = $this->randFileName('png', 'levelschart');
+    $fname = "{$path}{$filename}";
+    $imgpath = "{$this->base->baseurl}/tmp/{$filename}";
+    logit("IMG: {$this->base->baseurl}-{$path}-{$filename}-{$fname}-{$imgpath}");
+    logit("FN: {$fname}");
+    $c->makeChart($fname);
+    return $imgpath;
+  }
 }

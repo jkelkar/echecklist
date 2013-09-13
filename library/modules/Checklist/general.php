@@ -276,12 +276,10 @@ function getReportTypes($t) {
       "{$t['Select']} ..."=> '-',
       "{$t['SLMTA data:Excel']}" => 'slmta2excel',
       "{$t['DATA:Excel']}" => 'audit2excel',
-      //"{$t['BAT:Excel']}" => 'bat2excel',
-      //"{$t['TB:Excel']}" => 'tb2excel',
       "{$t['Non Compliance Report']}" => 'ncexcel',
       "{$t['Compare scores in a Spider Chart']}" => 'spiderchart',
       "{$t['Compare scores in a Bar Chart']}" => 'barchart',
-      "{$t['Show Incomplete Audit']}" => 'incompletechart'
+      "{$t['Show Audit Counts Chart']}" => 'incompletechart'
   );
 }
 
@@ -393,18 +391,16 @@ function getTranslatables(/*$tword,*/ $langtag) {
       'Research',
       'Results & % Correct',
       'SLIPTA',
-      // 'SLIPTA:Excel',
       'SLMTA Audit',
       'SLMTA data:Excel',
       'SLMTA',
       'Select',
       'Semi-quantitative tests',
-      'Show Incomplete Audit',
+      'Show Audit Counts Chart',
       'Star',
       'Stars',
       'Surveillance Audit',
       'TB',
-      //'TB:Excel',
       'User',
       'Weekly',
       'Were results reported within 15 days?',

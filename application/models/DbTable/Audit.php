@@ -72,7 +72,7 @@ END;
     return $rows;
   }
 
-  public function _mkList($data) {
+  /*public function _mkList($data) {
     logit("MKL: {$data} " . print_r($data, true));
     $out = '';
     // if (count($data) == 0) {
@@ -114,7 +114,7 @@ END;
           return "in ({$out})";
       }
     }
-  }
+  }*/
 
   public function selectAudits($data) {
     global $userid;

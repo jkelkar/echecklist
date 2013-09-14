@@ -80,12 +80,15 @@ END;
     //logit("VARS: {$vars}");
     $pinfo = explode("/", $vars);
     //logit('PARTS: '. print_r($pinfo, true));
-    $audit_id = (int) $pinfo[3];
+    //$audit_id = (int) $pinfo[3];
+    $audit_id = $this->audit['audit_id'];
     $template_id = $data->getTemplateId($audit_id);
     $thistmpl = $tmpl->get($template_id);
     $tmpl_type = $thistmpl['tag'];
     $langtag = $this->echecklistNamespace->lang;
-    $thispage = (int) $pinfo[4];
+    $thispage = '';
+    if (count($pinfo) > 3)
+      $thispage = (int) $pinfo[3];
     $auditrow = $aud->getAudit($audit_id);
     $this->echecklistNamespace->audit = $auditrow;
     $this->echecklistNamespace->lab = array (
@@ -133,7 +136,7 @@ END;
       // logit("Page Tag {$page_row['tag']}\n");
       // Generate the entries to make a tree - using dtree
       $jsrows = array ();
-      $page_url = "{$baseurl}/audit/edit/{$audit_id}";
+      $page_url = "{$baseurl}/audit/edit"; #{$audit_id}";
       if ($prof) {
         $mt2 = microtime(true);
         $mtx = $mt2 - $mt;
@@ -157,6 +160,7 @@ END;
           logit("{$r['parent']} -> {$r['page_num']}");
         }
         $purl = "{$page_url}/{$r['page_num']}";
+        # $purl = "{$r['page_num']}";
         $ptag = $r['tag'];
         // logit("Tag: {$ptag}"); // this is tag data from the page table
         $pint = (int) substr($ptag, 7);
@@ -267,7 +271,8 @@ END;
       $pageid = $pagerow['page_id'];
       $nextpage = $pagerow['next_page_num'];
 
-      $page_url = "/audit/edit/{$audit_id}/{$nextpage}";
+      //$page_url = "/audit/edit/{$audit_id}/{$nextpage}";
+      $page_url = "/audit/edit/{$nextpage}";
       // logit("URINEW: {$newuri}");
       switch ($sbname) {
         case 'Cancel' :
@@ -342,7 +347,8 @@ END;
     $vars = $this->_request->getPathInfo();
     $pinfo = explode("/", $vars);
     //logit('PARTS: '. print_r($pinfo, true));
-    $audit_id = (int) $pinfo[3];
+    // $audit_id = (int) $pinfo[3];
+    $audit_id = $this->audit['audit_id'];
     $template_id = $data->getTemplateId($audit_id);
     $langtag = $this->echecklistNamespace->lang;
     //$thispage = '';
@@ -458,8 +464,8 @@ END;
     }
   }
 
-  public function findAction() {
-    $this->dialog_name = 'audit/find';
+  public function searchAction() {
+    $this->dialog_name = 'audit/search';
     // logit("In LS");
     $aud = new Application_Model_DbTable_Audit();
     if (! $this->getRequest()->isPost()) {
@@ -508,8 +514,8 @@ END;
     }
   }
 
-  public function selectAction() {
-    $this->dialog_name = 'audit/select';
+  public function runreportsAction() {
+    $this->dialog_name = 'audit/runreports';
     // logit("In LS");
     $aud = new Application_Model_DbTable_Audit();
     if (! $this->getRequest()->isPost()) {
@@ -1063,7 +1069,7 @@ END;
           $ss = (int) substr($name, 1, 2) . '.' . (int) substr($name, 3, 2);
           if ($ssinc > 0) {
             // $tracker[] = "SubSection {$ss} incomplete";
-            $line .= "{$ss}: Inc ";
+            $line .= "{$inc_div} {$ss}: Inc </div>";
           }
           $val = get_arrval($adrows, "{$name}_yn", '') . get_arrval($adrows, "{$name}_yna", '');
           //logit("ECT: {$name} ==> {$val} :" . $adrows['{$name}_inc']);
@@ -1076,7 +1082,7 @@ END;
             // check for comment
             if ($adrows["{$name}_comment"] == '') {
               // $tracker[] = "Missing comment: {$name}";
-              $line .= "$comm_div}{$sse}: Comm </div>";
+              $line .= "{$comm_div}{$sse}: Comm </div>";
             }
           }
           $nc =   get_arrval($adrows, "{$name}_nc", '');
@@ -1123,7 +1129,7 @@ END;
           $ss = (int) substr($name, 1, 2) . '.' . (int) substr($name, 3, 2);
           if ($ssinc > 0) {
             // $tracker[] = "SubSection {$ss} incomplete";
-            $line .= "{$ss}: Inc ";
+            $line .= "{$inc_div} {$ss}: Inc </div>";
           }
           $val = get_arrval($adrows, "{$name}", '-');
           //logit("ECT: {$name} ==> {$val} : " . get_arrval($adrows, "{$name}_inc", ''));

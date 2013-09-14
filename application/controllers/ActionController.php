@@ -217,37 +217,61 @@ class Application_Controller_Action extends Zend_Controller_Action {
     $complete_audit = '';
     $audit_id = $this->audit['audit_id'];
     logit("audit: " .  print_r($this->audit, true));
-    if (in_array($this->usertype, $complete_user)) {
-      $complete_audit = <<<"END"
+      $complete_audit .= <<<"END"
 <li class="divider"></li>
-<li><a href="{$this->baseurl}/audit/exportdata/$this->audit['id']"><span title=".icon  .icon-color  .icon-extlink " class="icon icon-color icon-extlink"></span> Export Data</a></li>
+<li class="tri"><span style="color:black;padding-left: 15px;"> With Selected Audit:</span></li>
 END;
-      if ($ao->isOwned($audit_id, $this->userid)) {
+
+    # incomplete and owned audit OR not incomplete audit can be viewed
+    if (($this->audit['status'] == 'INCOMPLETE' && $this->audit['owner']) || $this->audit['status'] != 'INCOMPLETE') {
+      $complete_audit .= <<<"END"
+<!li class="divider"></li-->
+<li><a href="{$this->baseurl}/audit/view"><span title=".icon  .icon-color  .icon-book " class="icon icon-color icon-book"></span> View Audit</a></li>
+END;
+    }
+    # only incomplete and owned audit can be edited
+    if ($this->audit['status'] == 'INCOMPLETE' && $this->audit['owner']) {
+      $complete_audit .= <<<"END"
+<!--li class="divider"></li-->
+<li><a href="{$this->baseurl}/audit/edit/"><span title=".icon  .icon-color  .icon-edit " class="icon icon-color icon-edit"></span> Edit Audit</a></li>
+END;
+    }
+    if (in_array($this->usertype, $complete_user)) {
+      $complete_audit .= <<<"END"
+<!--li class="divider"></li-->
+<li><a href="{$this->baseurl}/audit/exportdata"><span title=".icon  .icon-color  .icon-extlink " class="icon icon-color icon-extlink"></span> Export Audit Data</a></li>
+END;
+      if ($this->audit['owner']) {
+        # $ao->isOwned($audit_id, $this->userid)) {
         $complete_audit .= <<<"END"
 <li><a href="{$this->baseurl}/audit/delete"
-       onclick=" return confirm('Do you want to delete Audit (#{$this->audit['audit_id']}-{$this->audit['tag']})?');">
+       onclick=" return confirm('Do you want to delete Selected Audit?');">
     <span title=".icon  .icon-color .icon-trash " class="icon icon-color icon-trash"></span>
-    Delete #{$this->audit['audit_id']}</a></li>
+    Delete Audit</a></li>
 END;
       }
+      $complete_audit .= <<<"END"
+<li class="divider"></li>
+<li class="tri"><span style="color:black;padding-left: 15px;"> Change Audit State:</span></li>
+END;
       if ($this->audit['status'] == 'INCOMPLETE' && $ao->isOwned($audit_id, $this->userid)) {
         $complete_audit .= <<<"END"
 <li><a href="{$this->baseurl}/audit/complete">
-<span title=".icon  .icon-color  .icon-locked " class="icon icon-color icon-locked"></span> Mark Complete</a></li>
+<span title=".icon  .icon-color  .icon-locked " class="icon icon-color icon-locked"></span> Mark Audit Complete</a></li>
 END;
       }
       if ($this->audit['status'] == 'COMPLETE' && $ao->isOwned($audit_id, $this->userid)) {
         $complete_audit .= <<<"END"
 <li><a href="{$this->baseurl}/audit/incomplete">
-<span title=".icon  .icon-color  .icon-unlocked " class="icon icon-color icon-unlocked"></span> Mark Incomplete</a></li>
+<span title=".icon  .icon-color  .icon-unlocked " class="icon icon-color icon-unlocked"></span> Mark Audit Incomplete</a></li>
 END;
       }
       if ($this->audit['status'] == 'COMPLETE' && $this->usertype == 'APPROVER') {
         $complete_audit .= <<<"END"
-<li><a href="{$this->baseurl}/audit/finalize/$this->audit['id']"
-onclick=" return confirm('Do you want to finalize Audit (#{$this->audit['audit_id']}-{$this->audit['tag']})?');"><span title=".icon  .icon-color  .icon-sent " class="icon icon-color icon-sent"></span> Mark Finalized</a></li>
-<li><a href="{$this->baseurl}/audit/reject/$this->audit['id']"
-    onclick=" return confirm('Do you want to reject Audit (#{$this->audit['audit_id']}-{$this->audit['tag']})?');"><span title=".icon  .icon-color  .icon-cross " class="icon icon-color icon-cross"></span> Mark Rejected</a></li>
+<li><a href="{$this->baseurl}/audit/finalize"
+onclick=" return confirm('Do you want to finalize Audit (#{$this->audit['audit_id']}-{$this->audit['tag']})?');"><span title=".icon  .icon-color  .icon-sent " class="icon icon-color icon-sent"></span> Mark Audit Finalized</a></li>
+<li><a href="{$this->baseurl}/audit/reject"
+    onclick=" return confirm('Do you want to reject Audit (#{$this->audit['audit_id']}-{$this->audit['tag']})?');"><span title=".icon  .icon-color  .icon-cross " class="icon icon-color icon-cross"></span> Mark Audit Rejected</a></li>
 END;
       }
     }
@@ -282,16 +306,16 @@ END;
 END;
       }
       $this->header .= <<<"END"
-  <li><a href="{$this->baseurl}/audit/find"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Find Audit</a></li>
+  <li><a href="{$this->baseurl}/audit/search"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Search for Audit</a></li>
 {$complete_audit}
   <li class="divider"></li>
-  <li><a href="{$this->baseurl}/audit/select"><span title=".icon  .icon-color  .icon-newwin " class="icon icon-color icon-newwin"></span> Process Audits</a></li>
+  <li><a href="{$this->baseurl}/audit/runreports"><span title=".icon  .icon-color  .icon-newwin " class="icon icon-color icon-newwin"></span> Run Reports</a></li>
 END;
 
   if (in_array($this->usertype, $complete_user)) {
     $this->header .= <<<"END"
   <li class="divider"></li>
-  <li><a href="{$this->baseurl}/audit/import"><span title=".icon  .icon-blue .icon-import " class="icon icon-blue icon-archive"></span> Import</a></li>
+  <li><a href="{$this->baseurl}/audit/import"><span title=".icon  .icon-blue .icon-import " class="icon icon-blue icon-archive"></span> Import Audit</a></li>
 END;
   }
   $this->header .= <<<"END"
@@ -708,9 +732,9 @@ END;
 <td style='width:92px;font-weight:bold;'>Status</td>
 END;
     if (! $cb) {
-      $tout[] = "<td style='width:175px;font-weight:bold;'></td><td></td></tr>";
-    } else {
       $tout[] = "<td></td></tr>";
+    } else {
+      $tout[] = "</tr>";
     }
     foreach($rows as $row) {
       logit('Audit: ' . print_r($row, true));
@@ -718,9 +742,10 @@ END;
       //if ($)
       $ct ++;
       $cls = ($ct % 2 == 0) ? 'even' : 'odd';
-      $edit = ($row['status'] == 'INCOMPLETE' && $row['owner']) ?
+      /*$edit = ($row['status'] == 'INCOMPLETE' && $row['owner']) ?
       "<a href=\"{$this->baseurl}/audit/edit/{$row['audit_id']}/\" class=\"btn btn-mini btn-inverse\">Edit</a>" : '';
       $view = "<a href=\"{$this->baseurl}/audit/view/{$row['audit_id']}\" class=\"btn btn-mini btn-success\">View</a>";
+      */
       $adduser = '';
       if ($this->audit['audit_id'] != $row["audit_id"]) {
         $selx = "<a href=\"{$this->baseurl}/audit/choose/{$row["audit_id"]}\" class=\"btn btn-mini btn-info\">Select</a>";
@@ -752,10 +777,10 @@ END;
 
 END;
       if (! $cb) {
-        $tout[] = "<td>{$view} {$edit}</td><td></td></tr>";
+        $tout[] = "<td></td></tr>";
     //{$export} {$delete}
   } else {
-    $tout[] = "<td></td></tr>";
+    $tout[] = "</tr>";
   }
 }
 if ($cb) {

@@ -26,7 +26,7 @@ function Node(id, pid, name, url, title, target, icon, iconOpen, open) {
 	this._ai = 0;
 	this._p;
 };
-var prefix = '../../../';
+var prefix = '../../';
 
 //Tree object
 function dTree(objName) {

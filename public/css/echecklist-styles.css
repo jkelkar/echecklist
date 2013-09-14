@@ -240,6 +240,9 @@ table tr.even th, .even {
 table tr.odd th, .odd {
     background: none repeat scroll 0 0 #eaf0f3; /*#e5e5e5;*/
 }
+.tri {
+    background: none repeat scroll 0 0 #bbffdd; /*#D5D5D5;*/
+}
 table tr.hilight {
 	background: none repeat scroll 0 0 #ffff99;
 	border: 1px solid #ff9999;
@@ -371,7 +374,7 @@ input[type=text].ro {
 	width: 30px;
 }
 .brand {
-    width: 200px;
+    width: 170px;
 }
 ul.buttons {
     display: inline-block;
@@ -450,7 +453,7 @@ td.center {
 b.plus {
     font-size: 1.15em;
 }
-.brand {
+.brandx {
 width: 120px;
 }
 p.small {

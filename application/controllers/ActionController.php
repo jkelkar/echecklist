@@ -269,7 +269,7 @@ END;
 <span title=".icon  .icon-color  .icon-locked " class="icon icon-color icon-locked"></span> Mark Audit Complete</a></li>
 END;
       }
-      if ($this->audit['status'] == 'COMPLETE' && $ao->isOwned($audit_id, $this->userid)) {
+      if ($this->audit['status'] == 'COMPLETE' && $this->audit['owner']) { #$ao->isOwned($audit_id, $this->userid)) {
         $complete_audit .= <<<"END"
 <li><a href="{$this->baseurl}/audit/incomplete">
 <span title=".icon  .icon-color  .icon-unlocked " class="icon icon-color icon-unlocked"></span> Mark Audit Incomplete</a></li>

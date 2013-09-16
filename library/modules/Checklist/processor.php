@@ -165,65 +165,101 @@ class Processing extends Process_Common {
         $data = $this->collectRows($rows);
         logit('DATA: '. print_r($data, true));
         switch ($name) {
-        	case 'spiderchart':
-        	  logit("AUDITS: {$audits}");
-        	  $sql = <<<"SQL"
+          case 'spiderchart' :
+            logit("AUDITS: {$audits}");
+            $sql = <<<"SQL"
 select * from audit_data
  where audit_id {$audits}
    and (field_name like 's__\_total' or field_name like 'final_score')
  order by field_name
 SQL;
-        	  $arows = $check->queryRows($sql);
-        	  logit("AR: " . print_r($arows, true));
-        	  $data = $this->collectRows($arows);
-        	  $mql = <<<"SQL"
+            $arows = $check->queryRows($sql);
+            logit("AR: " . print_r($arows, true));
+            $indata = $this->collectRows($arows);
+            $mql = <<<"SQL"
 select varname, score from template_row
  where (varname like 's__\_total' or varname like 'all_total')
  order by varname
 SQL;
-        	  $mrows = $check->queryRows($mql);
-        	  logit("M: ". print_r($mrows, true));
-        	  $totals = array();
-        	  foreach ($mrows as $m) {
-        	    $totals[] = $m['score'];
-        	  }
-        	  logit("SQL: {$sql}");
-        	  // logit("AROWS: " . print_r($arows, true));
-        	  logit("DATA: " . print_r($data, true));
-        	  $img = $this->spider_chart($data, $totals);
-        	  $this->base->view->img = $img;
-        	  return 1;
-        	  break;
-        	case 'barchart':
-        	  logit("AUDITS: {$audits}");
-        	  $sql = <<<"SQL"
+            $mrows = $check->queryRows($mql);
+            logit("M: " . print_r($mrows, true));
+            $totals = array();
+            foreach($mrows as $m) {
+              if ($m['varname'] == 'all_total') {
+                $totals['final_score'] = $m['score'];
+              } else {
+                $totals[$m['varname']] = $m['score'];
+              }
+            }
+            logit("Labels: " . print_r($totals, true));
+            $data = array();
+            foreach($indata as $id => $d) {
+              $thisrow = array();
+              foreach($totals as $tn => $tv) {
+                $val = (key_exists($tn, $d)) ? $d[$tn] : 0;
+                logit("TOT: {$tn} => {$tv} : {$val}");
+                $thisrow[$tn] = $val;
+              }
+              $data[$id] = $thisrow;
+            }
+            logit("SQL: {$sql}");
+            // logit("AROWS: " . print_r($arows, true));
+            logit("DATA: " . print_r($data, true));
+            $img = $this->spider_chart($data, $totals);
+            $this->base->view->img = $img;
+            return 1;
+            break;
+          case 'barchart' :
+            logit("AUDITS: {$audits}");
+            $sql = <<<"SQL"
 select * from audit_data
  where audit_id {$audits}
    and (field_name like 's__\_total' or field_name like 'final_score')
  order by field_name
 SQL;
-        	  $arows = $check->queryRows($sql);
-        	  logit("AR: " . print_r($arows, true));
-        	  $data = $this->collectRows($arows);
-        	  $mql = <<<"SQL"
+            $arows = $check->queryRows($sql);
+            logit("AR: " . print_r($arows, true));
+            $indata = $this->collectRows($arows);
+            $mql = <<<"SQL"
 select varname, score from template_row
  where (varname like 's__\_total' or varname like 'all_total')
  order by varname
 SQL;
-        	  $mrows = $check->queryRows($mql);
-        	  logit("M: ". print_r($mrows, true));
-        	  $totals = array();
-        	  foreach ($mrows as $m) {
-        	    $totals[] = $m['score'];
-        	  }
-        	  logit("SQL: {$sql}");
-        	  // logit("AROWS: " . print_r($arows, true));
-        	  logit("DATA: " . print_r($data, true));
-        	  $img = $this->parallel_barchart($data, $totals);
-        	  $this->base->view->img = $img;
-        	  return 1;
-        	  break;
-        	  break;
+            $mrows = $check->queryRows($mql);
+            logit("M: " . print_r($mrows, true));
+            $totals = array();
+            foreach($mrows as $m) {
+              if ($m['varname'] == 'all_total') {
+                $totals['final_score'] = $m['score'];
+              } else {
+                $totals[$m['varname']] = $m['score'];
+              }
+            }
+            logit("Labels: " . print_r($totals, true));
+            $data = array();
+            foreach($indata as $id => $d) {
+              $thisrow = array();
+              foreach($totals as $tn => $tv) {
+                $val = (key_exists($tn, $d)) ? $d[$tn] : 0;
+                logit("TOT: {$tn} => {$tv} : {$val}");
+                $thisrow[$tn] = $val;
+              }
+              $data[$id] = $thisrow;
+            }
+            /*
+            $totals = array();
+            foreach($mrows as $m) {
+              $totals[] = $m['score'];
+            }
+            */
+            logit("SQL: {$sql}");
+            // logit("AROWS: " . print_r($arows, true));
+            logit("DATA: " . print_r($data, true));
+            $img = $this->parallel_barchart($data, $totals);
+            $this->base->view->img = $img;
+            return 1;
+            break;
+            break;
           case 'slipta2inc' :
             logit('S');
             break;
@@ -237,7 +273,7 @@ select sum(1) ct, substr(varname, 1,3) name
 SQL;
             $mrows = $check->queryRows($mql);
             $counts = array();
-            foreach ($mrows as $n => $v) {
+            foreach($mrows as $n => $v) {
               $counts[$n] = $v;
             }
             logit('Counts: ' . print_r($counts, true));
@@ -255,7 +291,7 @@ select sum(1) ct, substr(varname, 1,3) name
 SQL;
             $mrows = $check->queryRows($mql);
             $counts = array();
-            foreach ($mrows as $n => $v) {
+            foreach($mrows as $n => $v) {
               $counts[$n] = $v;
             }
             logit('Counts: ' . print_r($counts, true));

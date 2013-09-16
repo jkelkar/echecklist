@@ -112,7 +112,7 @@ class Application_Model_DbTable_Checklist extends Zend_Db_Table_Abstract
      * Update row at $id with this data
      * $data is an array with name value pairs
      */
-    logit('DATA: '. print_r($data, true));
+    //logit('DATA: '. print_r($data, true));
     $this->update($data, "id = {$id}");
   }
 
@@ -124,14 +124,14 @@ class Application_Model_DbTable_Checklist extends Zend_Db_Table_Abstract
   }
 
   public function _mkList($data) {
-    logit("MKL: {$data} " . print_r($data, true));
+    //logit("MKL: {$data} " . print_r($data, true));
     $out = '';
     // if (count($data) == 0) {
     //  return
     if (is_string($data)) {
       // logit('STR');
       $out =  "= '{$data}' ";
-      logit("MKLv: {$out}");
+      //logit("MKLv: {$out}");
       return $out;
     } else {
       // logit('ARR');
@@ -148,7 +148,7 @@ class Application_Model_DbTable_Checklist extends Zend_Db_Table_Abstract
       	  } else {
       	    $out .= "= {$data[0]}";
       	  }
-      	  logit("MKL: {$out}");
+      	  //logit("MKL: {$out}");
       	  return $out;
       	  break;
       	default :
@@ -161,7 +161,7 @@ class Application_Model_DbTable_Checklist extends Zend_Db_Table_Abstract
       	      $out .= "{$d}";
       	    }
       	  }
-      	  logit("MKL2: {$out}");
+      	  //logit("MKL2: {$out}");
       	  return "in ({$out})";
       }
       }

@@ -419,7 +419,7 @@ class Process_Common {
         "Section<*br*>12");
     $c = new PolarChart(860, 600, 0xe0e0e0, 0x000000, 1);
 
-    $textBoxObj = $c->addTitle("SLIPTA Audit Scoring", "arialbi.ttf", 15);
+    $textBoxObj = $c->addTitle("SLIPTA Audit Scores %", "arialbi.ttf", 15);
     //$textBoxObj->setBackground($c->patternColor(dirname(__FILE__)."/wood.png"));
 
 
@@ -448,7 +448,7 @@ class Process_Common {
 
     # Add the data as area layers
     $colrs = array(
-      0x66ff0000, 0x6600ff00, 0x660000ff #0xf0cc0000, 0xf000cc00, 0xf00000cc
+      0xccff0000, 0xcc00ff00, 0xcc0000ff, 0xf0cc0000, 0xf000cc00, 0xf00000cc
     );
     $i = -1;
     // calculate the % from actual and total scores
@@ -456,12 +456,16 @@ class Process_Common {
       $i++;
       logit("Data: ". print_r($d, true));
       $dx = array();
-      $j = -1;
-      foreach (array_slice($d, 1) as $n => $v) {
-        $j++;
-        $dx[] = (int) ($v/(int)$totals[$j] * 100);
+        //$j = -1;
+        #foreach($d as $n => $v) {
+      foreach($totals as $tn => $tv) {
+        //$j ++;
+        $dx[] = (int) ($d[$tn] / (int) $tv * 100);
       }
+      #}
+      logit("D: {$i} --{$id} ".print_r($dx, true));
       $c->addAreaLayer($dx, $colrs[$i], "Audit {$id}");
+
     }
     # Output the chart
     $path = dirname(__DIR__) . '/../../public/tmp/';
@@ -494,13 +498,13 @@ class Process_Common {
     $c->setPlotArea(80, 90, 580, 240);
 
     # Add a legend box at (400, 100)
-    $c->addLegend(80, 40)->setCols(3); //400, 100);
+    $c->addLegend(80, 40)->setCols(6); //400, 100);
 
     # Add a title to the chart using 14 points Times Bold Itatic font
-    $c->addTitle("Scores - by section", "timesbi.ttf", 14);
+    $c->addTitle(" %Scores - by section", "timesbi.ttf", 14);
 
     # Add a title to the y axis. Draw the title upright (font angle = 0)
-    $textBoxObj = $c->yAxis->setTitle("Items Counts");
+    $textBoxObj = $c->yAxis->setTitle("score in %");
     $textBoxObj->setFontAngle(90);
 
     # Set the labels on the x axis
@@ -511,11 +515,11 @@ class Process_Common {
     // set the bar gap
     $layer->setBarGap(0.4, TouchBar);
     $colrs = array(
-        0xe0ff0000, 0xe000ff00, 0xe00000ff,
-        0xf0cc0000, 0xf000cc00, 0xf00000cc
+        0xccff0000, 0xcc00ff00, 0xcc0000ff,
+        0x99cc0000, 0x9900cc00, 0x990000cc
     );
     $i = -1;
-    foreach ($data as $id => $d) {
+    /*foreach ($data as $id => $d) {
       $i++;
       logit("Data: ". print_r($d, true));
       $dx = array();
@@ -525,12 +529,25 @@ class Process_Common {
         $dx[] = (int) ($v/(int)$totals[$j] * 100);
       }
       $layer->addDataSet($dx, $colrs[$i], "Audit {$id}");
-    }
+    }*/
+    foreach ($data as $id => $d) {
+      $i++;
+      logit("Data: ". print_r($d, true));
+      $dx = array();
+      //$j = -1;
+      #foreach($d as $n => $v) {
+      foreach($totals as $tn => $tv) {
+        $dx[] = (int) ($d[$tn] / (int) $tv * 100);
+      }
+      logit("D: {$i} --{$id} ".print_r($dx, true));
+      $layer->addDataSet($dx, $colrs[$i], "Audit {$id}");
+
+      }
     # Enable bar label for the whole bar
     $layer->setAggregateLabelStyle();
 
     # Enable bar label for each segment of the stacked bar
-    $layer->setDataLabelStyle();
+    //$layer->setDataLabelStyle();
 
     # Output the chart
     $path = dirname(__DIR__) . '/../../public/tmp/';

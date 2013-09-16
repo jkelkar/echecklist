@@ -56,7 +56,8 @@ class LabController extends Application_Controller_Action // Zend_Controller_Act
     $lab = new Application_Model_DbTable_Lab();
     $vars = $this->_request->getPathInfo();
     $pinfo = explode("/", $vars);
-    $id = (int) $pinfo [3];
+    //$id = (int) $pinfo [3];
+    $id = $this->labid;
     $langtag = $this->echecklistNamespace->lang;
     $urldata = $this->getRequest()->getParams();
 
@@ -90,7 +91,7 @@ class LabController extends Application_Controller_Action // Zend_Controller_Act
       if ($this->collectData()) return;
       logit('Find: In post');
       logit('tdlab: ' . print_r($this->data, true));
-      $labs = $labh->getLabs($this->data, 0, 20);
+      $labs = $labh->getLabs($this->data); #, 0, 20);
       $lablines = $this->makeLabLines($labs);
       $this->makeDialog($this->data, $lablines);
 
@@ -111,19 +112,25 @@ class LabController extends Application_Controller_Action // Zend_Controller_Act
     logit('SELLAB: ' . print_r($row, true));
     $this->echecklistNamespace->lab = $row;
     logit('AT: ' . print_r($this->echecklistNamespace->lab, true));
-    $this->init();
+    $this->_redirector->gotoUrl($this->mainpage);
+    #$labs = $lab->getLabs($this->data, 0, 20);
+    #$lablines = $this->makeLabLines($labs);
+    #$this->makeDialog($this->data, $lablines);
+    #$this->_redirector->gotoUrl('/lab/select');
+    #$this->init();
     // $this->redirect($this->mainpage);
     // Show all audits for this
-    $audit = new Application_Model_DbTable_Audit();
-    $arows = $audit->selectAudits(array (
-        'labnum' => $row['labnum']
-    ));
-    logit('SELAUD: ' . print_r($arows, true));
+    #$audit = new Application_Model_DbTable_Audit();
+    #$arows = $audit->selectAudits(array (
+    #    'labnum' => $row['labnum']
+    #));
+    #logit('SELAUD: ' . print_r($arows, true));
 
-    $auditlines = $this->makeAuditLines($arows, array (
-        'addsel' => false
-    ));
-    $this->makeDialog($this->data, $auditlines);
+    #$auditlines = $this->makeAuditLines($arows, array (
+    #    'addsel' => false
+    #))
+    #;
+    #$this->makeDialog($this->data, $auditlines);
   }
 
   public function updateDocs($labid) {
@@ -150,6 +157,12 @@ class LabController extends Application_Controller_Action // Zend_Controller_Act
       $varname = 'labhead';
       $page_id = $tmplr->findPageId($tid, $varname);
       $auditd->handleLabData($dummy, $aid, $page_id, $labrow);
+      // update slmta data
+      $dummy = array('slmta_labtype' => 1);
+      $varname = 'slmta_labtype';
+      $page_id = $tmplr->findPageId($tid, $varname);
+      logit("SMLTA UPdate: {$dummy}-{$aid}-{$page_id}" . print_r($labrow, true));
+      $auditd->handleSLMTAData($dummy, $aid, $page_id, $labrow);
       logit("UPdated: ADid {$aid}-T {$tid}-V {$varname}-P {$page_id}". print_r($labrow, true));
     }
   }

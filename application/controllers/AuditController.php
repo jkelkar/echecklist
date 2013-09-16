@@ -41,7 +41,7 @@ END;
   <input type="hidden" name="nextpage" value="{$nextpage}" />
   <div style="float:right;">
     <input type="submit" value="Cancel" id="cancelbutton" name="sbname">
-    <input type="submit" value="Save" id="savebutton" name="sbname">
+    <input type="submit" tabindex="-1" value="Save" id="savebutton" name="sbname">
     <input type="submit" value="Save & Continue" id="continuebutton" name="sbname">
 </div></div>
 END;
@@ -122,6 +122,7 @@ END;
       $rows = $tmplr->getRows($template_id, $thispage, $langtag); // 1 is the template_id
       // if this page is display only we load values for page 0
       // page 0 has global data on it
+      logit("DISPO: {$display_only}");
       if ($display_only == 't') {
         $value = $data->getData($audit_id, 0); // page 0 has all global items for this audit
       } else {
@@ -209,6 +210,7 @@ END;
       $this->view->thispage = $thispage;
       $this->view->treelines = implode("\n", $jsrows);
       $olines = implode("\n", $tout);
+      logit('VALUE: '. print_r($value, true));
       if ($display_only == 't') {
         //logit("OUT:\n$olines");
         $olines = str_replace('"', '\"', $olines);
@@ -456,7 +458,7 @@ END;
       $ad = array('labhead' => 1);
       // 'ad' data is used to trigger copying lab data into audit_data
       $adata->handleLabData($ad, $newauditid, $page_id, $labrow);
-      $url = "/audit/edit/{$newauditid}/";
+      $url = "/audit/edit/";
       $this->echecklistNamespace->flash = "New {$this->data['audit_type']} audit #{$newauditid} created";
       $arow = $audit->getAudit($newauditid);
       $this->echecklistNamespace->audit = $arow;
@@ -475,11 +477,13 @@ END;
       // logit('Select: In post');
       if ($this->collectData())
         return;
-      if ($this->data['audit_type'] == '-' || $this->data['audit_type'] == '') {
+      logit('DATA: '. print_r($this->data, true));
+      /*if ($this->data['audit_type'] == '-' || $this->data['audit_type'] == '') {
         $this->echecklistNamespace->flash = "Select a Audit Type and continue";
         $this->makeDialog($this->data);
+        return;
         //$this->_redirector->gotoUrl('audit/select');
-      }
+      }*/
 
       $prefix = 'cb_';
       $this->collectExtraData($prefix);
@@ -590,9 +594,12 @@ END;
     $pinfo = explode("/", $vars);
     $id = (int) $pinfo[3];
     $audit = new Application_Model_DbTable_Audit();
+    $lab = new Application_Model_DbTable_Lab();
     $auditrow = $audit->getAudit($id);
     $this->echecklistNamespace->flash = "Selected audit #{$auditrow['audit_id']}";
     $this->echecklistNamespace->audit = $auditrow;
+    $labrow = $lab->get($auditrow['lab_id']);
+    $this->echecklistNamespace->lab = $labrow;
     $this->_redirector->gotoUrl($this->mainpage);
   }
 
@@ -778,8 +785,12 @@ END;
     unset($auditinfo['id']); // remove the id
     // logit("adding in audit: ". print_r($auditinfo, true));
     // insert audit row
+    // If an sudit status is FINALIZED down grade it to COMPLETED
+    if ($auditinfo['status'] == 'FINALIZED') {
+      $auditinfo['status'] = 'COMPLETED';
+    }
     $auditid = $audit->insertData($auditinfo);
-
+    logit("Imported audit is given #{$auditid}");
     // insert into audit_owner
     $ao = array (
         'audit_id' => $auditid,
@@ -794,7 +805,7 @@ END;
       // update the lab data with that from existing lab
     if ($haslab) {
       $defarray = array('labhead'=> 'place holder');
-      $audit_data->handleLabData($defarray, $auditid, '', $haslab);
+      $audit_data->handleLabData($defarray, $auditid, '-', $haslab);
     }
     // delete the physical file
     unlink($thisfile['path']);
@@ -835,6 +846,10 @@ END;
     $auditinfo = $data['audit'];
     unset($auditinfo['id']);
     $auditinfo['lab_id'] = $this->labid; // the current lab
+    // If an sudit status is FINALIZED down grade it to COMPLETED
+    if ($auditinfo['status'] == 'FINALIZED') {
+      $auditinfo['status'] = 'COMPLETED';
+    }
     // logit("Audit: {$auditid} " . print_r($auditinfo, true));
     $auditid = $audit->insertData($auditinfo);
 
@@ -854,7 +869,7 @@ END;
     $labrow = $lab->get($this->labid);
     // logit('LABROW: '. print_r($labrow, true));
     $defarray = array('labhead' => 'place holder');
-    $audit_data->handleLabData($defarray, $auditid, '', $labrow);
+    $audit_data->handleLabData($defarray, $auditid, '-', $labrow);
     //$auditdatarows = $audit_data->updateAuditWithLabInfo($auditdatarows, $labrow);
 
     // delete the physical file
@@ -927,6 +942,7 @@ END;
         }
       } else {
         // not SLIPTA
+        logit('not slipta');
         $audit->moveStatus($audit_id, $newstatus);
         $this->echecklistNamespace->flash = "Audit id #{$audit_id} has been changed to {$newstatus}";
         $this->echecklistNamespace->audit = null;
@@ -1050,11 +1066,12 @@ END;
             $tracker[] = $secbegin . $line;
           }
           $line = '';
-          $name = $vname;
-          //logit("sec: {$name} - ". get_arrval($adrows, "{$name}_secinc", 100));
-          if (get_arrval($adrows, "{$name}_secinc", 999) != 0) {
-            $secbegin = $sec_div . 'Section ' . (int) substr($name, 1). '</div>';
-            $line .= $inc_div . (int) substr($name, 1). ": Inc </div>";
+          //$name = $vname;
+          //logit("sec: {$vname} - ". get_arrval($adrows, "{$vname}_secinc", 100));
+          $secbegin = $sec_div . 'Section ' . (int) substr($vname, 1). '</div>';
+          if (get_arrval($adrows, "{$vname}_secinc", 999) != 0) {
+            //$secbegin = $sec_div . 'Section ' . (int) substr($vname, 1). '</div>';
+            $line .= $inc_div . (int) substr($vname, 1). ": Inc </div>";
           } else {
             $line .= '';
           }

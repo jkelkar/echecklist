@@ -257,7 +257,7 @@ function getSLMTATypes($t) {
       "{$t['Baseline Audit']}"=> 'BASE',
       "{$t['Midterm Audit']}"=> 'MIDTERM',
       "{$t['Exit Audit']}"=> 'EXIT',
-      "{$t['Surveillance Audit']}"=> 'SERV',
+      "{$t['Surveillance Audit']}"=> 'SURV',
       "{$t['Other']}"=> 'OTHER'
   );
 }
@@ -309,6 +309,7 @@ function rev($a, $t) {
   foreach($arr as $a => $b) {
     $revarr[$b] = $a;
   }
+  $revarr[''] = '';
   return $revarr;
 }
 
@@ -340,6 +341,8 @@ function getTranslatables(/*$tword,*/ $langtag) {
   $lang_word = new Application_Model_DbTable_Langword();
   $tword = $lang_word->getWords($langtag);
   $words = array(
+      '-',
+      '',
       'Admin',
       'Analyst',
       'Approver',

@@ -19,7 +19,7 @@ class Application_Model_DbTable_Audit extends Application_Model_DbTable_Checklis
                   'updated_at' => $fdt,
                   'slmta_status' => $sstatus
                   );
-    logit("AUDIT_DT: {$id} " . print_r($data, true));
+    //logit("AUDIT_DT: {$id} " . print_r($data, true));
     $this->update($data, "id = {$id}");
   }
 
@@ -52,7 +52,7 @@ END;
     /*if (!$rows) {
       throw new Exception("Could not find the audit.");
     }*/
-    return $rows[0];
+    return ($rows) ? $rows[0] : null;
   }
 
   public function getIncompleteAudits($id) {
@@ -133,7 +133,7 @@ END;
         unset($data[$n]);
         continue;
       }
-      logit("END {$n} ". print_r($data, true));
+      //logit("END {$n} ". print_r($data, true));
     }
     $sql = <<<"END"
 select a.id audit_id, a.end_date, a.cohort_id, a.status, a.slipta_official,

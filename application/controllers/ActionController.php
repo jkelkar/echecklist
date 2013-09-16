@@ -33,7 +33,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
   public $showaudit;
   public $drows;
   public $mainpage = '/audit/main';
-  public $poststatchange = '/audit/find';
+  public $poststatchange = '/audit/search';
   public $loginpage = '/user/login';
   public $ISOdtformat = 'Y-m-d H:i:s';
   public $ISOformat = 'Y-m-d';
@@ -96,18 +96,27 @@ class Application_Controller_Action extends Zend_Controller_Action {
       $this->labid = $this->lab['id'];
       $this->labname = $this->lab['labname'];
       $this->labnum = get_arrval($this->lab, 'labnum', 'No-NUM');
+      $this->showlab = "{$this->labnum}/{$this->labname}";
     } else {
       $this->lab = null;
       $this->labid = 0;
       $this->labname = '';
       $this->labnum = '';
+      $this->showlab = '';
     }
     if (! isset($this->echecklistNamespace->lang)) {
       $this->echecklistNamespace->lang = 'EN';
     }
-    if (isset($this->echecklistNamespace->audit)) {
-      // logit('AUEC: '. print_r($this->echecklistNamespace->audit, true));
+      // clear selected audit if labid is not for this audit
+    if (isset($this->echecklistNamespace->audit) || $this->echecklistNamespace->audit != null) {
+      $au = new Application_Model_DbTable_Audit();
+      $this->audit = $au->getAudit($this->echecklistNamespace->audit['audit_id']);
+      if ($this->labid != $this->audit['lab_id'])
+        $this->echecklistNamespace->audit = null;
+    }
 
+    if (isset($this->echecklistNamespace->audit) || $this->echecklistNamespace->audit != null) {
+      // logit('AUEC: '. print_r($this->echecklistNamespace->audit, true));
       $au = new Application_Model_DbTable_Audit();
       $this->audit = $this->echecklistNamespace->audit = $au->getAudit($this->echecklistNamespace->audit['audit_id']);
       $this->showaudit = "{$this->audit['tag']} - #{$this->audit['audit_id']}" .
@@ -330,6 +339,8 @@ END;
 <ul class="dropdown-menu">
   <li><a href="{$this->baseurl}/lab/create"><span title=".icon  .icon-green  .icon-tag " class="icon icon-green icon-tag"></span> New Lab</a></li>
   <li><a href="{$this->baseurl}/lab/select"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Select a Lab</a></li>
+  <li class="divider"></li>
+  <li><a href="{$this->baseurl}/lab/edit"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Edit Selected Lab</a></li>
 </ul>
 </div>
 
@@ -378,7 +389,7 @@ END;
       //}
       $this->header .= <<<"END"
 <div style="display:inline-block;">
-  <div style="margin:6px 0px 6px 20px;padding-right:5px;">Selected Lab: {$this->labnum}/{$this->labname}</div>
+  <div style="margin:6px 0px 6px 20px;padding-right:5px;">Selected Lab: {$this->showlab}</div>
     {$auditinfo}
   <div style="clear:both;"></div></div>
 END;
@@ -412,7 +423,7 @@ END;
     $title = $drows[0]['title'];
     $tout[] = <<<"END"
 <div style="margin-left:200px;"><h1 style="margin-bottom:10px;">{$title}
-<button onclick="return toggleHelp();">Help</button> </h1> </div>
+<button id="helpbutton" onclick="return toggleHelp();">Help</button> </h1> </div>
 <div style="margin:15px 0;">
 END;
     $tout[] = '<table border=0 style="width:900px;">';
@@ -631,9 +642,9 @@ END;
       $first = "<td style='width:55px;'></td>";
     }
     $etop = '';
-    if (in_array($this->usertype, $edit_users)) {
-      $etop = "<td style='width:50px;'></td>";
-    }
+    #if (in_array($this->usertype, $edit_users)) {
+    #  $etop = "<td style='width:50px;'></td>";
+    #}
     $tout[] = <<<"END"
 {$first}
 <td style='width:100px;font-weight:bold;'>Lab Number</td>
@@ -649,10 +660,10 @@ END;
       $ct ++;
       $cls = ($ct % 2 == 0) ? 'even' : 'odd';
       $edit = '';
-      if (in_array($this->usertype, $edit_users)) {
-        $edit = "<a href=\"{$this->baseurl}/lab/edit/{$row['id']}\"" .
-             " class=\"btn btn-mini btn-warning\">Edit</a>";
-      }
+      #if (in_array($this->usertype, $edit_users)) {
+      #  $edit = "<a href=\"{$this->baseurl}/lab/edit/{$row['id']}\"" .
+      #       " class=\"btn btn-mini btn-warning\">Edit</a>";
+      #}
       $line = '';
       if ($cb) {
         $name = "cb_{$row['id']}";

@@ -179,7 +179,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
 
   public function handleSLMTAData($data, $aid, $page_id, $labrow) {
     // copy lab data into the audit
-    $key = 'slmta_type';
+    $key = 'slmta_labtype';
     //logit('In handleLabData');
     //logit('LAB: '. print_r($labrow, true));
     if (array_key_exists($key, $data)) {
@@ -192,9 +192,10 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
       $audit = new Application_Model_DbTable_Audit();
       $n = 'cohort_id';
       $v = get_arrval($data, 'slmta_cohortid', '');
-      logit("COHORTID: $v");
+      //logit("COHORTID: $v");
       $sldata = array();
       $sldata[$n] = $v;
+      //logit("COCOR: {$v}->{$v}");
       $audit->updateData($sldata, $aid);
     }
   }
@@ -243,7 +244,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     $this->handleSLMTAData($data, $aid, $page_id, $labrow);
     $this->handleAuditHeadData($data, $aid);
     foreach($data as $n => $v) {
-      // logit ("BEFORE: {$n} ==> {$v}");
+      //logit ("BEFORE: {$n} ==> {$v}");
       $this->updateAuditDataField($aid, $n, $v, $page_id);
     }
     $this->updateFinalScore($aid, 0);
@@ -251,7 +252,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
 
   public function updateAuditDataField($did, $name, $value, $page_id = '') {
     $suff = end(preg_split("/_/", $name));
-    // logit ( "END: {$name} : {$value} --> {$suff}" );
+    logit ( "END: {$did}={$page_id}:{$name} : {$value} --> {$suff}" );
     $format = 'm/d/Y';
     $ISOformat = 'Y-m-d';
     $ival = 0;
@@ -325,7 +326,15 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
       // needed to escape the strings to hide the single quotes " ' "
       $tval = mysql_real_escape_string($tval);
       $sval = mysql_real_escape_string($sval);
-    if ($page_id != '') {
+      logit("{$page_id} PID");
+      if ($page_id == '-') { # && $page_id != 0) {
+        $sql = <<<"END"
+UPDATE audit_data set int_val={$ival}, text_val='{$tval}',
+string_val='{$sval}', date_val='{$dval->format($ISOformat)}', bool_val='{$bval}',
+field_type='{$ftype}' where audit_id={$did} and field_name='{$name}'
+END;
+    } else {
+      // if ($page_id == 0 || $page_id != '') {
       $sql = <<<"END"
 INSERT INTO audit_data (audit_id, field_name, int_val, text_val,
 string_val, date_val, bool_val, field_type, page_id)
@@ -337,14 +346,16 @@ audit_id={$did}, field_name='{$name}', int_val={$ival}, text_val='{$tval}',
 string_val='{$sval}', date_val='{$dval->format($ISOformat)}', bool_val='{$bval}',
 field_type='{$ftype}', page_id={$page_id}
 END;
-    } else {
+    }
+    /*else {
       $sql = <<<"END"
 UPDATE audit_data set int_val={$ival}, text_val='{$tval}',
 string_val='{$sval}', date_val='{$dval->format($ISOformat)}', bool_val='{$bval}',
 field_type='{$ftype}' where audit_id={$did} and field_name='{$name}'
 END;
     }
-    // logit("SQL: {$sql}");
+    */
+    logit("SQL: {$sql}");
     $ct = $this->queryRowcount($sql);
     return $ct;
   }
@@ -368,18 +379,21 @@ END;
         }
       }
       // calculate if it is a minimum of 55% or 143 points
-      $nax_score = 258;
+      $max_score = 258;
       $min_pct = 55; // 55% bar to cross
       $this->updateAuditDataField($did, 'final_score', $final_score, $page_id);
-      $final_pct = (int)$final_score / $max_score * 100;
+      $final_pct = (int)($final_score / $max_score * 100);
+      logit("PCT: {$final_pct}");
       $this->updateAuditDataField($did, 'final_pct', $final_pct, $page_id);
       $final_y = '';
       $final_n = '';
+      logit("XX: {$max_score},{$min_pct},{$final_score}");
       if ($final_score > (int) ($max_score * $min_pct / 100)) {
         $final_y = 'Y';
       } else {
         $final_n = 'N';
       }
+      logit("Updating: {$did}, final_y, {$final_y}, {$page_id}");
       $this->updateAuditDataField($did, 'final_y', $final_y, $page_id);
       $this->updateAuditDataField($did, 'final_n', $final_n, $page_id);
     }
@@ -461,6 +475,7 @@ END;
     foreach($rows as $row) {
       unset($row['id']);
       $row['audit_id'] = $auditid;
+      logit('AI_imp: '.print_r($row, true));
       $this->insertData($row);
     }
   }

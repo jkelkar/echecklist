@@ -53,6 +53,7 @@ class UserController extends Application_Controller_Action
           }
         }
         $this->echecklistNamespace->user = $xuser;
+        $this->echecklistNamespace->audit = null;
         // $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
         $this->_redirector->gotoUrl($this->mainpage);
       } else {
@@ -60,15 +61,7 @@ class UserController extends Application_Controller_Action
         $this->echecklistNamespace->flash = "UserId or password incorrect";
         $this->data['password'] = '';
         $this->makeDialog($this->data);
-      } /*else {
-          $row = $user->getUserByUsername($userid);
-          $xuser = array();
-          foreach($row as $a => $b) {
-          if ($a != 'password') { // FIXME - goto BCRYPT
-          $xuser [$a] = $b;
-          logit ("Added {$a} => {$b}");
-          }
-          }*/
+      }
     }
   }
 

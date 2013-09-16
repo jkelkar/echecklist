@@ -180,7 +180,7 @@ function BUTTON($name, $rtnval, $text, $type, $style = "", $class = "") {
   return "<button name=\"{$name}\" type=\"$type\" value=\"{$rtnval}\">{$text}</button>";
 }
 
-function INPUT($name, $value, $type="string", $length=0, $style="", $class='') {
+function INPUT($name, $value, $type="string", $length=0, $style="", $class='', $tabindex='') {
   $size = $dtype = '';
   switch ($type) {
     case 'date' :
@@ -218,9 +218,10 @@ function INPUT($name, $value, $type="string", $length=0, $style="", $class='') {
       $dtype = 'unexpected';
   }
   $val = ($type != 'submit') ? get_arrval($value, $name, '') : $value;
+  $ti = ($tabindex != '') ? "tabindex=\"$tabindex\"" : '';
   $out = <<<"END"
 <input name="{$name}" id="{$name}" onchange="noteChange();"
-type="{$itype}" class="input-xlarge {$dtype} {$class}" style="{$style}" value="{$val}" {$size} >
+type="{$itype}" {$ti} class="input-xlarge {$dtype} {$class}" style="{$style}" value="{$val}" {$size} >
 END;
 
   return $out;
@@ -797,11 +798,15 @@ function dialog_submit_button($row, $value, $t) {
   $val = $row['field_label'];
   $names = preg_split('/,/', $val);
   $out = '';
+  $ti = -2;
   foreach($names as $text) {
-    /*  INPUT($name, $text, 'submit', '', '', 'submit', "");
-    } else { */
+    if ($text != 'Cancel') {
+      $ti++;
+      if ($ti < -1) $ti = 1;
+      $out .= INPUT($name, $text, 'submit', '', '', 'submit', $ti);
+    } else {
       $out .= INPUT($name, $text, 'submit', '', '', 'submit');
-    //}
+    }
   }
   return $out;
 }

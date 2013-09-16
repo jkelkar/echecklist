@@ -47,9 +47,9 @@ class Application_Model_DbTable_User extends Application_Model_DbTable_Checklist
     $sql = "select * from user where name like '%{$username}%'";
     //$row = $this->fetchRow("username = '{$username}'" );
     $rows = $this->queryRows($sql);
-    if (!$rows) {
-      throw new Exception("No matching users found");
-    }
+    #if (!$rows) {
+    #  throw new Exception("No matching users found");
+    #}
     return $rows;
   }
 }

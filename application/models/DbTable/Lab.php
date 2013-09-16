@@ -39,7 +39,7 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
     return $out;
   }
 
-  public function getLabs($data, $start, $ct) {
+  public function getLabs($data, $start=0, $ct=1000) {
     /*
      * Get $ct labs starting at position $start
      */

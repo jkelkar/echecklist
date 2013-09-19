@@ -326,8 +326,8 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
       // needed to escape the strings to hide the single quotes " ' "
       $tval = mysql_real_escape_string($tval);
       $sval = mysql_real_escape_string($sval);
-      logit("{$page_id} PID");
-      if ($page_id == '-' && $page_id != 0) {
+      logit("'{$page_id}' PID");
+      if ($page_id === '-' && $page_id !== 0) {
         $sql = <<<"END"
 UPDATE audit_data set int_val={$ival}, text_val='{$tval}',
 string_val='{$sval}', date_val='{$dval->format($ISOformat)}', bool_val='{$bval}',
@@ -347,7 +347,7 @@ string_val='{$sval}', date_val='{$dval->format($ISOformat)}', bool_val='{$bval}'
 field_type='{$ftype}', page_id={$page_id}
 END;
     }
-    //logit("SQL: {$sql}");
+    logit("SQL: {$sql}");
     $ct = $this->queryRowcount($sql);
     return $ct;
   }

@@ -311,7 +311,7 @@ END;
   <span class="caret"></span></a>
 <ul class="dropdown-menu">
 END;
-      if (in_array($this->usertype, $complete_user)) {
+      if ($this->lab && in_array($this->usertype, $complete_user)) {
         $this->header .= <<<"END"
   <li><a href="{$this->baseurl}/audit/create"><span title=".icon  .icon-green .icon-clipboard " class="icon icon-green icon-clipboard"></span> New Audit</a></li>
 END;

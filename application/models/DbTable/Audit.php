@@ -4,12 +4,13 @@
  * This implements the model for template data
  */
 require_once 'modules/Checklist/logger.php';
+require_once 'modules/Checklist/datefns.php';
 
 class Application_Model_DbTable_Audit extends Application_Model_DbTable_Checklist {
   protected $_name = 'audit';
   private $debug = 0;
   private $format = 'Y-m-d H:i:s';
-
+  private $ISOformat = 'Y-m-d';
   public function UpdateTS_SLMTA($id, $sstatus) {
     $id = (int) $id;
     $dt = new DateTime();
@@ -181,19 +182,23 @@ END;
             break;
           case 'stdate' :
             if ($b != '') {
-              $sql .= " and a.end_date >= '{$stdate}' ";
+              $dval = convert_ISO($b);
+              logit("Date: {$name} {$dval->format($this->ISOformat)}");
+              $sql .= " and a.end_date >= '{$dval->format($this->ISOformat)}' ";
             }
             break;
           case 'enddate' :
             if ($b != '') {
-              $sql .= " and a.end_date <= '{$enddate}' ";
+              $dval = convert_ISO($b);
+              logit("Date: {$name} {$dval->format($this->ISOformat)}");
+              $sql .= " and a.end_date <= '{$dval->format($this->ISOformat)}' ";
             }
             break;
           default :
         }
       }
     }
-    // logit("SQL: {$sql}");
+    logit("SQL: {$sql}");
     $sql .= " order by a.end_date desc, a.audit_type";
     logit("CSQL: {$sql}");
     $rows = $this->queryRows($sql);

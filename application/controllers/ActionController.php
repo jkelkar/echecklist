@@ -108,7 +108,9 @@ class Application_Controller_Action extends Zend_Controller_Action {
       $this->echecklistNamespace->lang = 'EN';
     }
       // clear selected audit if labid is not for this audit
-    if (isset($this->echecklistNamespace->audit) || $this->echecklistNamespace->audit != null) {
+    $this->audit = null;
+    if (isset($this->echecklistNamespace->audit) ||
+         $this->echecklistNamespace->audit != null) {
       $au = new Application_Model_DbTable_Audit();
       $this->audit = $au->getAudit($this->echecklistNamespace->audit['audit_id']);
       if ($this->labid != $this->audit['lab_id'])
@@ -232,7 +234,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
 END;
 
     # incomplete and owned audit OR not incomplete audit can be viewed
-    if (($this->audit['status'] == 'INCOMPLETE' && $this->audit['owner']) || $this->audit['status'] != 'INCOMPLETE') {
+    if ($this->audit && (($this->audit['status'] == 'INCOMPLETE' && $this->audit['owner']) || $this->audit['status'] != 'INCOMPLETE')) {
       $complete_audit .= <<<"END"
 <!li class="divider"></li-->
 <li><a href="{$this->baseurl}/audit/view"><span title=".icon  .icon-color  .icon-book " class="icon icon-color icon-book"></span> View Audit</a></li>
@@ -245,7 +247,7 @@ END;
 <li><a href="{$this->baseurl}/audit/edit/"><span title=".icon  .icon-color  .icon-edit " class="icon icon-color icon-edit"></span> Edit Audit</a></li>
 END;
     }
-    if (in_array($this->usertype, $complete_user)) {
+    if ($this->audit && in_array($this->usertype, $complete_user)) {
       $complete_audit .= <<<"END"
 <!--li class="divider"></li-->
 <li><a href="{$this->baseurl}/audit/exportdata"><span title=".icon  .icon-color  .icon-extlink " class="icon icon-color icon-extlink"></span> Export Audit Data</a></li>
@@ -748,7 +750,7 @@ END;
       $tout[] = "</tr>";
     }
     foreach($rows as $row) {
-      logit('Audit: ' . print_r($row, true));
+      //logit('Audit: ' . print_r($row, true));
       if (! $row['owner'] && $row['status'] == 'INCOMPLETE') continue;
       //if ($)
       $ct ++;

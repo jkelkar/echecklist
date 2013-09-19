@@ -69,6 +69,10 @@ class UserController extends Application_Controller_Action
   public function logoutAction() {
     /* logout and clear the user entry from the session */
     unset($this->echecklistNamespace->user);
+    unset($this->echecklistNamespace->lab);
+    unset($this->echecklistNamespace->audit);
+    unset($this->echecklistNamespace->lang);
+
     $this->_redirector->gotoUrl("/user/login");
   }
 

@@ -218,6 +218,7 @@ END;
       }
       $this->view->outlines = $olines;
       $this->getButtons($page_row);
+      //$this->view->buttons = $this->_helper->help->getButtons($page_row);
       $this->view->hidden = implode("\n",
           array (
               "<input type=\"hidden\" name=\"audit_id\" value=\"{$audit_id}\">"
@@ -908,6 +909,10 @@ END;
 
   public function completeAction() {
     // mark audit complete
+    if (! isset($this->echecklistNamespace->audit) ) {
+        $this->echecklistNamespace->flash = 'First select and audit then retry';
+        $this->_redirector->gotoUrl($this->mainpage);
+    }
     $audit = new Application_Model_DbTable_Audit();
     $ao = new Application_Model_DbTable_AuditOwner();
     $newstatus = "COMPLETE";
@@ -1047,7 +1052,14 @@ END;
     $inc_div = '<div style="border:1px solid #cfc;background-color:#ccc;padding:3px;margin: 2px;display:inline-block;">';
     $tmplr = new Application_Model_DbTable_TemplateRows();
     $auditd = new Application_Model_DbTable_AuditData();
-    $tmpl_id = 1; // for SLIPTA
+    $page = new Application_Model_DbTable_Page();
+    $tmpl_id = 1; // for SLIPTA FIX ME to pick the template_id for this audit
+    $pagelist = $page->getSectionPages($tmpl_id);
+    $tag2page = array();
+    foreach($pagelist as $p) {
+        $tag2page[$p['tag']] = $p['page_num'];
+    }
+    // logit("Pagelist: " . print_r($tag2page, true));
     $tmplrows = $tmplr->getAllRowsNotext($tmpl_id, $this->langtag);
     $adrows = $auditd->getAllData($audit_id);
     $tracker = array();
@@ -1065,13 +1077,16 @@ END;
             logit('NEW:');
             $tracker[] = $secbegin . $line;
           }
-          $line = '';
+          $line = "";
           //$name = $vname;
           //logit("sec: {$vname} - ". get_arrval($adrows, "{$vname}_secinc", 100));
-          $secbegin = $sec_div . 'Section ' . (int) substr($vname, 1). '</div>';
+          $secnum = (int) substr($vname, 1);
+          $secname = "Section {$secnum}";
+          $url = "{$this->baseurl}/audit/edit/{$tag2page[$secname]}";
+          $secbegin = $sec_div . "<a href=\"{$url}\">Section {$secnum}</a></div>";
           if (get_arrval($adrows, "{$vname}_secinc", 999) != 0) {
             //$secbegin = $sec_div . 'Section ' . (int) substr($vname, 1). '</div>';
-            $line .= $inc_div . (int) substr($vname, 1). ": Inc </div>";
+            $line .= "$inc_div {$secnum}: Inc </div>";
           } else {
             $line .= '';
           }
@@ -1090,7 +1105,7 @@ END;
           }
           $val = get_arrval($adrows, "{$name}_yn", '') . get_arrval($adrows, "{$name}_yna", '');
           //logit("ECT: {$name} ==> {$val} :" . $adrows['{$name}_inc']);
-          logit("rVAL: {$name} {$val}");
+          //logit("rVAL: {$name} {$val}");
           $s1 = (int) substr($name, 1, 2);
           $s2 = (int) substr($name, 3, 2);
           $sse = "{$s1}.{$s2}";
@@ -1104,7 +1119,7 @@ END;
           }
           $nc =   get_arrval($adrows, "{$name}_nc", '');
           $note = get_arrval($adrows, "{$name}_note", '');
-          logit("{$name} NC: {$nc} - {$note}");
+          // logit("{$name} NC: {$nc} - {$note}");
           if ($nc == 'T' && $note == '') {
             // there should be a note - non compliant note - it is missing
             // $tracker[] = "Missing Non Compliant note: {$name}";
@@ -1114,13 +1129,13 @@ END;
             $name = ($i < 10) ? "{$vname}0{$i}" : "{$vname}{$i}";
             $val = get_arrval($adrows, "{$name}_yn", '') . get_arrval($adrows, "{$name}_yna", '');
             //logit("ECT: {$name} ==> {$val} :" . $adrows['{$name}_inc']);
-            logit("rVAL: {$name} {$val}");
+            // logit("rVAL: {$name} {$val}");
             $s1 = (int) substr($name, 1, 2);
             $s2 = (int) substr($name, 3, 2);
             $s3 = (int) substr($name, 5, 2);
             $sse = "{$s1}.{$s2}.{$s3}";
             if ($val && $val != 'YES' and $val != '-') {
-              logit("r1VAL: {$name} {$val}");
+              // logit("r1VAL: {$name} {$val}");
               // check for comment
               if ($adrows["{$name}_comment"] == '') {
                 // $tracker[] = "Missing comment: {$name}";
@@ -1129,7 +1144,7 @@ END;
             }
             $nc =   get_arrval($adrows, "{$name}_nc", '');
             $note = get_arrval($adrows, "{$name}_note", '');
-            logit("{$name} NC: {$nc} - {$note}");
+            // logit("{$name} NC: {$nc} - {$note}");
             if ($nc == 'T' && $note == '') {
               // there should be a note - non compliant note - it is missing
               // $tracker[] = "Missing Non Compliant note: {$name}";
@@ -1145,27 +1160,24 @@ END;
           //logit("ssinc: {$ssinc}");
           $ss = (int) substr($name, 1, 2) . '.' . (int) substr($name, 3, 2);
           if ($ssinc > 0) {
-            // $tracker[] = "SubSection {$ss} incomplete";
             $line .= "{$inc_div} {$ss}: Inc </div>";
           }
           $val = get_arrval($adrows, "{$name}", '-');
           //logit("ECT: {$name} ==> {$val} : " . get_arrval($adrows, "{$name}_inc", ''));
-          logit("nVAL: {$name} {$val}");
+          //logit("nVAL: {$name} {$val}");
           if ($val && $val != 'YES' && $val != '-') {
-            logit("n1VAL: {$name} {$val}");
+            //logit("n1VAL: {$name} {$val}");
             // check for comment
             if (get_arrval($adrows, "{$name}_comment", '') == '') {
-              // $tracker[] = "Missing comment: {$name}";
               $line .= "<div style=\"border:1px solid #ccc;background-color:#ddd;padding:3px;margin:2px;display:inline-block;\">{$ss}: Comm</div> ";
             }
           }
           $nc =   get_arrval($adrows, "{$name}_nc", '');
           $note = get_arrval($adrows, "{$name}_note", '');
-          logit("{$name} NC: {$nc} - {$note}");
+          //logit("{$name} NC: {$nc} - {$note}");
           if ($nc == 'T' && $note == '') {
             // there should be a note - non compliant note - it is missing
-            // $tracker[] = "Missing Non Compliant note: {$name}";
-            logit("NC: {$ss}");
+            //logit("NC: {$ss}");
             $line .= "<div style=\"border:1px solid #ccc;background-color:#ccf;padding:3px;margin: 2px;display:inline-block;\">{$ss}: nc note</div> ";
           }
           break;
@@ -1173,7 +1185,7 @@ END;
       }
     }
     if ($line != '') {
-      logit('end');
+      // logit('end');
       $tracker[] = "{$secbegin} {$line}";
     }
     // logit("IC: ". print_r($tracker, true));
@@ -1184,7 +1196,7 @@ END;
     return null;
   }
 
-  public function doAction() {
+  /*public function doAction() {
     // just a way to call code for testing
     require_once 'modules/Checklist/processCommon.php';
     $proc = new Process_Common();
@@ -1193,5 +1205,5 @@ END;
     $secs = 3600;
     $proc->rmOldFiles($path, $secs);
     // exit();
-  }
+  }*/
 }

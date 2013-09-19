@@ -20,7 +20,7 @@ class Application_Model_DbTable_Page extends Application_Model_DbTable_Checklist
     $sql = "select * from page where template_id = ". $template_id .
       " order by parent, page_id";
     $rows =  $this->queryRows($sql);
-    
+
     if (!$rows) {
       throw new Exception("Could not find any pages.");
     }
@@ -37,12 +37,12 @@ class Application_Model_DbTable_Page extends Application_Model_DbTable_Checklist
        ->where('template_id = ?', $template_id)
        ->where('page_num = ?', $page_num));
     **/
-    
+
     $sql = "select * from page where template_id = ". $template_id .
       " and page_num = {$page_num}" ;
     //logit("getPage: ". $sql);
     $rows =  $this->queryRows($sql);
-    
+
     if (!$rows) {
       throw new Exception("Could not find page.");
     }
@@ -55,7 +55,7 @@ public function getStartPage($template_id) {
     $sql = "select * from page where template_id = ". $template_id .
       " and start = 't'" ;
     $rows = $this->queryRows($sql);
-    
+
     if (!$rows) {
       throw new Exception("Could not find page.");
     }
@@ -72,6 +72,19 @@ public function getStartPage($template_id) {
     $rows = $this->getPages($template_id);
     return array('row' => $row,
                  'rows' => $rows);
+  }
+
+  public function getSectionPages($template_id) {
+    // get page_ids for section entries in this template
+    $template_id = (int) $template_id;
+    $sql = <<<"END"
+select page_num, tag from page
+ where template_id = {$template_id}
+   and tag like 'Section %'
+ order by tag
+END;
+    $rows = $this->queryRows($sql);
+    return $rows;
   }
 }
 

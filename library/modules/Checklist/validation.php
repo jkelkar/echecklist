@@ -10,7 +10,7 @@ function str_min_6($data) {
   return (is_string($data) && strlen($data) >= 6) ? null: "Must be at least 6 characters long";
 }
 function str_nempty($data) {
-  return (is_string($data) && strlen($data) > 0) ? null: "Must not be empty";
+  return (is_string($data) && strlen($data) > 0 && $data != '-') ? null: "Must not be empty";
 }
 
 function str_not_default($data) {

@@ -185,7 +185,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     if (array_key_exists($key, $data)) {
       $n = 'slmta_labtype';
       $v = $labrow['slmta_labtype'];
-      //logit("SLMTA_labtype: {$v}->{$v}");
+      logit("SLMTA_labtype: {$v}->{$v}");
       $this->updateAuditDataField($aid, $n, $v, $page_id);
 
       // update audit with slmta_cohortid
@@ -354,7 +354,7 @@ string_val='{$sval}', date_val='{$dval->format($ISOformat)}', bool_val='{$bval}'
 field_type='{$ftype}', page_id={$page_id}
 END;
     }
-    //logit("SQL: {$sql}");
+    logit("SQL: {$sql}");
     $ct = $this->queryRowcount($sql);
     return $ct;
   }

@@ -456,9 +456,14 @@ END;
       );
       $ao->insertData($aorow);
       // insert lab data into audit data
-      $ad = array('labhead' => 1);
+      $ad = array('labhead' => 1,
+      'slmta_cohortid' => null);
       // 'ad' data is used to trigger copying lab data into audit_data
       $adata->handleLabData($ad, $newauditid, $page_id, $labrow);
+      $varname = 'slmta_cohortid';
+      $page_id = $tmplr->findPageId($trow['id'], $varname);
+      logit("page_id + SLMTA: $page_id} " . print_r($ad, true) .' '.print_r($labrow, true));
+      $adata->handleSLMTAData($ad, $newauditid, $page_id, $labrow);
       $url = "/audit/edit/";
       $this->echecklistNamespace->flash = "New {$this->data['audit_type']} audit #{$newauditid} created";
       $arow = $audit->getAudit($newauditid);

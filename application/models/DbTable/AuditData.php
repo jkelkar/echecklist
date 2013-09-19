@@ -347,7 +347,7 @@ string_val='{$sval}', date_val='{$dval->format($ISOformat)}', bool_val='{$bval}'
 field_type='{$ftype}', page_id={$page_id}
 END;
     }
-    logit("SQL: {$sql}");
+    //logit("SQL: {$sql}");
     $ct = $this->queryRowcount($sql);
     return $ct;
   }

@@ -722,6 +722,9 @@ END;
       // logit('SLEN: ' . strlen($sdata) . ' ' . print_r($thisfile, true));
       $data = unserialize($sdata);
       $this->lab = $data['lab'];
+      if ($this->labname === '') {
+        $this->labname = 'No Lab Chosen - Select a Lab to use Choice #2';
+      }
       // logit('LAB: ' . print_r($this->lab, true));
       $this->audit = $data['audit'];
       // logit('AUDIT: ' . print_r($this->audit, true));
@@ -822,6 +825,10 @@ END;
     // ignore the lab info with the export
     // comes here from a link click
     $this->dialog_name = "audit/import2lab";
+    if (! $this->lab) { # no lab selected
+      $this->echecklistNamespace->flash = 'No lab selected, either select a lab or choose "Import Lab and Data" and retry';
+      $this->_redirector->gotoUrl($this->mainpage);
+    }
     logit('In audit/import2lab');
     $audit = new Application_Model_DbTable_Audit();
     $lab = new Application_Model_DbTable_Lab();

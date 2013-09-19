@@ -116,7 +116,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
   public function handleLabData($data, $aid, $page_id, $labrow) {
     // copy lab data into the audit
     $key = 'labhead';
-    //logit('In handleLabData');
+    logit('In handleLabData');
     //logit('LAB: '. print_r($labrow, true));
     if (array_key_exists($key, $data)) {
       $labfields = array(
@@ -179,8 +179,8 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
 
   public function handleSLMTAData($data, $aid, $page_id, $labrow) {
     // copy lab data into the audit
-    $key = 'slmta_labtype';
-    //logit('In handleLabData');
+    $key = 'slmta_cohortid';
+    //logit('In handleSLMTAData');
     //logit('LAB: '. print_r($labrow, true));
     if (array_key_exists($key, $data)) {
       $n = 'slmta_labtype';
@@ -204,6 +204,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     // update the AuditHaead (table audit) row with audit details
     // Handles:
     // start_date, end_date, slipta_official, slmta_type
+    //logit('handleAuditHeadData');
     if (array_key_exists('start_date', $data)) {
       // logit('updating dates: ' . print_r($data, true));
       $start_date = convert_ISO(get_arrval($data, 'start_date', ''));
@@ -236,23 +237,28 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
     if ($page_id != '') {
       $page_id = (int) $page_id;
     }
-    //logit("AD upd: {$aid} {$page_id} " . print_r($data, true));
-    // update lab info
-    // do all this only if labhead is a variable on this page
-    $this->handleLabData($data, $aid, $page_id, $labrow);
-    // logit('SLMTAData'. print_r($data, true));
-    $this->handleSLMTAData($data, $aid, $page_id, $labrow);
-    $this->handleAuditHeadData($data, $aid);
+    // first update the data in auditdata then do the rest
     foreach($data as $n => $v) {
       //logit ("BEFORE: {$n} ==> {$v}");
       $this->updateAuditDataField($aid, $n, $v, $page_id);
     }
+    //logit("AD upd: {$aid} {$page_id} " . print_r($data, true));
+    // update lab info
+    // do all this only if labhead is a variable on this page
+    $this->handleLabData($data, $aid, $page_id, $labrow);
+    //logit('SLMTAData'. print_r($data, true));
+    $this->handleSLMTAData($data, $aid, $page_id, $labrow);
+    $this->handleAuditHeadData($data, $aid);
+    /*foreach($data as $n => $v) {
+      //logit ("BEFORE: {$n} ==> {$v}");
+      $this->updateAuditDataField($aid, $n, $v, $page_id);
+    }*/
     $this->updateFinalScore($aid, 0);
   }
 
   public function updateAuditDataField($did, $name, $value, $page_id = '') {
     $suff = end(preg_split("/_/", $name));
-    logit ( "END: {$did}={$page_id}:{$name} : {$value} --> {$suff}" );
+    //logit ( "END: {$did}={$page_id}:{$name} : {$value} --> {$suff}" );
     $format = 'm/d/Y';
     $ISOformat = 'Y-m-d';
     $ival = 0;
@@ -278,6 +284,7 @@ class Application_Model_DbTable_AuditData extends Application_Model_DbTable_Chec
       case 'score' :
       case 'total' :
       case 'inc':
+      case 'cohortid':
       case 'secinc':
         $ival = (int) $value;
         $ftype = 'integer';

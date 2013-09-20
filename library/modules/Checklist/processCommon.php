@@ -334,10 +334,24 @@ class Process_Common {
     return $fileloc;
   }
 
-  public function genNCReport($audit_id) {
+  public function normalizeSecName($secid, $alpha) {
+    // if alpha then convert secid into alpha
+    // secid == 1 ==> 'A'
+    $o = '';
+    if ($alpha) {
+      $o = $this->i2a($secid);
+    } else{
+      $o = $secid;
+    }
+    return $o;
+  }
+
+  public function genNCReport($audit_id, $atype) {
     // generate the non compliance report$v['varname']
-    logit("AI: {$audit_id}");
+    logit("AI: {$audit_id}, {$atype}");
     global $langtag;
+    // alpha is true is section names are Alpha and false if Numerical
+    $alpha = (strtoupper($atype) == 'SLIPTA') ? false: true;
     $ar = new Application_Model_DbTable_AuditData();
     $au = new Application_Model_DbTable_Audit();
     $tr = new Application_Model_DbTable_TemplateRows();
@@ -354,6 +368,7 @@ class Process_Common {
     }
     $arows = $ar->getAllData($audit_id);
     $all = array();
+
     foreach($vlist as $v) {
       $vname = $v['varname'];
       // logit("V: {$vname}");
@@ -361,14 +376,14 @@ class Process_Common {
       $val = $q = '';
       switch ($vlen) {
       	case 5:
-      	  $q = (int) substr($vname, 1, 2) . '.' . (int) substr($vname, 3, 2);
+      	  $q = $this->normalizeSecName((int) substr($vname, 1, 2), $alpha) . '.' . (int) substr($vname, 3, 2);
       	  $key = $vname;
       	  if (key_exists($key, $arows))  $val = get_arrval($arows, $key, '');
       	  $key = "{$vname}_ynp";
       	  if (key_exists($key, $arows))  $val = get_arrval($arows, $key, '');
       	  break;
       	case 7:
-      	  $q = (int) substr($vname, 1, 2) . '.' . (int) substr($vname, 3, 2) . '.' . (int) substr($vname, 5, 2);
+      	  $q = $this->normalizeSecName((int) substr($vname, 1, 2), $alpha) . '.' . (int) substr($vname, 3, 2) . '.' . (int) substr($vname, 5, 2);
       	  $key = "{$vname}_yn";
       	  if (key_exists($key, $arows))  $val = get_arrval($arows, $key, '');
       	  $key = "{$vname}_yna";

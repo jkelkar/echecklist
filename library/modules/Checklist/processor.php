@@ -73,14 +73,15 @@ class Processing extends Process_Common {
             // this is the non compliance excel report
             logit("$name");
             $audit_id = $list[0];
-            $data = $this->genNCReport($audit_id);
+            $data = $this->genNCReport($audit_id, $base->data['audit_type']);
             $i = 1;
             $flabels = array('Non Conformities','Recommendations/Comments',
                 'Checklist Question','ISO 15189 References','Major/Minor');
 
             $fnames = array('comment','nc','question','isp','mm');
             $this->startWorkSheet($filehandle, $i, $heading, $flabels, $fnames, $data);
-            $fname = "NC_SLIPTA_{$audit_id}.xlsx";
+            $ucatype = strtoupper($base->data['audit_type']);
+            $fname = "NC_{$ucatype}_{$audit_id}.xlsx";
           } else {
             switch ($name) {
               case 'slmta2excel' :

@@ -183,14 +183,14 @@ END;
           case 'stdate' :
             if ($b != '') {
               $dval = convert_ISO($b);
-              logit("Date: {$name} {$dval->format($this->ISOformat)}");
+              logit("Date: {$dval->format($this->ISOformat)}");
               $sql .= " and a.end_date >= '{$dval->format($this->ISOformat)}' ";
             }
             break;
           case 'enddate' :
             if ($b != '') {
               $dval = convert_ISO($b);
-              logit("Date: {$name} {$dval->format($this->ISOformat)}");
+              logit("Date: {$dval->format($this->ISOformat)}");
               $sql .= " and a.end_date <= '{$dval->format($this->ISOformat)}' ";
             }
             break;

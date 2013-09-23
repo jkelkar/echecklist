@@ -263,8 +263,15 @@ class UserController extends Application_Controller_Action
       if ($this->collectData()) return;
       logit("USERID: {$id}");
       $row = $user->getUser($id);
+      if ($this->data['password'] != $this->data['password2']) {
+        $this->data['password'] = '';
+        $this->data['password2'] = '';
+        $this->echecklistNamespace->flash = "Passwords do not match";
+        $this->makeDialog();
+        return;
+      }
       if ($this->data['old_pw'] != $row['password']) {
-        $this->echecklistNamespace->flash = "Incorrent Password";
+        $this->echecklistNamespace->flash = "Incorrect Password";
         $this->makeDialog();
         return;
       }
@@ -272,25 +279,27 @@ class UserController extends Application_Controller_Action
 
         unset($this->data['password2']);
         unset($this->data['old_pw']);
+        unset($this->data['submit_button']);
       // logit('Data: ' . print_r($this->data));
         try {
           $user->updateData($this->data, $id);
           $this->echecklistNamespace->flash = "Password updated";
           $this->_redirector->gotoUrl($this->mainpage);
         } catch (Exception $e) {
+          logit('EX TR: '. var_dump($e->getTrace()));
           $this->data['password'] = '';
           $this->data['password2'] = '';
           $this->echecklistNamespace->flash = "An unexpected error occurred";
           $this->makeDialog();
           return;
         }
-      } else {
+      } /*else {
         $this->data['password'] = '';
         $this->data['password2'] = '';
         $this->echecklistNamespace->flash = "Passwords do not match";
         $this->makeDialog();
         return;
-      }
+      }*/
     }
   }
 

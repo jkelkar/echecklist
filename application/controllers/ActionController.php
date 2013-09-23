@@ -61,7 +61,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
 
   public function handleCancel() {
     // cancel action: take user to main screen
-    // logit('HC: ' . print_r($this->data, true));
+    logit('HC: ' . print_r($this->data, true));
     if ($this->data['submit_button'] == 'Cancel') {
       $this->data = array();
       $this->error = array();
@@ -610,6 +610,7 @@ END;
     $this->error[] = "</table>";
     if ($errorct == 0)
       $this->error = array();
+    //logit('COLL: '.print_r($this->data, true));
     $this->handleCancel();
     // logit("ECT: " . count($this->error));
     if (count($this->error) > 0) {

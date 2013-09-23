@@ -18,5 +18,16 @@ class Application_Model_DbTable_AuditOwner extends Application_Model_DbTable_Che
     $ct = $this->queryRowcount($sql);
     return ($ct > 0) ? true: false;
   }
+
+  public function getOwnersByAuditId($audit_id) {
+    // get all owners by audit id
+    $audit_id = (int) $audit_id;
+    $sql = <<<"SQL"
+select user.* from `user`, audit_owner ao
+ where ao.audit_id = {$audit_id} and ao.owner = user.id
+SQL;
+    $rows = $this->queryRows($sql);
+    return $rows;
+  }
 }
 

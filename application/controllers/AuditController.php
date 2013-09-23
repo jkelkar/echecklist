@@ -1208,6 +1208,25 @@ END;
     return null;
   }
 
+  public function showownersAction() {
+    // show the owners of the selected audit
+    $ao = new Application_Model_DbTable_AuditOwner();
+    if ($this->echecklistNamespace->audit) {
+      $audit_id = $this->echecklistNamespace->audit['audit_id'];
+      $urows = $ao->getOwnersByAuditId($audit_id);
+      $showlines = array();
+      $showlines[] = "<div style=\"margin-left:200px;\"><h3>Names of owners of (selected) audit id #{$audit_id}<br />";
+      $showlines[] = '<table">';
+      foreach($urows as $u) {
+        $showlines[] = "<span style=\"color:black;font-weight:normal;\">{$u['name']}</span><br />";
+      }
+      $showlines[] = '</table></div>';
+    }
+    $this->view->showlines = implode("\n", $showlines);
+    $this->_helper->layout->setLayout('overall');
+
+  }
+
   /*public function doAction() {
     // just a way to call code for testing
     require_once 'modules/Checklist/processCommon.php';

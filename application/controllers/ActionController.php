@@ -232,6 +232,7 @@ class Application_Controller_Action extends Zend_Controller_Action {
       $complete_audit .= <<<"END"
 <li class="divider"></li>
 <li class="tri"><span style="color:black;padding-left: 15px;"> With Selected Audit:</span></li>
+      <li><a href="{$this->baseurl}/audit/showowners"><span title=".icon  .icon-color  .icon-profile " class="icon icon-color icon-profile"></span> Show Owners</a></li>
 END;
 
     # incomplete and owned audit OR not incomplete audit can be viewed

@@ -26,122 +26,6 @@ require_once '../application/models/DbTable/Audit.php';
  * These implement widgets each of which is responsible for an instance
  * of an input area on the screen
  */
-/*
-function widget_select_yn($varname, $value, $t) {
-  $optvals = getYN($t);
-  return OPTIONS($varname, $optvals, $value);
-}
-
-
-
-function widget_select_ynp($varname, $value, $t) {
-  $optvals = getYNP($t);
-  return OPTIONS($varname, $optvals, $value);
-}
-
-function widget_select_ynp_ro($varname, $value, $t) {
-  / *
-   * This is a display for calculated choices
-   * /
-  $ro_char = "{$varname}_ynp";
-  $v_ro_char = get_arrval($value, $ro_char, 'N');
-  $out = <<<"END"
-<input class="ro" name="{$ro_char}" id="{$ro_char}"
-       type="text" readonly="readonly" value="{$v_ro_char}" size=3>
-END;
-  return $out;
-}
-
-function widget_select_ynp_calc($varname, $value, $t, $score) {
-  $optvals = getYNP($t);
-  return OPTIONS_CALC($varname, $optvals, $value, $score);
-}
-
-function widget_select_ynp_add($varname, $value, $t) {
-  $optvals = getYNP($t);
-  $sendid = substr($varname, 0, 3);
-  return OPTIONS_ADD($varname, $optvals, $value, "onclick=\"count_ynp_add('{$sendid}');\"");
-}
-
-function widget_select_yna_calc($varname, $value, $t, $score) {
-  $optvals = getYNA($t);
-  return OPTIONS_CALC($varname, $optvals, $value, $score);
-}
-function widget_select_yna_add($varname, $value, $t) {
-  $optvals = getYNA($t);
-  $sendid = substr($varname, 0, 3);
-  return OPTIONS_ADD($varname, $optvals, $value, "onclick=\"count_ynaa_add('{$sendid}');\"");
-}
-
-function widget_select_wp($varname, $value, $t) {
-  $optvals = array ( // "{$t['Select']} ..." => '-',
-      "{$t['Personal']}" => 'PERSONAL',
-      "{$t['Work']}" => 'WORK'
-  );
-  return OPTIONS($varname, $optvals, $value);
-}
-
-
-function widget_select_yni($varname, $value, $t) {
-  $optvals = getYNI($t);
-  return OPTIONS($varname, $optvals, $value);
-}
-
-
-function widget_select_usertype($varname, $value, $t, $noscript = true) {
-  $optvals = getUserTypes($t);
-  return OPTIONS($varname, $optvals, $value, $noscript);
-}
-
-
-function widget_select_pw($varname, $value, $t) {
-  $optvals = getPW($t);
-  return OPTIONS($varname, $optvals, $value);
-}
-
-
-function widget_select_yna($varname, $value, $t) {
-  $optvals = getYNA($t);
-  //logit ( "YNA: " . print_r ( $optvals, true ) );
-  return OPTIONS($varname, $optvals, $value);
-}
-
-function widget_select_stars($varname, $value, $t) {
-  $optvals = getStars($t);
-  return OPTIONS($varname, $optvals, $value);
-}
-
-function widget_select_lablevel($varname, $value, $t, $scr = '', $multiple = false) {
-  $optvals = getLevels($t);
-  return OPTIONS($varname, $optvals, $value, $scr, $multiple);
-}
-
-
-function widget_select_labaffil($varname, $value, $t, $scr = '', $multiple = false) {
-  $optvals = getAffiliations($t);
-  return OPTIONS($varname, $optvals, $value, $scr, $multiple);
-}
-
-function widget_dt($name, $value, $length = 14) {
-  return INPUT($name, $value, 'date', $length);
-}
-
-function widget_text100($name, $value) {
-  return INPUT($name, $value, 'string', 100);
-}
-
-function widget_text255($name, $value) {
-  return INPUT($name, $value, 'string', 255);
-}
-
-function widget_integer($name, $value, $length = 0) {
-  return INPUT($name, $value, 'integer', $length);
-}
-
-function widget_integersmall($name, $value, $length = 0) {
-  return INPUT($name, $value, 'integersmall', $length);
-}
-**/
 
 function html_main_heading($row) {
   $heading = $row['heading'];
@@ -440,12 +324,8 @@ END;
 
 
 function html_sec_elem_info_normal($row, $value, $t) {
-  /* $prefix = $row['prefix'];
-     $heading = $row['heading']; */
   $text = $row['text'];
-  /*$name = $row['varname'];
-  $dt = widget_dt($name, $value);
-  $script = '<script> $(function() {$( "' . "#{$name}" . '" ).datepicker();});</script>'; */
+
   $out = <<<"END"
 <td colspan=6 class="lg" style="padding: 2px 4px;font-style:italic;font-size:0.9em">
 {$text}
@@ -1342,23 +1222,13 @@ function html_bat_tel_type($row, $value, $t) {
   $names = array('end_date','dola',//'slmta_pas',
       'names_affil_t','labname','labnum','labaddr',
       'labtel','labfax','labemail','labhead','labheadtel','labheadteltype','lablevel','labaffil',
-      'labaffil_other',
-      //'prof_deg_num','prof_deg_yni','prof_dip_num','prof_dip_yni','prof_cert_num',
-      //'prof_cert_yni','microscopist_num','microscopist_yni','dataclerk_num','dataclerk_yni',
-      //'phlebo_num','phlebo_yni','cleaner_num','cleaner_yni','cleaner_dedicated','cleaner_trained',
-      //'driver_num','driver_yni','driver_dedicated','driver_trained','other_num','other_yni',
-      //'sufficient_space','sufficient_equipment','sufficient_supplies','sufficient_personnel',
-      //'sufficient_infra',
-      'biosafety_level', 'toxins_comment');
+      'labaffil_other', 'biosafety_level', 'toxins_comment');
   $v = array();
   foreach($names as $n) {
     $v[$n] = get_arrval($value, $n, '');
   }
-  // $stars_rev = rev("getStars", $t);
-  // $v['slmta_pas'] = $stars_rev[$v[$n]];
   $ll = getLL($v['lablevel']);
   $af = getAF($v['labaffil']);
-  //$st = getST($v['slmta_pas']);
   $tt = getTT($v['labheadteltype']);
   $v['labaddr'] = fixText($v['labaddr']);
   $out = <<<"END"
@@ -1522,8 +1392,6 @@ function html_tb_tel_type($row, $value, $t) {
   foreach($names as $n) {
     $v[$n] = get_arrval($value, $n, '');
   }
-  // $stars_rev = rev("getStars", $t);
-  // $v['slmta_pas'] = $stars_rev[$v[$n]];
   $ll = getLL($v['lablevel']);
   $af = getAF($v['labaffil']);
   $st = getST($v['slmta_pas']);
@@ -1670,13 +1538,9 @@ function html_panel_result($row, $value, $t) {
   $heading = $row['heading'];
   $text = $row['text'];
   $name = $row['varname'];
-  ///$smallint = widget_integer("{$name}_num", $value, 4);
   $smallint = get_arrval($value, "{$name}_num", '');
-  //$mc_yn = widget_select_yn("{$name}_yn", $value, $t);
   $mc_yn = get_arrval($value, "{$name}_yn", '');
-  //$dt = widget_dt("{$name}_dt", $value, 10);
   $dt = get_arrval($value, "{$name}_dt", '');
-  //$script = '<script> $(function() {$( "' . "#{$name}_dt" . '" ).datepicker();});</script>';
   $y = ($mc_yn == 'YES') ? 'Y': '';
   $n = ($mc_yn == 'NO') ? 'N': '';
   $out = <<<"END"
@@ -1700,7 +1564,6 @@ function html_info($row, $value, $t) {
   $heading = $row['heading'];
   $text = $row['text'];
   $name = $row['varname'];
-  //$tarea = TEXTAREA($name, $value, $style = "width:100%;height:250px;");
   $tval = get_arrval($value, $name, '');
   $out = <<<"END"
 <td colspan="6">
@@ -1828,20 +1691,6 @@ END;
   return $out;
 }
 
-/* Erin commented out 8/28/13
-function html_sec_elem_info_normal($row, $value, $t) {
-  $prefix = $row['prefix'];
-  $heading = $row['heading'];
-  $text = $row['text'];
-  $out = <<<"END"
-<div style="width:820px;border:1px solid #ccc;
-     background-color:#f0f0f0;padding:4px;font-size:14px;">
-  <b>{$heading}</b> {$text}
-</div>
-END;
-  return $out;
-  } */
-
 function html_sub_sec_info($row, $value, $t) {
   $heading = $row['heading'];
   $text = $row['text'];
@@ -1892,10 +1741,7 @@ END;
 }
 
 function html_bat_sec_head($row) {
-  // $prefix = $row ['prefix'];
   $heading = $row['heading'];
-  // $text = $row ['text'];
-  // $name = $row ['varname'];
   $out = <<<"END"
 <td colspan=6 style="padding:2px 4px;color:white;background-color:#666;">
   <div class="bat_banner_rev">
@@ -1949,7 +1795,6 @@ END;
 
 function html_bat_comment($row, $value, $t) {
   $name = $row['varname'];
-  //$tarea = TEXTAREA($name, $value, "width:810px;height:50px;margin:6px 10px 4px 10px;");
   $ta = fixText(get_arrval($value, $name, ''));
   $out = <<<"END"
 <td colspan="6">
@@ -1965,14 +1810,11 @@ function html_ynna_ct($row, $value, $t) {
   /*
    * Yes, No and N/A count for the section
    */
-  // $prefix = $row ['prefix'];
   $name = $row['varname'];
   $heading = $row['heading'];
   $v_y_ct = get_arrval($value, "{$name}_y_ct", 0);
   $v_n_ct = get_arrval($value, "{$name}_n_ct", 0);
   $v_na_ct = get_arrval($value, "{$name}_na_ct", 0);
-  //$text = $row ['text'];
-  //$info = $row ['info'];
   $name = $row['varname'];
   $ec = $row['element_count'];
   $out = <<<"END"
@@ -1992,14 +1834,11 @@ function html_ynp_ct($row, $value, $t) {
   /*
    * Yes, No and Partial count for the section
    */
-  // $prefix = $row ['prefix'];
   $name = $row['varname'];
   $heading = $row['heading'];
   $v_y_ct = get_arrval($value, "{$name}_y_ct", 0);
   $v_n_ct = get_arrval($value, "{$name}_n_ct", 0);
   $v_p_ct = get_arrval($value, "{$name}_p_ct", 0);
-  //$text = $row ['text'];
-  //$info = $row ['info'];
   $name = $row['varname'];
   $ec = $row['element_count'];
   $out = <<<"END"
@@ -2088,8 +1927,6 @@ function calculate_view($rows, $value, $langtag, $audit_type) { //$tword) {
   $tout = array ();
   $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
   $tout[] = '<table class="display">';
-  /*  $tout[] = '<table border=0  class="display">'; */
-  //logit("audit_type: {$audit_type}");
   switch ($audit_type) {
     case 'SLIPTA' :
       $tout[] = <<<"END"

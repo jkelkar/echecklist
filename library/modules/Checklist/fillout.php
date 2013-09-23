@@ -1219,11 +1219,11 @@ function partial_sub_sec_head_ynp($row, $value, $t) {
           <div style="display:inline-block;width:405px;">
             <div style="text-decoration:underline;font-weight:bold;display:inline;">{$head}</div>
             <div style="vertical-align:top;display:inline;">{$text}<br />
-              <div style="width:100%;text-align:right;margin-top:5px;">
+              <!--div style="width:100%;text-align:right;margin-top:5px;">
                 <label><input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
                               onclick="toggleNCBox(this);">Non-Compliant</label>
                 <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
-            </div></div>
+            </div--></div>
           </div>
           <div
              style="font-style:italic;font-weight:bold;font-size:10px;margin-top:5px;">{$info}</div>
@@ -1233,6 +1233,11 @@ function partial_sub_sec_head_ynp($row, $value, $t) {
     <td style="vertical-align:top;padding: 2px 4px;width:350px;">
       <div style="margin-right:5px;display:inline;">{$widget_nyp}</div>
       <div>{$tarea}</div>
+      <div style="width:100%;margin-top:5px;text-align:left;padding-left:13px;">
+                <label><input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
+                              onclick="toggleNCBox(this);">Non-Compliant</label>
+                <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
+            </div>
       <div id="div{$name}_nc" style="{$vis}" >
         Non Compliance Notes:<br />
         {$tareanc}
@@ -1310,43 +1315,6 @@ END;
   return $out;
 }
 
-/*function partial_sec_element_yn($row, $value, $t) {
-  $prefix = $row['prefix'];
-  $heading = $row['heading'];
-  if ($heading) {
-    $heading = $heading . '<br />';
-  }
-  $text = $row['text'];
-  $info = $row['info'];
-  $name = $row['varname'];
-  $mc_yn = widget_select_yn("{$varname}_yn", $value, $t);
-  $tarea = TEXTAREA("{$name}_comment", $value, "width:100%;height:50px;");
-  $out = <<<"END"
-<table style="width:100%;"><tr>
-<td style="vertical-align:top;padding: 2px 4px;">
-<div style="display:inline-block;vertical-align:top;">
-<div style="width:325px;">
-<div>
-    <div style="vertical-align:top;display:inline;">{$prefix}</div>
-    <div style="text-decoration:underline;font-weight:bold;vertical-align:top;display:inline;">{$heading}</div>
-<div style="vertical-align:top;display:inline;">{$text}</div>
-</div>
-</div>
-<div style="font-style:italic;font-weight:bold;font-size:10px;margin-top:4px;">{$info}</div>
-</div>
-</td>
-<td style="vertical-align:top;padding: 2px 4px;">
-<div style="">{$mc_yn} </div>
-</td>
-<td style="vertical-align:top;padding: 2px 4px;">
-{$tarea}
-</td>
-</tr></table>
-END;
-
-  return $out;
-}
-*/
 function partial_sec_element_yna($row, $value, $t) {
   $prefix = $row['prefix'];
   $heading = $row['heading'];
@@ -2193,36 +2161,6 @@ function partial_bat_element($row, $value, $t) {
       </td>
 </tr></table>
 END;
-
- /* $out = <<<"END"
-<div style="width:100%;">
-  <div style="padding: 2px 4px;">
-    <div style="display:inline-block;width:100%x;vertical-align:top;">
-      <div style="width:390px;padding-right:10px;display:inline;float:left;">
-        <div style="display:inline;font-weight:bold;width:30px;vertical-align:top;">{$prefix}</div>
-        <div style="display:inline-block;width:340px;">
-          <div style="vertical-align:top;display:inline;">{$text}
-            <div style="width:100%;text-align:right;margin-top:5px;">
-              <label><input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
-                      onclick="toggleNCBox(this);">Non-Compliant</label>
-              <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div style="width:400px;display:inline;float:left;">
-        <div style="">{$mc_yna} </div>
-          {$tarea}
-        <div id="div{$name}_nc" style="{$vis}" >
-          Notes:<br /> {$tareanc}
-        </div>
-      </div>
-    </div>
-    {$dinfo}
-  </div>
-</div>
-END;
-*/
   return $out;
 }
 

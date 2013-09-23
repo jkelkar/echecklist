@@ -688,7 +688,7 @@ class Process_Common {
     #$layer->addDataSet($data0, 0xffffff, "Not Answered");
     $layer->addDataSet($out[4], 0x00ff00, "Yes");
     $layer->addDataSet($out[3], 0xff0000, "No");
-    $layer->addDataSet($out[2], 0xffff00, "Not/Applicable");
+    $layer->addDataSet($out[2], 0xffff00, "N/A");
     $layer->addDataSet($totals, 0xffffff, "Not Answered");
 
     # Enable bar label for the whole bar

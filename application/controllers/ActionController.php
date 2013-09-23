@@ -329,6 +329,14 @@ END;
   <li><a href="{$this->baseurl}/audit/import"><span title=".icon  .icon-blue .icon-import " class="icon icon-blue icon-archive"></span> Import Audit</a></li>
 END;
   }
+  $editlabline = '';
+  if ($this->lab) {
+    $editlabline = <<<"END"
+       <li class="divider"></li>
+  <li><a href="{$this->baseurl}/lab/edit"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Edit Selected Lab</a></li>
+END;
+  }
+
   $this->header .= <<<"END"
 </ul>
 </div>
@@ -341,9 +349,8 @@ END;
 <ul class="dropdown-menu">
   <li><a href="{$this->baseurl}/lab/create"><span title=".icon  .icon-green  .icon-tag " class="icon icon-green icon-tag"></span> New Lab</a></li>
   <li><a href="{$this->baseurl}/lab/select"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Select a Lab</a></li>
-  <li class="divider"></li>
-  <li><a href="{$this->baseurl}/lab/edit"><span title=".icon  .icon-blue  .icon-search " class="icon icon-blue icon-search"></span> Edit Selected Lab</a></li>
-</ul>
+  {$editlabline}
+  </ul>
 </div>
 
 <div class="btn-group pull-left">

@@ -80,8 +80,9 @@ class Application_Controller_Action extends Zend_Controller_Action {
     $this->echecklistNamespace = new Zend_Session_Namespace('eChecklist');
     // logit("test: {$this->echecklistNamespace->lab['labnum']}");
     if (isset($this->echecklistNamespace->user)) {
+      //logit('user: '. print_r($this->echecklistNamespace->user, true));
       $u = $this->echecklistNamespace->user;
-      $user = $u;
+      // $user = $u;
       $this->usertype = $u['usertype'];
       $this->username = $u['userid'];
       $this->userfullname = $u['name'];

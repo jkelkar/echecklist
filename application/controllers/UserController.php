@@ -224,15 +224,25 @@ class UserController extends Application_Controller_Action
       // logit('Data: ' . print_r($this->data));
       $row = $user->getUser($id);
       if ($this->data['password'] == $row['password']) { // FIXME -use bcrypt
+        unset($this->data['submit_button']);
         unset($this->data['password']);
         unset($this->data['id']);
         logit('USER DATA: '. print_r($this->data, true));
         $user->updateData($this->data, $id);
+        $row = $user->getUserByUsername($this->data['userid']);
+        $xuser = array();
+        foreach($row as $a => $b) {
+          if ($a != 'password') {
+            $xuser [$a] = $b;
+            logit ("Added {$a} => {$b}");
+          }
+        }
+        $this->echecklistNamespace->user = $xuser;
         $this->_redirector->gotoUrl($this->mainpage);
       } else {
         unset($this->data['password']);
         $this->echecklistNamespace->flash = "Incorrect password";
-        $this->makeDialog($row);
+        $this->makeDialog($this->data);
       }
     }
   }

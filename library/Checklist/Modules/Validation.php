@@ -1,7 +1,7 @@
 <?php
 
 // all known validations are here
-class Checklist_modules_Validation
+class Checklist_Modules_Validation
 {
   function str_min_4($data) {
     return (is_string($data) && strlen($data) >= 4) ? null: "Must be at least 4 characters long";

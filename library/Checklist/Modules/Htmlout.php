@@ -3,18 +3,9 @@
 
 
 /**
- * using the htmls to fill out the row
+ * Generated the html for viewing the document
  */
 
-/**
- * This handles logging
- */
-/*
- * require_once 'modules/Checklist/general.php'; require_once
- * 'modules/Checklist/logger.php'; require_once
- * '../application/models/DbTable/Lab.php'; require_once
- * '../application/models/DbTable/Audit.php';
- */
 /**
  * these implement low level html code generators
  */
@@ -225,7 +216,7 @@ END;
     $yni = $this->general->get_arrval($value, "${name}_yni", '');
     // $intf = INPUT($name, $value, 'integer', 3, 'margin-right:10px;', '');
     // $mc_yni = widget_select_yni("{$name}_yni", $value, $t);
-    $prof = getPROF($yni);
+    $prof =  $this->general->getPROF($yni);
     $out = <<<"END"
 <td colspan="2" class="dhead">{$text}</td>
 <td colspan="2" style="text-align:center;">{$num}</td>
@@ -245,8 +236,8 @@ END;
     $text = $row['text'];
     $info = $row['info'];
     // $mc_yn = widget_select_yn("{$name}_yn", $value, $t);
-    $ded = getPROF($this->general->get_arrval($value, "{$name}_dedicated_yn", ''));
-    $tra = getPROF($this->general->get_arrval($value, "{$name}_trained_yn", ''));
+    $ded = $this->general->getPROF($this->general->get_arrval($value, "{$name}_dedicated_yn", ''));
+    $tra = $this->general->getPROF($this->general->get_arrval($value, "{$name}_trained_yn", ''));
     $out = <<<"END"
 <td colspan="4" class="laic">{$text}
   <br />
@@ -411,7 +402,7 @@ END;
       $ending = '</tr><tr><td colspan="6" class="nb"><div class="pagebreak" style="height:15px;">&nbsp;</div></td>';
     }
     // $this->log->logit("YN: {$name}_yn
-    $yn = getPROF($this->general->get_arrval($value, "{$name}_yn", ''));
+    $yn = $this->general->getPROF($this->general->get_arrval($value, "{$name}_yn", ''));
 
     $out = <<<"END"
 <td colspan="6" class="nb">
@@ -522,8 +513,8 @@ END;
     $scoreval = $this->general->get_arrval($value, $nscore, '');
     $selval = $this->general->get_arrval($value, "{$name}", '');
     $this->log->logit("{$name} -> {$selval}");
-    $ch = getYNPA($selval);
-    $comment = fixText(get_arrval($value, "{$name}_comment", ''));
+    $ch = $this->general->getYNPA($selval);
+    $comment = $this->general->fixText($this->general->get_arrval($value, "{$name}_comment", ''));
     $br = ($heading == '') ? '' : '<br />';
     $out = <<<"END"
 <td style="padding: 2px 4px;">
@@ -621,8 +612,8 @@ END;
     $scoreval = $this->general->get_arrval($value, $nscore, 0);
     $head = ($heading) ? "{$heading}<br />" : "";
     $yna = $this->general->get_arrval($value, "{$name}_ynp", '');
-    $ch = getYNPA($yna);
-    $comment = $this->general->fixText(get_arrval($value, "{$name}_comment", ''));
+    $ch = $this->general->getYNPA($yna);
+    $comment = $this->general->fixText($this->general->get_arrval($value, "{$name}_comment", ''));
     $br = ($heading == '') ? '' : '<br />';
     $out = <<<"END"
   <td style="padding: 2px 4px;">
@@ -662,7 +653,7 @@ END;
     $name = $row['varname'];
     $yna = $this->general->get_arrval($value, "{$name}_yna", '');
     $ch = $this->general->getYNPA($yna);
-    $comment = fixText(get_arrval($value, "{$name}_comment", ''));
+    $comment = $this->general->fixText($this->general->get_arrval($value, "{$name}_comment", ''));
 
     $out = <<<"END"
 <td style="padding: 2px 4px;">

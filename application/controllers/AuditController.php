@@ -3,7 +3,6 @@
 class AuditController extends Checklist_Controller_Action
 {
   public $debug = 0;
-  // private $mainpage = '';
   public function init()
   {
     /* Initialize action controller here */
@@ -26,7 +25,6 @@ class AuditController extends Checklist_Controller_Action
       $mt = microtime(true);
       $this->log->logit("Start: {$mt}");
     }
-    // $this->init();
     $tmplr = new Application_Model_DbTable_TemplateRows();
     $tmpl = new Application_Model_DbTable_Template();
     $data = new Application_Model_DbTable_AuditData();
@@ -37,10 +35,7 @@ class AuditController extends Checklist_Controller_Action
     $lang_word = new Application_Model_DbTable_langword();
     $this->dialog_name = 'audit/edit';
     $vars = $this->_request->getPathInfo();
-    // $this->log->logit("VARS: {$vars}");
     $pinfo = explode("/", $vars);
-    // $thi->log->logit('PARTS: '. print_r($pinfo, true));
-    // $audit_id = (int) $pinfo[3];
     $audit_id = $this->audit['audit_id'];
     $template_id = $data->getTemplateId($audit_id);
     $thistmpl = $tmpl->get($template_id);
@@ -57,20 +52,17 @@ class AuditController extends Checklist_Controller_Action
         'labname'=> $auditrow['labname'],
         'labnum'=> $auditrow['labnum']
     );
-    // $this->setupSession();
-    // $this->setHeader();
 
     if ($thispage == '')
     {
-      $fp = $page->getStartPage($template_id); // 1 is the template id
-      $thispage = $fp; // this is the first page of slipta template
+      $fp = $page->getStartPage($template_id);
+      $thispage = $fp; // this is the first page of template
     }
     else
     {
       $thispage = (int) $thispage;
     }
-    // $this->log->logit ( 'In slipta beginning' );
-    $nav = $page->getNav($template_id, $thispage); // 1 is the template_id
+    $nav = $page->getNav($template_id, $thispage);
     $page_row = $nav['row'];
     $display_only = $page_row['display_only'];
     $pageid = $page_row['page_id'];
@@ -78,7 +70,6 @@ class AuditController extends Checklist_Controller_Action
     if (! $this->getRequest()->isPost())
     {
       // write out the page
-      // $tword = $lang_word->getWords ( $langtag );
       if ($this->debug)
       {
         $this->log->logit("Got showpage value: {$thispage}");
@@ -86,18 +77,17 @@ class AuditController extends Checklist_Controller_Action
       }
       $rows = $tmplr->getRows($template_id, $thispage, $langtag);
       /*
-       * 1 is the template_id if this page is display only we load values for
+       * if this page is display only we load values for
        * page 0 page 0 has global data attached to it
        */
       $this->log->logit("DISPO: {$display_only}");
       if ($display_only == 't')
       {
-        $value = $data->getData($audit_id, 0); // page 0 has all global items
-                                                 // for this audit
+        $value = $data->getData($audit_id, 0);
       }
       else
       {
-        $value = $data->getData($audit_id, $pageid); // 1 is the audit_id
+        $value = $data->getData($audit_id, $pageid);
       }
 
       if ($this->debug)
@@ -107,7 +97,6 @@ class AuditController extends Checklist_Controller_Action
           $this->log->logit("Page data: {$a} => {$p}\n");
         }
       }
-      // $this->log->logit("Page Tag {$page_row['tag']}\n");
       // Generate the entries to make a tree - using dtree
       $jsrows = array();
       $page_url = "{$baseurl}/audit/edit"; // $audit_id}";
@@ -140,10 +129,7 @@ class AuditController extends Checklist_Controller_Action
           $this->log->logit("{$r['parent']} -> {$r['page_num']}");
         }
         $purl = "{$page_url}/{$r['page_num']}";
-        // $purl = "{$r['page_num']}";
         $ptag = $r['tag'];
-        // $this->log->logit("Tag: {$ptag}"); // this is tag data from the page
-        // table
         $pint = (int) substr($ptag, 7);
         if ($tmpl_type == 'SLIPTA' && strtolower(substr($ptag, 0, 7)) == 'section')
         {
@@ -153,7 +139,6 @@ class AuditController extends Checklist_Controller_Action
         {
           $incval = 0;
         }
-        // $this->log->logit("Secinc: {$ptag} {$incval}");
         $inc = '';
         if ($incval > 0)
         {
@@ -237,8 +222,6 @@ class AuditController extends Checklist_Controller_Action
       // $thispage = 0;
       foreach($formData as $a => $b)
       {
-        // $this->log->logit ( "FD: {$a} -- {$b}" );
-        // f ($a == 'thispage') {$thispage = (int)$b; continue;}
         if (in_array($a, $not_include))
         {
           continue;
@@ -252,7 +235,6 @@ class AuditController extends Checklist_Controller_Action
       $sbname = $formData['sbname'];
       $this->log->logit("action: {$sbname}");
       $uri = Zend_Controller_Front::getInstance()->getRequest()->getRequestUri();
-      // $this->log->logit("URI: {$uri}");
       $u = preg_split("/\//", $uri);
       if ($this->debug)
       {
@@ -273,9 +255,7 @@ class AuditController extends Checklist_Controller_Action
       $pageid = $pagerow['page_id'];
       $nextpage = $pagerow['next_page_num'];
 
-      // $page_url = "/audit/edit/{$audit_id}/{$nextpage}";
       $page_url = "/audit/edit/{$nextpage}";
-      // $this->log->logit("URINEW: {$newuri}");
       switch ($sbname)
       {
         case 'Cancel' :
@@ -297,19 +277,9 @@ class AuditController extends Checklist_Controller_Action
             $mt = $mt2;
           }
           $did = $formData['audit_id'];
-          // $this->log->logit("LABID: {$this->labid}");
           $labrow = $lab->get($this->labid);
-          // $this->log->logit('UPLAB: ' . print_r($labrow, true));
           $data->updateData($dvalue, $did, $pageid, $labrow);
           $srows = $data->get($did, 'slmta_status');
-          // $this->log->logit('AData: ' . print_r($srows, true));
-          /**
-           * // $aud->updateTS_SLMTA($did);
-           * // Pulls latest lab data into audit
-           * $this->updateFromLab($did);
-           * // saves latest slmta_status to Audit
-           * $this->updateToAudit($did);
-           */
           if ($prof)
           {
             $mt2 = microtime(true);
@@ -359,14 +329,9 @@ class AuditController extends Checklist_Controller_Action
     $lang_word = new Application_Model_DbTable_langword();
     $vars = $this->_request->getPathInfo();
     $pinfo = explode("/", $vars);
-    // $this->log->logit('PARTS: '. print_r($pinfo, true));
-    // $audit_id = (int) $pinfo[3];
     $audit_id = $this->audit['audit_id'];
     $template_id = $data->getTemplateId($audit_id);
     $langtag = $this->session->lang;
-    // $thispage = '';
-    // if (count($pinfo) > 4)
-    // $thispage = (int) $pinfo[4];
     $auditrow = $aud->getAudit($audit_id);
     $this->session->audit = $auditrow;
     $this->session->lab = array(
@@ -379,7 +344,6 @@ class AuditController extends Checklist_Controller_Action
     $rows = $tmplr->getAllRows($template_id, $langtag);
     $value = $data->getAllData($audit_id);
     $audit_type = $auditrow['tag'];
-    // $this->log->logit("AUDIT_ID: {$audit_type}");
     $tout = $htmlout->calculate_view($rows, $value, $langtag, $audit_type); // $tword
                                                                             // );
     $this->view->outlines = implode("\n", $tout);
@@ -392,18 +356,12 @@ class AuditController extends Checklist_Controller_Action
      * This is the first main page presented to a user - we may have to adjust
      * for other users
      */
-    // $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
     $this->dialog_name = 'audit/main';
     $format = 'Y-m-d H:i:s';
-    // $this->log->logit("{$this->dialog_name}");
     $audit = new Application_Model_DbTable_Audit();
-    // $vars = $this->_request->getPathInfo();
-    // $pinfo = explode("/", $vars);
     $id = (int) $this->session->user['id'];
     $langtag = $this->session->lang;
-    // if (! $this->getRequest()->isPost()) {
     $rows = $audit->getIncompleteAudits($id);
-    // $this->log->logit('AROWS: ' . print_r($rows, true));
     $auditlines = $this->makeAuditLines($rows);
     $this->makeDialog(null, $auditlines);
   }
@@ -422,11 +380,7 @@ class AuditController extends Checklist_Controller_Action
     $tmpl = new Application_Model_DbTable_Template();
     $tmplr = new Application_Model_DbTable_TemplateRows();
 
-    // $vars = $this->_request->getPathInfo();
-    // $pinfo = explode("/", $vars);
-    // // $id = (int) $pinfo[3];
     $langtag = $this->session->lang;
-    // $urldata = $this->getRequest()->getParams();
     if (! $this->getRequest()->isPost())
     {
       $this->makeDialog();
@@ -439,17 +393,14 @@ class AuditController extends Checklist_Controller_Action
       if ($this->data['audit_type'] == '-')
       {
         $this->session->flash = 'Choose a "Type of Audit" and continue';
-        // $this->makeDialog();
         $this->_redirector->gotoUrl('audit/create');
       }
-      // $this->log->logit('Data: ' . print_r($this->data));
 
       $trow = $tmpl->getByTag($this->data['audit_type']);
       // get page_id for 'labhead'
       $varname = 'labhead';
       $page_id = $tmplr->findPageId($trow['id'], $varname);
       $this->log->logit("PAGE_ID: {$page_id}");
-      // $this->log->logit("LABID: {$this->labid} TR:" . print_r($trow, true));
       $now = new DateTime();
       $nowiso = $now->format($this->ISOdtformat);
       // this will become the audit row
@@ -460,10 +411,6 @@ class AuditController extends Checklist_Controller_Action
           'updated_at'=> $nowiso,
           'updated_by'=> $this->userid,
           'audit_type'=> $this->data['audit_type'],
-          // 'start_date' =>
-          // convert_ISO($this->data['start_date'])->format($this->ISOformat),
-          // 'end_date' =>
-          // convert_ISO($this->data['end_date'])->format($this->ISOformat),
           'lab_id'=> $this->labid,
           'status'=> 'INCOMPLETE'
       );
@@ -504,7 +451,6 @@ class AuditController extends Checklist_Controller_Action
   public function searchAction()
   {
     $this->dialog_name = 'audit/search';
-    // $this->log->logit("In LS");
     $aud = new Application_Model_DbTable_Audit();
     if (! $this->getRequest()->isPost())
     {
@@ -512,8 +458,6 @@ class AuditController extends Checklist_Controller_Action
     }
     else
     {
-      // require_once 'modules/Checklist/processor.php';
-      // $this->log->logit('Select: In post');
       if ($this->collectData())
         return;
       $this->log->logit('DATA: ' . print_r($this->data, true));
@@ -521,16 +465,13 @@ class AuditController extends Checklist_Controller_Action
       $prefix = 'cb_';
       $audit_type = $this->data['audit_type'];
       $this->collectExtraData($prefix);
-      // $this->log->logit('OutExtraData: ' . print_r($this->extra, true));
       if (count($this->extra) > 0)
       {
         $list = array();
         foreach($this->extra as $n => $v)
         {
           $list[] = (int) substr($n, 3);
-          // $this->log->logit('LIST: '. print_r($list, true));
         }
-        // $this->log->logit('Auditsel: ' . print_r($this->data, true));
 
         $out = new Processing();
         $msg = $out->process($list, $name);
@@ -549,7 +490,6 @@ class AuditController extends Checklist_Controller_Action
   public function runreportsAction()
   {
     $this->dialog_name = 'audit/runreports';
-    // $this->log->logit("In LS");
     $aud = new Application_Model_DbTable_Audit();
     if (! $this->getRequest()->isPost())
     {
@@ -557,13 +497,10 @@ class AuditController extends Checklist_Controller_Action
     }
     else
     {
-      //require_once 'modules/Checklist/processor.php';
       $processor = new Checklist_Modules_Processor();
-      // $this->log->logit('Select: In post');
       if ($this->collectData())
         return;
 
-        // $this->log->logit('DATA: ' . print_r($this->data, true));
       if ($this->data['todo'] == '-' || $this->data['todo'] == '')
       {
         $this->session->flash = "Select a Report Type and continue";
@@ -580,8 +517,6 @@ class AuditController extends Checklist_Controller_Action
       $this->collectExtraData($prefix);
       $name = $this->data['todo'];
 
-      // $this->log->logit('OutData: ' . print_r($this->data, true));
-      // $this->log->logit('Going in for Extra stuff');
       $this->collectExtraData($prefix);
       $this->log->logit('OutExtraData: ' . print_r($this->extra, true));
       if (count($this->extra) > 0)
@@ -592,7 +527,6 @@ class AuditController extends Checklist_Controller_Action
           $list[] = (int) substr($n, 3);
         }
 
-        //$proc = new Processing();
         // clean up old files
         $path = dirname(__DIR__) . '/../public/tmp/';
         $this->log->logit("PATH: {$path}");
@@ -619,7 +553,6 @@ class AuditController extends Checklist_Controller_Action
       // nothing selected so paint the data lines
       $arows = $aud->selectAudits($this->data);
 
-      // $this->log->logit("AROWS: " . print_r($arows, true));
       $auditlines = $this->makeAuditLines($arows, array(
 
           'cb'=> true
@@ -631,7 +564,6 @@ class AuditController extends Checklist_Controller_Action
   public function chooseAction()
   {
     $this->dialog_name = 'user/addowner';
-    // $this->log->logit("{$this->dialog_name}");
     $vars = $this->_request->getPathInfo();
     $pinfo = explode("/", $vars);
     $id = (int) $pinfo[3];
@@ -648,34 +580,23 @@ class AuditController extends Checklist_Controller_Action
   public function exportxlsAction()
   {
     $this->dialog_name = 'audit/select';
-    // $this->log->logit("In LS");
     if (! $this->getRequest()->isPost())
     {
       $this->makeDialog();
     }
     else
     {
-      // $this->log->logit('Exportxls: In post');
       $prefix = 'cb_';
       $lprefix = strlen($prefix);
       if ($this->collectData())
         return;
       $this->collectextraData($prefix);
-      // $this->log->logit('Exportxls: ' . print_r($this->data, true));
-      // $this->log->logit('Exportxls+: ' . print_r($this->extra, true));
       $alist = array();
       foreach($this->extra as $n => $v)
       {
         $alist[] = (int) substr($n, $lprefix);
       }
-      // $this->log->logit('collected data: ' . print_r($alist, true));
       exit();
-      /*
-       * $aud = new Application_Model_DbTable_Audit(); $arows =
-       * $aud->selectAudits($this->data); $this->log->logit("AROWS: ".
-       * print_r($arows, true)); $this->makeDialog($this->data);
-       * $this->makeAuditLines($arows, true);
-       */
     }
   }
 
@@ -684,21 +605,17 @@ class AuditController extends Checklist_Controller_Action
     // Exports an audit to dataexport file (.edx)
     $export = new Checklist_Modules_Export();
     $this->dialog_name = 'audit/exportdata';
-    // $this->log->logit("In audit/exportdata");
     $vars = $this->_request->getPathInfo();
     $pinfo = explode("/", $vars);
     $id = $this->audit['audit_id'];
-    // $this->log->logit("Audit: ". print_r($this->audit, true));
     if (! $this->getRequest()->isPost())
     {
       // export includes a row of lab, audit and matching auditdata
       $out = $export->exportData($id);
       $outl = strlen($out['data']);
-      // $this->log->logit('EXP: ' . print_r($out, true));
       // The data is ready
       // The proposed name is: <lab_num>_<audit_type>_<audit_date>.edx
       $fname = $out['name'];
-      // $this->log->logit('FNAME: ' . $fname);
       // Send the file
       // call the action helper to send the file to the browser
       $this->_helper->layout->disableLayout();
@@ -711,7 +628,6 @@ class AuditController extends Checklist_Controller_Action
     }
     else
     {
-      // $this->log->logit('Import: In post');
       $this->collectData();
     }
   }
@@ -720,9 +636,7 @@ class AuditController extends Checklist_Controller_Action
   {
     // Imports a dataexport file
     $this->dialog_name = 'audit/import';
-    // $this->log->logit("In audit/import");
     $path = dirname(__DIR__) . '/tmp/';
-    // $this->log->logit("PATH: {$path}");
     $adapter = new Zend_File_Transfer_Adapter_Http();
     $adapter->setDestination($path);
     $toimport = new Application_Model_DbTable_ToImport();
@@ -732,25 +646,17 @@ class AuditController extends Checklist_Controller_Action
       {
         $this->_redirector->gotoUrl('audit/fileparse');
       }
-      // $this->log->logit('now1:');
-      // $this->log->logit("EC: {$this->session->flash}");
       $this->makeDialog();
     }
     else
     {
-      // $this->log->logit('Import: In post');
       if (! $adapter->receive())
       {
         $messages = $adapter->getMessages();
-        // $this->log->logit('MSGS: ' . print_r(implode("\n", $messages),
-        // true));
-        // $this->log->logit('msgout1: ');
         $this->session->flash = 'File not loaded - No file selected';
-        // $this->makeDialog();
         $this->_redirector->gotoUrl('audit/import');
       }
       $files = $adapter->getFileInfo();
-      // $this->log->logit('FILE: ' . print_r($files, true));
       $uploadedfile = $files['uploadedfile'];
 
       $data = array();
@@ -758,9 +664,7 @@ class AuditController extends Checklist_Controller_Action
       $data['path'] = $uploadedfile['tmp_name'];
       if (strlen($data['path']) < 10)
       {
-        // $this->log->logit('msgout1: no file');
         $this->session->flash = 'File not loaded - Retry';
-        // $this->makeDialog();
         $this->_redirector->gotoUrl('audit/import');
       }
       $id = $toimport->insertData($data);
@@ -772,7 +676,6 @@ class AuditController extends Checklist_Controller_Action
   {
     // audit import file has been seen - now process it.
     $this->dialog_name = 'audit/fileparse';
-    // $this->log->logit("In audit/fileparse");
     if (! $this->getRequest()->isPost())
     {
       // read the imported file and extract the
@@ -780,27 +683,17 @@ class AuditController extends Checklist_Controller_Action
       $toimport = new Application_Model_DbTable_ToImport();
       $thisfile = $toimport->getByOwner($this->userid);
       $sdata = file_get_contents($thisfile['path']);
-      // $this->log->logit('SLEN: ' . strlen($sdata) . ' ' . print_r($thisfile,
-      // true));
       $data = unserialize($sdata);
       $this->lab = $data['lab'];
       if ($this->labname === '')
       {
         $this->labname = 'No Lab Chosen - Select a Lab to use Choice #2';
       }
-      // $this->log->logit('LAB: ' . print_r($this->lab, true));
       $this->audit = $data['audit'];
-      // $this->log->logit('AUDIT: ' . print_r($this->audit, true));
       $tmpl = new Application_Model_DbTable_Template();
       $tid = $this->audit['template_id'];
-      // $this->log->logit("TID: {$tid}");
       $this->tmpl_row = $tmpl->get($tid);
-      // get($this->audit['template_id']);
       $this->makeDialog();
-    }
-    else
-    {
-      // $this->log->logit('Import: In post');
     }
   }
 
@@ -809,7 +702,6 @@ class AuditController extends Checklist_Controller_Action
     // import the entire export file as is
     // comes here from a link click
     $this->dialog_name = "audit/importall";
-    // $this->log->logit('In audit/importall');
     $audit = new Application_Model_DbTable_Audit();
     $lab = new Application_Model_DbTable_Lab();
     $audit_data = new Application_Model_DbTable_AuditData();
@@ -827,43 +719,28 @@ class AuditController extends Checklist_Controller_Action
      */
     $thisfile = $toimport->getByOwner($this->userid);
     $sdata = file_get_contents($thisfile['path']);
-    // $this->log->logit('SLEN: ' . strlen($sdata) . ' ' . print_r($thisfile,
-    // true));
     $data = unserialize($sdata);
     $labinfo = $data['lab'];
     $labnum = $labinfo['labnum'];
-    // $this->log->logit('LAB: ' . print_r($labinfo, true));
     $auditinfo = $data['audit'];
-    // $this->log->logit("Audit: {$auditid} " . print_r($auditinfo, true));
     $auditdatarows = $data['audit_data'];
-    // $this->log->logit("Inserting data: {$auditid} - " .
-    // count($auditdatarows));
     $haslab = $lab->getLabByLabnum($labnum);
     if (! $haslab)
     {
       // the labnum is not in the system
       // so install this lab data
-      // $this->log->logit("No such lab: {$labnum}");
       unset($labinfo['id']); // remove the id
       $labid = $lab->insertData($labinfo);
-      // $this->log->logit("Lab: {$labid} " . print_r($labinfo, true));
       $auditinfo['lab_id'] = $labid;
     }
     else
     {
       // update audit info with the lab id (from this system)
-      // $this->log->logit("Lab exists: ". print_r($haslab, true));
       // replace the lab info with that from the selected lab
-      // $auditdatarows = $audit_data->updateAuditWithLabInfo($auditdatarows,
-      // $haslab);
       $auditinfo['lab_id'] = $haslab['id'];
     }
     unset($auditinfo['id']); // remove the id
-                             // $this->log->logit("adding in audit: ".
-                             // print_r($auditinfo, true));
-                             // insert audit row
-                             // If an sudit status is FINALIZED down grade it to
-                             // COMPLETED
+
     if ($auditinfo['status'] == 'FINALIZED')
     {
       $auditinfo['status'] = 'COMPLETED';
@@ -877,11 +754,9 @@ class AuditController extends Checklist_Controller_Action
         'owner'=> $this->userid
     );
     $aoid = $auditowner->insertData($ao);
-    // $this->log->logit("AOID: {$aoid}");
 
     // insert the audit data rows
     $audit_data->insertAs($auditdatarows, $auditid);
-    // $this->log->logit('LABROW: '. print_r($labrow, true));
     // update the lab data with that from existing lab
     if ($haslab)
     {
@@ -929,8 +804,6 @@ class AuditController extends Checklist_Controller_Action
 
     $thisfile = $toimport->getByOwner($this->userid);
     $sdata = file_get_contents($thisfile['path']);
-    // $this->log->logit('SLEN: ' . strlen($sdata) . ' ' . print_r($thisfile,
-    // true));
     $data = unserialize($sdata);
     $auditdatarows = $data['audit_data'];
     // we do not need the lab data as we will use the current lab
@@ -939,13 +812,14 @@ class AuditController extends Checklist_Controller_Action
     $auditinfo = $data['audit'];
     unset($auditinfo['id']);
     $auditinfo['lab_id'] = $this->labid; // the current lab
-                                         // If an sudit status is FINALIZED down
-                                         // grade it to COMPLETED
+    /**
+     *  If an sudit status is FINALIZED
+     *    downgrade it to COMPLETED
+     */
     if ($auditinfo['status'] == 'FINALIZED')
     {
       $auditinfo['status'] = 'COMPLETED';
     }
-    // $this->log->logit("Audit: {$auditid} " . print_r($auditinfo, true));
     $auditid = $audit->insertData($auditinfo);
 
     // insert into audit_owner
@@ -956,23 +830,15 @@ class AuditController extends Checklist_Controller_Action
         'owner'=> $this->userid
     );
     $aoid = $auditowner->insertData($ao);
-    // $this->log->logit("AOID: {$aoid}");
-
     // insert the audit data rows
-    // $this->log->logit("Inserting data: {$auditid} - ".
-    // count($auditdatarows));
     $audit_data->insertAs($auditdatarows, $auditid);
     // change the original audit data to that of the current lab
     $labrow = $lab->get($this->labid);
-    // $this->log->logit('LABROW: '. print_r($labrow, true));
     $defarray = array(
 
         'labhead'=> 'place holder'
     );
     $audit_data->handleLabData($defarray, $auditid, '-', $labrow);
-    // $auditdatarows = $audit_data->updateAuditWithLabInfo($auditdatarows,
-    // $labrow);
-
     // delete the physical file
     unlink($thisfile['path']);
 
@@ -1031,7 +897,6 @@ class AuditController extends Checklist_Controller_Action
       // if type is SLIPTA - check for incomplete
       $audit_id = $this->audit['audit_id'];
       // BAT and TB can be incomplete and it is OK
-      // $this->log->logit('AU: '. print_r($this->audit, true));
       if ($this->audit['status'] != 'INCOMPLETE' && $ao->isOwned($audit_id, $this->userid))
       {
         $this->session->flash = "Audit id #{$audit_id} status is not INCOMPLETE";
@@ -1040,8 +905,6 @@ class AuditController extends Checklist_Controller_Action
       }
       if ($this->audit['tag'] == 'SLIPTA')
       {
-        // $audit_id = $this->audit['audit_id'];
-        // $this->log->logit("COMP: {$audit_id}");
         // icmap contains the incomplete elements for use in completing
         $icmap = $this->iscomplete($audit_id);
         if ($icmap)
@@ -1049,12 +912,10 @@ class AuditController extends Checklist_Controller_Action
           // is not complete so show incomplete map
           $this->view->outlines .= $icmap;
           $this->_helper->layout->setLayout('overall');
-          // $this->log->logit("IC");
         }
         else
         {
-          // $this->log->logit("no IC"); // It is complete - move status to
-          // complete
+          // It is complete - move status to complete
           $audit->moveStatus($audit_id, $newstatus);
           $this->session->flash = "Audit id #{$audit_id} has been changed to {$newstatus}";
           // clear selected audit
@@ -1096,18 +957,15 @@ class AuditController extends Checklist_Controller_Action
       // if type is SLIPTA - check for incomplete
       $audit_id = $this->audit['audit_id'];
       // BAT and TB can be incomplete and it is OK
-      // $this->log->logit('AU: '. print_r($this->audit, true));
       if ($this->audit['status'] != 'COMPLETE' && $ao->isOwned($audit_id, $this->userid))
       {
         $this->session->flash = "Audit id #{$audit_id} status is not COMPLETE";
         $this->_redirector->gotoUrl($this->poststatchange);
-        // return ;
       }
       $audit->moveStatus($audit_id, $newstatus);
       $this->session->flash = "Audit id #{$audit_id} has been changed to {$newstatus}";
       $this->session->audit = null;
       $this->_redirector->gotoUrl($this->poststatchange);
-      // return;
     }
     else
     {
@@ -1130,19 +988,16 @@ class AuditController extends Checklist_Controller_Action
       // if type is SLIPTA - check for incomplete
       $audit_id = $this->audit['audit_id'];
       // BAT and TB can be incomplete and it is OK
-      // $this->log->logit('AU: '. print_r($this->audit, true));
       if ($this->audit['status'] != 'COMPLETE')
       {
         $this->session->flash = "Audit id #{$audit_id} status is not COMPLETE";
         $this->session->audit = null;
         $this->_redirector->gotoUrl($this->poststatchange);
-        // return ;
       }
       $audit->moveStatus($audit_id, $newstatus);
       $this->session->flash = "Audit id #{$audit_id} has been changed to {$newstatus}";
       $this->session->audit = null;
       $this->_redirector->gotoUrl($this->poststatchange);
-      // return;
     }
     else
     {
@@ -1165,29 +1020,22 @@ class AuditController extends Checklist_Controller_Action
       // if type is SLIPTA - check for incomplete
       $audit_id = $this->audit['audit_id'];
       // BAT and TB can be incomplete and it is OK
-      // $this->log->logit('AU: '. print_r($this->audit, true));
       if ($this->audit['status'] != 'COMPLETE')
       {
         $this->session->flash = "Audit id #{$audit_id} status is not COMPLETE";
         $this->session->audit = null;
         $this->_redirector->gotoUrl($this->poststatchange);
-        // return ;
       }
       $audit->moveStatus($audit_id, $newstatus);
       $this->session->flash = "Audit id #{$audit_id} has been changed to {$newstatus}";
       $this->session->audit = null;
       $this->_redirector->gotoUrl($this->poststatchange);
-      // return;
     }
     else
     {
       $this->session->flash = 'Invalid action';
       $this->_redirector->gotoUrl($this->mainpage);
     }
-  }
-
-  public function complete2Action()
-  {
   }
 
   public function showownersAction()
@@ -1211,11 +1059,4 @@ class AuditController extends Checklist_Controller_Action
     $this->_helper->layout->setLayout('overall');
   }
 
-  /*
-   * public function doAction() { // just a way to call code for testing
-   * require_once 'modules/Checklist/processCommon.php'; $proc = new
-   * Process_Common(); $path = dirname(__DIR__) . '/../public/tmp/';
-   * logit("PATH: {$path}"); $secs = 3600; $proc->rmOldFiles($path, $secs); //
-   * exit(); }
-   */
 }

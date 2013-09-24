@@ -9,7 +9,6 @@ abstract class Checklist_Controller_Action extends Zend_Controller_Action
   public $_redirector = '';
   public $debug = 1;
   public $baseurl = '';
-  // user
   public $langtag;
   public $usertype = '';
   public $username = '';
@@ -44,25 +43,14 @@ abstract class Checklist_Controller_Action extends Zend_Controller_Action
     $this->log = new Checklist_Logger();
     $this->general = new Checklist_Modules_General();
     $this->fillout = new Checklist_Modules_Fillout();
-    // $this->log->logit('In init3');
-    // $this->log->logit("TD: " . $this->general->TD('ABCD'));
     $this->val = new Checklist_Modules_Validation();
-    // $this->log->logit('In init1');
-    // $this->log->logit("MT act init: " . microtime(true));
     $this->baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
     $this->_redirector = $this->_helper->getHelper('Redirector');
-    // $this->log->logit('In initx');
-
     $this->setupSession();
-    // $this->log->logit("CHECK: {$this->labid}, {$this->labname},
-    // {$this->labnum}");
     $this->setHeader();
     $this->setHeaderFiles();
-    // $this->log->logit('In init');
     $vars = $this->_request->getPathInfo();
     $pinfo = explode("/", $vars);
-    // $this->log->logit('In init2');
-    // $this->log->logit('PINFO: ' . print_r($pinfo, true));
     if (! isset($this->session->user) && ! ($pinfo[1] == 'user' && $pinfo[2] == 'login'))
     {
       $this->_redirector->gotoUrl($this->loginpage);
@@ -93,30 +81,20 @@ abstract class Checklist_Controller_Action extends Zend_Controller_Action
     /* start the session */
     global $userid, $langtag;
     $this->session = new Zend_Session_Namespace('eChecklist');
-    // $this->log->logit("test: {$this->session->lab['labnum']}");
     if (isset($this->session->user))
     {
-      // $this->log->logit('user: '. print_r($this->session->user, true));
       $u = $this->session->user;
-      // $user = $u;
       $this->usertype = $u['usertype'];
       $this->username = $u['userid'];
       $this->userfullname = $u['name'];
       $userid = $this->userid = $u['id'];
-      // $this->log->logit("{$this->username}, {$this->usertype},
-      // {$this->userfullname}, {$this->userid}");
     }
-    // $this->log->logit('In ss1');
-
-    // $this->log->logit('TIME1: ' . isset($this->session->lab));
     if (isset($this->session->lab))
     {
 
       $this->lab = $this->session->lab;
-      // $this->log->logit('ECLAB: ' . print_r($this->lab, true));
       $this->labid = $this->lab['id'];
       $this->labname = $this->lab['labname'];
-      // $this->log->logit('GEN: 1' . print_r($this->general, true));
       $this->labnum = $this->general->get_arrval($this->lab, 'labnum', 'No-NUM');
       $this->showlab = "{$this->labnum}/{$this->labname}";
     }
@@ -144,14 +122,11 @@ abstract class Checklist_Controller_Action extends Zend_Controller_Action
 
     if (isset($this->session->audit) || $this->session->audit != null)
     {
-      // $this->log->logit('AUEC: '. print_r($this->session->audit, true));
       $au = new Application_Model_DbTable_Audit();
       $this->audit = $this->session->audit = $au->getAudit(
                                                           $this->session->audit['audit_id']);
       $this->showaudit = "{$this->audit['tag']} - #{$this->audit['audit_id']}" .
            "- {$this->audit['labname']}";
-      // $this->log->logit('ec audit: ' . print_r($this->audit, true));
-      // / {$this->audit['updated_at']}";
     }
     else
     {
@@ -159,8 +134,6 @@ abstract class Checklist_Controller_Action extends Zend_Controller_Action
       $this->showaudit = '';
     }
     $langtag = $this->view->langtag = $this->langtag = $this->session->lang;
-    // $this->langtag = $this->session->lang;
-    // $this->log->logit('LT: '. $this->view->langtag);
     Zend_Session::start();
   }
 
@@ -220,16 +193,11 @@ abstract class Checklist_Controller_Action extends Zend_Controller_Action
         '/charisma/js/charisma.js',
         '/js/helpers.js'
     );
-    // '/js/helpers.js'
 
     foreach($jslist as $f)
     {
       $this->view->headScript()->appendFile("{$this->baseurl}{$f}");
     }
-    /*
-     * $this->log->logit ( "Links: {$this->view->headLink()}" );
-     * $this->log->logit ( "Scripts: {$this->view->headScript()}" );
-     */
   }
 
   public function makeIcon($name, $color = '', $size = '')
@@ -287,7 +255,6 @@ abstract class Checklist_Controller_Action extends Zend_Controller_Action
      * Given the dialog rows, create the dialog
      * - using field templates to create individual rows
      */
-    // require_once 'modules/Checklist/fillout.php';
     $tlist = $this->general->getTranslatables($langtag);
 
     $tout = array();
@@ -303,25 +270,19 @@ END;
     $tout[] = '<table border=0 style="width:900px;">';
 
     $hid = array();
-    $this->log->logit('dr: '.  print_r($drows, true));
+    //$this->log->logit('dr: '.  print_r($drows, true));
     foreach($drows as $row)
     {
       $pos = $row['position'];
-      // if ($pos ==0) continue;
       $type = $row['field_type'];
       $arow = array();
 
-      $field_label = $this->general->get_lang_text($row['field_label'], '', ''); // ,
-                                                                                 // $row
-                                                                                 // ['ltdefault'],
-                                                                                 // $row
-                                                                                 // ['ltlang']
-                                                                                 // );
+      $field_label = $this->general->get_lang_text($row['field_label'], '', '');
       $arow['field_label'] = $field_label . ':';
       $arow['varname'] = $row['field_name'];
       $varname = $arow['varname'];
       $arow['baseurl'] = $this->baseurl;
-      $arow['field_length'] = 0; // $row['field_length'];
+      $arow['field_length'] = 0;
       $info = $row['info'];
       $fillout = new Checklist_Modules_Fillout();
       switch ($type)
@@ -382,14 +343,10 @@ END;
           break;
         case 'submit_button' :
           $arow['field_label'] = $field_label;
-          // $arow['baseurl'] = $baseurl;
           $arow['homeurl'] = "{$this->baseurl}/audit/main";
-          // $this->log->logit("HURL: {$arow['homeurl']}");
           $field_label = '';
         default :
           $func = "dialog_{$type}";
-          // inp = call_user_func($fillout->$func, $arow,
-          // $value, $tlist);
           $inp = $fillout->$func($arow, $value, $tlist);
           $tout[] = <<<"END"
 <tr>
@@ -402,7 +359,6 @@ END;
     }
     $tout[] = '</table></div></div>';
     $tout[] = implode("\n", $hid);
-    // $this->log->logit('dialog: '. print_r($tout, true));
     return implode("\n", $tout);
   }
 
@@ -413,7 +369,6 @@ END;
      */
     $dialog = new Application_Model_DbTable_Dialog();
     $this->drows = $dialog->getDialogRows($this->dialog_name);
-    // $this->log->logit('DROWS: ' . print_r($this->drows, true));
   }
 
   public function makeDialog($value = array(''=>''), $morelines = '')
@@ -422,7 +377,6 @@ END;
      * Create the dialog
      */
     $this->getDialogLines();
-    // $this->log->logit('makeDialog:');
     $this->view->outlines = $this->calculate_dialog($this->drows, $value, $this->title,
                                                     $this->view->langtag);
     if (is_array($this->error))
@@ -438,9 +392,7 @@ END;
     if (isset($this->session->flash))
     {
       $this->view->flash = $this->session->flash;
-      // $this->log->logit("FLASH: {$this->view->flash}");
       $this->session->flash = '';
-      // $this->log->logit("there?: {$this->view->flash}");
     }
     $this->view->outlines .= $morelines;
     $this->_helper->layout->setLayout('overall');
@@ -452,14 +404,12 @@ END;
      * Collect all the post data
      */
     $dialog = new Application_Model_DbTable_Dialog();
-
+    $valid = new Checklist_Modules_Validation();
     $this->getDialogLines();
     $ignore_list = array(
 
         '',
         ''
-        /*,
-        'submit_button'*/
     );
     $this->error = array();
     $this->error[] = "<table><tr><th colspan='2'>Fix the following errors and retry</td></tr>";
@@ -478,12 +428,13 @@ END;
       {
         continue;
       }
-      // $this->log->logit('IN: '. $formData->getPost($varname,''));
       $this->data[$varname] = $formData->getPost($varname, '');
       // VALIDATION HERE
+      $this->log->logit("VAL: {$validate}");
       if ($validate)
       {
-        $msg = call_user_func($validate, $this->data[$varname]);
+        //$msg = call_user_func($validate, $this->data[$varname]);
+        $msg = $valid->$validate($this->data[$varname]);
         $this->log->logit("VAL: {$varname} {$validate} {$this->data[$varname]} -- {$msg}");
 
         if ($msg)
@@ -498,9 +449,9 @@ END;
     $this->error[] = "</table>";
     if ($errorct == 0)
       $this->error = array();
-      // $this->log->logit('COLL: '.print_r($this->data, true));
+      $this->log->logit('COLL: '.print_r($this->data, true));
     $this->handleCancel();
-    // $this->log->logit("ECT: " . count($this->error));
+    $this->log->logit("ECT: " . count($this->error));
     if (count($this->error) > 0)
     {
       $this->session->flash = 'Correct errors and retry';
@@ -1070,6 +1021,40 @@ END;
       return implode("<br />\n", $tracker);
     }
     return null;
+  }
+
+  public function updateDocs($labid) {
+    // update all INCOMPLETE docs with this labid and set all the lab details accurately
+    // This is necessary because audit_data table stores one value per row
+    $this->log->logit("LABID: {$labid}");
+    $lab = new Application_Model_DbTable_Lab();
+    $audit = new Application_Model_DbTable_Audit();
+    $tr =new Application_Model_DbTable_Template();
+    $tmplr = new Application_Model_DbTable_TemplateRows();
+    $auditd = new Application_Model_DbTable_AuditData();
+    // fetch the labrow
+    $labrow = $lab->get($labid);
+    $this->log->logit("LABROW: {$labid} ".print_r($labrow, true));
+    // get audits with this labid
+    $arows = $audit->getIncompleteAuditsByLabid($labid);
+    foreach($arows as $a) {
+      $aid = $a['id'];
+      $trow = $tr->getByTag($a['audit_type']);
+      $tid = $trow['id'];
+      // update audit with id =aid info with labrow
+      $dummy = array('labhead' => 1);
+      // this will trigger the lab data copy into audit data
+      $varname = 'labhead';
+      $page_id = $tmplr->findPageId($tid, $varname);
+      $auditd->handleLabData($dummy, $aid, $page_id, $labrow);
+      // update slmta data
+      $dummy = array('slmta_labtype' => 1);
+      $varname = 'slmta_labtype';
+      $page_id = $tmplr->findPageId($tid, $varname);
+      $this->log->logit("SMLTA UPdate: {$dummy}-{$aid}-{$page_id}" . print_r($labrow, true));
+      $auditd->handleSLMTAData($dummy, $aid, $page_id, $labrow);
+      $this->log->logit("UPdated: ADid {$aid}-T {$tid}-V {$varname}-P {$page_id}". print_r($labrow, true));
+    }
   }
 
   public function setHeader()

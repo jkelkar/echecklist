@@ -3,17 +3,10 @@
 
 
 /**
- * using the widgets and partials fill out the row
+ * using widgets and partials fill out the row
+ * This implements the Form edit interface and the dialog interface
  */
 
-/**
- * This handles logging
- */
-//require_once 'modules/Checklist/logger.php';
-/*require_once 'modules/Checklist/general.php';
-require_once '../application/models/DbTable/Lab.php';
-require_once '../application/models/DbTable/Audit.php';
-*/
 /**
  * these implement low level html code generators
  */
@@ -36,20 +29,14 @@ class Checklist_Modules_Fillout
       throw new Exception('Optvals has no elements', 0);
     }
     $optout = array();
-    //$this->log->logit('SEL NAME: '. $name );
-    //$this->log->logit('SEL ARR:  ' . print_r($name, true));
     $val = $this->general->get_arrval($value, $name, '');
     $this->log->logit("SELECT: {$name} - {$val} " . print_r($val, true));
-
-    // foreach ($value as $n => $v) { logit("Values {$n} - {$v}"); }
-
 
     foreach($optvals as $n => $v) {
       if ($multiple && is_array($val))
         $sel = (in_array($v, $val)) ? "selected=selected " : '';
       else
         $sel = ($v == $val) ? "selected=selected " : '';
-        //logit("Interiem - {$val} : {$sel}: {$n} => {$v}");
       $optout[] = "<option {$sel} value=\"{$v}\">{$n}</option>";
     }
     $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
@@ -78,30 +65,16 @@ END;
     }
     $optout = array();
     $val = $this->general->get_arrval($value, $name, '');
-    // logit("{$name} - {$val}");
-    /*
-   * foreach ($value as $n => $v) { logit("Values {$n} - {$v}"); }
-   */
     foreach($optvals as $n => $v) {
       $sel = ($v == $val) ? "checked=\"checked\" " : '';
-      /*$scr = '';
-    if ($noscript == false) {
-      $scr = <<<END
-onclick="click_sub_sec('{$name}');"
-END;
-}*/
-      // logit("Interiem - {$val} : {$sel}: {$n} => {$v}");
       $optout[] = "<input style=\"margin: 0 4px 0 6px;\" type=\"radio\" name=\"{$name}\" " .
            "id=\"{$name}_{$n}\" value=\"{$v}\" {$scr}  {$sel} >" .
            "<label class=\"il\" for=\"{$name}_{$n}\"> {$n}</label> ";
     }
-    #$baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
     $optout[] = ($val != '') ? '' : "<img id=\"{$name}_icon\" src=\"{$this->baseurl}/cancel-on.png\" />";
     $options = implode("\n", $optout);
-    //if ($scr != '') {
     $out = $options . "\n<script> watch_radio('{$name}');</script>";
     $options;
-    //}
     return $out;
   }
 
@@ -111,18 +84,9 @@ END;
     }
     $optout = array();
     $val = $this->general->get_arrval($value, $name, '');
-    // logit("{$name} - {$val}");
-    /*
-   * foreach ($value as $n => $v) { logit("Values {$n} - {$v}"); }
-   */
     foreach($optvals as $n => $v) {
       $sel = ($v == $val) ? "checked=\"checked\" " : '';
       $sendid = substr($name, 0, 3);
-      /*$scr = '';
-    if ($noscript ==false) {
-      $scr = "onclick=\"set_total('{$sendid}');\"";
-      }*/
-      // logit("Interiem - {$val} : {$sel}: {$n} => {$v}");
       $optout[] = "<input style=\"margin: 0 4px 0 6px;\" type=\"radio\" name=\"{$name}\" " .
            "id=\"{$name}_{$n}\" value=\"{$v}\" {$sel} {$scr}>" .
            " <label class=\"il\" for=\"{$name}_{$n}\">{$n}</label> ";
@@ -149,26 +113,17 @@ END;
     }
     $optout = array();
     $val = $this->general->get_arrval($value, $name, '');
-    // logit("{$name} - {$val}");
-    /*
-   * foreach ($value as $n => $v) { logit("Values {$n} - {$v}"); }
-   */
+
     foreach($optvals as $n => $v) {
       $sel = ($v == $val) ? "checked=\"checked\" " : '';
       $sendid = substr($name, 0, 3);
-      // logit("Interiem - {$val} : {$sel}: {$n} => {$v}");
-      /*$scr = '';
-    if ($noscript == false) {
-      $scr = "onclick=\"count_ynaa_add('{$sendid}');\"";
-      }*/
+
       $optout[] = "<input style=\"margin: 0 4px 0 6px;\" type=\"radio\" name=\"{$name}\" " .
            "id=\"{$name}_{$n}\" value=\"{$v}\" {$sel} {$scr}>" .
            " <label class=\"il\" for=\"{$name}_{$n}\">{$n}</label> ";
     }
-    //$baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
     $optout[] = ($val != '') ? '' : "<img id=\"{$name}_icon\" src=\"{$this->baseurl}/cancel-on.png\" />";
     $out = implode("\n", $optout);
-    //$out = $options; // . "\n<script> count_yna_add('{$name}');</script>";
     return $out;
   }
 
@@ -178,7 +133,6 @@ END;
     $out = <<<"END"
     <textarea {$use_style} onchange="noteChange();" name="{$name}" id="{$name}" class=" tarea {$class}">{$val}</textarea>
 END;
-    //logit("TA: {$name} {$out}");
     return $out;
   }
 
@@ -195,7 +149,7 @@ END;
     $size = $dtype = '';
     switch ($type) {
       case 'date' :
-        $dtype = 'datepicker'; //input-xlarge datepicker hasDatepicker';
+        $dtype = 'datepicker';
         $itype = 'text';
         if ($length != 0) {
           $l = strval($length);
@@ -298,7 +252,6 @@ END;
    *
    * 3 or less gets Radio
    */
-    // $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
     $ct = count($optvals);
     if (count($optvals) <= 3) {
       return $this->RADIO($varname, $optvals, $value, "onclick=\"click_sub_sec('{$varname}');\"");
@@ -391,10 +344,6 @@ END;
                       "onclick=\"watch_radio('{$varname}');count_ynaa_add('{$sendid}');\"");
   }
 
-  /* function widget_select_wp($varname, $value, $t) {
-  $optvals = getWP($t);
-  return OPTIONS($varname, $optvals, $value);
-} */
   function widget_select_yni($varname, $value, $t) {
     $optvals = $this->general->getYNI($t);
     return $this->OPTIONS($varname, $optvals, $value);
@@ -417,7 +366,6 @@ END;
 
   function widget_select_yna($varname, $value, $t) {
     $optvals = $this->general->getYNA($t);
-    //$this->log->logit ( "YNA: " . print_r ( $optvals, true ) );
     return $this->OPTIONS($varname, $optvals, $value);
   }
 
@@ -448,21 +396,18 @@ END;
     $varname = $row['varname'];
     $optvals = $this->general->getReportTypes($t);
     return $this->SELECT($varname, $optvals, $value, '', false, 'padding: 2px 0 8px 0;');
-    // return widget_select_lablevel($varname, $value, $t);
   }
 
   function dialog_audittype_m($row, $value, $t) {
     $varname = $row['varname'];
     $optvals = $this->general->getAuditTypes($t);
     return $this->SELECT($varname, $optvals, $value, '', true, 'padding: 2px 0 8px 0;');
-    // return widget_select_lablevel($varname, $value, $t, '', true);
   }
 
   function dialog_lablevel($row, $value, $t) {
     $varname = $row['varname'];
     $optvals = $this->general->getLevels($t);
     return $this->SELECT($varname, $optvals, $value, '', false, 'padding: 2px 0 8px 0;');
-    // return widget_select_lablevel($varname, $value, $t);
   }
 
   function dialog_labtype($row, $value, $t) {
@@ -475,22 +420,18 @@ END;
     $varname = $row['varname'];
     $optvals = $this->general->getLevels($t);
     return $this->SELECT($varname, $optvals, $value, '', true, 'padding: 2px 0 8px 0;');
-    // return widget_select_lablevel($varname, $value, $t, '', true);
   }
 
   function dialog_audit_type($row, $value, $t) {
     $varname = $row['varname'];
     $lab = new Application_Model_DbTable_Audit();
     $tags = $lab->getAuditTypes();
-    //$this->log->logit('TAGS: ' . print_r($tags, true));
     $c = array('Select ...'=> '-');
     foreach($tags as $x) {
       foreach($x as $a => $tag) {
         $c[$tag] = strtoupper($tag);
       }
     }
-    //$this->log->logit('TAGS: ' . print_r($c, true));
-    // $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
     return $this->SELECT($varname, $c, $value, '', false, 'padding: 2px 0 8px 0;');
   }
 
@@ -498,15 +439,12 @@ END;
     $varname = $row['varname'];
     $lab = new Application_Model_DbTable_Lab();
     $countries = $lab->getDistinctCountries();
-    //$this->log->logit('COUNTRIES: ' . print_r($countries, true));
     $c = array('Select ...'=> '-');
     foreach($countries as $x) {
       foreach($x as $a => $country) {
         $c[$country] = strtoupper($country);
       }
     }
-    //$this->log->logit('COUNTRIES: ' . print_r($c, true));
-    //$baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
     return $this->SELECT($varname, $c, $value, '', false, 'padding: 2px 0 8px 0;');
   }
 
@@ -514,15 +452,12 @@ END;
     $varname = $row['varname'];
     $lab = new Application_Model_DbTable_Lab();
     $countries = $lab->getDistinctCountries();
-    //$this->log->logit('COUNTRIES: ' . print_r($countries, true));
     $c = array('Select ...'=> '-');
     foreach($countries as $x) {
       foreach($x as $a => $country) {
         $c[$country] = strtoupper($country);
       }
     }
-    //$this->log->logit('COUNTRIES: ' . print_r($c, true));
-    //$baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
     return $this->SELECT($varname, $c, $value, '', true, 'padding: 2px 0 8px 0;');
   }
 
@@ -530,7 +465,6 @@ END;
     $varname = $row['varname'];
     $audit = new Application_Model_DbTable_Audit();
     $cohorts = $audit->getDistinctCohorts();
-    //$this->log->logit('COHORTS: ' . print_r($cohorts, true));
     $c = array('Select ...'=> '-');
     foreach($cohorts as $x) {
       foreach($x as $a => $cohort) {
@@ -562,14 +496,12 @@ END;
     $varname = $row['varname'];
     $optvals = $this->general->getAffiliations($t);
     return $this->SELECT($varname, $optvals, $value, '', false, 'padding: 2px 0 8px 0;');
-    //return widget_select_labaffil($varname, $value, $t);
   }
 
   function dialog_labaffil_m($row, $value, $t) {
     $varname = $row['varname'];
     $optvals = $this->general->getAffiliations($t);
     return $this->SELECT($varname, $optvals, $value, '', true, 'padding: 2px 0 8px 0;');
-    //return widget_select_labaffil($varname, $value, $t, '', true);
   }
 
   function widget_select_slmtatypes($varname, $value, $t) {
@@ -580,34 +512,29 @@ END;
   function dialog_slmtastatus_m($row, $value, $t) {
     $varname = $row['varname'];
     $optvals = $this->general->getSLMTATypes($t);
-    //$baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
     return $this->SELECT($varname, $optvals, $value, '', true, 'padding: 2px 0 8px 0;');
   }
 
   function dialog_slmtastatus($row, $value, $t) {
     $varname = $row['varname'];
     $optvals = $this->general->getSLMTATypes($t);
-    //$baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
     return $this->SELECT($varname, $optvals, $value, '', false, 'padding: 2px 0 8px 0;');
   }
 
   function dialog_auditstates_m($row, $value, $t) {
     $varname = $row['varname'];
     $optvals = $this->general->getAuditStates($t);
-    //$baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
     return $this->SELECT($varname, $optvals, $value, '', true, 'padding: 2px 0 8px 0;');
   }
 
   function dialog_auditstates($row, $value, $t) {
     $varname = $row['varname'];
     $optvals = $this->general->getAuditStates($t);
-    //$baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
     return $this->SELECT($varname, $optvals, $value, '', false, 'padding: 2px 0 8px 0;');
   }
 
   function widget_select_slmtatype($varname, $value, $t) {
     $optvals = $this->general->getSLMTAType($t);
-    //$baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
     return $this->SELECT($varname, $optvals, $value, "watch_select('{$varname}', '{$this->baseurl}');",
                   'padding: 2px 0 8px 0;');
   }
@@ -776,9 +703,7 @@ END;
     $prefix = $row['prefix'];
     $heading = $row['heading'];
     $text = $row['text'];
-    //$stringf = INPUT($name, $value, 'string', 55, '', '');
     $val = $this->general->get_arrval($value, $name, '-');
-    //$this->log->logit("739: {$val} - {$name}");
     switch ($name) {
       case 'slmta_labtype' :
         $rev_lt = $this->general->rev('getLTypes', $t);
@@ -828,7 +753,6 @@ END;
     $val = $row['field_label'];
     $names = preg_split('/,/', $val);
     $out = '';
-    //$ti = - 2;
     foreach($names as $text) {
       if ($text != 'Cancel') {
         //$ti ++;
@@ -929,7 +853,6 @@ END;
     $prefix = $row['prefix'];
     $heading = $row['heading'];
     $text = $row['text'];
-    // $tarea = TEXTAREA("{$name}_comment", $value, "width:395px;height:50px;margin-top:5px;");
     $val = $this->general->get_arrval($value, $name, '');
     $val = str_replace("\n", '<br />', $val);
     $out = <<<"END"
@@ -951,7 +874,6 @@ END;
     $heading = $row['heading'];
     $text = $row['text'];
     $datef = $this->INPUT($name, $value, 'date', 14, '', '');
-    // $script = '<script> $(function() {$( "' . "#{$name}" . '" ).datepicker();});</script>';
     $out = <<<"END"
 <div style="width:100%;">
 <div style="vertical-align:top;padding-right:10px;width:390px;text-align:right;float:left;">
@@ -981,11 +903,7 @@ END;
   }
   function dialog_date_field($row, $value, $t) {
     $name = $row['varname'];
-    //$prefix = $row ['prefix'];
-    //$heading = $row ['heading'];
-    //$text = $row ['text'];
     $datef = $this->INPUT($name, $value, 'date', 0, '', '');
-    // $script = '<script> $(function() {$( "' . "#{$name}" . '" ).datepicker();});</script>';
     $out = $datef;
     return $out;
   }
@@ -1301,7 +1219,6 @@ END;
     $widget_nyp_ro = $this->widget_select_ynp_ro($name, $value, $t);
     $ynp_ro = "{$name}_ynp";
     $nscore = "{$name}_score";
-    //$this->log->logit("NSCORE: ". $nscore);
     $scoreval = $this->general->get_arrval($value, $nscore, 0);
     $this_score = $this->general->get_arrval($value, $ynp_ro, 0);
     $incval = $this->general->get_arrval($value, "{$name}_inc", "{$ec}"); // incomplete counts for this sub section
@@ -1311,7 +1228,6 @@ END;
                                                                                     'F');
     $checked = '';
     $head = ($heading) ? "{$heading}<br />" : "";
-    //$this->log->logit ( "SRO: " . print_r ( $row, true ) );
     $tarea = $this->TEXTAREA("{$name}_comment", $value,
                           "width:100%;height:50px;margin-top:5px;");
     $tareanc = $this->TEXTAREA("{$name}_note", $value, "width:100%;height:50px;margin-top:6px;",
@@ -1406,35 +1322,6 @@ END;
                           onclick="toggleNCBox(this);">Non-Compliant</label>
                   <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
                 </div>
-        <div id="div{$name}_nc" style="{$vis}" >
-        Non Compliance Notes:<br />
-        {$tareanc}
-        </div>
-      </td>
-</tr></table>
-END;
-    $outx = <<<"END"
-  <table style="width=100%;"><tr>
-      <td style="vertical-align:top;padding: 2px 4px;width:440px;">
-        <div style="display:inline-block;vertical-align:top;">
-          <div style="width:425px;">
-            <div style="width:100%">
-              <div style="vertical-align:top;display:inline;">{$prefix}</div>
-              <div style="text-decoration:underline;font-weight:bold;vertical-align:top;display:inline;">{$heading}</div>
-              <div style="vertical-align:top;display:inline;">{$text}<br />
-              <div style="width:100%;text-align:right;margin-top:5px;">
-            <label><input type="checkbox" id="{$name}" name="{$name}_cb" value="T" {$checked} style="margin-right:8px;"
-              onclick="toggleNCBox(this);">Non-Compliant</label>
-                <input type="hidden" id="{$name}_nc" name="{$name}_nc" value="{$ncval}"/>
-                </div></div>
-            </div>
-          </div>
-          <div style="font-style:italic;font-weight:bold;font-size:10px;margin-top:4px;">{$info}</div>
-        </div>
-      </td>
-      <td  style="vertical-align:top;padding: 2px 4px;width:350px;">
-        <div style="">{$mc_yna} </div>
-        {$tarea}
         <div id="div{$name}_nc" style="{$vis}" >
         Non Compliance Notes:<br />
         {$tareanc}
@@ -2231,14 +2118,11 @@ END;
     /*
    * Yes, No and N/A count for the section
    */
-    // $prefix = $row ['prefix'];
     $name = $row['varname'];
     $heading = $row['heading'];
     $v_y_ct = $this->general->get_arrval($value, "{$name}_y_ct", 0);
     $v_n_ct = $this->general->get_arrval($value, "{$name}_n_ct", 0);
     $v_na_ct = $this->general->get_arrval($value, "{$name}_na_ct", 0);
-    //$text = $row ['text'];
-    //$info = $row ['info'];
     $name = $row['varname'];
     $ec = $row['element_count'];
     $out = <<<"END"
@@ -2267,14 +2151,11 @@ END;
     /*
    * Yes, No and Partial count for the section
    */
-    // $prefix = $row ['prefix'];
     $name = $row['varname'];
     $heading = $row['heading'];
     $v_y_ct = $this->general->get_arrval($value, "{$name}_y_ct", 0);
     $v_n_ct = $this->general->get_arrval($value, "{$name}_n_ct", 0);
     $v_p_ct = $this->general->get_arrval($value, "{$name}_p_ct", 0);
-    //$text = $row ['text'];
-    //$info = $row ['info'];
     $name = $row['varname'];
     $ec = $row['element_count'];
     $out = <<<"END"
@@ -2299,7 +2180,7 @@ END;
  * the bottom line
  */
   function calculate_page($rows, $value, $langtag)
-  { // $tword) {
+  {
     /**
      * Result of the query to get all template rows sorted in order
      *
@@ -2342,7 +2223,6 @@ END;
     );
     $tlist = $this->general->getTranslatables($langtag); // $tword );
     $tout = array();
-    // $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
     $tout[] = '<table border=0 style="width:825px;">';
     $ctr = 0;
     $slmta = false;

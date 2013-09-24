@@ -6,9 +6,6 @@ class UserController extends Checklist_Controller_Action
   public function init()
   {
     /* Initialize action controller here */
-    /**
-     * initialize parent here
-     */
     parent::init();
   }
 
@@ -24,7 +21,6 @@ class UserController extends Checklist_Controller_Action
       {
         $this->_redirector->gotoUrl($this->mainpage);
       }
-      // $this->log->logit('LAB: '. print_r($row, true));
       $this->makeDialog();
     }
     else
@@ -52,7 +48,6 @@ class UserController extends Checklist_Controller_Action
         }
         $this->session->user = $xuser;
         $this->session->audit = null;
-        // $baseurl = Zend_Controller_Front::getInstance()->getBaseUrl();
         $this->_redirector->gotoUrl($this->mainpage);
       }
       else
@@ -81,11 +76,9 @@ class UserController extends Checklist_Controller_Action
     $this->dialog_name = 'user/create';
     $this->log->logit("{$this->dialog_name}");
     $user = new Application_Model_DbTable_User();
-    // $urldata = $this->getRequest()->getParams();
     $langtag = $this->session->lang;
     if (! $this->getRequest()->isPost())
     {
-      // $this->log->logit('LAB: '. print_r($row, true));
       $this->makeDialog();
     }
     else
@@ -102,7 +95,6 @@ class UserController extends Checklist_Controller_Action
       }
       else
       {
-        // $this->log->logit('Data: ' . print_r($this->data, true));
         unset($this->data['password2']);
         try
         {
@@ -118,7 +110,6 @@ class UserController extends Checklist_Controller_Action
           $this->makeDialog($this->data);
           return;
         }
-        // Redirect it from here
       }
     }
   }
@@ -137,11 +128,9 @@ class UserController extends Checklist_Controller_Action
     $pinfo = explode("/", $vars);
     $id = (int) $pinfo[3];
     $langtag = $this->session->lang;
-    // $urldata = $this->getRequest()->getParams();
     if (! $this->getRequest()->isPost())
     {
       $row = $user->getUser($id);
-      // $this->log->logit('LAB: '. print_r($row, true));
       unset($row['password']);
       $this->makeDialog($row);
     }
@@ -159,7 +148,6 @@ class UserController extends Checklist_Controller_Action
       }
       else
       {
-        // $this->log->logit('Data: ' . print_r($this->data, true));
         unset($this->data['password2']);
         if ($this->data['password'] == '')
           unset($this->data['password']);
@@ -186,11 +174,9 @@ class UserController extends Checklist_Controller_Action
     $this->dialog_name = 'user/find';
     $this->log->logit("{$this->dialog_name}");
     $user = new Application_Model_DbTable_User();
-    // $urldata = $this->getRequest()->getParams();
     $langtag = $this->session->lang;
     if (! $this->getRequest()->isPost())
     {
-      // $this->log->logit('LAB: '. print_r($row, true));
       $this->makeDialog();
     }
     else
@@ -214,11 +200,8 @@ class UserController extends Checklist_Controller_Action
     $id = (int) $pinfo[3];
     $user = new Application_Model_DbTable_User();
     $ao = new Application_Model_DbTable_AuditOwner();
-    // $urldata = $this->getRequest()->getParams();
-    $langtag = $this->session->lang;
     if (! $this->getRequest()->isPost())
     {
-      // $this->log->logit('LAB: '. print_r($row, true));
       $this->log->logit('AU: ' . print_r($this->audit, true));
       $aodata = array(
 
@@ -243,11 +226,8 @@ class UserController extends Checklist_Controller_Action
     $this->dialog_name = 'user/profile';
     $this->log->logit("{$this->dialog_name}");
     $user = new Application_Model_DbTable_User();
-    // $vars = $this->_request->getPathInfo();
-    // $pinfo = explode("/", $vars);
     $id = (int) $this->session->user['id'];
     $langtag = $this->session->lang;
-    // $urldata = $this->getRequest()->getParams();
     if (! $this->getRequest()->isPost())
     {
       $row = $user->getUser($id);
@@ -259,7 +239,6 @@ class UserController extends Checklist_Controller_Action
       // display the form here
       if ($this->collectData())
         return;
-        // $this->log->logit('Data: ' . print_r($this->data));
       $row = $user->getUser($id);
       if ($this->data['password'] == $row['password'])
       { // FIXME -use bcrypt
@@ -297,11 +276,8 @@ class UserController extends Checklist_Controller_Action
     $user = new Application_Model_DbTable_User();
     $id = (int) $this->session->user['id'];
     $langtag = $this->session->lang;
-    // $urldata = $this->getRequest()->getParams();
     if (! $this->getRequest()->isPost())
     {
-
-      // $this->log->logit('LAB: '. print_r($row, true));
       $this->makeDialog();
     }
     else
@@ -331,7 +307,6 @@ class UserController extends Checklist_Controller_Action
         unset($this->data['password2']);
         unset($this->data['old_pw']);
         unset($this->data['submit_button']);
-        // $this->log->logit('Data: ' . print_r($this->data));
         try
         {
           $user->updateData($this->data, $id);

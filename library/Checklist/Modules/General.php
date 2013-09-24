@@ -36,11 +36,7 @@ class Checklist_Modules_General
 
       echo "Called by {$caller['function']}";
     }
-    /*
-     * //if (isset($caller['class'])) //echo " in {$caller['class']}";
-     * //$this->log->logit('KEY?: '. key_exists ( $k, $arr ) ? $arr[$k] : $default) . '<br
-     * />';
-     */
+
     return key_exists($k, $arr) ? $arr[$k] : $default;
   }
 
@@ -355,8 +351,6 @@ class Checklist_Modules_General
   // * reverses keys and values */
   public function rev($a, $t)
   {
-
-    // $arr = call_user_func($a, $t);
     $arr = $this->$a($t);
     $revarr = array();
     foreach($arr as $a => $b)
@@ -377,7 +371,6 @@ class Checklist_Modules_General
      * $default contain default text from lang
      * $sp_lang contains language specific text - but is not always available
      */
-    // $this->log->logit ( "{$base} -- {$default} -- {$sp_lang}" );
     $out = '';
     $out = $base;
     if ($default)

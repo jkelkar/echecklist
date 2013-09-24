@@ -4,11 +4,14 @@
  * This implements the model for Page tags
  *
  */
-require_once 'modules/Checklist/logger.php';
 
-class Application_Model_DbTable_Report extends Application_Model_DbTable_Checklist {
+class Application_Model_DbTable_Report extends Checklist_Model_Base {
   protected $_name = 'report';
   protected $_primary = 'id';
+
+  public function init(){
+    parent::init();
+  }
 
   public function getReportId($name) {
     /**
@@ -23,7 +26,7 @@ select report_id
    and name='{$name}'
  order by tabpos, position
 END;
-    logit("SQL: {$sql}");
+    $this->log->logit("SQL: {$sql}");
     $rows = $this->queryRows($sql);
     if (! $rows) {
       throw new Exception("Could not find report_id");

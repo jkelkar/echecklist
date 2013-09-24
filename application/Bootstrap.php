@@ -39,16 +39,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
       }
   }
-/*
- *
- * $rl = $this->getResourceLoader();
-    $rl->addResourceTypes(array(
-        // ...other namespace settings...
-        'helper' => array(
-                'path'      => 'controllers/helpers',
-                'namespace' => 'Helper',
-        ),
-    ));
- *
- */
+
+  protected function _initAutoload()
+    {
+      Zend_Loader_Autoloader::getInstance()->registerNamespace('Checklist_');
+    }
 }

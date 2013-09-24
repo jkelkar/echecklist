@@ -1,8 +1,16 @@
 <?php
 
-class Process_Common {
+class Checklist_Modules_ProcessCommon {
   // This is the base class for all the processing
 
+  public $log;
+  public $general;
+
+  public function __construct() 
+  {
+    $this->log = new Checklist_Logger();
+    $this->general = new Checklist_Modules_General();
+  }
 
   /**
    * This function is used to generate the column names for excel file
@@ -43,9 +51,9 @@ class Process_Common {
     // and package the data in a structure and return
     $report = new Application_Model_DbTable_Report();
     $rid = $report->getReportId($name);
-    //logit("Report Id: {$rid}");
+    //$this->log->logit("Report Id: {$rid}");
     $rows = $report->getReportRows($rid);
-    //logit("report: " . print_r($rows, true));
+    //$this->log->logit("report: " . print_r($rows, true));
 
     $namelist = array();
     $heading = $tabheading = '';
@@ -76,7 +84,7 @@ class Process_Common {
         }
       }
     }
-    // logit('GUIDE: ' . print_r($guide, true));
+    // $this->log->logit('GUIDE: ' . print_r($guide, true));
     return $guide;
   }
 
@@ -84,7 +92,7 @@ class Process_Common {
     // sometimes an audit name has to be calculated
     //  This happens when the same name for different audit types'
     //  results in different data being pulled from 'REPORT' table
-    logit("INC: {$name}-{$type}");
+    $this->log->logit("INC: {$name}-{$type}");
     switch ($name) {
       case 'audit2excel' :
         switch ($type) {
@@ -102,7 +110,7 @@ class Process_Common {
         }
         break;
       case 'incompletechart':
-        logit('in');
+        $this->log->logit('in');
         switch($type) {
           case 'BAT' :
             $outname = 'bat2inc';
@@ -120,7 +128,7 @@ class Process_Common {
       default:
         $outname = $name;
     }
-    logit("OUT: {$outname}");
+    $this->log->logit("OUT: {$outname}");
     return $outname;
   }
 
@@ -167,62 +175,6 @@ class Process_Common {
     return $data;
   }
 
-
-  /*public function icollectRows($rows) {
-    $data = array();
-    $labels = array();
-    $names = array();
-    logit("IC: ". print_r($rows, true));
-    foreach($rows as $row) {
-      $audit_id = $row['audit_id'];
-      $fname = $row['field_name'];
-      if (! key_exists($audit_id, $data)) {
-        $data[$audit_id] = array('audit_id' => $audit_id);
-      }
-      $data[$audit_id][$fname] = $this->convertRow($row);
-      $pos = strpos($fname, '_');
-      // the following line handles fname in (labnum, labname)
-      // just pass the fname through
-      if (!$pos) $pos = 3;
-      $l = '';
-      $n = '';
-      switch ($pos) {
-
-      	case 3:
-      	  $s1 = $this->i2a((int)substr($fname,1,2));
-      	  $l = "{$fname}";
-      	  $n = "{$fname}";
-      	  break;
-      	case 5:
-      	  $s1 = $this->i2a((int)substr($fname,1,2));
-      	  $s2 = (int)substr($fname,3,2);
-      	  $l = "Q {$s1}.{$s2}";
-      	  $n = "{$fname}";
-      	  break;
-      	default:
-
-      }
-
-      $labels[$l] = 1;
-      $names[$n] = 1;
-    }
-    $labels = array_keys($labels);
-    $names = array_keys($names);
-    asort($labels);
-    foreach(array('end_date','labname','labnum') as $wantkey) {
-      if (($key = array_search($wantkey, $labels)) !== false) {
-        unset($labels[$key]);
-      }
-    }
-    asort($names);
-    //logit("L: " . print_r($labels, true));
-    //logit("N: " . print_r($names, true));
-    //exit();
-
-    return array($data, $labels, $names);
-  }*/
-
-
   public function randFileName($suffix, $prefix = '') {
     $uniq = uniqid();
     if ($prefix != '') {
@@ -243,10 +195,6 @@ class Process_Common {
       ->setCreator($user['name'])
       ->setLastModifiedBy($user['name'])
       ->setTitle("{$heading}");
-    // ->setSubject("All the rows")
-    // ->setDescription("This is a list of all the rows in the albums table")
-    // ->setKeywords("office PHPExcel php")
-    // ->setCategory("Test result file");
     return $objPHPExcel;
   }
 
@@ -261,13 +209,13 @@ class Process_Common {
             )
         )
     );
-    logit('Add header');
+    $this->log->logit('Add header');
     // echo date('H:i:s'), " Add some data", EOL;
     if ($tabnum > 1)
       $objPHPExcel->createSheet($tabnum - 1);
     $s = $objPHPExcel->setActiveSheetIndex($tabnum - 1);
     // Rename worksheet
-    logit("Rename worksheet: {$heading}");
+    $this->log->logit("Rename worksheet: {$heading}");
     $objPHPExcel->getActiveSheet()->setTitle($heading);
 
     // Set active sheet index to the first sheet, so Excel opens this as the first sheet
@@ -285,7 +233,7 @@ class Process_Common {
     $row = 3;
     // Insert the header line
     foreach($labels as $name) {
-      // logit("SCV: {$name} {$row} {$col} ". $this->rc($col, $row));
+      // $this->log->logit("SCV: {$name} {$row} {$col} ". $this->rc($col, $row));
       $s->setCellValue($this->rc($col, $row), $name);
       $s->getStyle($this->rc($col, $row))->getAlignment()->setHorizontal(
           PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
@@ -297,16 +245,16 @@ class Process_Common {
     $i ++;
 
     $col = 1;
-    // logit('NAMES: ' . print_r($names, true));
-    // logit('DATA EXCEL: ' . print_r($data, true));
+    // $this->log->logit('NAMES: ' . print_r($names, true));
+    // $this->log->logit('DATA EXCEL: ' . print_r($data, true));
     foreach($data as $d) {
       $col = 1;
       foreach($names as $name) {
         if ($name != '') {
-          $dn = get_arrval($d, $name, '');
+          $dn = $this->general->get_arrval($d, $name, '');
           $cn = $this->rc($col, $row);
           if (key_exists($name, $d)) {
-            // logit("ED: {$row} {$col} {$cn} = '{$name}' : '{$dn}'");
+            // $this->log->logit("ED: {$row} {$col} {$cn} = '{$name}' : '{$dn}'");
             $s->setCellValue($this->rc($col, $row), $d[$name]);
           }
         }
@@ -318,7 +266,7 @@ class Process_Common {
 
   public function saveFile($objPHPExcel) {
     // write the file out
-    logit(" Write to Excel2007 format");
+    $this->log->logit(" Write to Excel2007 format");
     $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
     $path = dirname(__DIR__) . '/../../public/tmp/';
     $secs = 3600;
@@ -326,11 +274,11 @@ class Process_Common {
     // FIXME: add in code to delete any files that are over an hour old
     $filename = $this->randFileName('xlsx');
     $fileloc = "{$path}{$filename}";
-    logit("FilePath: {$fileloc}");
+    $this->log->logit("FilePath: {$fileloc}");
     $objWriter->save($fileloc);
     // Echo done
-    // logit("Done writing files");
-    logit("File has been created in {$fileloc}.");
+    // $this->log->logit("Done writing files");
+    $this->log->logit("File has been created in {$fileloc}.");
     return $fileloc;
   }
 
@@ -348,7 +296,7 @@ class Process_Common {
 
   public function genNCReport($audit_id, $atype) {
     // generate the non compliance report$v['varname']
-    logit("AI: {$audit_id}, {$atype}");
+    $this->log->logit("AI: {$audit_id}, {$atype}");
     global $langtag;
     // alpha is true is section names are Alpha and false if Numerical
     $alpha = (strtoupper($atype) == 'SLIPTA') ? false: true;
@@ -363,7 +311,7 @@ class Process_Common {
     foreach($trows as $tx) {
       if (! $tx['varname'])
         continue;
-      // logit("- {$tx['varname']}");
+      // $this->log->logit("- {$tx['varname']}");
       $vlist[$tx['varname']] = $tx;
     }
     $arows = $ar->getAllData($audit_id);
@@ -371,33 +319,34 @@ class Process_Common {
 
     foreach($vlist as $v) {
       $vname = $v['varname'];
-      // logit("V: {$vname}");
+      // $this->log->logit("V: {$vname}");
       $vlen = strlen($vname);
       $val = $q = '';
       switch ($vlen) {
       	case 5:
       	  $q = $this->normalizeSecName((int) substr($vname, 1, 2), $alpha) . '.' . (int) substr($vname, 3, 2);
       	  $key = $vname;
-      	  if (key_exists($key, $arows))  $val = get_arrval($arows, $key, '');
+      	  if (key_exists($key, $arows))  $val = $this->general->get_arrval($arows, $key, '');
       	  $key = "{$vname}_ynp";
-      	  if (key_exists($key, $arows))  $val = get_arrval($arows, $key, '');
+      	  if (key_exists($key, $arows))  $val = $this->general->get_arrval($arows, $key, '');
       	  break;
       	case 7:
-      	  $q = $this->normalizeSecName((int) substr($vname, 1, 2), $alpha) . '.' . (int) substr($vname, 3, 2) . '.' . (int) substr($vname, 5, 2);
+      	  $q = $this->normalizeSecName((int) substr($vname, 1, 2), $alpha) . '.' 
+            . (int) substr($vname, 3, 2) . '.' . (int) substr($vname, 5, 2);
       	  $key = "{$vname}_yn";
-      	  if (key_exists($key, $arows))  $val = get_arrval($arows, $key, '');
+      	  if (key_exists($key, $arows))  $val = $this->general->get_arrval($arows, $key, '');
       	  $key = "{$vname}_yna";
-      	  if (key_exists($key, $arows))  $val = get_arrval($arows, $key, '');
+      	  if (key_exists($key, $arows))  $val = $this->general->get_arrval($arows, $key, '');
       	  break;
       	default;
       }
-      logit("Question: {$q}");
+      $this->log->logit("Question: {$q}");
       if ($val != 'YES'){
-        $comment = get_arrval($arows, "{$vname}_comment", '');
-        $nc = get_arrval($arows, "{$vname}_nc", '');
+        $comment = $this->general->get_arrval($arows, "{$vname}_comment", '');
+        $nc = $this->general->get_arrval($arows, "{$vname}_nc", '');
         $ncnote = '';
         if ($nc == 'T')
-          $ncnote = get_arrval($arows, "{$vname}_note", '');
+          $ncnote = $this->general->get_arrval($arows, "{$vname}_note", '');
         $all[] = array(
             'comment' => $comment,
             'nc' => $ncnote,
@@ -408,13 +357,13 @@ class Process_Common {
       }
 
     }
-    //logit("ALL: " . print_r($all, true));
+    //$this->log->logit("ALL: " . print_r($all, true));
     return $all;
   }
 
   public function rmOldFiles($path, $secs) {
     // from the path remove all files older than secs seconds
-    // logit("DP: {$path} -- {$secs}");
+    // $this->log->logit("DP: {$path} -- {$secs}");
     if ($handle = opendir($path)) {
       while (false !== ($file = readdir($handle))) {
         if ($file == '.' || $file == '..') continue;
@@ -435,33 +384,19 @@ class Process_Common {
     $c = new PolarChart(860, 600, 0xe0e0e0, 0x000000, 1);
 
     $textBoxObj = $c->addTitle("SLIPTA Audit Scores %", "arialbi.ttf", 15);
-    //$textBoxObj->setBackground($c->patternColor(dirname(__FILE__)."/wood.png"));
-
-
-    # Set center of plot area at (230, 280) with radius 180 pixels, and white (ffffff)
-    # background.
     $c->setPlotArea(330, 305, 235, 0xffffff);
-
-    # Set the grid style to circular grid
     $c->setGridStyle(false);
-
-    # Add a legend box at top-center of plot area (230, 35) using horizontal layout. Use
-    # 10 pts Arial Bold font, with 1 pixel 3D border effect.
     $b = $c->addLegend(700, 35, true, "arialbd.ttf", 9);
     $b->setAlignment(TopCenter);
     $b->setBackground(Transparent, Transparent, 1);
-
-    # Set angular axis using the given labels
     $c->angularAxis->setLabels($labels);
 
-    # Specify the label format for the radial axis
     $c->radialAxis->setLabelFormat("{value}%");
 
     # Set radial axis label background to semi-transparent grey (40cccccc)
     $textBoxObj = $c->radialAxis->setLabelStyle();
     $textBoxObj->setBackground(0x40cccccc, 0);
 
-    # Add the data as area layers
     $colrs = array(
       0xccff0000, 0xcc00ff00, 0xcc0000ff, 0xf0cc0000, 0xf000cc00, 0xf00000cc
     );
@@ -469,16 +404,12 @@ class Process_Common {
     // calculate the % from actual and total scores
     foreach ($data as $id => $d) {
       $i++;
-      logit("Data: ". print_r($d, true));
+      $this->log->logit("Data: ". print_r($d, true));
       $dx = array();
-        //$j = -1;
-        #foreach($d as $n => $v) {
       foreach($totals as $tn => $tv) {
-        //$j ++;
         $dx[] = (int) ($d[$tn] / (int) $tv * 100);
       }
-      #}
-      logit("D: {$i} --{$id} ".print_r($dx, true));
+      $this->log->logit("D: {$i} --{$id} ".print_r($dx, true));
       $c->addAreaLayer($dx, $colrs[$i], "Audit {$id}");
 
     }
@@ -487,8 +418,8 @@ class Process_Common {
     $filename = $this->randFileName('png', 'spiderchart');
     $fname = "{$path}{$filename}";
     $imgpath = "{$this->base->baseurl}/tmp/{$filename}";
-    logit("IMG: {$this->base->baseurl}-{$path}-{$filename}-{$fname}-{$imgpath}");
-    logit("FN: {$fname}");
+    $this->log->logit("IMG: {$this->base->baseurl}-{$path}-{$filename}-{$fname}-{$imgpath}");
+    $this->log->logit("FN: {$fname}");
     $c->makeChart($fname);
     return $imgpath;
   }
@@ -506,26 +437,15 @@ class Process_Common {
     "Section 6","Section 7","Section 8","Section 9","Section 10","Section 11",
     "Section 12");
 
-    # Create a XYChart object of size 500 x 320 pixels
     $c = new XYChart(700, 420);
-
-    # Set the plotarea at (100, 40) and of size 280 x 240 pixels
     $c->setPlotArea(80, 90, 580, 240);
-
-    # Add a legend box at (400, 100)
     $c->addLegend(80, 40)->setCols(6); //400, 100);
-
-    # Add a title to the chart using 14 points Times Bold Itatic font
     $c->addTitle(" %Scores - by section", "timesbi.ttf", 14);
 
-    # Add a title to the y axis. Draw the title upright (font angle = 0)
     $textBoxObj = $c->yAxis->setTitle("score in %");
     $textBoxObj->setFontAngle(90);
-
-    # Set the labels on the x axis
     $c->xAxis->setLabels($labels)->setFontAngle(45);
 
-    # Add a stacked bar layer and set the layer 3D depth to 8 pixels
     $layer = $c->addBarLayer2();
     // set the bar gap
     $layer->setBarGap(0.4, TouchBar);
@@ -534,27 +454,16 @@ class Process_Common {
         0x99cc0000, 0x9900cc00, 0x990000cc
     );
     $i = -1;
-    /*foreach ($data as $id => $d) {
-      $i++;
-      logit("Data: ". print_r($d, true));
-      $dx = array();
-      $j = -1;
-      foreach (array_slice($d, 1) as $n => $v) {
-        $j++;
-        $dx[] = (int) ($v/(int)$totals[$j] * 100);
-      }
-      $layer->addDataSet($dx, $colrs[$i], "Audit {$id}");
-    }*/
     foreach ($data as $id => $d) {
       $i++;
-      logit("Data: ". print_r($d, true));
+      $this->log->logit("Data: ". print_r($d, true));
       $dx = array();
       //$j = -1;
       #foreach($d as $n => $v) {
       foreach($totals as $tn => $tv) {
         $dx[] = (int) ($d[$tn] / (int) $tv * 100);
       }
-      logit("D: {$i} --{$id} ".print_r($dx, true));
+      $this->log->logit("D: {$i} --{$id} ".print_r($dx, true));
       $layer->addDataSet($dx, $colrs[$i], "Audit {$id}");
 
       }
@@ -569,25 +478,10 @@ class Process_Common {
     $filename = $this->randFileName('png', 'barchart');
     $fname = "{$path}{$filename}";
     $imgpath = "{$this->base->baseurl}/tmp/{$filename}";
-    logit("IMG: {$this->base->baseurl}-{$path}-{$filename}-{$fname}-{$imgpath}");
-    logit("FN: {$fname}");
+    $this->log->logit("IMG: {$this->base->baseurl}-{$path}-{$filename}-{$fname}-{$imgpath}");
+    $this->log->logit("FN: {$fname}");
     $c->makeChart($fname);
     return $imgpath;
-    /*# Add the three data sets to the bar layer
-
-    $layer->addDataSet($data2, 0x00ff00, "Yes");
-    $layer->addDataSet($data1, 0xff0000, "No");
-    $layer->addDataSet($data0, 0xffffff, "Not Answered");
-
-    # Enable bar label for the whole bar
-    $layer->setAggregateLabelStyle();
-
-    # Enable bar label for each segment of the stacked bar
-    $layer->setDataLabelStyle();
-
-    # Output the chart
-    header("Content-type: image/png");
-    print($c->makeChart2(PNG));*/
   }
 
   public function stacked_barchart($data, $fnames, $flabels, $series, $counts) {
@@ -609,7 +503,7 @@ class Process_Common {
       $datarow = $v;
       break;
     }
-    logit('dr: '. print_r($datarow, true));
+    $this->log->logit('dr: '. print_r($datarow, true));
     // Series 2, 3, 4 are data (n/a, n, y) and series 1 is lab info
     $li = count($series);
     $i = -1;
@@ -618,94 +512,71 @@ class Process_Common {
       #$i ++;
       $s = $series[$i];
       if (! array_key_exists($s, $out)) {
-        logit("creating array $s");
+        $this->log->logit("creating array $s");
         $out[$s] = array();
         $lbl[$s] = array();
       }
-      //logit('L: ' .print_r($lbl[$s], true));
+      //$this->log->logit('L: ' .print_r($lbl[$s], true));
       $n = $fnames[$i];
-      logit("NAME: {$n}");
+      $this->log->logit("NAME: {$n}");
       $lbl[$s][] = $flabels[$i];
-      //logit("e: {$s} -- {$fnames[$i]}");
-      //logit('A: ' .print_r($lbl[$s], true));
+      //$this->log->logit("e: {$s} -- {$fnames[$i]}");
+      //$this->log->logit('A: ' .print_r($lbl[$s], true));
       $y = (array_key_exists($n, $datarow)) ? $datarow[$n] : 0;
       // $y = $v;
-      //logit("Y: {$y}");
-      //logit('O: ' .print_r($out[$s], true));
+      //$this->log->logit("Y: {$y}");
+      //$this->log->logit('O: ' .print_r($out[$s], true));
       $out[$s][] = $y;
     }
-    //logit('CO: '. print_r($counts, true));
+    //$this->log->logit('CO: '. print_r($counts, true));
     $l2 = count($lbl[2]);
-    //logit("L2: {$l2}");
+    //$this->log->logit("L2: {$l2}");
     for($i=0; $i < $l2; $i++) {
-      logit('C: '. print_r($counts[$i], true));
+      $this->log->logit('C: '. print_r($counts[$i], true));
       $totals[] = $counts[$i]['ct'] - ($out[2][$i] + $out[3][$i] + $out[4][$i]);
     }
-    logit("out: ". print_r($out, true));
-    logit('lbl: ' . print_r($lbl, true));
-    logit('totals: '. print_r($totals, true));
-    # The data for the bar chart
-    $data0 = array(70,22,45,67,23,13,59,63,34,12,13,15,17);
-    $data1 = array(70,22,45,67,23,13,59,63,34,12,13,15,17);
-    $data2 = array(70,22,45,67,23,13,59,63,34,12,13,15,17);
+    $this->log->logit("out: ". print_r($out, true));
+    $this->log->logit('lbl: ' . print_r($lbl, true));
+    $this->log->logit('totals: '. print_r($totals, true));
 
-    # The labels for the bar chart
-    /*$labels = array("All","Section 1","Section 2","Section 3","Section 4","Section 5",
-        "Section 6","Section 7","Section 8","Section 9","Section 10","Section 11",
-        "Section 12");
-*/
     $labels = $lbl[2];
-    # Create a XYChart object of size 500 x 320 pixels
     $c = new XYChart(700, 420);
 
-    # Set the plotarea at (100, 40) and of size 280 x 240 pixels
     $c->setPlotArea(80, 140, 560, 240);
-
-    # Add a legend box at (400, 100)
     $c->addLegend(80, 80)->setCols(4); //400, 100);
 
-
-    # Add a title to the chart using 14 points Times Bold Itatic font
-    $heading = "{$out[1][2]}-{$out[1][3]}-{$out[1][0]}-{$out[1][1]}";
-    # labname} - $labnum - $audit_id $audit_date";
+    $heading = "#{$out[1][2]}-{$out[1][3]}-{$out[1][0]}-{$out[1][1]}";
     $c->addTitle("Answers - by section\n{$heading}", "timesbi.ttf", 14);
 
-    # Add a title to the y axis. Draw the title upright (font angle = 0)
+    // Add a title to the y axis. Draw the title upright (font angle = 0)
     $textBoxObj = $c->yAxis->setTitle("Items Counts");
     $textBoxObj->setFontAngle(90);
 
-    # Set the labels on the x axis
+    // Set the labels on the x axis
     $c->xAxis->setLabels($labels)->setFontAngle(45);
 
-    # Add a stacked bar layer and set the layer 3D depth to 8 pixels
+    // Add a stacked bar layer and set the layer 3D depth to 8 pixels
     $layer = $c->addBarLayer2(Stack, 0);
 
-    # Add the three data sets to the bar layer
-
-
-    #$layer->addDataSet($data2, 0x00ff00, "Yes");
-    #$layer->addDataSet($data1, 0xff0000, "No");
-    #$layer->addDataSet($data0, 0xffffff, "Not Answered");
+    // Add the three data sets to the bar layer
     $layer->addDataSet($out[4], 0x00ff00, "Yes");
     $layer->addDataSet($out[3], 0xff0000, "No");
     $layer->addDataSet($out[2], 0xffff00, "N/A");
     $layer->addDataSet($totals, 0xffffff, "Not Answered");
 
-    # Enable bar label for the whole bar
+    // Enable bar label for the whole bar
     $layer->setAggregateLabelStyle();
 
-    # Enable bar label for each segment of the stacked bar
+    // Enable bar label for each segment of the stacked bar
     $layer->setDataLabelStyle();
 
-    # Output the chart
-    #header("Content-type: image/png");
-    #print($c->makeChart2(PNG));
+    // Output the chart
     $path = dirname(__DIR__) . '/../../public/tmp/';
     $filename = $this->randFileName('png', 'levelschart');
     $fname = "{$path}{$filename}";
     $imgpath = "{$this->base->baseurl}/tmp/{$filename}";
-    logit("IMG: {$this->base->baseurl}-{$path}-{$filename}-{$fname}-{$imgpath}");
-    logit("FN: {$fname}");
+    $this->log->logit("IMG: {$this->base->baseurl}-{$path}-{$filename}-{$fname}-{$imgpath}");
+    $this->log->logit("FN: {$fname}");
     $c->makeChart($fname);
     return $imgpath;
   }
@@ -729,102 +600,79 @@ class Process_Common {
     $datarow = $v;
       break;
     }
-    logit('dr: ' . print_r($datarow, true));
+    $this->log->logit('dr: ' . print_r($datarow, true));
     // Series 2, 3, 4 are data (n/a, n, y) and series 1 is lab info
     $li = count($series);
     $i = - 1;
     for($i = 0; $i < $li; $i++) {
     // foreach($datarow as $n => $v) {
-      #$i ++;
+      //$i ++;
       $s = $series[$i];
       if (! array_key_exists($s, $out)) {
-        logit("creating array $s");
+        $this->log->logit("creating array $s");
         $out[$s] = array();
         $lbl[$s] = array();
       }
-      //logit('L: ' .print_r($lbl[$s], true));
+      //$this->log->logit('L: ' .print_r($lbl[$s], true));
       $n = $fnames[$i];
-      logit("NAME: {$n}");
+      $this->log->logit("NAME: {$n}");
       $lbl[$s][] = $flabels[$i];
-      //logit("e: {$s} -- {$fnames[$i]}");
-      //logit('A: ' .print_r($lbl[$s], true));
+      //$this->log->logit("e: {$s} -- {$fnames[$i]}");
+      //$this->log->logit('A: ' .print_r($lbl[$s], true));
       $y = (array_key_exists($n, $datarow)) ? $datarow[$n] : 0;
       // $y = $v;
-      //logit("Y: {$y}");
-      //logit('O: ' .print_r($out[$s], true));
+      //$this->log->logit("Y: {$y}");
+      //$this->log->logit('O: ' .print_r($out[$s], true));
       $out[$s][] = $y;
     }
-    //logit('CO: '. print_r($counts, true));
+    //$this->log->logit('CO: '. print_r($counts, true));
     $l2 = count($lbl[2]);
-    //logit("L2: {$l2}");
+    //$this->log->logit("L2: {$l2}");
     for($i = 0; $i < $l2; $i ++) {
-      logit('C: ' . print_r($counts[$i], true));
+      $this->log->logit('C: ' . print_r($counts[$i], true));
       $totals[] = $counts[$i]['ct'] - ($out[2][$i] + $out[3][$i] + $out[4][$i]);
     }
-    logit("out: " . print_r($out, true));
-    logit('lbl: ' . print_r($lbl, true));
-    logit('totals: ' . print_r($totals, true));
-    # The data for the bar chart
-    /*
-     $data0 = array(70,22,45,67,23,13,59,63,34,12,13,15,17);
-    $data1 = array(70,22,45,67,23,13,59,63,34,12,13,15,17);
-    $data2 = array(70,22,45,67,23,13,59,63,34,12,13,15,17);
-    */
-    # The labels for the bar chart
-    /*$labels = array("All","Section 1","Section 2","Section 3","Section 4","Section 5",
-    "Section 6","Section 7","Section 8","Section 9","Section 10","Section 11",
-    "Section 12");
-    */
+    $this->log->logit("out: " . print_r($out, true));
+    $this->log->logit('lbl: ' . print_r($lbl, true));
+    $this->log->logit('totals: ' . print_r($totals, true));
+
     $labels = $lbl[2];
-    # Create a XYChart object of size 500 x 320 pixels
+    // Create a XYChart object of size 500 x 320 pixels
     $c = new XYChart(700, 420);
 
-    # Set the plotarea at (100, 40) and of size 280 x 240 pixels
+    // Set the plotarea at (100, 40) and of size 280 x 240 pixels
     $c->setPlotArea(80, 140, 560, 240);
 
-    # Add a legend box at (400, 100)
+    // Add a legend box at (400, 100)
     $c->addLegend(80, 80)->setCols(4); //400, 100);
 
-
-    # Add a title to the chart using 14 points Times Bold Itatic font
     $heading = "{$out[1][2]}-{$out[1][3]}-{$out[1][0]}-{$out[1][1]}";
-    # labname} - $labnum - $audit_id $audit_date";
     $c->addTitle("Answers - by section\n{$heading}", "timesbi.ttf", 14);
 
-    # Add a title to the y axis. Draw the title upright (font angle = 0)
     $textBoxObj = $c->yAxis->setTitle("Items Counts");
     $textBoxObj->setFontAngle(90);
 
-    # Set the labels on the x axis
     $c->xAxis->setLabels($labels)->setFontAngle(45);
 
-    # Add a stacked bar layer and set the layer 3D depth to 8 pixels
     $layer = $c->addBarLayer2(Stack, 0);
 
-    # Add the three data sets to the bar layer
-    #$layer->addDataSet($data2, 0x00ff00, "Yes");
-    #$layer->addDataSet($data1, 0xff0000, "No");
-    #$layer->addDataSet($data0, 0xffffff, "Not Answered");
+    // Add the three data sets to the bar layer
     $layer->addDataSet($out[4], 0x00ff00, "Yes");
     $layer->addDataSet($out[3], 0xffff00, "Partial");
     $layer->addDataSet($out[2], 0xff0000, "No");
     $layer->addDataSet($totals, 0xffffff, "Not Answered");
 
-    # Enable bar label for the whole bar
     $layer->setAggregateLabelStyle();
 
-    # Enable bar label for each segment of the stacked bar
     $layer->setDataLabelStyle();
 
-    # Output the chart
-    #header("Content-type: image/png");
-    #print($c->makeChart2(PNG));
+    // Output the chart
     $path = dirname(__DIR__) . '/../../public/tmp/';
     $filename = $this->randFileName('png', 'levelschart');
     $fname = "{$path}{$filename}";
     $imgpath = "{$this->base->baseurl}/tmp/{$filename}";
-    logit("IMG: {$this->base->baseurl}-{$path}-{$filename}-{$fname}-{$imgpath}");
-    logit("FN: {$fname}");
+    $this->log->logit("IMG: {$this->base->baseurl}-{$path}-{$filename}-{$fname}-{$imgpath}");
+    $this->log->logit("FN: {$fname}");
     $c->makeChart($fname);
     return $imgpath;
   }

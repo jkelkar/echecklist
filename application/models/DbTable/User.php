@@ -3,30 +3,34 @@
 /**
  * this implements the user table
  */
-
-require_once 'modules/Checklist/logger.php';
-
-class Application_Model_DbTable_User extends Application_Model_DbTable_Checklist
+class Application_Model_DbTable_User extends Checklist_Model_Base
 {
   protected $_name = 'user';
 
+  public function init()
+  {
+    parent::init();
+  }
+
   public function getUser($id)
   {
-    $id = (int)$id;
+    $id = (int) $id;
     $row = $this->fetchRow('id = ' . $id);
-    if (!$row) {
+    if (! $row)
+    {
       throw new Exception("Could not find row $id");
     }
     return $row->toArray();
   }
 
-  public function getUsers() {
-    $rows = $this->fetchAll($this->select()
-			    ->order('name'));
+  public function getUsers()
+  {
+    $rows = $this->fetchAll($this->select()->order('name'));
     return $rows;
   }
 
-  public function getUserByUsername($username) {
+  public function getUserByUsername($username)
+  {
     /**
      * get a user from userid
      */
@@ -40,7 +44,8 @@ class Application_Model_DbTable_User extends Application_Model_DbTable_Checklist
     // return $rows[0];
   }
 
-  public function getUsersByUsername($username) {
+  public function getUsersByUsername($username)
+  {
     /**
      * get a user from userid
      */

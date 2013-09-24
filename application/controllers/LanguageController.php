@@ -36,7 +36,7 @@ class LanguageController extends Application_Controller_Action {
         logit ( "Got language value: {$langtag}" );
       }
       // set the session language and go back to referer
-      $this->echecklistNamespace->lang = $langtag;
+      $this->session->lang = $langtag;
       $request = $this->getRequest();
       $referer = $request->getHeader('referer');
       $this->_redirector->gotoUrl($referer);

@@ -27,7 +27,8 @@ body {
 	font-family: ArialNarrow, Helvetica, Arial, sans-serif;
 	font-size: 13px;
 	line-height: 18px;
-	color: #555555;
+	color: #000;
+	text-shadow: none;
 }
 h2 {
     color: black;

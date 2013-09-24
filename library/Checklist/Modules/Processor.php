@@ -1,19 +1,15 @@
 <?php
 // this file handles all the output related processing
 //  whether it is in Excel output or as reports and images
-require_once 'modules/Checklist/logger.php';
-require_once 'modules/Checklist/processCommon.php';
-/** Include PHPExcel */
-require_once 'modules/Classes/PHPExcel.php';
-require_once 'modules/ChartDirector/lib/phpchartdir.php';
 
-class Processing extends Process_Common {
+/** Include PHPExcel */
+require_once 'Classes/PHPExcel.php';
+/* include ChartDirector */
+require_once 'ChartDirector/lib/phpchartdir.php';
+
+class Checklist_Modules_Processor extends Checklist_Modules_ProcessCommon {
   public $base ;
 
-  public function init() {
-    // initialize
-
-  }
   public function process($base, $list, $name) {
     // this is the driver for processing the request for output generation
     // gets the config data from table report, converts it into a struct
@@ -22,30 +18,30 @@ class Processing extends Process_Common {
     // $list - the list of selected audits
     // $name -
     $this->base = $base;
-    $check = new Application_Model_DbTable_Checklist();
+    //$check = new Checklist_controller_action();
     //$audit = new Application_Model_DbTable_Audit();
     $report = new Application_Model_DbTable_Report();
-    $check = new Application_Model_DbTable_Checklist();
+    $check = new Checklist_Model_Base();
     $name = $this->getAuditName($name, $base->data['audit_type']);
     $tinfo = $this->collect($name);
-    // logit("tinfo: ".print_r($tinfo, true));
+    // $this->log->logit("tinfo: ".print_r($tinfo, true));
     $numtabs = count($tinfo) - 3; // -3 to ignore the heading, report_type, and file_type
-    logit("Tabs: {$numtabs}");
+    $this->log->logit("Tabs: {$numtabs}");
     //$start = 0;
     $filehandle = null;
     $heading = $tinfo['heading'];
     $report_type = $tinfo['report_type'];
     $file_type = $tinfo['file_type'];
-    logit("ft: {$file_type}");
+    $this->log->logit("ft: {$file_type}");
     $fname = '';
-    logit("LIST: " . print_r($list, true));
+    $this->log->logit("LIST: " . print_r($list, true));
     $audits = $check->_mkList($list);
     switch ($file_type) {
       case 'excel' :
         // this is going to be an excel file
         $filehandle = $this->startExcelDoc($heading);
         for($i = 1; $i <= $numtabs; $i ++) {
-          logit("Processing tab {$i}");
+          $this->log->logit("Processing tab {$i}");
 
           $tabinfo = $tinfo[$i];
           $fnames = array();
@@ -63,15 +59,14 @@ class Processing extends Process_Common {
                 $fnames[] = $v['field_name'];
             }
           }
-          // $flabels;
           $names = $check->_mkList($fnames);
-          logit("Heading: {$heading}");
-          //logit('fnames: ' . print_r($fnames, true) . '  ' . print_r($names, true));
-            // logit('flabels: '. print_r($flabels, true).'  '. print_r($labels, true));
-          logit("NAME:  {$name}");
+          $this->log->logit("Heading: {$heading}");
+          //$this->log->logit('fnames: ' . print_r($fnames, true) . '  ' . print_r($names, true));
+          // $this->log->logit('flabels: '. print_r($flabels, true).'  '. print_r($labels, true));
+          $this->log->logit("NAME:  {$name}");
           if ($name == 'ncexcel') {
             // this is the non compliance excel report
-            logit("$name");
+            $this->log->logit("$name");
             $audit_id = $list[0];
             $data = $this->genNCReport($audit_id, $base->data['audit_type']);
             $i = 1;
@@ -91,7 +86,7 @@ class Processing extends Process_Common {
                 $fname = 'BAT_stats.xlsx';
                 break;
               case 'slipta2excel' :
-                logit('SLPTA2EXCEL');
+                $this->log->logit('SLPTA2EXCEL');
                 $fname = 'SLIPTA_stats.xlsx';
                 break;
               case 'tb2excel' :
@@ -101,27 +96,25 @@ class Processing extends Process_Common {
             }
             if ($query) {
               eval("\$sql = \"$query\"; ");
-              // logit("CALC Q: {$sql}");
+              // $this->log->logit("CALC Q: {$sql}");
             }
             $rows = $report->runQuery($sql);
-            //logit('ROWS: ' . print_r($rows, true));
+            //$this->log->logit('ROWS: ' . print_r($rows, true));
             $data = $this->collectRows($rows);
             $this->startWorkSheet($filehandle, $i, $heading, $flabels, $fnames, $data);
           }
         }
         $filename = $this->saveFile($filehandle);
-        logit("FN: $filename");
+        $this->log->logit("FN: $filename");
 
-        logit("Filename: {$filename}-->{$fname}");
+        $this->log->logit("Filename: {$filename}-->{$fname}");
         $fstr = file_get_contents($filename);
-        logit("LEN: " . strlen($fstr));
+        $this->log->logit("LEN: " . strlen($fstr));
         header ("Content-type: octet/stream");
         header ("Content-disposition: attachment; filename=".$fname.";");
         header ("Content-Length: ".filesize($filename));
         readfile($filename);
         return;
-
-        // return $filename;
         break;
       case 'html' :
         // this is going to be an image file
@@ -129,7 +122,7 @@ class Processing extends Process_Common {
         $this->createHTMLFile();
         break;
       case 'graph' :
-        logit("Processing tab 1");
+        $this->log->logit("Processing tab 1");
 
         $tabinfo = $tinfo[1];
         $fnames = array();
@@ -151,23 +144,23 @@ class Processing extends Process_Common {
           }
         }
         $names = $check->_mkList($fnames);
-        logit("NAME:  {$name}");
-        logit("Heading: {$heading}");
-        logit('G fnames: ' . print_r($fnames, true)  . '  ' . print_r($names, true));
-        logit('flabels: '  . print_r($flabels, true) );
-        logit('series ; ' . print_r($series, true));
-        logit("Heading: {$heading}");
+        $this->log->logit("NAME:  {$name}");
+        $this->log->logit("Heading: {$heading}");
+        $this->log->logit('G fnames: ' . print_r($fnames, true)  . '  ' . print_r($names, true));
+        $this->log->logit('flabels: '  . print_r($flabels, true) );
+        $this->log->logit('series ; ' . print_r($series, true));
+        $this->log->logit("Heading: {$heading}");
         if ($query) {
           eval("\$sql = \"$query\"; ");
-          // logit("CALC Q: {$sql}");
+          // $this->log->logit("CALC Q: {$sql}");
         }
         $rows = $report->runQuery($sql);
-        //logit('ROWS: ' . print_r($rows, true));
+        //$this->log->logit('ROWS: ' . print_r($rows, true));
         $data = $this->collectRows($rows);
-        logit('DATA: '. print_r($data, true));
+        $this->log->logit('DATA: '. print_r($data, true));
         switch ($name) {
           case 'spiderchart' :
-            logit("AUDITS: {$audits}");
+            $this->log->logit("AUDITS: {$audits}");
             $sql = <<<"SQL"
 select * from audit_data
  where audit_id {$audits}
@@ -175,7 +168,7 @@ select * from audit_data
  order by field_name
 SQL;
             $arows = $check->queryRows($sql);
-            logit("AR: " . print_r($arows, true));
+            $this->log->logit("AR: " . print_r($arows, true));
             $indata = $this->collectRows($arows);
             $mql = <<<"SQL"
 select varname, score from template_row
@@ -183,7 +176,7 @@ select varname, score from template_row
  order by varname
 SQL;
             $mrows = $check->queryRows($mql);
-            logit("M: " . print_r($mrows, true));
+            $this->log->logit("M: " . print_r($mrows, true));
             $totals = array();
             foreach($mrows as $m) {
               if ($m['varname'] == 'all_total') {
@@ -192,26 +185,26 @@ SQL;
                 $totals[$m['varname']] = $m['score'];
               }
             }
-            logit("Labels: " . print_r($totals, true));
+            $this->log->logit("Labels: " . print_r($totals, true));
             $data = array();
             foreach($indata as $id => $d) {
               $thisrow = array();
               foreach($totals as $tn => $tv) {
                 $val = (key_exists($tn, $d)) ? $d[$tn] : 0;
-                logit("TOT: {$tn} => {$tv} : {$val}");
+                $this->log->logit("TOT: {$tn} => {$tv} : {$val}");
                 $thisrow[$tn] = $val;
               }
               $data[$id] = $thisrow;
             }
-            logit("SQL: {$sql}");
-            // logit("AROWS: " . print_r($arows, true));
-            logit("DATA: " . print_r($data, true));
+            $this->log->logit("SQL: {$sql}");
+            // $this->log->logit("AROWS: " . print_r($arows, true));
+            $this->log->logit("DATA: " . print_r($data, true));
             $img = $this->spider_chart($data, $totals);
             $this->base->view->img = $img;
             return 1;
             break;
           case 'barchart' :
-            logit("AUDITS: {$audits}");
+            $this->log->logit("AUDITS: {$audits}");
             $sql = <<<"SQL"
 select * from audit_data
  where audit_id {$audits}
@@ -219,7 +212,7 @@ select * from audit_data
  order by field_name
 SQL;
             $arows = $check->queryRows($sql);
-            logit("AR: " . print_r($arows, true));
+            $this->log->logit("AR: " . print_r($arows, true));
             $indata = $this->collectRows($arows);
             $mql = <<<"SQL"
 select varname, score from template_row
@@ -227,7 +220,7 @@ select varname, score from template_row
  order by varname
 SQL;
             $mrows = $check->queryRows($mql);
-            logit("M: " . print_r($mrows, true));
+            $this->log->logit("M: " . print_r($mrows, true));
             $totals = array();
             foreach($mrows as $m) {
               if ($m['varname'] == 'all_total') {
@@ -236,13 +229,13 @@ SQL;
                 $totals[$m['varname']] = $m['score'];
               }
             }
-            logit("Labels: " . print_r($totals, true));
+            $this->log->logit("Labels: " . print_r($totals, true));
             $data = array();
             foreach($indata as $id => $d) {
               $thisrow = array();
               foreach($totals as $tn => $tv) {
                 $val = (key_exists($tn, $d)) ? $d[$tn] : 0;
-                logit("TOT: {$tn} => {$tv} : {$val}");
+                $this->log->logit("TOT: {$tn} => {$tv} : {$val}");
                 $thisrow[$tn] = $val;
               }
               $data[$id] = $thisrow;
@@ -253,19 +246,19 @@ SQL;
               $totals[] = $m['score'];
             }
             */
-            logit("SQL: {$sql}");
-            // logit("AROWS: " . print_r($arows, true));
-            logit("DATA: " . print_r($data, true));
+            $this->log->logit("SQL: {$sql}");
+            // $this->log->logit("AROWS: " . print_r($arows, true));
+            $this->log->logit("DATA: " . print_r($data, true));
             $img = $this->parallel_barchart($data, $totals);
             $this->base->view->img = $img;
             return 1;
             break;
             break;
           case 'slipta2inc' :
-            logit('S');
+            $this->log->logit('S');
             break;
           case 'bat2inc' :
-            logit('B');
+            $this->log->logit('B');
             $mql = <<<"SQL"
 select sum(1) ct, substr(varname, 1,3) name
   from template_row
@@ -277,13 +270,13 @@ SQL;
             foreach($mrows as $n => $v) {
               $counts[$n] = $v;
             }
-            logit('Counts: ' . print_r($counts, true));
+            $this->log->logit('Counts: ' . print_r($counts, true));
             $img = $this->stacked_barchart($data, $fnames, $flabels, $series, $counts);
             $this->base->view->img = $img;
             return 1;
             break;
           case 'tb2inc' :
-            logit('T');
+            $this->log->logit('T');
             $mql = <<<"SQL"
 select sum(1) ct, substr(varname, 1,3) name
   from template_row
@@ -295,7 +288,7 @@ SQL;
             foreach($mrows as $n => $v) {
               $counts[$n] = $v;
             }
-            logit('Counts: ' . print_r($counts, true));
+            $this->log->logit('Counts: ' . print_r($counts, true));
             $img = $this->stacked_barchart2($data, $fnames, $flabels, $series, $counts);
             $this->base->view->img = $img;
             return 1;

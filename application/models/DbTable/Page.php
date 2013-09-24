@@ -4,12 +4,16 @@
  * This implements the model for Page tags
  *
  */
-require_once 'modules/Checklist/logger.php';
 
-class Application_Model_DbTable_Page extends Application_Model_DbTable_Checklist
+class Application_Model_DbTable_Page extends Checklist_Model_Base
 {
   protected $_name = 'page';
   protected $_primary = 'id';
+
+  public function init()
+  {
+    parent::init();
+  }
 
   public function getPages($template_id) {
     /**
@@ -30,7 +34,7 @@ class Application_Model_DbTable_Page extends Application_Model_DbTable_Checklist
   public function getPage($template_id, $page_num) {
     $template_id = (int)$template_id;
     $page_num = (int)$page_num;
-    //logit("PAGE: {$template_id} {$page_num}");
+    //$this->log->logit("PAGE: {$template_id} {$page_num}");
     /**$row = $this->fetchAll
       (
        $this->select()
@@ -40,7 +44,7 @@ class Application_Model_DbTable_Page extends Application_Model_DbTable_Checklist
 
     $sql = "select * from page where template_id = ". $template_id .
       " and page_num = {$page_num}" ;
-    //logit("getPage: ". $sql);
+    //$this->log->logit("getPage: ". $sql);
     $rows =  $this->queryRows($sql);
 
     if (!$rows) {
@@ -51,7 +55,7 @@ class Application_Model_DbTable_Page extends Application_Model_DbTable_Checklist
 
 public function getStartPage($template_id) {
     $template_id = (int)$template_id;
-    //logit("PAGE: {$template_id} ");
+    //$this->log->logit("PAGE: {$template_id} ");
     $sql = "select * from page where template_id = ". $template_id .
       " and start = 't'" ;
     $rows = $this->queryRows($sql);
@@ -59,7 +63,7 @@ public function getStartPage($template_id) {
     if (!$rows) {
       throw new Exception("Could not find page.");
     }
-    //logit('Start page: ' . print_r($rows[0], true));
+    //$this->log->logit('Start page: ' . print_r($rows[0], true));
     return $rows[0]['page_num'];
   }
 

@@ -3,10 +3,13 @@
  * This implements the model for accessing template
  * rows
  */
-require_once 'modules/Checklist/logger.php';
 
-class Application_Model_DbTable_TemplateRows extends Application_Model_DbTable_Checklist {
+class Application_Model_DbTable_TemplateRows extends Checklist_Model_Base {
   protected $_name = 'template_rows';
+
+  public function init(){
+    parent::init();
+  }
 
   public function getRows($id, $page_num, $lang) {
     $id = ( int ) $id;
@@ -27,7 +30,7 @@ class Application_Model_DbTable_TemplateRows extends Application_Model_DbTable_C
     and p.page_num = {$page_num}
     order by r.part, r.level1, r.level2, r.level3, r.level4
 SQL;
-    // logit("SQL: {$sql}");
+    // $this->log->logit("SQL: {$sql}");
     $rows = $this->queryRows($sql); // $stmt->fetchAll ();
     if (! $rows) {
       throw new Exception ( "No rows available for this template." );
@@ -56,7 +59,7 @@ select r.varname, r.row_type, r.score, p.page_num, p.page_id,
    and p.page_id = r.page_id
  order by r.part, r.level1, r.level2, r.level3, r.level4
 SQL;
-    // logit("SQL: {$sql}");
+    // $this->log->logit("SQL: {$sql}");
     $rows = $this->queryRows($sql); // $stmt->fetchAll ();
     if (! $rows) {
       throw new Exception ( "No rows available for this template." );
@@ -78,7 +81,7 @@ select r.varname, r.row_type, r.element_count, r.required
    and p.page_id = r.page_id
  order by r.part, r.level1, r.level2, r.level3, r.level4
 SQL;
-    // logit("SQL: {$sql}");
+    // $this->log->logit("SQL: {$sql}");
     $rows = $this->queryRows($sql); // $stmt->fetchAll ();
     if (! $rows) {
       throw new Exception ( "No rows available for this template." );
@@ -114,7 +117,7 @@ WHERE template_id = {$template_id}
 AND varname = '{$varname}'
 END;
     $rows = $this->queryRows($sql);
-    logit("TR R: ". print_r($rows, true));
+    $this->log->logit("TR R: ". print_r($rows, true));
     if (! $rows) {
       return null;
     } else {

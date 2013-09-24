@@ -4,12 +4,15 @@
  * This implements the model for lab data
  *
  */
-require_once 'modules/Checklist/logger.php';
+//require_once 'modules/Checklist/logger.php';
 
-class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
+class Application_Model_DbTable_Lab extends Checklist_Model_Base
 {
   protected $_name = 'lab';
 
+  public function init(){
+    parent::init();
+  }
   public function getLab($id)
   {
     /**
@@ -31,11 +34,11 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
     $row = $this->fetchRow("labnum = '$labnum'");
 
     if (! $row) {
-      logit("bylabnum: {$labnum} NOT found");
+      $this->log->logit("bylabnum: {$labnum} NOT found");
       return null;
     } else
       $out = $row->toArray();
-    logit("bylabnum: {$labnum} -> ". print_r($out, true));
+    $this->log->logit("bylabnum: {$labnum} -> ". print_r($out, true));
     return $out;
   }
 
@@ -43,7 +46,7 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
     /*
      * Get $ct labs starting at position $start
      */
-    logit("Lab:getLabs: ".print_r($data, true)." {$start}, {$ct}");
+    $this->log->logit("Lab:getLabs: ".print_r($data, true)." {$start}, {$ct}");
     $sql = "select * from lab where 1=1 ";
     foreach ($data as $a => $b) {
       if ($b == '' || $a == 'submit_button') continue;
@@ -58,10 +61,10 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
       }
     }
     //$sql = $sql . " limit {$start}, {$ct}";
-    logit("getLabs: {$sql}");
+    $this->log->logit("getLabs: {$sql}");
     $rows = $this->queryRows( $sql );
     foreach($rows as $row) {
-      logit("{$row['labname']} -- {$row['country']}");
+      $this->log->logit("{$row['labname']} -- {$row['country']}");
     }
     if (count($rows) == 0) {
       $rows = array();
@@ -71,12 +74,12 @@ class Application_Model_DbTable_Lab extends Application_Model_DbTable_Checklist
   }
 
   public function getAllLabs( $start, $ct) {
-    logit("Labs: getalllabs");
+    $this->log->logit("Labs: getalllabs");
     $sql = "select * from lab limit {$start}, {$ct}";
-    logit("getAllLabs: {$sql}");
+    $this->log->logit("getAllLabs: {$sql}");
     $rows = $this->queryRows( $sql );
     foreach($rows as $row) {
-      logit("{$row['labname']} -- {$row['country']}");
+      $this->log->logit("{$row['labname']} -- {$row['country']}");
     }
     return $rows;
   }

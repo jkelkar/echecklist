@@ -1,26 +1,30 @@
 <?php
 
 /**
- * This implements the model for template data
+ * This implements the model for audit table
  */
-require_once 'modules/Checklist/logger.php';
-require_once 'modules/Checklist/datefns.php';
 
-class Application_Model_DbTable_Audit extends Application_Model_DbTable_Checklist {
+class Application_Model_DbTable_Audit extends Checklist_Model_Base {
   protected $_name = 'audit';
   private $debug = 0;
   private $format = 'Y-m-d H:i:s';
   private $ISOformat = 'Y-m-d';
+  public $log;
+
+  public function init()
+  {
+    parent::init();
+  }
+
   public function UpdateTS_SLMTA($id, $sstatus) {
     $id = (int) $id;
     $dt = new DateTime();
-    logit('TS: '. $dt->getTimestamp());
+    $this->log->logit('TS: '. $dt->getTimestamp());
     $fdt = $dt->format($this->format);
     $data = array(
                   'updated_at' => $fdt,
                   'slmta_status' => $sstatus
                   );
-    //logit("AUDIT_DT: {$id} " . print_r($data, true));
     $this->update($data, "id = {$id}");
   }
 
@@ -50,9 +54,6 @@ class Application_Model_DbTable_Audit extends Application_Model_DbTable_Checklis
   where a.id = {$id} and l.id = a.lab_id
 END;
     $rows = $this->queryRows($sql);
-    /*if (!$rows) {
-      throw new Exception("Could not find the audit.");
-    }*/
     return ($rows) ? $rows[0] : null;
   }
 
@@ -73,68 +74,22 @@ END;
     return $rows;
   }
 
-  /*public function _mkList($data) {
-    logit("MKL: {$data} " . print_r($data, true));
-    $out = '';
-    // if (count($data) == 0) {
-    //  return
-    if (is_string($data)) {
-      // logit('STR');
-      $out =  "= '{$data}' ";
-      logit("MKLv: {$out}");
-      return $out;
-    } else {
-      // logit('ARR');
-      switch (count($data)) {
-        case 0 :
-          //logit("0: {$data} --". print_r($data, true));
-          break;
-        case 1 :
-          //logit("A: = '{$data[0]}' ");
-          //if ($data[0] == '-')
-          //  return "= '{$data[0]}' ";
-          if (is_string($data[0])) {
-            $out .= "= '{$data[0]}'";
-          } else {
-            $out .= "= {$data[0]}";
-          }
-          logit("MKL: {$out}");
-          return $out;
-          break;
-        default :
-          foreach($data as $d) {
-            if ($out != '')
-              $out .= ',';
-            if (is_string($d)) {
-              $out .= "'{$d}'";
-            } else {
-              $out .= "{$d}";
-            }
-          }
-          logit("MKL2: {$out}");
-          return "in ({$out})";
-      }
-    }
-  }*/
-
   public function selectAudits($data) {
     global $userid;
     if (! $userid) $userid = 99999;
-    // logit('IN top: ' . print_r($data, true));
 
     foreach($data as $n => $v) {
-      logit("BEG $n -> $v " . print_r($v, true));
+      $this->log->logit("BEG $n -> $v " . print_r($v, true));
       if (is_string($v) && $v == '-') {
-        logit('unset');
+        $this->log->logit('unset');
         unset($data[$n]);
         continue;
       }
       if (is_array($v) && count($v) == 1 && $v[0] == '-') {
-        logit('unset');
+        $this->log->logit('unset');
         unset($data[$n]);
         continue;
       }
-      //logit("END {$n} ". print_r($data, true));
     }
     $sql = <<<"END"
 select a.id audit_id, a.end_date, a.cohort_id, a.status, a.slipta_official,
@@ -146,8 +101,8 @@ select a.id audit_id, a.end_date, a.cohort_id, a.status, a.slipta_official,
 END;
     foreach($data as $a => $b) {
       if (! is_null($b) and $b != '') {
-        //logit("IN: {$a} = {$b} " . print_r($b, true));
-          logit("LIST: {$a} -> {$b}", $this->_mkList($b));
+        //$this->log->logit("IN: {$a} = {$b} " . print_r($b, true));
+          $this->log->logit("LIST: {$a} -> {$b}", $this->_mkList($b));
         switch ($a) {
           case 'country' :
             $sql .= " and l.country " . $this->_mkList($b);
@@ -182,15 +137,15 @@ END;
             break;
           case 'stdate' :
             if ($b != '') {
-              $dval = convert_ISO($b);
-              logit("Date: {$dval->format($this->ISOformat)}");
+              $dval = Checklist_Modules_Datefns::convert_ISO($b);
+              $this->log->logit("Date: {$dval->format($this->ISOformat)}");
               $sql .= " and a.end_date >= '{$dval->format($this->ISOformat)}' ";
             }
             break;
           case 'enddate' :
             if ($b != '') {
               $dval = convert_ISO($b);
-              logit("Date: {$dval->format($this->ISOformat)}");
+              $this->log->logit("Date: {$dval->format($this->ISOformat)}");
               $sql .= " and a.end_date <= '{$dval->format($this->ISOformat)}' ";
             }
             break;
@@ -198,9 +153,9 @@ END;
         }
       }
     }
-    logit("SQL: {$sql}");
+    $this->log->logit("SQL: {$sql}");
     $sql .= " order by a.end_date desc, a.audit_type";
-    logit("CSQL: {$sql}");
+    $this->log->logit("CSQL: {$sql}");
     $rows = $this->queryRows($sql);
     return $rows;
   }
@@ -222,16 +177,6 @@ END;
     }
     return $rows;
   }
-
-  /*public function insertData($data) {
-    / **
-     * Create a new audit
-     * data is an array with name value pairs
-     * /
-    $this->insert($data);
-    $newid = $this->getAdapter()->lastInsertId();
-    return $newid;
-  }*/
 
   public function deleteAudit($audit_id) {
     // delete audit with id = $audi_id

@@ -4,16 +4,27 @@
  * This fetches the db handle so we can run straight SQL
  * queries with it/
  */
-require_once 'modules/Checklist/logger.php';
-class Application_Model_DbTable_Checklist extends Zend_Db_Table_Abstract
+//require_once 'modules/Checklist/logger.php';
+class Checklist_Model_Base extends Zend_Db_Table_Abstract
 {
+  public $log;
+  public $datefns;
+  public $general;
+
+  public function init() 
+  {
+    $this->log = new Checklist_Logger();
+    $this->datefns = new Checklist_Modules_Datefns();
+    $this->general = new Checklist_modules_General();
+  }
+
   public function getDb()
   {
     $path = APPLICATION_PATH . '/configs/application.ini';
 
     $config = new Zend_Config_Ini($path, 'staging');
-    //logit("app path: {$path}");
-    //logit("X: {$config->resources->db->params->dbname}");
+    //$this->log->logit("app path: {$path}");
+    //$this->log->logit("X: {$config->resources->db->params->dbname}");
     $db = $this->getAdapter();
 
     /**new Zend_Db_Adapter_Pdo_Mysql
@@ -53,7 +64,7 @@ class Application_Model_DbTable_Checklist extends Zend_Db_Table_Abstract
      * This runs the sql against the database and returns the result
      * as $rows
      */
-    logit("SQL: {$sql}");
+    $this->log->logit("SQL: {$sql}");
     $db = $this->getDb();
     $stmt = $db->query($sql);
     $rows = $stmt->fetchAll();
@@ -112,7 +123,7 @@ class Application_Model_DbTable_Checklist extends Zend_Db_Table_Abstract
      * Update row at $id with this data
      * $data is an array with name value pairs
      */
-    //logit('DATA: '. print_r($data, true));
+    //$this->log->logit('DATA: '. print_r($data, true));
     $this->update($data, "id = {$id}");
   }
 
@@ -124,23 +135,23 @@ class Application_Model_DbTable_Checklist extends Zend_Db_Table_Abstract
   }
 
   public function _mkList($data) {
-    //logit("MKL: {$data} " . print_r($data, true));
+    //$this->log->logit("MKL: {$data} " . print_r($data, true));
     $out = '';
     // if (count($data) == 0) {
     //  return
     if (is_string($data)) {
-      // logit('STR');
+      // $this->log->logit('STR');
       $out =  "= '{$data}' ";
-      //logit("MKLv: {$out}");
+      //$this->log->logit("MKLv: {$out}");
       return $out;
     } else {
-      // logit('ARR');
+      // $this->log->logit('ARR');
       switch (count($data)) {
       	case 0 :
-      	  //logit("0: {$data} --". print_r($data, true));
+      	  //$this->log->logit("0: {$data} --". print_r($data, true));
       	  break;
       	case 1 :
-      	  //logit("A: = '{$data[0]}' ");
+      	  //$this->log->logit("A: = '{$data[0]}' ");
       	  //if ($data[0] == '-')
       	  //  return "= '{$data[0]}' ";
       	  if (is_string($data[0])) {
@@ -148,7 +159,7 @@ class Application_Model_DbTable_Checklist extends Zend_Db_Table_Abstract
       	  } else {
       	    $out .= "= {$data[0]}";
       	  }
-      	  //logit("MKL: {$out}");
+      	  //$this->log->logit("MKL: {$out}");
       	  return $out;
       	  break;
       	default :
@@ -161,7 +172,7 @@ class Application_Model_DbTable_Checklist extends Zend_Db_Table_Abstract
       	      $out .= "{$d}";
       	    }
       	  }
-      	  //logit("MKL2: {$out}");
+      	  //$this->log->logit("MKL2: {$out}");
       	  return "in ({$out})";
       }
       }

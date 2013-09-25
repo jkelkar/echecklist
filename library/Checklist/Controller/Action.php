@@ -568,6 +568,11 @@ END;
     }
 
     $tout[] = '</table>';
+    if (!$rows)
+    {
+      $tout =array('<table style="margin-left:50px;color:black;font-size:17px;">' .
+          '<tr><td>No matching Labs found.</td></tr></table>');
+    }
     $this->view->showlines = implode("\n", $tout);
   }
 
@@ -691,6 +696,10 @@ END;
      * if ($cb) { $tour[] = '</form>'; }
      */
     $lines = implode("\n", $tout);
+    if (! $rows)
+    {
+      $lines = '<table style="margin-left:50px;color:black;font-size:17px;"><tr><td>No matching audits found.</td</tr></table>';
+    }
     return $lines;
   }
 
@@ -787,6 +796,11 @@ END;
       // <td>{$sl}</td>
     }
     $tout[] = '</table>';
+    if (! $rows)
+    {
+      $tout = array('<table style="margin-left:50px;color:black;font-size:17px;">'.
+          '<tr><td>No matching users found</td>,</tr></table>');
+    }
     $this->view->showlines = implode("\n", $tout);
   }
 

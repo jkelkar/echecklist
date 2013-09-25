@@ -1017,7 +1017,7 @@ END;
     // $this->log->logit("IC: ". print_r($tracker, true));
     if ($tracker)
     {
-      array_unshift($tracker, "<h2>Missing items in Audit</h2>");
+      array_unshift($tracker, "<h1>Missing items in Audit</h1>");
       return implode("<br />\n", $tracker);
     }
     return null;

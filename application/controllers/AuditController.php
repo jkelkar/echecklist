@@ -920,7 +920,7 @@ class AuditController extends Checklist_Controller_Action
           $this->session->flash = "Audit id #{$audit_id} has been changed to {$newstatus}";
           // clear selected audit
           $this->session->audit = null;
-          $this->_redirector->gotoUrl($this->poststatchange);
+          $this->_redirector->gotoUrl($this->mainpage);
         }
       }
       else
@@ -930,7 +930,7 @@ class AuditController extends Checklist_Controller_Action
         $audit->moveStatus($audit_id, $newstatus);
         $this->session->flash = "Audit id #{$audit_id} has been changed to {$newstatus}";
         $this->session->audit = null;
-        $this->_redirector->gotoUrl($this->poststatchange);
+        $this->_redirector->gotoUrl($this->mainpage);
       }
     }
     else
@@ -960,12 +960,12 @@ class AuditController extends Checklist_Controller_Action
       if ($this->audit['status'] != 'COMPLETE' && $ao->isOwned($audit_id, $this->userid))
       {
         $this->session->flash = "Audit id #{$audit_id} status is not COMPLETE";
-        $this->_redirector->gotoUrl($this->poststatchange);
+        $this->_redirector->gotoUrl($this->mainpage);
       }
       $audit->moveStatus($audit_id, $newstatus);
       $this->session->flash = "Audit id #{$audit_id} has been changed to {$newstatus}";
       $this->session->audit = null;
-      $this->_redirector->gotoUrl($this->poststatchange);
+      $this->_redirector->gotoUrl($this->mainpage);
     }
     else
     {
@@ -992,12 +992,12 @@ class AuditController extends Checklist_Controller_Action
       {
         $this->session->flash = "Audit id #{$audit_id} status is not COMPLETE";
         $this->session->audit = null;
-        $this->_redirector->gotoUrl($this->poststatchange);
+        $this->_redirector->gotoUrl($this->mainpage);
       }
       $audit->moveStatus($audit_id, $newstatus);
       $this->session->flash = "Audit id #{$audit_id} has been changed to {$newstatus}";
       $this->session->audit = null;
-      $this->_redirector->gotoUrl($this->poststatchange);
+      $this->_redirector->gotoUrl($this->mainpage);
     }
     else
     {
@@ -1024,12 +1024,12 @@ class AuditController extends Checklist_Controller_Action
       {
         $this->session->flash = "Audit id #{$audit_id} status is not COMPLETE";
         $this->session->audit = null;
-        $this->_redirector->gotoUrl($this->poststatchange);
+        $this->_redirector->gotoUrl($this->mainpage);
       }
       $audit->moveStatus($audit_id, $newstatus);
       $this->session->flash = "Audit id #{$audit_id} has been changed to {$newstatus}";
       $this->session->audit = null;
-      $this->_redirector->gotoUrl($this->poststatchange);
+      $this->_redirector->gotoUrl($this->mainpage);
     }
     else
     {

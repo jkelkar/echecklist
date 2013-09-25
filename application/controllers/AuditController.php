@@ -743,7 +743,7 @@ class AuditController extends Checklist_Controller_Action
 
     if ($auditinfo['status'] == 'FINALIZED')
     {
-      $auditinfo['status'] = 'COMPLETED';
+      $auditinfo['status'] = 'COMPLETE';
     }
     $auditid = $audit->insertData($auditinfo);
     $this->log->logit("Imported audit is given #{$auditid}");
@@ -818,7 +818,7 @@ class AuditController extends Checklist_Controller_Action
      */
     if ($auditinfo['status'] == 'FINALIZED')
     {
-      $auditinfo['status'] = 'COMPLETED';
+      $auditinfo['status'] = 'COMPLETE';
     }
     $auditid = $audit->insertData($auditinfo);
 
